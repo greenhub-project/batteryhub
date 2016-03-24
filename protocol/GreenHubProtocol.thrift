@@ -1,4 +1,4 @@
-namespace java edu.berkeley.cs.amplab.carat.thrift
+namespace java hmatalonga.greenhub.thrift
 
 // 
 // The registration message.
@@ -202,9 +202,9 @@ struct HogBugReport {
 typedef list<Feature> FeatureList
 
 //
-// The CARAT service. 
+// The GreenHub service.
 //
-service CaratService {
+service GreenHubService {
 	oneway void registerMe(1:Registration registration);
 	bool uploadSample(1:Sample sample);
 	Reports getReports(1: string uuId, 2: FeatureList features);
