@@ -1,6 +1,7 @@
 package hmatalonga.greenhub;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -11,6 +12,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.android.internal.os.PowerProfileHelper;
+
+import hmatalonga.greenhub.sampling.Inspector;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -25,13 +28,14 @@ public class MainActivity extends AppCompatActivity {
 
         context = getApplicationContext();
 
-        final String wifiString = String.valueOf(PowerProfileHelper.getAverageWifiPower(context));
+        final String testString = Inspector.getAndroidId(context);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        assert fab != null;
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, wifiString, Snackbar.LENGTH_LONG)
+                Snackbar.make(view, testString, Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
         });
@@ -53,6 +57,8 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
             return true;
         }
 
