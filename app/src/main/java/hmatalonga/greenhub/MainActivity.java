@@ -16,7 +16,7 @@ import com.android.internal.os.PowerProfileHelper;
 import hmatalonga.greenhub.sampling.Inspector;
 
 public class MainActivity extends AppCompatActivity {
-
+    private static GreenHub app;
     private static Context context;
 
     @Override
@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         context = getApplicationContext();
+        app = new GreenHub(context);
 
         final String testString = Inspector.getAndroidId(context);
 

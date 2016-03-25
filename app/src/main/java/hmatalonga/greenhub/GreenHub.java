@@ -3,44 +3,38 @@ package hmatalonga.greenhub;
 import android.app.ActivityManager.RunningAppProcessInfo;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.util.SparseArray;
 
+import hmatalonga.greenhub.protocol.CommunicationManager;
+import hmatalonga.greenhub.utils.NetworkWatcher;
+
 /**
+ * App class
  * Created by hugo on 24-03-2016.
  */
 public class GreenHub {
-    private static GreenHub mInstance;
-    // Used for logging
+    // Logger class name tag
     private static final String TAG = "GreenHub";
 
-    public static Context mAppContext = null;
-    public static SharedPreferences mPrefs = null;
+    public static Context context = null;
+    public static SharedPreferences preferences = null;
+    // GreenHub app Modules
+    public CommunicationManager communicationManager = null;
 
-    // NOTE: This needs to be initialized before CommunicationManager.
-    private static CaratDataStorage storage = null;
-    // NOTE: The CommunicationManager requires a working instance of
-    // CaratDataStorage.
-    public CommunicationManager commManager = null;
+    public GreenHub(Context c) {
+        context = c;
+        preferences = PreferenceManager.getDefaultSharedPreferences(context);
+    }
 
-    // Activity pointers so that all activity UIs can be updated with a callback
-    // to CaratApplication
-    static MainActivity main = null;
-    private static SuggestionsFragment actionList = null;
-    // The Sampler samples the battery level when it changes.
-    private static Sampler sampler = null;
-
-    public static MyDeviceData myDeviceData = new MyDeviceData();
-
-    // used to check if Internet is available
-    private static ConnectivityManager mConnectivityManager = null;
-
-    public GreenHub() {}
+    public void initModules() {
+        communicationManager = new CommunicationManager(this);
+    }
 
     // Used to map importances to human readable strings for sending samples to
     // the server, and showing them in the process list.
     private static final SparseArray<String> importanceToString = new SparseArray<String>();
-
     {
         importanceToString.put(RunningAppProcessInfo.IMPORTANCE_EMPTY, "Not running");
         importanceToString.put(RunningAppProcessInfo.IMPORTANCE_BACKGROUND, "Background process");
@@ -50,12 +44,10 @@ public class GreenHub {
 
         importanceToString.put(Constants.IMPORTANCE_PERCEPTIBLE, "Perceptible task");
         importanceToString.put(Constants.IMPORTANCE_SUGGESTION, "Suggestion");
-
-        mInstance = this;
     }
 
     public static Context getContext() {
-        return mInstance;
+        return context;
     }
 
     /**
@@ -96,123 +88,6 @@ public class GreenHub {
                 return main.getString(R.string.priorityDefault);
         } else
             return importanceString;
-    }
-
-    /**
-     * Return a Drawable that contains an app icon for the named app. If not
-     * found, return the Drawable for the Carat icon.
-     *
-     * @param appName
-     *            the application name
-     * @return the Drawable for the application's icon
-     */
-    public static Drawable iconForApp(Context context, String appName) {
-        try {
-            return context.getPackageManager().getApplicationIcon(appName);
-        } catch (NameNotFoundException e) {
-            return context.getResources().getDrawable(R.drawable.ic_launcher);
-        }
-    }
-
-    /**
-     * Return a human readable application label for the named app. If not
-     * found, return appName.
-     *
-     * @param appName
-     *            the application name
-     * @return the human readable application label
-     */
-    public static String labelForApp(Context context, String appName) {
-        if (appName == null)
-            return "Unknown";
-        try {
-            ApplicationInfo i = context.getPackageManager().getApplicationInfo(appName, 0);
-            if (i != null)
-                return context.getPackageManager().getApplicationLabel(i).toString();
-            else
-                return appName;
-        } catch (NameNotFoundException e) {
-            return appName;
-        }
-    }
-
-
-    public static int getJscore() {
-        final Reports reports = getStorage().getReports();
-        int jscore = 0;
-        if (reports != null) {
-            jscore = ((int) (reports.getJScore() * 100));
-        }
-        return jscore;
-    }
-
-    /**
-     * Return titles from the drawer items array.
-     * @return titles from the drawer items array.
-     */
-    public static String[] getTitles() {
-        Resources res = getContext().getResources();
-        return res.getStringArray(R.array.drawer_items);
-    }
-
-    public static void setActionInProgress() {
-        if (main != null) {
-            main.runOnUiThread(new Runnable() {
-                public void run() {
-                    // Updating done
-                    main.setTitleUpdating(getTitles()[2]);
-                    main.setProgress(0);
-                    main.setProgressBarVisibility(true);
-                    main.setProgressBarIndeterminateVisibility(true);
-                }
-            });
-        }
-    }
-
-    public static void refreshActions() {
-        if (actionList != null) {
-            main.runOnUiThread(new Runnable() {
-                public void run() {
-                    actionList.refresh();
-                }
-            });
-        }
-    }
-
-    public static void setActionProgress(final int progress, final String what, final boolean fail) {
-        if (main != null) {
-            main.runOnUiThread(new Runnable() {
-                public void run() {
-                    if (fail)
-                        main.setTitleUpdatingFailed(what);
-                    else
-                        main.setTitleUpdating(what);
-                    main.setProgress(progress * 100);
-                }
-            });
-        }
-    }
-
-    public static void setActionFinished() {
-        if (main != null) {
-            main.runOnUiThread(new Runnable() {
-                public void run() {
-                    // Updating done
-                    main.setTitleNormal();
-                    main.setProgress(100);
-                    main.setProgressBarVisibility(false);
-                    main.setProgressBarIndeterminateVisibility(false);
-                }
-            });
-        }
-    }
-
-    protected static void setMain(MainActivity mainActivity) {
-        main = mainActivity;
-    }
-
-    public static void setActionList(SuggestionsFragment suggestionsFragment) {
-        actionList = suggestionsFragment;
     }
 
     public static String getRegisteredUuid() {
@@ -292,42 +167,6 @@ public class GreenHub {
         SampleSender.sendSamples(CaratApplication.this);
         CaratApplication.setActionFinished();
     }
-
-    public static boolean isInternetAvailable2() {
-        try {
-            InetAddress ipAddr = InetAddress.getByName("google.com"); //You can replace it with your name
-            if (ipAddr.equals("")) {
-                return false;
-            } else {
-                return true;
-            }
-
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    /**
-     * Checks whether WiFi or mobile data is enabled
-     * @return true of false
-     */
-    public static boolean isInternetAvailable() {
-        boolean haveConnectedWifi = false;
-        boolean haveConnectedMobile = false;
-
-
-        NetworkInfo[] netInfo = mConnectivityManager.getAllNetworkInfo();
-        for (NetworkInfo ni : netInfo) {
-            if (ni.getTypeName().equalsIgnoreCase("WIFI"))
-                if (ni.isConnected())
-                    haveConnectedWifi = true;
-            if (ni.getTypeName().equalsIgnoreCase("MOBILE"))
-                if (ni.isConnected())
-                    haveConnectedMobile = true;
-        }
-        return haveConnectedWifi || haveConnectedMobile;
-    }
-
 
     public static void setReportData() {
         final Reports r = getStorage().getReports();

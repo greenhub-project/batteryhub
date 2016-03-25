@@ -697,123 +697,123 @@ public final class Inspector {
      */
     static WeakReference<Map<String, PackageInfo>> packages = null;
 
-    /**
-     * Returns true if an application should be hidden in the UI. Uses the blacklist downloaded from Carat servers.
-     * @param c the Context
-     * @param processName the process name
-     * @return true if the process should be hidden from the user, usually because it is an unkillable application that belongs to the system.
-     */
-    public static boolean isHidden(Context c, String processName) {
-        boolean isSystem = isSystem(c, processName);
-        boolean blocked = isDisabled(c, processName) || (isSystem && !isWhiteListed(c, processName));
-        return blocked || isBlacklisted(c, processName);
-    }
-
-    /**
-     * We currently do not employ a whitelist, so this returns true iff isBlacklisted(c, processName) returns false and vice versa.
-     *
-     * @param c the Context.
-     * @param processName the process name.
-     * @return true iff isBlacklisted(c, processName) returns false and vice versa.
-     */
-    private static boolean isWhiteListed(Context c, String processName) {
-        return !isBlacklisted(c, processName);
-    }
-
-    /**
-     * Returns true if the processName matches an intem on the blacklist downloaded from Carat servers.
-     *
-     * @param c the Context.
-     * @param processName the process name.
-     * @return true if the processName matches an intem on the blacklist downloaded from Carat servers.
-     */
-    private static boolean isBlacklisted(Context c, String processName) {
-		/*
-		 * Whitelist: Messaging, Voice Search, Bluetooth Share
-		 *
-		 * Blacklist: Key chain, google partner set up, package installer,
-		 * package access helper
-		 */
-        if (GreenHub.getStorage() != null) {
-            List<String> blacklist = GreenHub.getStorage().getBlacklist();
-            if (blacklist != null && blacklist.size() > 0 && processName != null && blacklist.contains(processName)) {
-                return true;
-            }
-
-            blacklist = GreenHub.getStorage().getGloblist();
-            if (blacklist != null && blacklist.size() > 0 && processName != null) {
-                for (String glob : blacklist) {
-                    if (glob == null)
-                        continue;
-                    // something*
-                    if (glob.endsWith("*") && processName.startsWith(glob.substring(0, glob.length() - 1)))
-                        return true;
-                    // *something
-                    if (glob.startsWith("*") && processName.endsWith(glob.substring(1)))
-                        return true;
-                }
-            }
-        }
-        String label = GreenHub.labelForApp(c, processName);
-
-        if (processName != null && label != null && label.equals(processName)) {
-            // Log.v("Hiding uninstalled", processName);
-            return true;
-        }
-
-        // FlurryAgent.logEvent("Whitelisted "+processName + " \""+ label+"\"");
-        return false;
-    }
-
-    /**
-     * Returns true if the application is preinstalled on the device.
-     * This usually means it is a system application, e.g. Key chain, google partner set up, package installer, package access helper.
-     * We currently do not filter these out, because some of them are killable by the user, and not part of the core system, even if they are preinstalled on the device.
-     * @param context the Context.
-     * @param processName the process name.
-     * @return true if the application is preinstalled on the device.
-     */
-    private static boolean isSystem(Context context, String processName) {
-        PackageInfo pak = getPackageInfo(context, processName);
-        if (pak != null) {
-            ApplicationInfo i = pak.applicationInfo;
-            int flags = i.flags;
-            boolean isSystemApp = (flags & ApplicationInfo.FLAG_SYSTEM) > 0;
-            isSystemApp = isSystemApp || (flags & ApplicationInfo.FLAG_UPDATED_SYSTEM_APP) > 0;
-            // Log.v(STAG, processName + " is System app? " + isSystemApp);
-            return isSystemApp;
-        }
-        return false;
-    }
-
-    public static boolean isDisabled(Context c, String processName) {
-        PackageManager pm = c.getPackageManager();
-        if (pm == null)
-            return false;
-        try {
-            ApplicationInfo info = pm.getApplicationInfo(processName, 0);
-            boolean disabled = !info.enabled;
-            /* If an app is disabled, schedule it for sending with the next sample.
-             * This is triggered in the UI, so the amount of times that an app being
-             * disabled is sent is limited to the number of times the user refreshes Carat
-             * between two analysis runs. Disabled applications will then be recorded by
-             * the analysis, and not sent to the client when they ask for hogs/bugs after that.
-             * Over time, Carat then follows users' Hogs and Bugs better, knowing which apps are
-             * disabled.
-             */
-            if (disabled) {
-                if (Constants.DEBUG)
-                    Log.i(STAG, "DISABLED: " + processName);
-                SharedPreferences.Editor e = PreferenceManager.getDefaultSharedPreferences(c.getApplicationContext()).edit();
-                e.putBoolean(Inspector.DISABLED + processName, true).commit();
-            }
-            return disabled;
-        } catch (PackageManager.NameNotFoundException e) {
-            if (Constants.DEBUG)
-                Log.d(STAG, "Could not find app info for: "+processName);
-        }
-        return false;
-    }
+//    /**
+//     * Returns true if an application should be hidden in the UI. Uses the blacklist downloaded from Carat servers.
+//     * @param c the Context
+//     * @param processName the process name
+//     * @return true if the process should be hidden from the user, usually because it is an unkillable application that belongs to the system.
+//     */
+//    public static boolean isHidden(Context c, String processName) {
+//        boolean isSystem = isSystem(c, processName);
+//        boolean blocked = isDisabled(c, processName) || (isSystem && !isWhiteListed(c, processName));
+//        return blocked || isBlacklisted(c, processName);
+//    }
+//
+//    /**
+//     * We currently do not employ a whitelist, so this returns true iff isBlacklisted(c, processName) returns false and vice versa.
+//     *
+//     * @param c the Context.
+//     * @param processName the process name.
+//     * @return true iff isBlacklisted(c, processName) returns false and vice versa.
+//     */
+//    private static boolean isWhiteListed(Context c, String processName) {
+//        return !isBlacklisted(c, processName);
+//    }
+//
+//    /**
+//     * Returns true if the processName matches an intem on the blacklist downloaded from Carat servers.
+//     *
+//     * @param c the Context.
+//     * @param processName the process name.
+//     * @return true if the processName matches an intem on the blacklist downloaded from Carat servers.
+//     */
+//    private static boolean isBlacklisted(Context c, String processName) {
+//		/*
+//		 * Whitelist: Messaging, Voice Search, Bluetooth Share
+//		 *
+//		 * Blacklist: Key chain, google partner set up, package installer,
+//		 * package access helper
+//		 */
+//        if (GreenHub.getStorage() != null) {
+//            List<String> blacklist = GreenHub.getStorage().getBlacklist();
+//            if (blacklist != null && blacklist.size() > 0 && processName != null && blacklist.contains(processName)) {
+//                return true;
+//            }
+//
+//            blacklist = GreenHub.getStorage().getGloblist();
+//            if (blacklist != null && blacklist.size() > 0 && processName != null) {
+//                for (String glob : blacklist) {
+//                    if (glob == null)
+//                        continue;
+//                    // something*
+//                    if (glob.endsWith("*") && processName.startsWith(glob.substring(0, glob.length() - 1)))
+//                        return true;
+//                    // *something
+//                    if (glob.startsWith("*") && processName.endsWith(glob.substring(1)))
+//                        return true;
+//                }
+//            }
+//        }
+//        String label = GreenHub.labelForApp(c, processName);
+//
+//        if (processName != null && label != null && label.equals(processName)) {
+//            // Log.v("Hiding uninstalled", processName);
+//            return true;
+//        }
+//
+//        // FlurryAgent.logEvent("Whitelisted "+processName + " \""+ label+"\"");
+//        return false;
+//    }
+//
+//    /**
+//     * Returns true if the application is preinstalled on the device.
+//     * This usually means it is a system application, e.g. Key chain, google partner set up, package installer, package access helper.
+//     * We currently do not filter these out, because some of them are killable by the user, and not part of the core system, even if they are preinstalled on the device.
+//     * @param context the Context.
+//     * @param processName the process name.
+//     * @return true if the application is preinstalled on the device.
+//     */
+//    private static boolean isSystem(Context context, String processName) {
+//        PackageInfo pak = getPackageInfo(context, processName);
+//        if (pak != null) {
+//            ApplicationInfo i = pak.applicationInfo;
+//            int flags = i.flags;
+//            boolean isSystemApp = (flags & ApplicationInfo.FLAG_SYSTEM) > 0;
+//            isSystemApp = isSystemApp || (flags & ApplicationInfo.FLAG_UPDATED_SYSTEM_APP) > 0;
+//            // Log.v(STAG, processName + " is System app? " + isSystemApp);
+//            return isSystemApp;
+//        }
+//        return false;
+//    }
+//
+//    public static boolean isDisabled(Context c, String processName) {
+//        PackageManager pm = c.getPackageManager();
+//        if (pm == null)
+//            return false;
+//        try {
+//            ApplicationInfo info = pm.getApplicationInfo(processName, 0);
+//            boolean disabled = !info.enabled;
+//            /* If an app is disabled, schedule it for sending with the next sample.
+//             * This is triggered in the UI, so the amount of times that an app being
+//             * disabled is sent is limited to the number of times the user refreshes Carat
+//             * between two analysis runs. Disabled applications will then be recorded by
+//             * the analysis, and not sent to the client when they ask for hogs/bugs after that.
+//             * Over time, Carat then follows users' Hogs and Bugs better, knowing which apps are
+//             * disabled.
+//             */
+//            if (disabled) {
+//                if (Constants.DEBUG)
+//                    Log.i(STAG, "DISABLED: " + processName);
+//                SharedPreferences.Editor e = PreferenceManager.getDefaultSharedPreferences(c.getApplicationContext()).edit();
+//                e.putBoolean(Inspector.DISABLED + processName, true).commit();
+//            }
+//            return disabled;
+//        } catch (PackageManager.NameNotFoundException e) {
+//            if (Constants.DEBUG)
+//                Log.d(STAG, "Could not find app info for: "+processName);
+//        }
+//        return false;
+//    }
 
     /**
      * Helper to ensure the WeakReferenced `packages` is populated.
