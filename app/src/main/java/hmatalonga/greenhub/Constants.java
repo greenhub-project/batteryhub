@@ -8,8 +8,10 @@ import android.app.AlarmManager;
 public final class Constants {
     // Whether to output debug messages.
     public static final boolean DEBUG = true;
+    public static final boolean PRODUCTION = false;
 
-    public static final String SERVER_URL = "http://greenhub-hmatalonga.rhcloud.com";
+    public static final String PUBLIC_SERVER_URL = "http://greenhub-hmatalonga.rhcloud.com";
+    public static final String LOCAL_SERVER_URL = "http://192.168.10.10";
 
     // Report Freshness timeout. Default: 15 minutes
     // public static final long FRESHNESS_TIMEOUT = 30 * 1000;

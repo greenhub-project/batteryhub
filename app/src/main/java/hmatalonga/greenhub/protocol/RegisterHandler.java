@@ -1,15 +1,18 @@
 package hmatalonga.greenhub.protocol;
 
 import android.content.SharedPreferences;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import hmatalonga.greenhub.Constants;
 import hmatalonga.greenhub.GreenHub;
@@ -31,7 +34,7 @@ public class RegisterHandler {
         this.app = app;
     }
 
-    public void registerClient(){
+    public Device registerClient() {
         Device device = new Device(Inspector.getAndroidId(GreenHub.getContext()));
         device.setTimestamp(System.currentTimeMillis() / 1000.0);
         device.setModel(Inspector.getModel());
@@ -42,30 +45,72 @@ public class RegisterHandler {
         device.setKernelVersion(Inspector.getKernelVersion());
         device.setSerialNumber(Inspector.getBuildSerial());
 
-        requestRegistration(device);
+        postRegistration(device);
+
+        return device;
     }
 
-    private void requestRegistration(Device device) {
+    private void testRegistration() {
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(GreenHub.getContext());
-        String url = Constants.SERVER_URL;
+        String url = Constants.LOCAL_SERVER_URL + "/device";
 
         // Request a string response from the provided URL.
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        // Display the first 500 characters of the response string.
-                        Toast.makeText(GreenHub.getContext(), "It Works!", Toast.LENGTH_LONG).show();
-                        GHLogger.debug(TAG, "Response is: " + response.substring(0, 500));
+                        Toast.makeText(GreenHub.getContext(), "OK", Toast.LENGTH_LONG).show();
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(GreenHub.getContext(), "Test failed", Toast.LENGTH_LONG).show();
+            }
+        });
+        // Add the request to the RequestQueue.
+        queue.add(stringRequest);
+    }
+
+    private void postRegistration(final Device device) {
+        // Instantiate the RequestQueue.
+        RequestQueue queue = Volley.newRequestQueue(GreenHub.getContext());
+        String url = app.serverURL + "/device";
+
+        // Request a string response from the provided URL.
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Toast.makeText(GreenHub.getContext(), "Awesome", Toast.LENGTH_LONG).show();
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(GreenHub.getContext(), "That didn't work!", Toast.LENGTH_LONG).show();
-                GHLogger.debug(TAG, "That didn't work!");
             }
-        });
+        }){
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("uuid", device.getUuId());
+                params.put("model", device.getModel());
+                params.put("manufacturer", device.getManufacturer());
+                params.put("brand", device.getBrand());
+                params.put("os", device.getOsVersion());
+                params.put("product", device.getProduct());
+                params.put("kernel", device.getKernelVersion());
+                params.put("serialnum", device.getSerialNumber());
+
+                return params;
+            }
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("Content-Type", "application/x-www-form-urlencoded");
+                return params;
+            }
+        };
         // Add the request to the RequestQueue.
         queue.add(stringRequest);
     }

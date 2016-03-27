@@ -9,6 +9,7 @@ import android.util.SparseArray;
 
 import hmatalonga.greenhub.protocol.CommunicationManager;
 import hmatalonga.greenhub.protocol.RegisterHandler;
+import hmatalonga.greenhub.storage.Device;
 
 /**
  * App class
@@ -20,6 +21,10 @@ public class GreenHub {
 
     public static Context context = null;
     public static SharedPreferences preferences = null;
+
+    public final String serverURL;
+    public Device device = null;
+
     // GreenHub app Modules
     public CommunicationManager communicationManager = null;
     public RegisterHandler registerHandler = null;
@@ -27,6 +32,10 @@ public class GreenHub {
     public GreenHub(Context c) {
         context = c;
         preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        if (Constants.PRODUCTION)
+            serverURL = Constants.PUBLIC_SERVER_URL;
+        else
+            serverURL = Constants.LOCAL_SERVER_URL;
     }
 
     public void initModules() {

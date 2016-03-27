@@ -2,6 +2,7 @@ package hmatalonga.greenhub;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -11,11 +12,15 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.internal.os.PowerProfileHelper;
 
+import java.net.InetAddress;
+
 import hmatalonga.greenhub.protocol.RegisterHandler;
 import hmatalonga.greenhub.sampling.Inspector;
+import hmatalonga.greenhub.utils.FontManager;
 import hmatalonga.greenhub.utils.NetworkWatcher;
 
 public class MainActivity extends AppCompatActivity {
@@ -36,10 +41,13 @@ public class MainActivity extends AppCompatActivity {
         final String androidId = Inspector.getAndroidId(context);
         final String msg = "Hello";
 
+        Typeface iconFont = FontManager.getTypeface(getApplicationContext(), FontManager.FONTAWESOME);
+        FontManager.markAsIconContainer(findViewById(R.id.main_container), iconFont);
+
         TextView textViewAndroidId = (TextView) findViewById(R.id.textViewAndroidId);
         assert textViewAndroidId != null;
 
-        textViewAndroidId.setText("GreenHubId: " + androidId);
+        textViewAndroidId.setText("GreenHub Id: " + androidId);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         assert fab != null;
@@ -47,10 +55,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (NetworkWatcher.hasInternet(context)) {
-                    app.registerHandler.registerClient();
+                    app.device = app.registerHandler.registerClient();
                 }
-                Snackbar.make(view, msg, Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+//                Snackbar.make(view, msg, Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
 
             }
         });
