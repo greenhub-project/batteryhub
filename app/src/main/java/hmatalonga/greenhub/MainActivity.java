@@ -10,10 +10,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import com.android.internal.os.PowerProfileHelper;
 
+import hmatalonga.greenhub.protocol.RegisterHandler;
 import hmatalonga.greenhub.sampling.Inspector;
+import hmatalonga.greenhub.utils.NetworkWatcher;
 
 public class MainActivity extends AppCompatActivity {
     private static GreenHub app;
@@ -28,16 +31,27 @@ public class MainActivity extends AppCompatActivity {
 
         context = getApplicationContext();
         app = new GreenHub(context);
+        app.initModules();
 
-        final String testString = Inspector.getAndroidId(context);
+        final String androidId = Inspector.getAndroidId(context);
+        final String msg = "Hello";
+
+        TextView textViewAndroidId = (TextView) findViewById(R.id.textViewAndroidId);
+        assert textViewAndroidId != null;
+
+        textViewAndroidId.setText("GreenHubId: " + androidId);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         assert fab != null;
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, testString, Snackbar.LENGTH_LONG)
+                if (NetworkWatcher.hasInternet(context)) {
+                    app.registerHandler.registerClient();
+                }
+                Snackbar.make(view, msg, Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+
             }
         });
     }

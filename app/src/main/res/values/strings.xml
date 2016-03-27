@@ -2,7 +2,6 @@
     <string name="app_name">GreenHub</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_settings">Settings</string>
-    <string name="app_server_url">http://greenhub-hmatalonga.rhcloud.com</string>
 
     <!-- Strings related to Settings -->
 

@@ -14,6 +14,7 @@ public class NetworkWatcher {
     private static final String TAG = "NetworkWatcher";
     private static boolean mobileDataAllowed = false;
     private static String urlTest = "google.com";
+    private static boolean response = false;
 
     public NetworkWatcher() {}
 
@@ -34,13 +35,27 @@ public class NetworkWatcher {
     }
 
     private static boolean isInternetAvailable() {
-        try {
-            InetAddress ipAddr = InetAddress.getByName(getUrlTest());
-            return !ipAddr.equals("");
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    InetAddress ipAddr = InetAddress.getByName(getUrlTest());
+                    response = !ipAddr.equals("");
 
+                } catch (Exception e) {
+                    response = false;
+                }
+            }
+        });
+
+        t.start();
+        try {
+            t.join();
         } catch (Exception e) {
-            return false;
+            response = false;
         }
+
+        return response;
     }
 
     public static boolean hasInternet(Context context) {
