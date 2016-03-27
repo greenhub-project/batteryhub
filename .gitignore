@@ -26,6 +26,7 @@ proguard/
 # Log Files
 *.log
 
+# Android Studio .gitignore default file
 *.iml
 .gradle
 /local.properties
@@ -34,3 +35,7 @@ proguard/
 .DS_Store
 /build
 /captures
+
+# Dependencies folders
+assets/
+volley/

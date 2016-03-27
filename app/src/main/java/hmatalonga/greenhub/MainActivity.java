@@ -1,15 +1,38 @@
 package hmatalonga.greenhub;
 
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.android.internal.os.PowerProfileHelper;
+
+import java.net.InetAddress;
+
+import hmatalonga.greenhub.fragments.HomeFragment;
+import hmatalonga.greenhub.fragments.HomeFragment;
+import hmatalonga.greenhub.protocol.RegisterHandler;
+import hmatalonga.greenhub.sampling.Inspector;
+import hmatalonga.greenhub.utils.FontManager;
+import hmatalonga.greenhub.utils.NetworkWatcher;
 
 public class MainActivity extends AppCompatActivity {
+    private static GreenHub app;
+    private static Context context;
+
+    private TabLayout tabLayout;
+    private ViewPager viewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,14 +41,58 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        context = getApplicationContext();
+        app = new GreenHub(context);
+        app.initModules();
+
+        final String androidId = Inspector.getAndroidId(context);
+        final String msg = "Hello";
+
+        Typeface iconFont = FontManager.getTypeface(getApplicationContext(), FontManager.FONTAWESOME);
+        FontManager.markAsIconContainer(findViewById(R.id.main_container), iconFont);
+
+//        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+//        assert fab != null;
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                if (NetworkWatcher.hasInternet(context)) {
+//                    app.device = app.registerHandler.registerClient();
+//                }
+//                Snackbar.make(view, msg, Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+//            }
+//        });
+
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+        tabLayout.addTab(tabLayout.newTab().setText("Home"));
+        tabLayout.addTab(tabLayout.newTab().setText("About"));
+        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+
+        final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
+        final PagerAdapter adapter = new PagerAdapter
+                (getSupportFragmentManager(), tabLayout.getTabCount());
+        viewPager.setAdapter(adapter);
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+            public void onTabSelected(TabLayout.Tab tab) {
+                viewPager.setCurrentItem(tab.getPosition());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
             }
         });
+
+//        TextView textViewAndroidId = (TextView) findViewById(R.id.textViewAndroidId);
+//        assert textViewAndroidId != null;
+//
+//        textViewAndroidId.setText("GreenHub Id: " + androidId);
     }
 
     @Override
@@ -44,6 +111,8 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
             return true;
         }
 
