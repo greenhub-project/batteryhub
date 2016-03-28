@@ -5,6 +5,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
 import hmatalonga.greenhub.fragments.AboutFragment;
+import hmatalonga.greenhub.fragments.DeviceFragment;
 import hmatalonga.greenhub.fragments.HomeFragment;
 
 /**
@@ -24,6 +25,8 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
             case 0:
                 return new HomeFragment();
             case 1:
+                return new DeviceFragment();
+            case 2:
                 return new AboutFragment();
             default:
                 return null;

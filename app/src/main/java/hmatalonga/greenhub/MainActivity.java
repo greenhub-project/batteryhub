@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
 
     private TabLayout tabLayout;
     private ViewPager viewPager;
+    private int currentToolbarTitle = R.string.app_name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(currentToolbarTitle);
 
         context = getApplicationContext();
         app = new GreenHub(context);
@@ -51,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
         Typeface iconFont = FontManager.getTypeface(getApplicationContext(), FontManager.FONTAWESOME);
         FontManager.markAsIconContainer(findViewById(R.id.main_container), iconFont);
 
-//        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 //        assert fab != null;
 //        fab.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -65,29 +67,50 @@ public class MainActivity extends AppCompatActivity {
 //        });
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
-        tabLayout.addTab(tabLayout.newTab().setText("Home"));
-        tabLayout.addTab(tabLayout.newTab().setText("About"));
+        tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.ic_home_white_24dp));
+        tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.ic_account_white_24dp));
+        tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.ic_information_white_24dp));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
         final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
         final PagerAdapter adapter = new PagerAdapter
                 (getSupportFragmentManager(), tabLayout.getTabCount());
-        viewPager.setAdapter(adapter);
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                viewPager.setCurrentItem(tab.getPosition());
-            }
 
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-            }
+        try {
+            viewPager.setAdapter(adapter);
+            viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+            tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+                @Override
+                public void onTabSelected(TabLayout.Tab tab) {
+                    switch (tab.getPosition()) {
+                        case 0:
+                            currentToolbarTitle = R.string.title_fragment_home;
+                            break;
+                        case 1:
+                            currentToolbarTitle = R.string.title_fragment_device;
+                            break;
+                        case 2:
+                            currentToolbarTitle = R.string.title_fragment_about;
+                            break;
+                        default:
+                            currentToolbarTitle = R.string.app_name;
+                    }
+                    viewPager.setCurrentItem(tab.getPosition());
+                    getSupportActionBar().setTitle(currentToolbarTitle);
+                }
 
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-            }
-        });
+                @Override
+                public void onTabUnselected(TabLayout.Tab tab) {
+                }
+
+                @Override
+                public void onTabReselected(TabLayout.Tab tab) {
+                }
+            });
+        }
+        catch (NullPointerException e) {
+            e.printStackTrace();
+        }
 
 //        TextView textViewAndroidId = (TextView) findViewById(R.id.textViewAndroidId);
 //        assert textViewAndroidId != null;
