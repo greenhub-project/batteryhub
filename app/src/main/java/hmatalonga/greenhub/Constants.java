@@ -55,7 +55,7 @@ public final class Constants {
 
     // Alarm event for sampling when battery has not changed for
     // SAMPLE_INTERVAL_MS. Currently not used.
-    public static final String ACTION_CARAT_SAMPLE = "edu.berkeley.cs.amplab.carat.android.ACTION_SAMPLE";
+    public static final String ACTION_GREENHUB_SAMPLE = "hmatalonga.greenhub.ACTION_SAMPLE";
     // If true, install Sampling events to occur at boot. Currently not used.
     public static final String PREFERENCE_SAMPLE_FIRST_RUN = "carat.sample.first.run";
     public static final String PREFERENCE_SEND_INSTALLED_PACKAGES = "carat.sample.send.installed";

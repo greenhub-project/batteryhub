@@ -1,7 +1,7 @@
-package hmatalonga.greenhub.thrift;
+package hmatalonga.greenhub.database;
 
 /**
- * Created by hugo on 24-03-2016.
+ * Created by hugo on 13-04-2016.
  */
 public class CallMonth {
     public int tolCallInNum=0;

@@ -8,6 +8,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
@@ -17,8 +18,7 @@ import java.util.Map;
 import hmatalonga.greenhub.Constants;
 import hmatalonga.greenhub.GreenHub;
 import hmatalonga.greenhub.sampling.Inspector;
-import hmatalonga.greenhub.storage.Device;
-import hmatalonga.greenhub.utils.GHLogger;
+import hmatalonga.greenhub.model.Device;
 
 /**
  * Registers devices on server for first-run, connects device to server and provides uuid
@@ -28,13 +28,13 @@ public class RegisterHandler {
     private static final String TAG = "RegisterHandler";
 
     private GreenHub app = null;
-    private SharedPreferences preferences = null;
 
     public RegisterHandler(GreenHub app) {
         this.app = app;
     }
 
     public Device registerClient() {
+
         Device device = new Device(Inspector.getAndroidId(GreenHub.getContext()));
         device.setTimestamp(System.currentTimeMillis() / 1000.0);
         device.setModel(Inspector.getModel());
@@ -50,28 +50,6 @@ public class RegisterHandler {
         return device;
     }
 
-    private void testRegistration() {
-        // Instantiate the RequestQueue.
-        RequestQueue queue = Volley.newRequestQueue(GreenHub.getContext());
-        String url = Constants.LOCAL_SERVER_URL + "/device";
-
-        // Request a string response from the provided URL.
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Toast.makeText(GreenHub.getContext(), "OK", Toast.LENGTH_LONG).show();
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(GreenHub.getContext(), "Test failed", Toast.LENGTH_LONG).show();
-            }
-        });
-        // Add the request to the RequestQueue.
-        queue.add(stringRequest);
-    }
-
     private void postRegistration(final Device device) {
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(GreenHub.getContext());
@@ -82,13 +60,19 @@ public class RegisterHandler {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Toast.makeText(GreenHub.getContext(), "Awesome", Toast.LENGTH_LONG).show();
+                        // FIXME: Better response message handling, work on server-side
+                        response = response.replaceAll("\n", "");
+                        if (!response.equals("Device was registered!"))
+                            response = "Device is already registered...";
+                        // Toast.makeText(GreenHub.context, response, Toast.LENGTH_LONG).show();
                     }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(GreenHub.getContext(), "That didn't work!", Toast.LENGTH_LONG).show();
-            }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        error.printStackTrace();
+                        // Toast.makeText(GreenHub.context, "Server has returned an error...", Toast.LENGTH_LONG).show();
+                    }
         }){
             @Override
             protected Map<String, String> getParams() {
@@ -111,6 +95,29 @@ public class RegisterHandler {
                 return params;
             }
         };
+        // Add the request to the RequestQueue.
+        queue.add(stringRequest);
+    }
+
+    private void testRegistration() {
+        // Instantiate the RequestQueue.
+        RequestQueue queue = Volley.newRequestQueue(GreenHub.getContext());
+        String url = Constants.LOCAL_SERVER_URL + "/device";
+
+        // Request a string response from the provided URL.
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Toast.makeText(GreenHub.getContext(), response.replaceAll("\n", ""), Toast.LENGTH_LONG).show();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(GreenHub.getContext(), "Test failed", Toast.LENGTH_LONG).show();
+                    }
+                });
         // Add the request to the RequestQueue.
         queue.add(stringRequest);
     }

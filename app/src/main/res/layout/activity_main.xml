@@ -29,15 +29,13 @@
             android:background="?attr/colorPrimary"
             android:minHeight="?attr/actionBarSize" />
 
-        <android.support.v4.view.ViewPager
-            android:id="@+id/pager"
-            android:layout_width="match_parent"
-            android:layout_height="fill_parent"
-            android:layout_below="@id/tab_layout"
-            android:background="@color/white"/>
-
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_main"/>
+    <android.support.v4.view.ViewPager
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:background="@color/white"/>
 
 </android.support.design.widget.CoordinatorLayout>

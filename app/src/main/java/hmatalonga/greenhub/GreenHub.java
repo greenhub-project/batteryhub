@@ -2,6 +2,8 @@ package hmatalonga.greenhub;
 
 import android.app.ActivityManager.RunningAppProcessInfo;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -9,7 +11,8 @@ import android.util.SparseArray;
 
 import hmatalonga.greenhub.protocol.CommunicationManager;
 import hmatalonga.greenhub.protocol.RegisterHandler;
-import hmatalonga.greenhub.storage.Device;
+import hmatalonga.greenhub.model.Device;
+import hmatalonga.greenhub.sampling.BatteryEstimator;
 
 /**
  * App class
@@ -22,8 +25,13 @@ public class GreenHub {
     public static Context context = null;
     public static SharedPreferences preferences = null;
 
+    public static MainActivity main = null;
+
+    public static Device device = null;
     public final String serverURL;
-    public Device device = null;
+
+    // flags
+    public boolean networkStartFlag = false;
 
     // GreenHub app Modules
     public CommunicationManager communicationManager = null;
@@ -45,8 +53,7 @@ public class GreenHub {
 
     // Used to map importances to human readable strings for sending samples to
     // the server, and showing them in the process list.
-    private static final SparseArray<String> importanceToString = new SparseArray<String>();
-    {
+    private static final SparseArray<String> importanceToString = new SparseArray<String>(); {
         importanceToString.put(RunningAppProcessInfo.IMPORTANCE_EMPTY, "Not running");
         importanceToString.put(RunningAppProcessInfo.IMPORTANCE_BACKGROUND, "Background process");
         importanceToString.put(RunningAppProcessInfo.IMPORTANCE_SERVICE, "Service");
@@ -79,5 +86,9 @@ public class GreenHub {
 
     public static String getRegisteredUuid() {
         return Constants.REGISTERED_UUID;
+    }
+
+    public static void setMain(MainActivity mainActivity) {
+        main = mainActivity;
     }
 }

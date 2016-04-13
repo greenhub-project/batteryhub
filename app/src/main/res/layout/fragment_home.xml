@@ -4,9 +4,41 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout android:layout_width="match_parent"
-                  android:layout_height="match_parent">
-    </LinearLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/battery_current_value"
+            android:textSize="42sp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Battery"
+            android:textSize="12sp"
+            android:id="@+id/battery_label"
+            android:layout_alignBaseline="@+id/battery_current_value"
+            android:layout_alignBottom="@+id/battery_current_value"
+            android:layout_toRightOf="@+id/battery_current_value"
+            android:layout_toEndOf="@+id/battery_current_value"
+            android:layout_marginLeft="4dp"
+            android:layout_marginStart="4dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="%"
+            android:textSize="14sp"
+            android:id="@+id/battery_percentage_sign"
+            android:layout_marginBottom="12dp"
+            android:layout_above="@+id/battery_label"
+            android:layout_alignLeft="@+id/battery_label"
+            android:layout_alignStart="@+id/battery_label"/>
+    </RelativeLayout>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fabSendSample"

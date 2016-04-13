@@ -6,6 +6,18 @@
     <string name="title_fragment_device">My Device</string>
     <string name="title_fragment_about">About</string>
 
+    <!-- DeviceFragment -->
+    <string name="device_summary_title">Summary</string>
+    <string name="device_summary_id_label">GreenHub ID</string>
+    <string name="device_summary_model_label">Device model</string>
+    <string name="device_summary_os_label">OS version</string>
+    <string name="device_summary_kernel_label">Kernel version</string>
+    <string name="device_summary_battery_label">Battery</string>
+    <string name="device_summary_cpu_label">CPU</string>
+    <string name="device_summary_memory_label">Memory usage</string>
+    <string name="device_summary_network_label">Network</string>
+
+
     <!-- Strings related to Settings -->
 
     <!-- Example settings for Data & Sync -->

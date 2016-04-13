@@ -1,4 +1,4 @@
-package hmatalonga.greenhub.storage;
+package hmatalonga.greenhub.model;
 
 /**
  * Created by hugo on 26-03-2016.
