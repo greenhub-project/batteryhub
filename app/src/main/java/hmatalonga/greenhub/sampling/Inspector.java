@@ -118,10 +118,6 @@ public final class Inspector {
     public static String CALL_STATE_RINGING = "ringing";
 
     // Mobile network constants
-	/*
-	 * we cannot find network types:EVDO_B,LTE,EHRPD,HSPAP from TelephonyManager
-	 * now
-	 */
     public static String NETWORK_TYPE_UNKNOWN = "unknown";
     public static String NETWORK_TYPE_GPRS = "gprs";
     public static String NETWORK_TYPE_EDGE = "edge";
@@ -380,7 +376,7 @@ public final class Inspector {
      * @return
      */
     public static Map<String, String> getSystemDetails() {
-        Map<String, String> results = new HashMap<String, String>();
+        Map<String, String> results = new HashMap<>();
         // TODO: Some of this should be added to registration to identify the
         // device and OS.
         // Cyanogenmod and others may have different kernels etc that affect
@@ -446,6 +442,7 @@ public final class Inspector {
             // Log.v("meminfo", "Load: " + load + " 1:" + toks[1]);
             int inact = Integer.parseInt(toks[1]);
             reader.close();
+
             return new int[] { total - free, free, inact, act };
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -561,6 +558,7 @@ public final class Inspector {
         if (then == null || now == null || then.length < 2 || now.length < 2)
             return 0.0;
         double idleAndCpuDiff = (now[0] + now[1]) - (then[0] + then[1]);
+
         return (now[1] - then[1]) / idleAndCpuDiff;
     }
 
@@ -571,7 +569,7 @@ public final class Inspector {
         List<RunningServiceInfo> runningServices = getRunningServiceInfo(c);
 
         Set<String> packages = new HashSet<>();
-        ArrayList<ProcessInfo> l = new ArrayList<ProcessInfo>();
+        ArrayList<ProcessInfo> l = new ArrayList<>();
 
         if (runningProcs != null) {
             for (RunningAppProcessInfo pi : runningProcs) {
@@ -631,8 +629,9 @@ public final class Inspector {
             }
 
             runningAppInfo = new WeakReference<>(runningProcs);
+
             return runningProcs;
-        }else
+        } else
             return runningAppInfo.get();
     }
 
@@ -819,15 +818,14 @@ public final class Inspector {
         List<android.content.pm.PackageInfo> packagelist = null;
 
         if (packages == null || packages.get() == null || packages.get().size() == 0) {
-            Map<String, PackageInfo> mp = new HashMap<String, PackageInfo>();
+            Map<String, PackageInfo> mp = new HashMap<>();
             PackageManager pm = context.getPackageManager();
             if (pm == null)
                 return null;
 
             try {
                 if (collectSignatures)
-                    packagelist = pm.getInstalledPackages(PackageManager.GET_SIGNATURES
-                            | PackageManager.GET_PERMISSIONS);
+                    packagelist = pm.getInstalledPackages(PackageManager.GET_SIGNATURES | PackageManager.GET_PERMISSIONS);
                 else
                     packagelist = pm.getInstalledPackages(0);
             } catch (Throwable th) {
@@ -841,10 +839,11 @@ public final class Inspector {
                 mp.put(pak.applicationInfo.processName, pak);
             }
 
-            packages = new WeakReference<Map<String, PackageInfo>>(mp);
+            packages = new WeakReference<>(mp);
 
-            if (mp == null || mp.size() == 0)
+            if (mp.size() == 0) // mp == null
                 return null;
+
             return mp;
         } else {
             if (packages == null)
@@ -852,6 +851,7 @@ public final class Inspector {
             Map<String, PackageInfo> p = packages.get();
             if (p == null || p.size() == 0)
                 return null;
+
             return p;
         }
     }
@@ -866,10 +866,10 @@ public final class Inspector {
      */
     public static PackageInfo getPackageInfo(Context context, String processName) {
         Map<String, PackageInfo> mp = getPackages(context);
-        if (mp == null || !mp.containsKey(processName))
+        if ((mp == null) || !mp.containsKey(processName))
             return null;
-        PackageInfo pak = mp.get(processName);
-        return pak;
+
+        return mp.get(processName);
     }
 
     /**
@@ -889,8 +889,9 @@ public final class Inspector {
         if (pm == null)
             return null;
 
-        Map<String, ProcessInfo> result = new HashMap<String, ProcessInfo>();
+        Map<String, ProcessInfo> result = new HashMap<>();
 
+        assert packageMap != null;
         for (Map.Entry<String, PackageInfo> pentry : packageMap.entrySet()) {
             try {
                 String pkg = pentry.getKey();
@@ -932,9 +933,10 @@ public final class Inspector {
                     }
                 }
             } catch (Throwable th) {
-                // Forget about it...
+                th.printStackTrace();
             }
         }
+
         return result;
     }
 
@@ -1131,7 +1133,7 @@ public final class Inspector {
             }
         }
         if (edited)
-            e.commit();
+            e.apply();
 
         // FIXME: These are not used yet.
 		/*
@@ -1157,7 +1159,7 @@ public final class Inspector {
     private static ProcessInfo uninstalledItem(String pname, String pref, SharedPreferences.Editor e) {
         ProcessInfo item = new ProcessInfo();
         item.setpName(pname);
-        List<String> sigs = new LinkedList<String>();
+        List<String> sigs = new LinkedList<>();
         sigs.add("uninstalled");
         item.setAppSignatures(sigs);
         item.setpId(-1);
@@ -1183,6 +1185,7 @@ public final class Inspector {
         // Remember to remove it so we do not send
         // multiple uninstall events
         e.remove(pref);
+
         return item;
     }
 //
@@ -1206,7 +1209,7 @@ public final class Inspector {
         }
 
         try {
-            tmp = br.readLine();
+            tmp = (br != null) ? br.readLine() : null;
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -1216,17 +1219,17 @@ public final class Inspector {
         sMemory.append(tmp);
 
         try {
-            tmp = br.readLine();
-            br.close();
+            tmp = (br != null) ? br.readLine() : null;
+            if (br != null)
+                br.close();
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
         sMemory.append("\n").append(tmp).append("\n");
-        String result = "Memery Status:\n" + sMemory;
-        return result;
 
+        return  "Memory Status:\n" + sMemory;
     }
 
     /*
@@ -1248,8 +1251,8 @@ public final class Inspector {
         }
 
         try {
-            tmp = br.readLine();
-            tmp = br.readLine();
+            tmp = (br != null) ? br.readLine() : null;
+            tmp = (br != null) ? br.readLine() : null;
             if (tmp != null) {
                 // split by whitespace and take 2nd element, so that in:
                 // MemoryFree: x kb
@@ -1258,7 +1261,8 @@ public final class Inspector {
                 if (arr.length > 1)
                     tmp = arr[1];
             }
-            br.close();
+            if (br != null)
+                br.close();
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -1278,6 +1282,7 @@ public final class Inspector {
 		 * "mins:" + seconds + "sec.\n"; return tmp;
 		 */
         Log.v("uptime", String.valueOf(uptime));
+
         return uptime / 1000.0;
     }
 
@@ -1320,6 +1325,7 @@ public final class Inspector {
         NetworkInfo i = cm.getActiveNetworkInfo();
         if (i == null)
             return TYPE_UNKNOWN;
+
         return i.getTypeName();
     }
 
@@ -1329,17 +1335,16 @@ public final class Inspector {
      * @return true if the Internet is reachable.
      */
     public static boolean networkAvailable(Context c) {
-        String network = getNetworkStatus(c);
-        return network.equals(NETWORKSTATUS_CONNECTED);
+        return getNetworkStatus(c).equals(NETWORKSTATUS_CONNECTED);
     }
 
     /* Get current WiFi signal Strength */
     public static int getWifiSignalStrength(Context context) {
         WifiManager myWifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         WifiInfo myWifiInfo = myWifiManager.getConnectionInfo();
-        int wifiRssi = myWifiInfo.getRssi();
         // Log.v("WifiRssi", "Rssi:" + wifiRssi);
-        return wifiRssi;
+
+        return myWifiInfo.getRssi();
 
     }
 
@@ -1360,25 +1365,23 @@ public final class Inspector {
     public static int getWifiLinkSpeed(Context context) {
         WifiManager myWifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         WifiInfo myWifiInfo = myWifiManager.getConnectionInfo();
-        int linkSpeed = myWifiInfo.getLinkSpeed();
-
         // Log.v("linkSpeed", "Link speed:" + linkSpeed);
-        return linkSpeed;
+
+        return myWifiInfo.getLinkSpeed();
     }
 
     /* Check whether WiFi is enabled */
     public static boolean getWifiEnabled(Context context) {
-        boolean wifiEnabled = false;
-
         WifiManager myWifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-        wifiEnabled = myWifiManager.isWifiEnabled();
         // Log.v("WifiEnabled", "Wifi is enabled:" + wifiEnabled);
-        return wifiEnabled;
+
+        return myWifiManager.isWifiEnabled();
     }
 
     /* Get Wifi state: */
     public static String getWifiState(Context context) {
-        WifiManager myWifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        WifiManager myWifiManager;
+        myWifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         int wifiState = myWifiManager.getWifiState();
         switch (wifiState) {
             case WifiManager.WIFI_STATE_DISABLED:
@@ -1396,6 +1399,7 @@ public final class Inspector {
 
     public static WifiInfo getWifiInfo(Context context) {
         WifiManager myWifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+
         return myWifiManager.getConnectionInfo();
     }
 
@@ -1995,8 +1999,9 @@ public final class Inspector {
 
         // Construct sample and return it in the end
         Sample mySample = new Sample();
-        SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(context);
-        String uuId = p.getString(GreenHub.getRegisteredUuid(), null);
+        // SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(context);
+        // p.getString(GreenHub.getRegisteredUuid(), null);
+        String uuId = getUuid(context);
         mySample.setUuId(uuId);
         mySample.setTriggeredBy(action);
         // required always
@@ -2247,7 +2252,7 @@ public final class Inspector {
      * @return a List<Feature> populated with extra items to collect outside of the protocol spec.
      */
     private static List<Feature> getExtras(Context context) {
-        LinkedList<Feature> res = new LinkedList<Feature>();
+        LinkedList<Feature> res = new LinkedList<>();
         res.add(getVmVersion(context));
         return res;
     }
@@ -2276,7 +2281,7 @@ public final class Inspector {
     }
 
     public static List<String> getSignatures(PackageInfo pak) {
-        List<String> sigList = new LinkedList<String>();
+        List<String> sigList = new LinkedList<>();
         String[] pmInfos = pak.requestedPermissions;
         if (pmInfos != null) {
             byte[] bytes = getPermissionBytes(pmInfos);

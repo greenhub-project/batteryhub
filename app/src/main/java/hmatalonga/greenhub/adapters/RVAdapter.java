@@ -13,15 +13,16 @@ import hmatalonga.greenhub.R;
 import hmatalonga.greenhub.model.DeviceResourceCard;
 
 /**
+ * RecyclerView Adapter Class
  * Created by hugo on 05-04-2016.
  */
 public class RVAdapter extends RecyclerView.Adapter<RVAdapter.DashboardViewHolder> {
 
     public static class DashboardViewHolder extends RecyclerView.ViewHolder {
 
-        CardView cv;
-        TextView title;
-        TextView value;
+        public CardView cv;
+        public TextView title;
+        public TextView value;
 
         public DashboardViewHolder(View itemView) {
             super(itemView);
@@ -31,10 +32,10 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.DashboardViewHolde
         }
     }
 
-    List<DeviceResourceCard> deviceResourceCards;
+    private List<DeviceResourceCard> mDeviceResourceCards;
 
     public RVAdapter(List<DeviceResourceCard> deviceResourceCards){
-        this.deviceResourceCards = deviceResourceCards;
+        this.mDeviceResourceCards = deviceResourceCards;
     }
 
     @Override
@@ -44,18 +45,19 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.DashboardViewHolde
 
     @Override
     public DashboardViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.dashboard_item, viewGroup, false);
+        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.dashboard_item,
+                viewGroup, false);
         return new DashboardViewHolder(v);
     }
 
     @Override
     public void onBindViewHolder(DashboardViewHolder personViewHolder, int i) {
-        personViewHolder.title.setText(deviceResourceCards.get(i).title);
-        personViewHolder.value.setText(deviceResourceCards.get(i).value);
+        personViewHolder.title.setText(mDeviceResourceCards.get(i).title);
+        personViewHolder.value.setText(mDeviceResourceCards.get(i).value);
     }
 
     @Override
     public int getItemCount() {
-        return deviceResourceCards.size();
+        return mDeviceResourceCards.size();
     }
 }

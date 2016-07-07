@@ -1,11 +1,15 @@
 package hmatalonga.greenhub.database;
 
+import java.util.Arrays;
 import java.util.List;
+
+import hmatalonga.greenhub.utils.StringHelper;
 
 /**
  * Created by hugo on 09-04-2016.
  */
 public class ProcessInfo {
+    private static final int fieldNum = 9;
     private int pId; // optional
     private String pName; // optional
     private String applicationLabel; // optional
@@ -40,6 +44,10 @@ public class ProcessInfo {
 
     public void setApplicationLabel(String applicationLabel) {
         this.applicationLabel = applicationLabel;
+    }
+
+    public boolean isSetApplicationLabel() {
+        return this.applicationLabel != null;
     }
 
     public boolean isSystemApp() {
@@ -88,5 +96,43 @@ public class ProcessInfo {
 
     public void setInstallationPkg(String installationPkg) {
         this.installationPkg = installationPkg;
+    }
+
+    private List<String> parseAppSignatures(String s) {
+        List<String> sig = null;
+
+        if (!s.equals("null")) {
+            s = s.substring(1, s.length() - 1);
+            String[] split = s.split(",");
+            sig = Arrays.asList(split);
+        }
+
+        return sig;
+    }
+
+    public void parseString(String s) {
+        String[] values = StringHelper.trimArray(s.split(";"));
+        if (values.length == fieldNum) {
+            try {
+                setpId(Integer.parseInt(values[0]));
+                setpName(values[1]);
+                setApplicationLabel(values[2]);
+                setSystemApp(Boolean.parseBoolean(values[3]));
+                setImportance(values[4]);
+                setVersionName(values[5]);
+                setVersionCode(Integer.parseInt(values[6]));
+                setAppSignatures(parseAppSignatures(values[7])); // List
+                setInstallationPkg(values[8]);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public String toString() {
+        return String.valueOf(pId) + ";" + pName + ";" + applicationLabel + ";" +
+                String.valueOf(isSystemApp) + ";" + importance + ";" + versionName + ";" +
+                String.valueOf(versionCode) + ";" + appSignatures + ";" + installationPkg;
     }
 }

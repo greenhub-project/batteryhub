@@ -1,11 +1,15 @@
 package hmatalonga.greenhub.database;
 
+import com.google.gson.Gson;
+
 import java.util.List;
 
 /**
  * Created by hugo on 09-04-2016.
  */
 public class Sample {
+    private static Gson gson = new Gson();
+
     private String uuId; // required
     private double timestamp; // optional
     private List<ProcessInfo> piList; // optional
@@ -49,6 +53,10 @@ public class Sample {
 
     public List<ProcessInfo> getPiList() {
         return piList;
+    }
+
+    public String getPiListJSON() {
+        return gson.toJson(piList);
     }
 
     public void setPiList(List<ProcessInfo> piList) {

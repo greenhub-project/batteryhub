@@ -10,32 +10,22 @@ import hmatalonga.greenhub.fragments.DeviceFragment;
 import hmatalonga.greenhub.fragments.HomeFragment;
 
 /**
+ * Adapter that provides fragments for menus
  * Created by hugo on 27-03-2016.
  */
 public class PagerAdapter extends FragmentStatePagerAdapter {
-    private GreenHub app = null;
     private int mNumOfTabs;
 
-    private HomeFragment homeFragment;
-    private DeviceFragment deviceFragment;
-    private AboutFragment aboutFragment;
-
-    public PagerAdapter(FragmentManager fm, GreenHub app, int NumOfTabs) {
+    public PagerAdapter(FragmentManager fm, int numOfTabs) {
         super(fm);
-        this.app = app;
-        this.mNumOfTabs = NumOfTabs;
-
-        // Load content for fragments if necessary
-        // like process info and memory
+        this.mNumOfTabs = numOfTabs;
     }
 
     @Override
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                homeFragment = new HomeFragment();
-                homeFragment.setApp(app);
-                return homeFragment;
+                return new HomeFragment();
             case 1:
                 return new DeviceFragment();
             case 2:

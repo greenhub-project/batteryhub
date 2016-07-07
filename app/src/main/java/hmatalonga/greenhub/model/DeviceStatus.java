@@ -9,7 +9,6 @@ public class DeviceStatus {
 
     public DeviceStatus() {}
 
-
     public String getGreenHubID() {
         return greenHubID;
     }

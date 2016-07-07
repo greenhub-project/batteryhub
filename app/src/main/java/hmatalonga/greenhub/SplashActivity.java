@@ -8,14 +8,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
+/**
+ * Entry Activity with a splash screen logo
+ */
 public class SplashActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
+        // Starts Main Activity and loads its contents
+        startActivity(new Intent(this, MainActivity.class));
+        // Finishes the current Splash Activity
         finish();
     }
 

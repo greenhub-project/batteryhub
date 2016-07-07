@@ -1,7 +1,9 @@
 <resources>
     <string name="app_name">GreenHub</string>
+    <string name="action_summary">Summary</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_settings">Settings</string>
+    <string name="title_activity_process">Process List</string>
     <string name="title_fragment_home">GreenHub</string>
     <string name="title_fragment_device">My Device</string>
     <string name="title_fragment_about">About</string>
@@ -17,6 +19,28 @@
     <string name="device_summary_memory_label">Memory usage</string>
     <string name="device_summary_network_label">Network</string>
 
+    <!-- AboutFragment -->
+    <string name="about_general_text">GreenHub is a research project of the University of Beira
+        Interior.</string>
+    <string name="about_data_text">GreenHub collects and reports generic usage statistics about
+    your phone that allow it to do its job; this process involves absolutely no personally
+    identifying information.</string>
+
+    <!-- Process List -->
+    <string name="expected">Expected improvement:</string>
+    <string name="killappname">Kill App Name</string>
+    <string name="appname">App Name</string>
+    <string name="priority">Priority:</string>
+    <string name="priorityDefault">Not running</string>
+    <string name="prioritynotrunning">Not running</string>
+    <string name="priorityforeground">Foreground App</string>
+    <string name="prioritybackground">Background App</string>
+    <string name="priorityservice">Service</string>
+    <string name="priorityperceptible">Perceptible App</string>
+    <string name="priorityvisible">Visible App</string>
+    <string name="prioritysuggestion">Suggestion</string>
+
+    <string name="wifi_only_key">wifionly</string>
 
     <!-- Strings related to Settings -->
 
@@ -52,4 +76,7 @@
     </string-array>
 
     <string name="title_activity_splash">SplashActivity</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

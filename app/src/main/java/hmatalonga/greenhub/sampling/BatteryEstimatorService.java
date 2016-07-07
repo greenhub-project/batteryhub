@@ -1,23 +1,20 @@
 package hmatalonga.greenhub.sampling;
 
 import android.app.IntentService;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.PowerManager;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import java.util.Date;
 
 import hmatalonga.greenhub.Constants;
-import hmatalonga.greenhub.MainActivity;
-import hmatalonga.greenhub.R;
 import hmatalonga.greenhub.database.Sample;
-import hmatalonga.greenhub.storage.GreenHubDB;
+import hmatalonga.greenhub.fragments.HomeFragment;
+import hmatalonga.greenhub.storage.GreenHubDb;
+import hmatalonga.greenhub.utils.Notifier;
 
 /**
  * Created by hugo on 13-04-2016.
@@ -65,7 +62,7 @@ public class BatteryEstimatorService extends IntentService {
                 SharedPreferences p = context.getSharedPreferences("SystemBootTime", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = p.edit();
                 editor.putLong("bootTime", new Date().getTime());
-                editor.commit();
+                editor.apply();
                 // onBoot(context);
             }
 
@@ -83,6 +80,7 @@ public class BatteryEstimatorService extends IntentService {
                 try {
                     unregisterReceiver(estimator);
                 } catch (IllegalArgumentException e) {
+                    e.printStackTrace();
                 }
                 registerReceiver(estimator, intentFilter);
             }
@@ -110,7 +108,7 @@ public class BatteryEstimatorService extends IntentService {
 
         // Make sure our new sample doesn't have a zero value as its current battery level
         if (Inspector.getCurrentBatteryLevel() > 0) {
-            GreenHubDB sampleDB = GreenHubDB.getInstance(context);
+            GreenHubDb sampleDB = GreenHubDb.getInstance(context);
             Sample lastSample = sampleDB.getLastSample(context);
 
             if (lastSample != null) {
@@ -120,7 +118,7 @@ public class BatteryEstimatorService extends IntentService {
                 Inspector.setLastBatteryLevel(Inspector.getCurrentBatteryLevel());
                 // take a sample and store it in the database
                 this.getSample(context, intent, lastSample, sampleDB);
-                notify(context);
+                Notifier.toOpenApp(context);
             }
 
 			/*
@@ -138,9 +136,11 @@ public class BatteryEstimatorService extends IntentService {
 				 */
                 Log.i(TAG, "The battery percentage changed. About to take a new sample "
                         + "(currentBatteryLevel=" + Inspector.getCurrentBatteryLevel() + ", lastBatteryLevel=" + Inspector.getLastBatteryLevel(context)+ ")");
+
                 // take a sample and store it in the database
                 this.getSample(context, intent, lastSample, sampleDB);
-                notify(context);
+
+                Notifier.toOpenApp(context);
             } else {
                 if (Constants.DEBUG)
                     Log.d(TAG, "NO battery percentage change. currentBatteryLevel=" + Inspector.getCurrentBatteryLevel());
@@ -158,7 +158,7 @@ public class BatteryEstimatorService extends IntentService {
      * @param intent from onReceive
      * @return the newly recorded Sample
      */
-    private void getSample(Context context, Intent intent, Sample lastSample, GreenHubDB sampleDB) {
+    private Sample getSample(Context context, Intent intent, Sample lastSample, GreenHubDb sampleDB) {
         // String action = intent.getStringExtra("OriginalAction");
         // Log.i("SamplerService.getSample()", "Original intent: " +action);
         String lastBatteryState = lastSample != null ? lastSample.getBatteryState() : "Unknown";
@@ -172,42 +172,16 @@ public class BatteryEstimatorService extends IntentService {
 
         // Write to database
         // But only after first real numbers
-        if (!s.getBatteryState().equals("Unknown") && s.getBatteryLevel() >= 0) {
+        if (s != null && !s.getBatteryState().equals("Unknown") && s.getBatteryLevel() >= 0) {
             // store the sample into the database
             long id = sampleDB.putSample(s);
             Log.i(TAG, "Took sample " + id + " for " + intent.getAction());
             //FlurryAgent.logEvent(intent.getAction());
             //  Log.d(TAG, "current battery level (just before quitting getSample() ): " + SamplingLibrary.getCurrentBatteryLevel());
         }
-        // return s;
-    }
 
-    private void notify(Context context){
-        long now = System.currentTimeMillis();
-        long lastNotify = BatteryEstimator.getInstance().getLastNotify();
+        // Send sample ??
 
-        // Do not notify if it is less than 2 days from last notification
-        if (lastNotify + Constants.FRESHNESS_TIMEOUT_QUICKHOGS > now)
-            return;
-
-        int samples = GreenHubDB.getInstance(context).countSamples();
-        if (samples >= BatteryEstimator.MAX_SAMPLES){
-            BatteryEstimator.getInstance().setLastNotify(now);
-            PendingIntent launchCarat = PendingIntent.getActivity(context, 0,
-                    new Intent(context, MainActivity.class), 0);
-
-            NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
-                    context)
-                    .setSmallIcon(R.drawable.ic_information_white_24dp)
-                    .setContentTitle("Please open Carat")
-                    .setContentText("Please open Carat. Samples to send:")
-                    .setNumber(samples);
-            mBuilder.setContentIntent(launchCarat);
-            //mBuilder.setSound(null);
-            mBuilder.setAutoCancel(true);
-            NotificationManager mNotificationManager = (NotificationManager) context
-                    .getSystemService(Context.NOTIFICATION_SERVICE);
-            mNotificationManager.notify(1, mBuilder.build());
-        }
+        return s;
     }
 }

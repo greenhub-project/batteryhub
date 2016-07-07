@@ -1,7 +1,7 @@
 package hmatalonga.greenhub;
 
+import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -14,44 +14,47 @@ import android.view.MenuItem;
 import android.view.View;
 
 import hmatalonga.greenhub.adapters.PagerAdapter;
-import hmatalonga.greenhub.sampling.BatteryEstimator;
+import hmatalonga.greenhub.fragments.HomeFragment;
+import hmatalonga.greenhub.sampling.Inspector;
 import hmatalonga.greenhub.tasks.RegisterDeviceTask;
 import hmatalonga.greenhub.utils.FontManager;
 
 public class MainActivity extends AppCompatActivity {
-    private static GreenHub app = null;
-    private static BatteryEstimator estimator = null;
+    private static GreenHub sApp = null;
+    private ViewPager mViewPager;
+    private ActionBar mActionBar;
 
-    private ViewPager viewPager;
-    private ActionBar actionBar;
-    private int currentToolbarTitle = R.string.app_name;
+    private int mCurrentToolbarTitle = R.string.app_name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Set the Main Activity instance on the App class
         GreenHub.setMain(this);
 
         // Configure View and Layout
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        actionBar = getSupportActionBar();
-        assert actionBar != null;
-        actionBar.setTitle(currentToolbarTitle);
+        mActionBar = getSupportActionBar();
+        assert mActionBar != null;
+        mActionBar.setTitle(mCurrentToolbarTitle);
 
         // Initialize Application instance
-        app = new GreenHub(getApplicationContext());
-        app.initModules();
+        sApp = new GreenHub(getApplicationContext());
+        sApp.initModules();
 
         // TODO: Create default xml preferences file
+        // TODO: Create a chart menu with temp, voltage and battery level
         // PreferenceManager.setDefaultValues();
 
         // Initialize fragments content
+        HomeFragment.setApp(sApp);
 
-        startReceivers();
-
-        // Run tasks
-        new RegisterDeviceTask().execute(app);
+        // Run tasks --
+        HomeFragment.setStatus("Registering Device...");
+        // Register device on the web server
+        new RegisterDeviceTask().execute(sApp);
 
         setupTabs();
     }
@@ -76,35 +79,30 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
             return true;
         }
+        else if (id == R.id.action_summary) {
+            Intent intent = new Intent(Intent.ACTION_POWER_USAGE_SUMMARY);
+            startActivity(intent);
+            return true;
+        }
 
         return super.onOptionsItemSelected(item);
     }
 
-    public void startReceivers() {
-        new Thread() {
-            private IntentFilter intentFilter;
+    @Override
+    protected void onResume() {
+        sApp.startReceivers();
+        // update status
+        // refresh UI
+        // Toast.makeText(getApplicationContext(), "App resumed", Toast.LENGTH_LONG).show();
+        super.onResume();
+    }
 
-            public void run() {
-                // Let sampling happen on battery change
-                intentFilter = new IntentFilter();
-                intentFilter.addAction(Intent.ACTION_BATTERY_CHANGED);
-
-                estimator = BatteryEstimator.getInstance();
-                try {
-                    unregisterReceiver(estimator);
-                } catch (IllegalArgumentException e) {
-                    e.printStackTrace();
-                }
-                registerReceiver(estimator, intentFilter);
-
-                // for the debugging purpose, let's comment out these actions
-                // TODO: re-enable
-                // intentFilter.addAction(Intent.ACTION_SCREEN_ON);
-                // registerReceiver(sampler, intentFilter);
-                // intentFilter.addAction(Intent.ACTION_SCREEN_OFF);
-                // registerReceiver(sampler, intentFilter);
-            }
-        }.start();
+    @Override
+    protected void onPause() {
+        sApp.stopReceivers();
+        Inspector.resetRunningProcessInfo();
+        // Toast.makeText(getApplicationContext(), "App paused", Toast.LENGTH_LONG).show();
+        super.onPause();
     }
 
     private void setupTabs() {
@@ -116,33 +114,33 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.ic_information_white_24dp));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
-        final PagerAdapter adapter = new PagerAdapter(getSupportFragmentManager(), app,
+        final PagerAdapter adapter = new PagerAdapter(getSupportFragmentManager(),
                 tabLayout.getTabCount());
 
-        viewPager = (ViewPager) findViewById(R.id.pager);
-        assert viewPager != null;
+        mViewPager = (ViewPager) findViewById(R.id.pager);
+        assert mViewPager != null;
 
         try {
-            viewPager.setAdapter(adapter);
-            viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+            mViewPager.setAdapter(adapter);
+            mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
             tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
                 @Override
                 public void onTabSelected(TabLayout.Tab tab) {
                     switch (tab.getPosition()) {
                         case 0:
-                            currentToolbarTitle = R.string.title_fragment_home;
+                            mCurrentToolbarTitle = R.string.title_fragment_home;
                             break;
                         case 1:
-                            currentToolbarTitle = R.string.title_fragment_device;
+                            mCurrentToolbarTitle = R.string.title_fragment_device;
                             break;
                         case 2:
-                            currentToolbarTitle = R.string.title_fragment_about;
+                            mCurrentToolbarTitle = R.string.title_fragment_about;
                             break;
                         default:
-                            currentToolbarTitle = R.string.app_name;
+                            mCurrentToolbarTitle = R.string.app_name;
                     }
-                    viewPager.setCurrentItem(tab.getPosition());
-                    actionBar.setTitle(currentToolbarTitle);
+                    mViewPager.setCurrentItem(tab.getPosition());
+                    mActionBar.setTitle(mCurrentToolbarTitle);
                 }
 
                 @Override
@@ -159,6 +157,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     *
+     * @param view
+     */
     private void setupFont(View view) {
         Typeface iconFont = FontManager.getTypeface(getApplicationContext(), FontManager.FONTAWESOME);
         FontManager.markAsIconContainer(view, iconFont);

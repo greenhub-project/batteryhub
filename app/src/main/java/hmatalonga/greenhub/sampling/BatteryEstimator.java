@@ -10,15 +10,19 @@ import android.location.LocationManager;
 import android.os.BatteryManager;
 import android.os.Bundle;
 import android.support.v4.content.WakefulBroadcastReceiver;
+import android.util.Log;
 
 import java.util.List;
 
 import hmatalonga.greenhub.Constants;
+import hmatalonga.greenhub.GreenHub;
 
 /**
+ * Provides current Mobile status
  * Created by hugo on 09-04-2016.
  */
 public class BatteryEstimator extends WakefulBroadcastReceiver implements LocationListener {
+    private static final String TAG = "Estimator";
     public static final int MAX_SAMPLES = 250;
 
     private static BatteryEstimator instance = null;
@@ -60,15 +64,20 @@ public class BatteryEstimator extends WakefulBroadcastReceiver implements Locati
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
-        scale = intent.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
-        health = intent.getIntExtra(BatteryManager.EXTRA_HEALTH, 0);
-        plugged = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, 0);
-        present = intent.getExtras().getBoolean(BatteryManager.EXTRA_PRESENT);
-        status = intent.getIntExtra(BatteryManager.EXTRA_STATUS, 0);
-        technology = intent.getExtras().getString(BatteryManager.EXTRA_TECHNOLOGY);
-        temperature = (float) (intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, 0) / 10);
-        voltage = (float) (intent.getIntExtra(BatteryManager.EXTRA_VOLTAGE, 0) / 1000);
+        try {
+            level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
+            scale = intent.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
+            health = intent.getIntExtra(BatteryManager.EXTRA_HEALTH, 0);
+            plugged = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, 0);
+            present = intent.getExtras().getBoolean(BatteryManager.EXTRA_PRESENT);
+            status = intent.getIntExtra(BatteryManager.EXTRA_STATUS, 0);
+            technology = intent.getExtras().getString(BatteryManager.EXTRA_TECHNOLOGY);
+            temperature = (float) (intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, 0) / 10);
+            voltage = (float) (intent.getIntExtra(BatteryManager.EXTRA_VOLTAGE, 0) / 1000);
+        }
+        catch (RuntimeException e) {
+            e.printStackTrace();
+        }
 
         /* On some phones, scale is always 0. */
         if (scale == 0)
@@ -120,6 +129,8 @@ public class BatteryEstimator extends WakefulBroadcastReceiver implements Locati
         Intent batteryStatus = context.registerReceiver(null, ifilter);
         assert batteryStatus != null;
 
+        level = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
+        scale = batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
         health = batteryStatus.getIntExtra(BatteryManager.EXTRA_HEALTH, 0);
         plugged = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, 0);
         present = batteryStatus.getExtras().getBoolean(BatteryManager.EXTRA_PRESENT);
@@ -127,15 +138,53 @@ public class BatteryEstimator extends WakefulBroadcastReceiver implements Locati
         technology = batteryStatus.getExtras().getString(BatteryManager.EXTRA_TECHNOLOGY);
         temperature = (float) (batteryStatus.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, 0) / 10);
         voltage = (float) (batteryStatus.getIntExtra(BatteryManager.EXTRA_VOLTAGE, 0) / 1000);
+
+        /* On some phones, scale is always 0. */
+        if (scale == 0)
+            scale = 100;
+        if (level > 0) {
+            Inspector.setCurrentBatteryLevel(level, scale);
+
+            if (this.context == null) {
+                this.context = context;
+                requestLocationUpdates();
+            }
+
+            // Update last known location...
+            if (lastKnownLocation == null)
+                lastKnownLocation = Inspector.getLastKnownLocation(context);
+
+            Intent service = new Intent(context, BatteryEstimatorService.class);
+            service.putExtra("distance", distance);
+            startWakefulService(context, service);
+        }
     }
 
-    public double currentBatteryLevel(Context context) {
-        IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
-        Intent batteryStatus = context.registerReceiver(null, ifilter);
-        assert batteryStatus != null;
+    public double currentBatteryLevel() {
+        Log.d(TAG, "currentBatteryLevel() called.");
 
-        level = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
-        scale = batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
+        Thread t = new Thread() {
+            public void run() {
+                if (context == null)
+                    context = GreenHub.getContext();
+
+                IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+                Intent batteryStatus = context.registerReceiver(null, ifilter);
+                assert batteryStatus != null;
+
+                level = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
+                scale = batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
+            }
+        };
+        t.start();
+
+        // Force thread to finish before calculating battery level
+        // Otherwise it can return 0
+        try {
+            t.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         double result = (getLevel() / (float) getScale()) * 100;
         return Math.round(result * 100.0) / 100.0;

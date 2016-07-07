@@ -1,9 +1,12 @@
 package hmatalonga.greenhub.database;
 
+import hmatalonga.greenhub.utils.StringHelper;
+
 /**
  * Created by hugo on 09-04-2016.
  */
 public class NetworkDetails {
+    private static final int fieldNum = 8;
     private String networkType; // optional
     private String mobileNetworkType; // optional
     private String mobileDataStatus; // optional
@@ -75,5 +78,30 @@ public class NetworkDetails {
 
     public void setWifiLinkSpeed(int wifiLinkSpeed) {
         this.wifiLinkSpeed = wifiLinkSpeed;
+    }
+
+    public void parseString(String s) {
+        String[] values = StringHelper.trimArray(s.split(";"));
+        if (values.length == fieldNum) {
+            try {
+                setNetworkType(values[0]);
+                setMobileNetworkType(values[1]);
+                setMobileDataStatus(values[2]);
+                setMobileDataActivity(values[3]);
+                setRoamingEnabled(Boolean.parseBoolean(values[4]));
+                setWifiStatus(values[5]);
+                setWifiSignalStrength(Integer.parseInt(values[5]));
+                setWifiLinkSpeed(Integer.parseInt(values[6]));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public String toString() {
+        return networkType + ";" + mobileNetworkType + ";"  + mobileDataActivity + ";" +
+                String.valueOf(roamingEnabled) + ";" + wifiStatus + ";" +
+                String.valueOf(wifiSignalStrength) + ";" + String.valueOf(wifiLinkSpeed);
     }
 }

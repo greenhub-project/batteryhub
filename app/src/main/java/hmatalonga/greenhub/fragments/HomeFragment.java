@@ -3,76 +3,161 @@ package hmatalonga.greenhub.fragments;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
+import java.util.ArrayList;
+import java.util.List;
 
 import hmatalonga.greenhub.GreenHub;
 import hmatalonga.greenhub.R;
+import hmatalonga.greenhub.adapters.RVAdapter;
 import hmatalonga.greenhub.model.DeviceResourceCard;
+import hmatalonga.greenhub.protocol.SampleSender;
 import hmatalonga.greenhub.sampling.BatteryEstimator;
-import hmatalonga.greenhub.sampling.Inspector;
-import hmatalonga.greenhub.utils.NetworkWatcher;
 
 /**
+ * Home Fragment
  * Created by hugo on 27-03-2016.
  */
 public class HomeFragment extends Fragment {
-    private static GreenHub app;
-    private Context context;
-    private BatteryEstimator estimator;
+    private static TextView sStatusText = null;
+    private static String status = "";
+    private static GreenHub sApp;
+    private Context mContext;
+    private BatteryEstimator mEstimator;
+    // private String mJson;
+    private List<DeviceResourceCard> mDeviceResourceCards;
+    private RecyclerView mRecyclerView;
+    private TextView mBatteryText;
+    private ProgressBar mProgressBar;
+    private String mValue;
+    private Thread mLocalThread;
+    private int mCurrentBatteryValue;
+
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_home, container, false);
+    public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
+        final View view = inflater.inflate(R.layout.fragment_home, container, false);
 
-        estimator = new BatteryEstimator();
-        context = GreenHub.getContext();
+        mEstimator = BatteryEstimator.getInstance();
+        mContext = GreenHub.getContext();
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.rv);
+        assert mRecyclerView != null;
 
         FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fabSendSample);
         assert fab != null;
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                assert app != null;
-//                if (NetworkWatcher.hasInternet(context))
-//                    app.device = app.registerHandler.registerClient();
+                if (sApp != null)
+                    sApp.communicationManager.sendSamples();
             }
         });
 
-//        try {
-//            // Checking for connection on startup of home tab
-//            if (!app.networkStartFlag) {
-//                if (!NetworkWatcher.hasInternet(context))
-//                    Snackbar.make(view, "No connection", Snackbar.LENGTH_LONG)
-//                            .setAction("Action", null).show();
-//                app.networkStartFlag = !app.networkStartFlag;
-//            }
-//        }
-//        catch (NullPointerException e) {
-//            e.printStackTrace();
-//        }
+        GridLayoutManager layout = new GridLayoutManager(mContext, 1, GridLayoutManager.VERTICAL, false);
+        mRecyclerView.setLayoutManager(layout);
+        mRecyclerView.setHasFixedSize(true);
 
-        // loadSummary(context, view);
+        sStatusText = (TextView) view.findViewById(R.id.status);
+        mBatteryText = (TextView) view.findViewById(R.id.batteryCurrentValue);
+        mProgressBar = (ProgressBar) view.findViewById(R.id.batteryProgressbar);
+
+        populateView();
 
         return view;
     }
 
-    public GreenHub getApp() {
-        return app;
+    @Override
+    public void onResume() {
+        mBatteryText.setText(String.valueOf(mCurrentBatteryValue));
+        mProgressBar.setProgress(mCurrentBatteryValue);
+        sStatusText.setText(status);
+        super.onResume();
     }
 
-    public void setApp(GreenHub app) {
-        this.app = app;
+    /**
+     *
+     * @return
+     */
+    public static GreenHub getApp() {
+        return sApp;
     }
 
-    public void loadSummary(Context context, View view) {
-        TextView textView = (TextView) view.findViewById(R.id.battery_current_value);
-        textView.setText(String.valueOf((int)estimator.currentBatteryLevel(context)));
+    /**
+     *
+     * @param app
+     */
+    public static void setApp(GreenHub app) {
+        HomeFragment.sApp = app;
+    }
+
+    public static void setStatus(String message) {
+        status = message;
+        if (sStatusText != null)
+            sStatusText.setText(message);
+    }
+
+    /**
+     * Set all values for layout view elements
+     */
+    private void populateView() {
+        mCurrentBatteryValue = (int) mEstimator.currentBatteryLevel();
+        mBatteryText.setText(String.valueOf(mCurrentBatteryValue));
+        mProgressBar.setProgress(mCurrentBatteryValue);
+        sStatusText.setText(status);
+
+        loadData(mContext, mEstimator);
+        setAdapter();
+    }
+
+    /**
+     * Creates an array to feed data to the recyclerView
+     * @param context Application context
+     * @param estimator Provider of mobile status
+     */
+    private void loadData(final Context context, final BatteryEstimator estimator) {
+        // FIXME: Consider another way to load device data...
+        mLocalThread = new Thread(new Runnable() {
+            public void run() {
+                estimator.getCurrentStatus(context);
+                mDeviceResourceCards = new ArrayList<>();
+                // Temperature
+                mValue = String.valueOf(estimator.getTemperature() + " ºC");
+                mDeviceResourceCards.add(new DeviceResourceCard("Temperature", mValue));
+                // Voltage
+                mValue = String.valueOf(estimator.getVoltage() + " V");
+                mDeviceResourceCards.add(new DeviceResourceCard("Voltage", mValue));
+                // Health
+                mDeviceResourceCards.add(new DeviceResourceCard("Health", estimator.getHealthStatus()));
+                // Memory
+//                double memUsed = Math.round((Inspector.readMemory(context)[1] / 1024) * 100.0) / 100.0;
+//                mValue = String.valueOf(memUsed) + " MB";
+//                mDeviceResourceCards.add(new DeviceResourceCard(getString(R.string.device_summary_memory_label), mValue));
+            }
+        });
+
+        mLocalThread.start();
+    }
+
+    /**
+     *
+     */
+    private void setAdapter(){
+        try {
+            mLocalThread.join();
+            RVAdapter adapter = new RVAdapter(mDeviceResourceCards);
+            mRecyclerView.setAdapter(adapter);
+        }
+        catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

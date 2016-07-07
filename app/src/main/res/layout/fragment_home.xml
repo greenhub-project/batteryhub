@@ -9,35 +9,86 @@
         android:layout_height="match_parent"
         android:padding="16dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/battery_current_value"
-            android:textSize="42sp"/>
+        <ProgressBar
+            android:id="@+id/batteryProgressbar"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:indeterminate="false"
+            android:progress="50"
+            android:max="100"
+            android:secondaryProgress="100"
+            android:progressDrawable="@drawable/circular"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Battery"
+            android:id="@+id/batteryCurrentValue"
+            android:textSize="28sp"
+            android:text="50"
+            android:layout_marginLeft="38dp"
+            android:layout_marginStart="38dp"
+            android:layout_marginBottom="42dp"
+            android:layout_alignBottom="@+id/batteryProgressbar"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Time left"
             android:textSize="12sp"
-            android:id="@+id/battery_label"
-            android:layout_alignBaseline="@+id/battery_current_value"
-            android:layout_alignBottom="@+id/battery_current_value"
-            android:layout_toRightOf="@+id/battery_current_value"
-            android:layout_toEndOf="@+id/battery_current_value"
-            android:layout_marginLeft="4dp"
-            android:layout_marginStart="4dp"/>
+            android:id="@+id/batteryLabel"
+            android:layout_above="@+id/batteryCurrentValue"
+            android:layout_toRightOf="@+id/batteryProgressbar"
+            android:layout_toEndOf="@+id/batteryProgressbar" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Not Available"
+            android:textSize="20sp"
+            android:id="@+id/batteryTimeLeft"
+            android:layout_alignBaseline="@+id/batteryPercentageSign"
+            android:layout_alignBottom="@+id/batteryPercentageSign"
+            android:layout_toRightOf="@+id/batteryProgressbar"
+            android:layout_toEndOf="@+id/batteryProgressbar" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="%"
             android:textSize="14sp"
-            android:id="@+id/battery_percentage_sign"
-            android:layout_marginBottom="12dp"
-            android:layout_above="@+id/battery_label"
-            android:layout_alignLeft="@+id/battery_label"
-            android:layout_alignStart="@+id/battery_label"/>
+            android:id="@+id/batteryPercentageSign"
+            android:layout_alignBaseline="@+id/batteryCurrentValue"
+            android:layout_alignBottom="@+id/batteryCurrentValue"
+            android:layout_toRightOf="@+id/batteryCurrentValue"
+            android:layout_toEndOf="@+id/batteryCurrentValue" />
+
+        <android.support.v7.widget.RecyclerView
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:id="@+id/rv"
+            android:layout_below="@+id/batteryProgressbar"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true">
+        </android.support.v7.widget.RecyclerView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Status"
+            android:id="@+id/status"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
     </RelativeLayout>
 
     <android.support.design.widget.FloatingActionButton

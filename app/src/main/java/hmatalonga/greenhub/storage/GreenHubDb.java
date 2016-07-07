@@ -3,6 +3,7 @@ package hmatalonga.greenhub.storage;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
@@ -21,42 +22,37 @@ import java.util.TreeMap;
 
 import hmatalonga.greenhub.Constants;
 import hmatalonga.greenhub.database.Sample;
+import hmatalonga.greenhub.storage.GreenHubDbContract.GreenHubEntry;
 
 /**
- * Created by hugo on 13-04-2016.
+ * Created by hugo on 16-04-2016.
  */
-public class GreenHubDB {
-    private static final String TAG = "GreenHubDB";
+public class GreenHubDb {
+    private static final String TAG = "GreenHubDb";
 
-    public static final String COLUMN_TIMESTAMP = "timestamp";
-    public static final String COLUMN_SAMPLE = "sample";
+    private static final HashMap<String, String> mColumnMap;
+    private static final Object dbLock;
 
-    public static final String DATABASE_NAME = "greenhubdata";
-    public static final String SAMPLES_VIRTUAL_TABLE = "sampleobjects";
-    // TODO: Bump version here when changing the protocol, new one incompatible with old
-    private static final int DATABASE_VERSION = 1;
-
-    private static final HashMap<String, String> mColumnMap = buildColumnMap();
+    private static GreenHubDb instance = null;
 
     private Sample lastSample = null;
-
     private SQLiteDatabase db = null;
+    private GreenHubDbHelper helper = null;
 
-    private SampleDbOpenHelper helper = null;
+    static {
+        dbLock = new Object();
+        mColumnMap = buildColumnMap();
+    }
 
-    private static GreenHubDB instance = null;
-
-    private static Object dbLock = new Object();
-
-    public static GreenHubDB getInstance(Context c) {
+    public static GreenHubDb getInstance(Context context) {
         if (instance == null)
-            instance = new GreenHubDB(c);
+            instance = new GreenHubDb(context);
         return instance;
     }
 
-    private GreenHubDB(Context context) {
+    private GreenHubDb(Context context) {
         synchronized (dbLock) {
-            helper = new SampleDbOpenHelper(context);
+            helper = new GreenHubDbHelper(context);
         }
     }
 
@@ -85,10 +81,11 @@ public class GreenHubDB {
      * TODO: Needs to be updated when fields update.
      */
     private static HashMap<String, String> buildColumnMap() {
-        HashMap<String, String> map = new HashMap<String, String>();
-        map.put(COLUMN_TIMESTAMP, COLUMN_TIMESTAMP);
-        map.put(COLUMN_SAMPLE, COLUMN_SAMPLE);
+        HashMap<String, String> map = new HashMap<>();
+        map.put(GreenHubEntry.COLUMN_TIMESTAMP, GreenHubEntry.COLUMN_TIMESTAMP);
+        map.put(GreenHubEntry.COLUMN_SAMPLE, GreenHubEntry.COLUMN_SAMPLE);
         map.put(BaseColumns._ID, "rowid AS " + BaseColumns._ID);
+
         return map;
     }
 
@@ -112,18 +109,19 @@ public class GreenHubDB {
          * column names
          */
         SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
-        builder.setTables(SAMPLES_VIRTUAL_TABLE);
+        builder.setTables(GreenHubEntry.SAMPLES_VIRTUAL_TABLE);
         builder.setProjectionMap(mColumnMap);
 
         Cursor cursor = builder.query(db, columns, selection, selectionArgs,
                 groupBy, having, sortOrder);
 
-        if (cursor == null) {
+        if (cursor == null)
             return null;
-        } else if (!cursor.moveToFirst()) {
+        else if (!cursor.moveToFirst()) {
             cursor.close();
             return null;
         }
+
         return cursor;
     }
 
@@ -131,20 +129,21 @@ public class GreenHubDB {
         try {
             synchronized (dbLock) {
                 if (db == null || !db.isOpen()) {
-                    try{
+                    try {
                         db = helper.getWritableDatabase();
-                    }catch (android.database.sqlite.SQLiteException ex){
+                    } catch (android.database.sqlite.SQLiteException ex){
                         Log.e(TAG, "Could not open database", ex);
                         return -1;
                     }
                 }
 
-                Cursor cursor = db.rawQuery("select count(timestamp) FROM "+SAMPLES_VIRTUAL_TABLE, null);
+                Cursor cursor = db.rawQuery("select count(timestamp) FROM " +
+                        GreenHubEntry.SAMPLES_VIRTUAL_TABLE, null);
 
-                if (cursor == null) {
+                if (cursor == null)
                     // There are no results
                     return -1;
-                } else {
+                else {
                     int ret = -1;
                     cursor.moveToFirst();
                     while (!cursor.isAfterLast()) {
@@ -152,31 +151,33 @@ public class GreenHubDB {
                         cursor.moveToNext();
                     }
                     cursor.close();
+
                     return ret;
                 }
             }
         } catch (Throwable th) {
             th.printStackTrace();
         }
+
         return -1;
     }
 
-    public SortedMap<Long, Sample> queryOldestSamples(int howmany) {
-        SortedMap<Long, Sample> results = new TreeMap<Long, Sample>();
+    public SortedMap<Long, Sample> queryOldestSamples(int how_many) {
+        SortedMap<Long, Sample> results = new TreeMap<>();
+
         try {
             synchronized (dbLock) {
                 if (db == null || !db.isOpen()) {
-                    try{
+                    try {
                         db = helper.getWritableDatabase();
                     } catch (android.database.sqlite.SQLiteException ex) {
                         return results;
                     }
                 }
-                String[] columns = mColumnMap.keySet().toArray(
-                        new String[mColumnMap.size()]);
+                String[] columns = mColumnMap.keySet().toArray(new String[mColumnMap.size()]);
 
-                Cursor cursor = query(null, null, columns, null, null,
-                        COLUMN_TIMESTAMP + " ASC LIMIT " + howmany);
+                Cursor cursor = query(null, null, columns, null, null, GreenHubEntry.COLUMN_TIMESTAMP +
+                        " ASC LIMIT " + how_many);
 
                 if (cursor == null) {
                     // Log.d("CaratSampleDB", "query returned null");
@@ -200,28 +201,30 @@ public class GreenHubDB {
         } catch (Throwable th) {
             Log.e(TAG, "Failed to query oldest samples!", th);
         }
+
         return results;
     }
 
     private int delete(String whereClause, String[] whereArgs) {
-        int deleted = db.delete(SAMPLES_VIRTUAL_TABLE, whereClause, whereArgs);
-        return deleted;
+        return db.delete(GreenHubEntry.SAMPLES_VIRTUAL_TABLE, whereClause, whereArgs);
     }
 
-    public int deleteSamples(Set<Long> rowids) {
+    public int deleteSamples(Set<Long> row_ids) {
         int ret = 0;
+
         try {
             synchronized (dbLock) {
-                if (db == null || !db.isOpen()) {
+                if (db == null || !db.isOpen())
                     db = helper.getWritableDatabase();
-                }
+
                 StringBuilder sb = new StringBuilder();
                 int i = 0;
                 sb.append("(");
-                for (Long rowid : rowids) {
-                    sb.append("" + rowid);
+
+                for (Long row_id : row_ids) {
+                    sb.append("").append(row_id);
                     i++;
-                    if (i != rowids.size()) {
+                    if (i != row_ids.size()) {
                         sb.append(", ");
                     }
                 }
@@ -235,20 +238,20 @@ public class GreenHubDB {
         } catch (Throwable th) {
             th.printStackTrace();
         }
+
         return ret;
     }
 
     private Sample queryLastSample() {
-        String[] columns = mColumnMap.keySet().toArray(
-                new String[mColumnMap.size()]);
+        String[] columns = mColumnMap.keySet().toArray(new String[mColumnMap.size()]);
 
-        Cursor cursor = query(null, null, columns, null, null, COLUMN_TIMESTAMP
+        Cursor cursor = query(null, null, columns, null, null, GreenHubEntry.COLUMN_TIMESTAMP
                 + " DESC LIMIT 1");
 
-        if (cursor == null) {
+        if (cursor == null)
             // There are no results
             return null;
-        } else {
+        else {
             cursor.moveToFirst();
             if (!cursor.isAfterLast()) {
                 Sample s = fillSample(cursor);
@@ -257,6 +260,7 @@ public class GreenHubDB {
                 return s;
             }
             cursor.close();
+
             return null;
         }
     }
@@ -268,8 +272,7 @@ public class GreenHubDB {
     private Sample fillSample(Cursor cursor) {
         Sample s = null;
 
-        byte[] sampleB = cursor.getBlob(cursor
-                .getColumnIndex(GreenHubDB.COLUMN_SAMPLE));
+        byte[] sampleB = cursor.getBlob(cursor.getColumnIndex(GreenHubEntry.COLUMN_SAMPLE));
         if (sampleB != null) {
             ObjectInputStream oi;
             try {
@@ -281,6 +284,7 @@ public class GreenHubDB {
                 e.printStackTrace();
             }
         }
+
         return s;
     }
 
@@ -288,9 +292,9 @@ public class GreenHubDB {
         try {
             synchronized (dbLock) {
                 if (db == null || !db.isOpen()) {
-                    try{
+                    try {
                         db = helper.getWritableDatabase();
-                    }catch (android.database.sqlite.SQLiteException ex){
+                    } catch (android.database.sqlite.SQLiteException ex){
                         Log.e(TAG, "Could not open database", ex);
                         return lastSample;
                     }
@@ -301,6 +305,7 @@ public class GreenHubDB {
         } catch (Throwable th) {
             Log.e(TAG, "Failed to get last sample!", th);
         }
+
         return lastSample;
     }
 
@@ -313,58 +318,22 @@ public class GreenHubDB {
         long id = 0;
         try {
             synchronized (dbLock) {
-                if (db == null || !db.isOpen()) {
+                if (db == null || !db.isOpen())
                     db = helper.getWritableDatabase();
-                }
-                if (Constants.DEBUG)
-                    Log.d(TAG, "CaratSampleDB.putSample(). About to save a sample to the DB. "
-                                    + "uuid=" + s.getUuId()
-                                    + ", timestamp=" + s.getTimestamp()
-                                    + ", timezone=" + s.getTimeZone()
-                                    + ", batteryLevel=" + s.getBatteryLevel()
-                                    + ", batteryState=" + s.getBatteryState()
-                                    + ", developerMode=" + s.getDeveloperMode()
-                                    + ", distanceTraveled=" + s.getDistanceTraveled()
-                                    + ", memoryActive=" + s.getMemoryActive()
-                                    + ", memoryFree=" + s.getMemoryFree()
-                                    + ", memoryInactive=" + s.getMemoryInactive()
-                                    + ", memoryWired=" + s.getMemoryWired()
-                                    + ", screenBrightness=" + s.getScreenBrightness()
-                                    + ", networkStatus=" + s.getNetworkStatus()
-                                    + ", screenOn=" + s.getScreenOn()
-                                    + ", unknownSources=" + s.getUnknownSources()
-                                    + ", batteryCapacity=" + s.getBatteryDetails().getBatteryCapacity()
-                                    + ", batteryCharger=" + s.getBatteryDetails().getBatteryCharger()
-                                    + ", batteryHealth=" + s.getBatteryDetails().getBatteryHealth()
-                                    + ", batteryTechnology=" + s.getBatteryDetails().getBatteryTechnology()
-                                    + ", batteryVoltage=" + s.getBatteryDetails().getBatteryVoltage()
-//                		+ ", callStatus=" + s.callInfo.callStatus
-//                		+ ", incomingCallTime=" + s.callInfo.incomingCallTime
-//                		+ ", nonCallTime=" + s.callInfo.nonCallTime
-//                		+ ", outgoingCallTime=" + s.callInfo.outgoingCallTime
-                                    + ", cpuStatus=" + s.getCpuStatus()
-                                    + ", mobileDataActivity=" + s.getNetworkDetails().getMobileDataActivity()
-                                    + ", mobileDataStatus=" + s.getNetworkDetails().getMobileDataStatus()
-                                    + ", mobileNetworkType=" + s.getNetworkDetails().getMobileNetworkType()
-                                    + ", networkType=" + s.getNetworkDetails().getNetworkType()
-                                    + ", wifiLinkSpeed=" + s.getNetworkDetails().getWifiLinkSpeed()
-                                    + ", wifiSignalStrength=" + s.getNetworkDetails().getWifiSignalStrength()
-                                    + ", wifiStatus=" + s.getNetworkDetails().getWifiStatus()
-                                    + ", PiListSize=" + s.getPiListSize()
-                    );
 
                 // force init
                 id = addSample(s);
-                if (id >= 0) {
+
+                if (id >= 0)
                     lastSample = SampleReader.readSample(s);
-                }
-                if (db != null && db.isOpen()) {
+
+                if (db != null && db.isOpen())
                     db.close();
-                }
             }
         } catch (Throwable th) {
             Log.e(TAG, "Failed to add a sample!", th);
         }
+
         return id;
     }
 
@@ -378,39 +347,34 @@ public class GreenHubDB {
             Log.d("CaratSampleDB.addSample", "The sample's battery level=" + s.getBatteryLevel());
 
         ContentValues initialValues = new ContentValues();
-        initialValues.put(COLUMN_TIMESTAMP, s.getTimestamp());
+        initialValues.put(GreenHubEntry.COLUMN_TIMESTAMP, s.getTimestamp());
         // Write the sample hashmap as a blob
-        if (s != null) {
-            try {
-                ByteArrayOutputStream bo = new ByteArrayOutputStream();
-                ObjectOutputStream oo = new ObjectOutputStream(bo);
-                oo.writeObject(SampleReader.writeSample(s));
-                initialValues.put(COLUMN_SAMPLE, bo.toByteArray());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        try {
+            ByteArrayOutputStream bo = new ByteArrayOutputStream();
+            ObjectOutputStream oo = new ObjectOutputStream(bo);
+            oo.writeObject(SampleReader.writeSample(s));
+            initialValues.put(GreenHubEntry.COLUMN_SAMPLE, bo.toByteArray());
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
-        return db.insert(SAMPLES_VIRTUAL_TABLE, null, initialValues);
+        return db.insert(GreenHubEntry.SAMPLES_VIRTUAL_TABLE, null, initialValues);
     }
 
-    /**
-     * This creates/opens the database.
-     */
-    private static class SampleDbOpenHelper extends SQLiteOpenHelper {
+    public static class GreenHubDbHelper extends SQLiteOpenHelper {
+        private final Context mHelperContext;
         private SQLiteDatabase mDatabase;
 
-        /*
-         * Note that FTS3 does not support column constraints and thus, you
-         * cannot declare a primary key. However, "rowid" is automatically used
-         * as a unique identifier, so when making requests, we will use "_id" as
-         * an alias for "rowid"
-         */
+
+        // If you change the database schema, you must increment the database version.
+        public static final int DATABASE_VERSION = 1;
+        public static final String DATABASE_NAME = "GreenHub.db";
+
         private static final String FTS_TABLE_CREATE = "CREATE VIRTUAL TABLE "
-                + SAMPLES_VIRTUAL_TABLE + " USING fts3 (" + createStatement()
+                + GreenHubEntry.SAMPLES_VIRTUAL_TABLE + " USING fts3 (" + createStatement()
                 + ");";
 
-        private static final String createStatement() {
+        private static String createStatement() {
             Set<String> set = mColumnMap.keySet();
             StringBuilder b = new StringBuilder();
             int i = 0;
@@ -421,51 +385,37 @@ public class GreenHubDB {
                 if (i + 1 == size)
                     b.append(s);
                 else
-                    b.append(s + ", ");
+                    b.append(s).append(", ");
                 i++;
             }
             return b.toString();
         }
 
-        SampleDbOpenHelper(Context context) {
+        public GreenHubDbHelper(Context context) {
             super(context, DATABASE_NAME, null, DATABASE_VERSION);
+            mHelperContext = context;
         }
 
-        @Override
         public void onCreate(SQLiteDatabase db) {
             mDatabase = db;
             try {
                 mDatabase.execSQL(FTS_TABLE_CREATE);
-                /**
-                 * Compact database here
-                 */
-                mDatabase.execSQL("PRAGMA auto_vacuum = 1;");
-            } catch (Throwable th) {
-                // Already created
-                Log.e(TAG, "DB create failed!", th);
+                mDatabase.execSQL(GreenHubEntry.SQL_COMPACT_DATABASE);
+            }
+            catch (NullPointerException | SQLException e) {
+                e.printStackTrace();
             }
         }
 
-        /*
-         * (non-Javadoc)
-         *
-         * @see
-         * android.database.sqlite.SQLiteOpenHelper#onOpen(android.database.
-         * sqlite.SQLiteDatabase)
-         */
-        @Override
-        public void onOpen(SQLiteDatabase db) {
-            mDatabase = db;
-            super.onOpen(db);
+        public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+            // This database is only a cache for online data, so its upgrade policy is
+            // to simply to discard the data and start over
+            db.execSQL("DROP TABLE IF EXISTS " + GreenHubEntry.SAMPLES_VIRTUAL_TABLE);
+            onCreate(db);
         }
 
-        @Override
-        public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            Log.w(TAG, "Upgrading database from version " + oldVersion + " to "
-                    + newVersion + ", which will destroy all old data");
-            db.execSQL("DROP TABLE IF EXISTS " + SAMPLES_VIRTUAL_TABLE);
-            onCreate(db);
+        public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+            onUpgrade(db, oldVersion, newVersion);
         }
     }
 }
-
