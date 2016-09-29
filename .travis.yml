@@ -1,4 +1,6 @@
 language: android
+jdk: oraclejdk8
+
 android:
   components:
     # Uncomment the lines below if you want to
@@ -22,3 +24,6 @@ android:
     # if you need to run emulator(s) during your tests
     - sys-img-armeabi-v7a-android-19
     - sys-img-x86-android-17
+
+before_install:
+ - chmod +x gradlew
