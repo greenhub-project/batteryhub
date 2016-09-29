@@ -230,7 +230,7 @@ public class PowerProfile {
                         double value = 0;
                         try {
                             value = Double.valueOf(power);
-                        } catch (NumberFormatException nfe) {
+                        } catch (NumberFormatException ignored) {
                         }
                         if (element.equals(TAG_ITEM)) {
                             sPowerMap.put(name, value);
@@ -243,9 +243,7 @@ public class PowerProfile {
             if (parsingArray) {
                 sPowerMap.put(arrayName, array.toArray(new Double[array.size()]));
             }
-        } catch (XmlPullParserException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
+        } catch (XmlPullParserException | IOException e) {
             throw new RuntimeException(e);
         } finally {
             parser.close();

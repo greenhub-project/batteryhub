@@ -1,15 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:id="@+id/tabHome">
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/textViewHome"
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp">
+
+        <ProgressBar
+            android:id="@+id/batteryProgressbar"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:indeterminate="false"
+            android:progress="50"
+            android:max="100"
+            android:secondaryProgress="100"
+            android:progressDrawable="@drawable/circular"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/batteryCurrentValue"
+            android:textSize="28sp"
+            android:text="50"
+            android:layout_marginLeft="38dp"
+            android:layout_marginStart="38dp"
+            android:layout_marginBottom="42dp"
+            android:layout_alignBottom="@+id/batteryProgressbar"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Time left"
+            android:textSize="12sp"
+            android:id="@+id/batteryLabel"
+            android:layout_above="@+id/batteryCurrentValue"
+            android:layout_toRightOf="@+id/batteryProgressbar"
+            android:layout_toEndOf="@+id/batteryProgressbar" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Not Available"
+            android:textSize="20sp"
+            android:id="@+id/batteryTimeLeft"
+            android:layout_alignBaseline="@+id/batteryPercentageSign"
+            android:layout_alignBottom="@+id/batteryPercentageSign"
+            android:layout_toRightOf="@+id/batteryProgressbar"
+            android:layout_toEndOf="@+id/batteryProgressbar" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="%"
+            android:textSize="14sp"
+            android:id="@+id/batteryPercentageSign"
+            android:layout_alignBaseline="@+id/batteryCurrentValue"
+            android:layout_alignBottom="@+id/batteryCurrentValue"
+            android:layout_toRightOf="@+id/batteryCurrentValue"
+            android:layout_toEndOf="@+id/batteryCurrentValue" />
+
+        <android.support.v7.widget.RecyclerView
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:id="@+id/rv"
+            android:layout_below="@+id/batteryProgressbar"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true">
+        </android.support.v7.widget.RecyclerView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Status"
+            android:id="@+id/status"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+    </RelativeLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fabSendSample"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Home"
-        android:textAppearance="?android:attr/textAppearanceLarge"/>
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@drawable/ic_cloud_upload_white_24dp"/>
 
-</LinearLayout>
+</android.support.design.widget.CoordinatorLayout>

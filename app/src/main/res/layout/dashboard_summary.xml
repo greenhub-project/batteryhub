@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/device_summary_title"
+            android:text="@string/device_summary_title"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="@dimen/device_summary_title"
+            android:layout_alignParentTop="true"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/device_summary_id_label"
+            android:text="@string/device_summary_id_label"
+            android:textSize="16sp"
+            android:layout_below="@+id/device_summary_title"
+            android:layout_alignLeft="@+id/device_summary_title"
+            android:layout_alignStart="@+id/device_summary_title"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/device_summary_id"
+            android:textSize="20sp"
+            android:textColor="@color/darkGray"
+            android:layout_marginBottom="@dimen/device_summary_value"
+            android:layout_below="@+id/device_summary_id_label"
+            android:layout_alignLeft="@+id/device_summary_id_label"
+            android:layout_alignStart="@+id/device_summary_id_label"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/device_summary_model_label"
+            android:text="@string/device_summary_model_label"
+            android:textSize="16sp"
+            android:layout_below="@+id/device_summary_id"
+            android:layout_alignLeft="@+id/device_summary_id"
+            android:layout_alignStart="@+id/device_summary_id"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/device_summary_model"
+            android:textSize="20sp"
+            android:textColor="@color/darkGray"
+            android:layout_marginBottom="@dimen/device_summary_value"
+            android:layout_below="@+id/device_summary_model_label"
+            android:layout_alignLeft="@+id/device_summary_model_label"
+            android:layout_alignStart="@+id/device_summary_model_label"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/device_summary_os_label"
+            android:text="@string/device_summary_os_label"
+            android:textSize="16sp"
+            android:layout_below="@+id/device_summary_model"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/device_summary_os"
+            android:textSize="20sp"
+            android:textColor="@color/darkGray"
+            android:layout_marginBottom="@dimen/device_summary_value"
+            android:layout_below="@+id/device_summary_os_label"
+            android:layout_alignLeft="@+id/device_summary_os_label"
+            android:layout_alignStart="@+id/device_summary_os_label"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/device_summary_kernel_label"
+            android:text="@string/device_summary_kernel_label"
+            android:textSize="16sp"
+            android:layout_below="@+id/device_summary_os"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/device_summary_kernel"
+            android:textSize="20sp"
+            android:textColor="@color/darkGray"
+            android:layout_below="@+id/device_summary_kernel_label"
+            android:layout_alignLeft="@+id/device_summary_kernel_label"
+            android:layout_alignStart="@+id/device_summary_kernel_label"/>
+
+</RelativeLayout>

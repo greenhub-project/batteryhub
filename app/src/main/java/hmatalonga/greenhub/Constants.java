@@ -11,7 +11,7 @@ public final class Constants {
     public static final boolean PRODUCTION = false;
 
     public static final String PUBLIC_SERVER_URL = "http://greenhub-hmatalonga.rhcloud.com";
-    public static final String LOCAL_SERVER_URL = "http://192.168.10.10";
+    public static final String LOCAL_SERVER_URL = "http://192.168.1.104";
 
     // Report Freshness timeout. Default: 15 minutes
     // public static final long FRESHNESS_TIMEOUT = 30 * 1000;
@@ -25,10 +25,10 @@ public final class Constants {
 
     // If this preference is true, register this as a new device on the Carat
     // server.
-    public static final String PREFERENCE_FIRST_RUN = "carat.first.run";
-    static final String REGISTERED_UUID = "carat.registered.uuid";
-    public static final String REGISTERED_OS = "carat.registered.os";
-    public static final String REGISTERED_MODEL = "carat.registered.model";
+    public static final String PREFERENCE_FIRST_RUN = "greenhub.first.run";
+    static final String REGISTERED_UUID = "greenhub.registered.uuid";
+    public static final String REGISTERED_OS = "greenhub.registered.os";
+    public static final String REGISTERED_MODEL = "greenhub.registered.model";
 
     // if you change the preference key of any of our preference widgets (in
     // res/xml/preferences.xml),
@@ -55,7 +55,7 @@ public final class Constants {
 
     // Alarm event for sampling when battery has not changed for
     // SAMPLE_INTERVAL_MS. Currently not used.
-    public static final String ACTION_CARAT_SAMPLE = "edu.berkeley.cs.amplab.carat.android.ACTION_SAMPLE";
+    public static final String ACTION_GREENHUB_SAMPLE = "hmatalonga.greenhub.ACTION_SAMPLE";
     // If true, install Sampling events to occur at boot. Currently not used.
     public static final String PREFERENCE_SAMPLE_FIRST_RUN = "carat.sample.first.run";
     public static final String PREFERENCE_SEND_INSTALLED_PACKAGES = "carat.sample.send.installed";

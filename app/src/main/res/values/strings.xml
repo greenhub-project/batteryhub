@@ -1,32 +1,48 @@
 <resources>
     <string name="app_name">GreenHub</string>
+    <string name="action_summary">Summary</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_settings">Settings</string>
+    <string name="title_activity_process">Process List</string>
+    <string name="title_fragment_home">GreenHub</string>
+    <string name="title_fragment_device">My Device</string>
+    <string name="title_fragment_about">About</string>
+
+    <!-- DeviceFragment -->
+    <string name="device_summary_title">Summary</string>
+    <string name="device_summary_id_label">GreenHub ID</string>
+    <string name="device_summary_model_label">Device model</string>
+    <string name="device_summary_os_label">OS version</string>
+    <string name="device_summary_kernel_label">Kernel version</string>
+    <string name="device_summary_battery_label">Battery</string>
+    <string name="device_summary_cpu_label">CPU</string>
+    <string name="device_summary_memory_label">Memory usage</string>
+    <string name="device_summary_network_label">Network</string>
+
+    <!-- AboutFragment -->
+    <string name="about_general_text">GreenHub is a research project of the University of Beira
+        Interior.</string>
+    <string name="about_data_text">GreenHub collects and reports generic usage statistics about
+    your phone that allow it to do its job; this process involves absolutely no personally
+    identifying information.</string>
+
+    <!-- Process List -->
+    <string name="expected">Expected improvement:</string>
+    <string name="killappname">Kill App Name</string>
+    <string name="appname">App Name</string>
+    <string name="priority">Priority:</string>
+    <string name="priorityDefault">Not running</string>
+    <string name="prioritynotrunning">Not running</string>
+    <string name="priorityforeground">Foreground App</string>
+    <string name="prioritybackground">Background App</string>
+    <string name="priorityservice">Service</string>
+    <string name="priorityperceptible">Perceptible App</string>
+    <string name="priorityvisible">Visible App</string>
+    <string name="prioritysuggestion">Suggestion</string>
+
+    <string name="wifi_only_key">wifionly</string>
 
     <!-- Strings related to Settings -->
-
-    <!-- Example General settings -->
-    <string name="pref_header_general">General</string>
-
-    <string name="pref_title_social_recommendations">Enable social recommendations</string>
-    <string name="pref_description_social_recommendations">Recommendations for people to contact
-        based on your message history
-    </string>
-
-    <string name="pref_title_display_name">Display name</string>
-    <string name="pref_default_display_name">John Smith</string>
-
-    <string name="pref_title_add_friends_to_messages">Add friends to messages</string>
-    <string-array name="pref_example_list_titles">
-        <item>Always</item>
-        <item>When possible</item>
-        <item>Never</item>
-    </string-array>
-    <string-array name="pref_example_list_values">
-        <item>1</item>
-        <item>0</item>
-        <item>-1</item>
-    </string-array>
 
     <!-- Example settings for Data & Sync -->
     <string name="pref_header_data_sync">Data &amp; sync</string>
@@ -49,15 +65,18 @@
         <item>-1</item>
     </string-array>
 
-    <string name="pref_title_system_sync_settings">System sync settings</string>
+    <string name="pref_title_sync_upload">Uploads</string>
+    <string-array name="pref_sync_upload_titles">
+        <item>Wi-Fi Only</item>
+        <item>Wi-Fi or data plan</item>
+    </string-array>
+    <string-array name="pref_sync_upload_values">
+        <item>-1</item>
+        <item>1</item>
+    </string-array>
 
-    <!-- Example settings for Notifications -->
-    <string name="pref_header_notifications">Notifications</string>
+    <string name="title_activity_splash">SplashActivity</string>
 
-    <string name="pref_title_new_message_notifications">New message notifications</string>
-
-    <string name="pref_title_ringtone">Ringtone</string>
-    <string name="pref_ringtone_silent">Silent</string>
-
-    <string name="pref_title_vibrate">Vibrate</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

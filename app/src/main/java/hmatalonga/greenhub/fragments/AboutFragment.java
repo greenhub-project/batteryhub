@@ -2,6 +2,9 @@ package hmatalonga.greenhub.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +12,7 @@ import android.view.ViewGroup;
 import hmatalonga.greenhub.R;
 
 /**
+ * About Fragment
  * Created by hugo on 27-03-2016.
  */
 public class AboutFragment extends Fragment {

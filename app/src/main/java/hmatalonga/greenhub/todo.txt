@@ -1,0 +1,3 @@
+MainActicity:
+ - Check internet connection, if not show message
+ -

@@ -65,14 +65,14 @@ import java.util.TimeZone;
 
 import hmatalonga.greenhub.Constants;
 import hmatalonga.greenhub.GreenHub;
-import hmatalonga.greenhub.thrift.BatteryDetails;
-import hmatalonga.greenhub.thrift.CallMonth;
-import hmatalonga.greenhub.thrift.CellInfo;
-import hmatalonga.greenhub.thrift.CpuStatus;
-import hmatalonga.greenhub.thrift.Feature;
-import hmatalonga.greenhub.thrift.NetworkDetails;
-import hmatalonga.greenhub.thrift.ProcessInfo;
-import hmatalonga.greenhub.thrift.Sample;
+import hmatalonga.greenhub.database.BatteryDetails;
+import hmatalonga.greenhub.database.CallMonth;
+import hmatalonga.greenhub.database.CellInfo;
+import hmatalonga.greenhub.database.CpuStatus;
+import hmatalonga.greenhub.database.Feature;
+import hmatalonga.greenhub.database.NetworkDetails;
+import hmatalonga.greenhub.database.ProcessInfo;
+import hmatalonga.greenhub.database.Sample;
 
 /**
  * Created by hugo on 06-03-2016.
@@ -118,10 +118,6 @@ public final class Inspector {
     public static String CALL_STATE_RINGING = "ringing";
 
     // Mobile network constants
-	/*
-	 * we cannot find network types:EVDO_B,LTE,EHRPD,HSPAP from TelephonyManager
-	 * now
-	 */
     public static String NETWORK_TYPE_UNKNOWN = "unknown";
     public static String NETWORK_TYPE_GPRS = "gprs";
     public static String NETWORK_TYPE_EDGE = "edge";
@@ -230,11 +226,8 @@ public final class Inspector {
 		 * percentage change has happened. Check the comments in the
 		 * broadcast receiver (sampler).
 		 */
-        if (level != getCurrentBatteryLevel()) {
+        if (level != getCurrentBatteryLevel())
             setCurrentBatteryLevel(level);
-            // Log.d("Inspector.setCurrentBatteryLevel()", "currentBatteryLevel="
-            //		+ getCurrentBatteryLevel());
-        }
     }
 
     /**
@@ -271,8 +264,6 @@ public final class Inspector {
             concat += timestamp;
         }
 
-        // Log.d(STAG,
-        // "AID="+aID+" wifiMac="+wifiMac+" devid="+devid+" rawUUID=" +concat );
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-512");
             md.update(concat.getBytes());
@@ -286,7 +277,6 @@ public final class Inspector {
                     hexString.append(hx);
             }
             String uuid = hexString.toString().substring(0, UUID_LENGTH);
-            // FlurryAgent.logEvent("ANDROID_ID=" + aID +" UUID=" + uuid);
             return uuid;
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
@@ -386,7 +376,7 @@ public final class Inspector {
      * @return
      */
     public static Map<String, String> getSystemDetails() {
-        Map<String, String> results = new HashMap<String, String>();
+        Map<String, String> results = new HashMap<>();
         // TODO: Some of this should be added to registration to identify the
         // device and OS.
         // Cyanogenmod and others may have different kernels etc that affect
@@ -452,6 +442,7 @@ public final class Inspector {
             // Log.v("meminfo", "Load: " + load + " 1:" + toks[1]);
             int inact = Integer.parseInt(toks[1]);
             reader.close();
+
             return new int[] { total - free, free, inact, act };
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -567,6 +558,7 @@ public final class Inspector {
         if (then == null || now == null || then.length < 2 || now.length < 2)
             return 0.0;
         double idleAndCpuDiff = (now[0] + now[1]) - (then[0] + then[1]);
+
         return (now[1] - then[1]) / idleAndCpuDiff;
     }
 
@@ -576,8 +568,8 @@ public final class Inspector {
         List<RunningAppProcessInfo> runningProcs = getRunningProcessInfo(c);
         List<RunningServiceInfo> runningServices = getRunningServiceInfo(c);
 
-        Set<String> packages = new HashSet<String>();
-        List<ProcessInfo> l = new ArrayList<ProcessInfo>();
+        Set<String> packages = new HashSet<>();
+        ArrayList<ProcessInfo> l = new ArrayList<>();
 
         if (runningProcs != null) {
             for (RunningAppProcessInfo pi : runningProcs) {
@@ -588,8 +580,8 @@ public final class Inspector {
                 packages.add(pi.processName);
                 ProcessInfo item = new ProcessInfo();
                 item.setImportance(GreenHub.importanceString(pi.importance));
-                item.setPId(pi.pid);
-                item.setPName(pi.processName);
+                item.setpId(pi.pid);
+                item.setpName(pi.processName);
                 l.add(item);
             }
         }
@@ -603,9 +595,9 @@ public final class Inspector {
                 packages.add(pi.process);
                 ProcessInfo item = new ProcessInfo();
                 item.setImportance(pi.foreground ? "Foreground app" : "Service");
-                item.setPId(pi.pid);
+                item.setpId(pi.pid);
                 //item.setApplicationLabel(pi.service.flattenToString());
-                item.setPName(pi.process);
+                item.setpName(pi.process);
 
                 l.add(item);
             }
@@ -636,9 +628,10 @@ public final class Inspector {
                 }
             }
 
-            runningAppInfo = new WeakReference<List<RunningAppProcessInfo>>(runningProcs);
+            runningAppInfo = new WeakReference<>(runningProcs);
+
             return runningProcs;
-        }else
+        } else
             return runningAppInfo.get();
     }
 
@@ -765,26 +758,26 @@ public final class Inspector {
 //        return false;
 //    }
 //
-//    /**
-//     * Returns true if the application is preinstalled on the device.
-//     * This usually means it is a system application, e.g. Key chain, google partner set up, package installer, package access helper.
-//     * We currently do not filter these out, because some of them are killable by the user, and not part of the core system, even if they are preinstalled on the device.
-//     * @param context the Context.
-//     * @param processName the process name.
-//     * @return true if the application is preinstalled on the device.
-//     */
-//    private static boolean isSystem(Context context, String processName) {
-//        PackageInfo pak = getPackageInfo(context, processName);
-//        if (pak != null) {
-//            ApplicationInfo i = pak.applicationInfo;
-//            int flags = i.flags;
-//            boolean isSystemApp = (flags & ApplicationInfo.FLAG_SYSTEM) > 0;
-//            isSystemApp = isSystemApp || (flags & ApplicationInfo.FLAG_UPDATED_SYSTEM_APP) > 0;
-//            // Log.v(STAG, processName + " is System app? " + isSystemApp);
-//            return isSystemApp;
-//        }
-//        return false;
-//    }
+    /**
+     * Returns true if the application is preinstalled on the device.
+     * This usually means it is a system application, e.g. Key chain, google partner set up, package installer, package access helper.
+     * We currently do not filter these out, because some of them are killable by the user, and not part of the core system, even if they are preinstalled on the device.
+     * @param context the Context.
+     * @param processName the process name.
+     * @return true if the application is preinstalled on the device.
+     */
+    private static boolean isSystem(Context context, String processName) {
+        PackageInfo pak = getPackageInfo(context, processName);
+        if (pak != null) {
+            ApplicationInfo i = pak.applicationInfo;
+            int flags = i.flags;
+            boolean isSystemApp = (flags & ApplicationInfo.FLAG_SYSTEM) > 0;
+            isSystemApp = isSystemApp || (flags & ApplicationInfo.FLAG_UPDATED_SYSTEM_APP) > 0;
+            // Log.v(STAG, processName + " is System app? " + isSystemApp);
+            return isSystemApp;
+        }
+        return false;
+    }
 //
 //    public static boolean isDisabled(Context c, String processName) {
 //        PackageManager pm = c.getPackageManager();
@@ -825,15 +818,14 @@ public final class Inspector {
         List<android.content.pm.PackageInfo> packagelist = null;
 
         if (packages == null || packages.get() == null || packages.get().size() == 0) {
-            Map<String, PackageInfo> mp = new HashMap<String, PackageInfo>();
+            Map<String, PackageInfo> mp = new HashMap<>();
             PackageManager pm = context.getPackageManager();
             if (pm == null)
                 return null;
 
             try {
                 if (collectSignatures)
-                    packagelist = pm.getInstalledPackages(PackageManager.GET_SIGNATURES
-                            | PackageManager.GET_PERMISSIONS);
+                    packagelist = pm.getInstalledPackages(PackageManager.GET_SIGNATURES | PackageManager.GET_PERMISSIONS);
                 else
                     packagelist = pm.getInstalledPackages(0);
             } catch (Throwable th) {
@@ -847,10 +839,11 @@ public final class Inspector {
                 mp.put(pak.applicationInfo.processName, pak);
             }
 
-            packages = new WeakReference<Map<String, PackageInfo>>(mp);
+            packages = new WeakReference<>(mp);
 
-            if (mp == null || mp.size() == 0)
+            if (mp.size() == 0) // mp == null
                 return null;
+
             return mp;
         } else {
             if (packages == null)
@@ -858,6 +851,7 @@ public final class Inspector {
             Map<String, PackageInfo> p = packages.get();
             if (p == null || p.size() == 0)
                 return null;
+
             return p;
         }
     }
@@ -872,10 +866,10 @@ public final class Inspector {
      */
     public static PackageInfo getPackageInfo(Context context, String processName) {
         Map<String, PackageInfo> mp = getPackages(context);
-        if (mp == null || !mp.containsKey(processName))
+        if ((mp == null) || !mp.containsKey(processName))
             return null;
-        PackageInfo pak = mp.get(processName);
-        return pak;
+
+        return mp.get(processName);
     }
 
     /**
@@ -895,8 +889,9 @@ public final class Inspector {
         if (pm == null)
             return null;
 
-        Map<String, ProcessInfo> result = new HashMap<String, ProcessInfo>();
+        Map<String, ProcessInfo> result = new HashMap<>();
 
+        assert packageMap != null;
         for (Map.Entry<String, PackageInfo> pentry : packageMap.entrySet()) {
             try {
                 String pkg = pentry.getKey();
@@ -923,11 +918,11 @@ public final class Inspector {
                     if (pak.signatures.length > 0) {
                         List<String> sigList = getSignatures(pak);
                         ProcessInfo pi = new ProcessInfo();
-                        pi.setPName(pkg);
+                        pi.setpName(pkg);
                         pi.setApplicationLabel(label);
                         pi.setVersionCode(vc);
-                        pi.setPId(-1);
-                        pi.setIsSystemApp(isSystemApp);
+                        pi.setpId(-1);
+                        pi.setSystemApp(isSystemApp);
                         pi.setAppSignatures(sigList);
                         pi.setImportance(Constants.IMPORTANCE_NOT_RUNNING);
                         pi.setInstallationPkg(pm.getInstallerPackageName(pkg));
@@ -938,9 +933,10 @@ public final class Inspector {
                     }
                 }
             } catch (Throwable th) {
-                // Forget about it...
+                th.printStackTrace();
             }
         }
+
         return result;
     }
 
@@ -949,7 +945,7 @@ public final class Inspector {
      * the PACKAGE_ADDED or PACKAGE_REPLACED intent.
      *
      * @param context
-     * @param filterSystem
+     * @param pkg
      *            if true, exclude system packages.
      * @return a list of installed packages on the device.
      */
@@ -976,12 +972,13 @@ public final class Inspector {
         isSystemApp = isSystemApp || (flags & ApplicationInfo.FLAG_UPDATED_SYSTEM_APP) > 0;
 
         if (pak.signatures.length > 0) {
-            List<String> sigList = getSignatures(pak);
-            pi.setPName(pkg);
+            List<String> sigList;
+            sigList = getSignatures(pak);
+            pi.setpName(pkg);
             pi.setApplicationLabel(label);
             pi.setVersionCode(vc);
-            pi.setPId(-1);
-            pi.setIsSystemApp(isSystemApp);
+            pi.setpId(-1);
+            pi.setSystemApp(isSystemApp);
             pi.setAppSignatures(sigList);
             pi.setImportance(Constants.IMPORTANCE_NOT_RUNNING);
             pi.setInstallationPkg(pm.getInstallerPackageName(pkg));
@@ -1001,14 +998,15 @@ public final class Inspector {
 
         // Reset list for each sample
         runningAppInfo = null;
-        List<ProcessInfo> list = getRunningAppInfo(context);
-        List<ProcessInfo> result = new ArrayList<ProcessInfo>();
+        List<ProcessInfo> list;
+        list = getRunningAppInfo(context);
+        ArrayList<ProcessInfo> result = new ArrayList<>();
 
         PackageManager pm = context.getPackageManager();
         // Collected in the same loop to save computation.
         int[] procMem = new int[list.size()];
 
-        Set<String> procs = new HashSet<String>();
+        Set<String> procs = new HashSet<>();
 
         boolean inst = p.getBoolean(Constants.PREFERENCE_SEND_INSTALLED_PACKAGES, true);
 
@@ -1017,7 +1015,7 @@ public final class Inspector {
             ipkg = getInstalledPackages(context, false);
 
         for (ProcessInfo pi : list) {
-            String pname = pi.getPName();
+            String pname = pi.getpName();
             if (ipkg != null && ipkg.containsKey(pname))
                 ipkg.remove(pname);
             procs.add(pname);
@@ -1032,13 +1030,13 @@ public final class Inspector {
 
                 // Human readable label (if any)
                 String label = pm.getApplicationLabel(info).toString();
-                if (label != null && label.length() > 0)
+                if (label.length() > 0)
                     item.setApplicationLabel(label);
                 int flags = pak.applicationInfo.flags;
                 // Check if it is a system app
                 boolean isSystemApp = (flags & ApplicationInfo.FLAG_SYSTEM) > 0;
                 isSystemApp = isSystemApp || (flags & ApplicationInfo.FLAG_UPDATED_SYSTEM_APP) > 0;
-                item.setIsSystemApp(isSystemApp);
+                item.setSystemApp(isSystemApp);
 				/*
 				 * boolean sigSent = p.getBoolean(SIG_SENT_256 + pname, false);
 				 * if (collectSignatures && !sigSent && pak.signatures != null
@@ -1051,11 +1049,11 @@ public final class Inspector {
 				 */
             }
             item.setImportance(pi.getImportance());
-            item.setPId(pi.getPId());
-            item.setPName(pname);
+            item.setpId(pi.getpId());
+            item.setpName(pname);
 
             String installationSource = null;
-            if (!pi.isSystemApp) {
+            if (!pi.isSystemApp()) {
                 try {
                     // Log.w(STAG, "Calling getInstallerPackageName with: " +
                     // pname);
@@ -1081,7 +1079,7 @@ public final class Inspector {
         // Send installed packages if we were to do so.
         if (ipkg != null && ipkg.size() > 0) {
             result.addAll(ipkg.values());
-            p.edit().putBoolean(Constants.PREFERENCE_SEND_INSTALLED_PACKAGES, false).commit();
+            p.edit().putBoolean(Constants.PREFERENCE_SEND_INSTALLED_PACKAGES, false).apply();
         }
 
         // Go through the preferences and look for UNINSTALL, INSTALL and
@@ -1135,7 +1133,7 @@ public final class Inspector {
             }
         }
         if (edited)
-            e.commit();
+            e.apply();
 
         // FIXME: These are not used yet.
 		/*
@@ -1160,11 +1158,11 @@ public final class Inspector {
      */
     private static ProcessInfo uninstalledItem(String pname, String pref, SharedPreferences.Editor e) {
         ProcessInfo item = new ProcessInfo();
-        item.setPName(pname);
-        List<String> sigs = new LinkedList<String>();
+        item.setpName(pname);
+        List<String> sigs = new LinkedList<>();
         sigs.add("uninstalled");
         item.setAppSignatures(sigs);
-        item.setPId(-1);
+        item.setpId(-1);
         item.setImportance(Constants.IMPORTANCE_UNINSTALLED);
         // Remember to remove it so we do not send
         // multiple uninstall events
@@ -1181,15 +1179,16 @@ public final class Inspector {
      */
     private static ProcessInfo disabledItem(String pname, String pref, SharedPreferences.Editor e) {
         ProcessInfo item = new ProcessInfo();
-        item.setPName(pname);
-        item.setPId(-1);
+        item.setpName(pname);
+        item.setpId(-1);
         item.setImportance(Constants.IMPORTANCE_DISABLED);
         // Remember to remove it so we do not send
         // multiple uninstall events
         e.remove(pref);
+
         return item;
     }
-
+//
     /**
      * Depratecated, use int[] meminfo = readMemInfo(); int totalMemory =
      * meminfo[0] + meminfo[1];
@@ -1210,7 +1209,7 @@ public final class Inspector {
         }
 
         try {
-            tmp = br.readLine();
+            tmp = (br != null) ? br.readLine() : null;
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -1220,17 +1219,17 @@ public final class Inspector {
         sMemory.append(tmp);
 
         try {
-            tmp = br.readLine();
-            br.close();
+            tmp = (br != null) ? br.readLine() : null;
+            if (br != null)
+                br.close();
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
         sMemory.append("\n").append(tmp).append("\n");
-        String result = "Memery Status:\n" + sMemory;
-        return result;
 
+        return  "Memory Status:\n" + sMemory;
     }
 
     /*
@@ -1252,8 +1251,8 @@ public final class Inspector {
         }
 
         try {
-            tmp = br.readLine();
-            tmp = br.readLine();
+            tmp = (br != null) ? br.readLine() : null;
+            tmp = (br != null) ? br.readLine() : null;
             if (tmp != null) {
                 // split by whitespace and take 2nd element, so that in:
                 // MemoryFree: x kb
@@ -1262,7 +1261,8 @@ public final class Inspector {
                 if (arr.length > 1)
                     tmp = arr[1];
             }
-            br.close();
+            if (br != null)
+                br.close();
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -1282,6 +1282,7 @@ public final class Inspector {
 		 * "mins:" + seconds + "sec.\n"; return tmp;
 		 */
         Log.v("uptime", String.valueOf(uptime));
+
         return uptime / 1000.0;
     }
 
@@ -1324,6 +1325,7 @@ public final class Inspector {
         NetworkInfo i = cm.getActiveNetworkInfo();
         if (i == null)
             return TYPE_UNKNOWN;
+
         return i.getTypeName();
     }
 
@@ -1333,17 +1335,16 @@ public final class Inspector {
      * @return true if the Internet is reachable.
      */
     public static boolean networkAvailable(Context c) {
-        String network = getNetworkStatus(c);
-        return network.equals(NETWORKSTATUS_CONNECTED);
+        return getNetworkStatus(c).equals(NETWORKSTATUS_CONNECTED);
     }
 
     /* Get current WiFi signal Strength */
     public static int getWifiSignalStrength(Context context) {
         WifiManager myWifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         WifiInfo myWifiInfo = myWifiManager.getConnectionInfo();
-        int wifiRssi = myWifiInfo.getRssi();
         // Log.v("WifiRssi", "Rssi:" + wifiRssi);
-        return wifiRssi;
+
+        return myWifiInfo.getRssi();
 
     }
 
@@ -1364,25 +1365,23 @@ public final class Inspector {
     public static int getWifiLinkSpeed(Context context) {
         WifiManager myWifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         WifiInfo myWifiInfo = myWifiManager.getConnectionInfo();
-        int linkSpeed = myWifiInfo.getLinkSpeed();
-
         // Log.v("linkSpeed", "Link speed:" + linkSpeed);
-        return linkSpeed;
+
+        return myWifiInfo.getLinkSpeed();
     }
 
     /* Check whether WiFi is enabled */
     public static boolean getWifiEnabled(Context context) {
-        boolean wifiEnabled = false;
-
         WifiManager myWifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-        wifiEnabled = myWifiManager.isWifiEnabled();
         // Log.v("WifiEnabled", "Wifi is enabled:" + wifiEnabled);
-        return wifiEnabled;
+
+        return myWifiManager.isWifiEnabled();
     }
 
     /* Get Wifi state: */
     public static String getWifiState(Context context) {
-        WifiManager myWifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        WifiManager myWifiManager;
+        myWifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         int wifiState = myWifiManager.getWifiState();
         switch (wifiState) {
             case WifiManager.WIFI_STATE_DISABLED:
@@ -1400,10 +1399,8 @@ public final class Inspector {
 
     public static WifiInfo getWifiInfo(Context context) {
         WifiManager myWifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-        WifiInfo connectionInfo = myWifiManager.getConnectionInfo();
-        // Log.v("WifiInfo", "Wifi information:" + connectionInfo);
-        return connectionInfo;
 
+        return myWifiManager.getConnectionInfo();
     }
 
     /*
@@ -1567,9 +1564,14 @@ public final class Inspector {
     }
 
     private static Location getLastKnownLocation(Context context, String provider) {
-        LocationManager lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-        Location l = lm.getLastKnownLocation(provider);
-        return l;
+        try {
+            LocationManager lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+            return lm.getLastKnownLocation(provider);
+        }
+        catch (SecurityException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     /* Get the distance users between two locations */
@@ -1742,9 +1744,7 @@ public final class Inspector {
     public static CellLocation getDeviceLocation(Context context) {
         TelephonyManager telManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
 
-        CellLocation LocDevice = telManager.getCellLocation();
-        // Log.v("DeviceLocation", "Device Location:" + LocDevice);
-        return LocDevice;
+        return telManager.getCellLocation();
     }
 
     /**
@@ -1773,9 +1773,16 @@ public final class Inspector {
         String[] queries = new String[] { android.provider.CallLog.Calls.TYPE, android.provider.CallLog.Calls.DATE,
                 android.provider.CallLog.Calls.DURATION };
 
-        Cursor cur = context.getContentResolver().query(android.provider.CallLog.Calls.CONTENT_URI, queries,
-                android.provider.CallLog.Calls.DATE + " > " + bootTime, null,
-                android.provider.CallLog.Calls.DATE + " ASC");
+        Cursor cur = null;
+
+        try {
+            cur = context.getContentResolver().query(android.provider.CallLog.Calls.CONTENT_URI, queries,
+                    android.provider.CallLog.Calls.DATE + " > " + bootTime, null,
+                    android.provider.CallLog.Calls.DATE + " ASC");
+        }
+        catch (SecurityException e) {
+            e.printStackTrace();
+        }
 
         if (cur != null) {
             if (cur.moveToFirst()) {
@@ -1827,47 +1834,52 @@ public final class Inspector {
         String[] queryFields = new String[] { android.provider.CallLog.Calls.TYPE, android.provider.CallLog.Calls.DATE,
                 android.provider.CallLog.Calls.DURATION };
 
-        Cursor myCursor = context.getContentResolver().query(android.provider.CallLog.Calls.CONTENT_URI, queryFields,
-                null, null, android.provider.CallLog.Calls.DATE + " DESC");
+        Cursor myCursor = null;
 
-        if (myCursor.moveToFirst()) {
-            for (int i = 0; i < myCursor.getColumnCount(); i++) {
-                myCursor.moveToPosition(i);
-                callType = myCursor.getInt(0);
-                callDate = new Date(myCursor.getLong(1));
-                callDur = myCursor.getLong(2);
+        try {
+            myCursor = context.getContentResolver().query(android.provider.CallLog.Calls.CONTENT_URI, queryFields,
+                    null, null, android.provider.CallLog.Calls.DATE + " DESC");
+            assert myCursor != null;
 
-                time = dateformat.format(callDate);
-                if (tmpTime != null && !time.equals(tmpTime)) {
-                    callMonth.put(tmpTime, curMonth);
-                    callInDur.clear();
-                    callOutDur.clear();
-                    curMonth = new CallMonth();
-                }
-                tmpTime = time;
+            if (myCursor.moveToFirst()) {
+                for (int i = 0; i < myCursor.getColumnCount(); i++) {
+                    myCursor.moveToPosition(i);
+                    callType = myCursor.getInt(0);
+                    callDate = new Date(myCursor.getLong(1));
+                    callDur = myCursor.getLong(2);
 
-                if (callType == 1) {
-                    curMonth.tolCallInNum++;
-                    curMonth.tolCallInDur += callDur;
-                    callInDur.put("tolCallInNum", String.valueOf(curMonth.tolCallInNum));
-                    callInDur.put("tolCallInDur", String.valueOf(curMonth.tolCallInDur));
-                }
-                if (callType == 2) {
-                    curMonth.tolCallOutNum++;
-                    curMonth.tolCallOutDur += callDur;
-                    callOutDur.put("tolCallOutNum", String.valueOf(curMonth.tolCallOutNum));
-                    callOutDur.put("tolCallOutDur", String.valueOf(curMonth.tolCallOutDur));
-                }
-                if (callType == 3) {
-                    curMonth.tolMissedCallNum++;
-                    callInDur.put("tolMissedCallNum", String.valueOf(curMonth.tolMissedCallNum));
+                    time = dateformat.format(callDate);
+                    if (tmpTime != null && !time.equals(tmpTime)) {
+                        callMonth.put(tmpTime, curMonth);
+                        callInDur.clear();
+                        callOutDur.clear();
+                        curMonth = new CallMonth();
+                    }
+                    tmpTime = time;
+
+                    if (callType == 1) {
+                        curMonth.tolCallInNum++;
+                        curMonth.tolCallInDur += callDur;
+                        callInDur.put("tolCallInNum", String.valueOf(curMonth.tolCallInNum));
+                        callInDur.put("tolCallInDur", String.valueOf(curMonth.tolCallInDur));
+                    }
+                    if (callType == 2) {
+                        curMonth.tolCallOutNum++;
+                        curMonth.tolCallOutDur += callDur;
+                        callOutDur.put("tolCallOutNum", String.valueOf(curMonth.tolCallOutNum));
+                        callOutDur.put("tolCallOutDur", String.valueOf(curMonth.tolCallOutDur));
+                    }
+                    if (callType == 3) {
+                        curMonth.tolMissedCallNum++;
+                        callInDur.put("tolMissedCallNum", String.valueOf(curMonth.tolMissedCallNum));
+                    }
                 }
             }
-        } else {
-            // Log.v("MonthType", "callType=None");
-            // Log.v("MonthDate", "callDate=None");
-            // Log.v("MonthDuration", "callduration =None");
         }
+        catch (SecurityException | NullPointerException e) {
+            e.printStackTrace();
+        }
+
         return callMonth;
     }
 
@@ -1903,8 +1915,8 @@ public final class Inspector {
     public static String getTimeZone(Context context) {
         Calendar cal = Calendar.getInstance();
         TimeZone tz = cal.getTimeZone();
+
         return tz.getID();
-        //return tz.getDisplayName();
     }
 
     /**
@@ -1925,9 +1937,8 @@ public final class Inspector {
      */
     public static int isDeveloperModeOn(Context context) {
         ContentResolver res = context.getContentResolver();
-        int adb = Settings.Secure.getInt(res, Settings.Secure.ADB_ENABLED, 0);
+        return Settings.Secure.getInt(res, Settings.Secure.ADB_ENABLED, 0);
         // In API level 17, this is Settings.Global.ADB_ENABLED.
-        return adb;
     }
 
 	/*
@@ -1988,8 +1999,9 @@ public final class Inspector {
 
         // Construct sample and return it in the end
         Sample mySample = new Sample();
-        SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(context);
-        String uuId = p.getString(GreenHub.getRegisteredUuid(), null);
+        // SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(context);
+        // p.getString(GreenHub.getRegisteredUuid(), null);
+        String uuId = getUuid(context);
         mySample.setUuId(uuId);
         mySample.setTriggeredBy(action);
         // required always
@@ -2240,7 +2252,7 @@ public final class Inspector {
      * @return a List<Feature> populated with extra items to collect outside of the protocol spec.
      */
     private static List<Feature> getExtras(Context context) {
-        LinkedList<Feature> res = new LinkedList<Feature>();
+        LinkedList<Feature> res = new LinkedList<>();
         res.add(getVmVersion(context));
         return res;
     }
@@ -2269,7 +2281,7 @@ public final class Inspector {
     }
 
     public static List<String> getSignatures(PackageInfo pak) {
-        List<String> sigList = new LinkedList<String>();
+        List<String> sigList = new LinkedList<>();
         String[] pmInfos = pak.requestedPermissions;
         if (pmInfos != null) {
             byte[] bytes = getPermissionBytes(pmInfos);

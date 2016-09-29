@@ -4,95 +4,59 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.view.View;
 
-import com.android.internal.os.PowerProfileHelper;
-
-import java.net.InetAddress;
-
+import hmatalonga.greenhub.adapters.PagerAdapter;
 import hmatalonga.greenhub.fragments.HomeFragment;
-import hmatalonga.greenhub.fragments.HomeFragment;
-import hmatalonga.greenhub.protocol.RegisterHandler;
 import hmatalonga.greenhub.sampling.Inspector;
+import hmatalonga.greenhub.tasks.RegisterDeviceTask;
 import hmatalonga.greenhub.utils.FontManager;
-import hmatalonga.greenhub.utils.NetworkWatcher;
 
 public class MainActivity extends AppCompatActivity {
-    private static GreenHub app;
-    private static Context context;
+    private static GreenHub sApp = null;
+    private ViewPager mViewPager;
+    private ActionBar mActionBar;
 
-    private TabLayout tabLayout;
-    private ViewPager viewPager;
+    private int mCurrentToolbarTitle = R.string.app_name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Set the Main Activity instance on the App class
+        GreenHub.setMain(this);
+
+        // Configure View and Layout
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        mActionBar = getSupportActionBar();
+        assert mActionBar != null;
+        mActionBar.setTitle(mCurrentToolbarTitle);
 
-        context = getApplicationContext();
-        app = new GreenHub(context);
-        app.initModules();
+        // Initialize Application instance
+        sApp = new GreenHub(getApplicationContext());
+        sApp.initModules();
 
-        final String androidId = Inspector.getAndroidId(context);
-        final String msg = "Hello";
+        // TODO: Create default xml preferences file
+        // TODO: Create a chart menu with temp, voltage and battery level
+        // PreferenceManager.setDefaultValues();
 
-        Typeface iconFont = FontManager.getTypeface(getApplicationContext(), FontManager.FONTAWESOME);
-        FontManager.markAsIconContainer(findViewById(R.id.main_container), iconFont);
+        // Initialize fragments content
+        HomeFragment.setApp(sApp);
 
-//        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        assert fab != null;
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                if (NetworkWatcher.hasInternet(context)) {
-//                    app.device = app.registerHandler.registerClient();
-//                }
-//                Snackbar.make(view, msg, Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
+        // Run tasks --
+        HomeFragment.setStatus("Registering Device...");
+        // Register device on the web server
+        new RegisterDeviceTask().execute(sApp);
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
-        tabLayout.addTab(tabLayout.newTab().setText("Home"));
-        tabLayout.addTab(tabLayout.newTab().setText("About"));
-        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
-
-        final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
-        final PagerAdapter adapter = new PagerAdapter
-                (getSupportFragmentManager(), tabLayout.getTabCount());
-        viewPager.setAdapter(adapter);
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                viewPager.setCurrentItem(tab.getPosition());
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-            }
-        });
-
-//        TextView textViewAndroidId = (TextView) findViewById(R.id.textViewAndroidId);
-//        assert textViewAndroidId != null;
-//
-//        textViewAndroidId.setText("GreenHub Id: " + androidId);
+        setupTabs();
     }
 
     @Override
@@ -115,7 +79,90 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
             return true;
         }
+        else if (id == R.id.action_summary) {
+            Intent intent = new Intent(Intent.ACTION_POWER_USAGE_SUMMARY);
+            startActivity(intent);
+            return true;
+        }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onResume() {
+        sApp.startReceivers();
+        // update status
+        // refresh UI
+        // Toast.makeText(getApplicationContext(), "App resumed", Toast.LENGTH_LONG).show();
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        sApp.stopReceivers();
+        Inspector.resetRunningProcessInfo();
+        // Toast.makeText(getApplicationContext(), "App paused", Toast.LENGTH_LONG).show();
+        super.onPause();
+    }
+
+    private void setupTabs() {
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+        assert tabLayout != null;
+
+        tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.ic_home_white_24dp));
+        tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.ic_account_white_24dp));
+        tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.ic_information_white_24dp));
+        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+
+        final PagerAdapter adapter = new PagerAdapter(getSupportFragmentManager(),
+                tabLayout.getTabCount());
+
+        mViewPager = (ViewPager) findViewById(R.id.pager);
+        assert mViewPager != null;
+
+        try {
+            mViewPager.setAdapter(adapter);
+            mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+            tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+                @Override
+                public void onTabSelected(TabLayout.Tab tab) {
+                    switch (tab.getPosition()) {
+                        case 0:
+                            mCurrentToolbarTitle = R.string.title_fragment_home;
+                            break;
+                        case 1:
+                            mCurrentToolbarTitle = R.string.title_fragment_device;
+                            break;
+                        case 2:
+                            mCurrentToolbarTitle = R.string.title_fragment_about;
+                            break;
+                        default:
+                            mCurrentToolbarTitle = R.string.app_name;
+                    }
+                    mViewPager.setCurrentItem(tab.getPosition());
+                    mActionBar.setTitle(mCurrentToolbarTitle);
+                }
+
+                @Override
+                public void onTabUnselected(TabLayout.Tab tab) {
+                }
+
+                @Override
+                public void onTabReselected(TabLayout.Tab tab) {
+                }
+            });
+        }
+        catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     *
+     * @param view
+     */
+    private void setupFont(View view) {
+        Typeface iconFont = FontManager.getTypeface(getApplicationContext(), FontManager.FONTAWESOME);
+        FontManager.markAsIconContainer(view, iconFont);
     }
 }
