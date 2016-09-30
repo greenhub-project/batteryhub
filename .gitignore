@@ -39,3 +39,4 @@ proguard/
 # Assets folders
 assets/
 screens/
+dist/
