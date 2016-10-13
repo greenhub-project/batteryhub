@@ -4,9 +4,9 @@ sudo: required
 
 android:
   components:
-    # Additional components
-    - extra-android-m2repository
-    - extra-android-support
+    - tools
+    - tools
+    - platform-tools
 
     # The BuildTools version used by your project
     - build-tools-24.0.2
@@ -18,6 +18,10 @@ android:
     # if you need to run emulator(s) during your tests
     - sys-img-armeabi-v7a-android-24
     # - sys-img-x86-android-22
+
+    # Additional components
+    - extra-android-m2repository
+    - extra-android-support
 
 before_install:
   - chmod +x gradlew
