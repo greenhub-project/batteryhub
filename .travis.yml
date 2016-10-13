@@ -8,9 +8,6 @@ android:
     - extra-android-m2repository
     - extra-android-support
 
-    - platform-tools
-    - tools
-
     # The BuildTools version used by your project
     - build-tools-24.0.2
 
@@ -25,7 +22,7 @@ android:
 before_install:
   - chmod +x gradlew
   # TODO: Remove the following line when Travis' platform-tools are updated to v24+
-  - echo yes | android update sdk -a --filter platform-tools --no-ui --force
+  # - echo yes | android update sdk -a --filter platform-tools --no-ui --force
 
 # Emulator Management: Create, Start and Wait
 before_script:

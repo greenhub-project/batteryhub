@@ -1,6 +1,6 @@
 # GreenHub
 
-[![Build Status](https://travis-ci.org/hmatalonga/GreenHub.svg?branch=master)](https://travis-ci.org/hmatalonga/greenhub)
+[![Build Status](https://travis-ci.org/hmatalonga/greenhub.svg?branch=master)](https://travis-ci.org/hmatalonga/greenhub)
 
 A collaborative approach to power consumption analysis of mobile devices.
 
