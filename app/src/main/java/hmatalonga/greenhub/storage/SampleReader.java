@@ -11,7 +11,7 @@ import hmatalonga.greenhub.database.Feature;
 import hmatalonga.greenhub.database.NetworkDetails;
 import hmatalonga.greenhub.database.ProcessInfo;
 import hmatalonga.greenhub.database.Sample;
-import hmatalonga.greenhub.utils.StringHelper;
+import hmatalonga.greenhub.util.StringHelper;
 
 /**
  * Created by hugo on 13-04-2016.

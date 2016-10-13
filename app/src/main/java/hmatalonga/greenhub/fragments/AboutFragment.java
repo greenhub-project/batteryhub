@@ -12,8 +12,7 @@ import android.view.ViewGroup;
 import hmatalonga.greenhub.R;
 
 /**
- * About Fragment
- * Created by hugo on 27-03-2016.
+ * About Fragment.
  */
 public class AboutFragment extends Fragment {
     @Override

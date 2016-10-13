@@ -12,9 +12,8 @@ import java.util.Date;
 
 import hmatalonga.greenhub.Constants;
 import hmatalonga.greenhub.database.Sample;
-import hmatalonga.greenhub.fragments.HomeFragment;
 import hmatalonga.greenhub.storage.GreenHubDb;
-import hmatalonga.greenhub.utils.Notifier;
+import hmatalonga.greenhub.util.Notifier;
 
 /**
  * Created by hugo on 13-04-2016.

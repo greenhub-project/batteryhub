@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2016 Hugo Matalonga
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package hmatalonga.greenhub;
 
 import android.app.ActivityManager.RunningAppProcessInfo;
@@ -16,6 +32,7 @@ import hmatalonga.greenhub.protocol.CommunicationManager;
 import hmatalonga.greenhub.protocol.RegisterHandler;
 import hmatalonga.greenhub.model.Device;
 import hmatalonga.greenhub.sampling.BatteryEstimator;
+import hmatalonga.greenhub.ui.MainActivity;
 
 /**
  * App class
@@ -180,8 +197,7 @@ public class GreenHub {
      * Return a human readable application label for the named app. If not
      * found, return appName.
      *
-     * @param appName
-     *            the application name
+     * @param appName the application name
      * @return the human readable application label
      */
     public static String labelForApp(Context context, String appName) {

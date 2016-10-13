@@ -1,3 +1,5 @@
+
+
 package hmatalonga.greenhub.sampling;
 
 
@@ -75,7 +77,7 @@ import hmatalonga.greenhub.database.ProcessInfo;
 import hmatalonga.greenhub.database.Sample;
 
 /**
- * Created by hugo on 06-03-2016.
+ * Inspector
  */
 public final class Inspector {
     private static final boolean collectSignatures = true;
@@ -1606,13 +1608,13 @@ public final class Inspector {
     /* Check the maximum number of satellites can be used in the satellite list */
     public static int getMaxNumSatellite(Context context) {
 
-        LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-        GpsStatus gpsStatus = locationManager.getGpsStatus(null);
-        int maxNumSatellite = gpsStatus.getMaxSatellites();
+        // LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        // GpsStatus gpsStatus = locationManager.getGpsStatus(null);
+        // int maxNumSatellite = gpsStatus.getMaxSatellites();
 
-        // Log.v("maxNumStatellite", "Maxmium number of satellites:" +
+        // Log.v("maxNumStatellite", "Maximum number of satellites:" +
         // maxNumSatellite);
-        return maxNumSatellite;
+        return 0; // maxNumSatellite;
     }
 
     /* Get call status */

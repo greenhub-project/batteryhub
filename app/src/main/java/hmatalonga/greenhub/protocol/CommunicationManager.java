@@ -1,8 +1,6 @@
 package hmatalonga.greenhub.protocol;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.android.volley.DefaultRetryPolicy;
@@ -14,22 +12,19 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import hmatalonga.greenhub.Constants;
 import hmatalonga.greenhub.GreenHub;
 import hmatalonga.greenhub.database.Sample;
 import hmatalonga.greenhub.fragments.HomeFragment;
 import hmatalonga.greenhub.storage.GreenHubDb;
-import hmatalonga.greenhub.utils.NetworkWatcher;
+import hmatalonga.greenhub.util.NetworkWatcher;
 
 /**
  * Send collected data to the server and receives responses

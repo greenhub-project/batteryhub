@@ -58,7 +58,7 @@ public class SampleSender {
                 /* End Click Tracking: Track sample sending. */
 
                 int successSum = 0;
-                for (int batches = 0; batches < Constants.COMMS_MAX_BATCHES && batches < samples
+                for (int batches = 0; batches < Constants.SAMPLE_MAX_BATCHES && batches < samples
                         / Constants.COMMS_MAX_UPLOAD_BATCH + 1; batches++) {
                     SortedMap<Long, Sample> map = GreenHubDb.getInstance(c).queryOldestSamples(Constants.COMMS_MAX_UPLOAD_BATCH);
                     if (map.size() > 0) {

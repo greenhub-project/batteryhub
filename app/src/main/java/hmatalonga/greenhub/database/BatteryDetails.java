@@ -1,6 +1,6 @@
 package hmatalonga.greenhub.database;
 
-import hmatalonga.greenhub.utils.StringHelper;
+import hmatalonga.greenhub.util.StringHelper;
 
 /**
  * Created by hugo on 09-04-2016.

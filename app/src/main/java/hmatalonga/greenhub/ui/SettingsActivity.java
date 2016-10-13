@@ -1,4 +1,4 @@
-package hmatalonga.greenhub;
+package hmatalonga.greenhub.ui;
 
 
 import android.annotation.TargetApi;
@@ -19,10 +19,11 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.MenuItem;
 
 import java.util.List;
+
+import hmatalonga.greenhub.R;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On

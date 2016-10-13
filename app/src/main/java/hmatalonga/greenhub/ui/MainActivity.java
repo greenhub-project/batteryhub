@@ -1,6 +1,5 @@
-package hmatalonga.greenhub;
+package hmatalonga.greenhub.ui;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -13,11 +12,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import hmatalonga.greenhub.GreenHub;
+import hmatalonga.greenhub.R;
 import hmatalonga.greenhub.adapters.PagerAdapter;
 import hmatalonga.greenhub.fragments.HomeFragment;
 import hmatalonga.greenhub.sampling.Inspector;
 import hmatalonga.greenhub.tasks.RegisterDeviceTask;
-import hmatalonga.greenhub.utils.FontManager;
+import hmatalonga.greenhub.util.FontManager;
 
 public class MainActivity extends AppCompatActivity {
     private static GreenHub sApp = null;
@@ -123,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             mViewPager.setAdapter(adapter);
             mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-            tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
                 @Override
                 public void onTabSelected(TabLayout.Tab tab) {
                     switch (tab.getPosition()) {
@@ -157,10 +158,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     *
-     * @param view
-     */
     private void setupFont(View view) {
         Typeface iconFont = FontManager.getTypeface(getApplicationContext(), FontManager.FONTAWESOME);
         FontManager.markAsIconContainer(view, iconFont);

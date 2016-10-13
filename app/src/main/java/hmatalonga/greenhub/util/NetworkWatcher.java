@@ -1,9 +1,8 @@
-package hmatalonga.greenhub.utils;
+package hmatalonga.greenhub.util;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.AsyncTask;
 
 import java.net.InetAddress;
 

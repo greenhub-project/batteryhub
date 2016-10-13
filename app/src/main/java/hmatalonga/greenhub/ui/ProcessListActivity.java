@@ -1,4 +1,4 @@
-package hmatalonga.greenhub;
+package hmatalonga.greenhub.ui;
 
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -7,6 +7,7 @@ import android.widget.ListView;
 
 import java.util.List;
 
+import hmatalonga.greenhub.R;
 import hmatalonga.greenhub.adapters.ProcessInfoAdapter;
 import hmatalonga.greenhub.database.ProcessInfo;
 import hmatalonga.greenhub.sampling.Inspector;

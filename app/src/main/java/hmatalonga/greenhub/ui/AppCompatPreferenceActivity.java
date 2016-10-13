@@ -1,4 +1,4 @@
-package hmatalonga.greenhub;
+package hmatalonga.greenhub.ui;
 
 import android.content.res.Configuration;
 import android.os.Bundle;

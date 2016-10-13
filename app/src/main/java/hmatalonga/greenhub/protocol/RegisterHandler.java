@@ -7,7 +7,6 @@ import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 
 import com.android.volley.toolbox.StringRequest;
@@ -21,7 +20,6 @@ import hmatalonga.greenhub.GreenHub;
 import hmatalonga.greenhub.fragments.HomeFragment;
 import hmatalonga.greenhub.sampling.Inspector;
 import hmatalonga.greenhub.model.Device;
-import hmatalonga.greenhub.utils.NetworkWatcher;
 
 /**
  * Registers devices on server for first-run, connects device to server and provides uuid

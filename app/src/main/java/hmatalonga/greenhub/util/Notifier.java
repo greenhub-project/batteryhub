@@ -1,4 +1,4 @@
-package hmatalonga.greenhub.utils;
+package hmatalonga.greenhub.util;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -7,7 +7,7 @@ import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 
 import hmatalonga.greenhub.Constants;
-import hmatalonga.greenhub.MainActivity;
+import hmatalonga.greenhub.ui.MainActivity;
 import hmatalonga.greenhub.R;
 import hmatalonga.greenhub.sampling.BatteryEstimator;
 import hmatalonga.greenhub.storage.GreenHubDb;

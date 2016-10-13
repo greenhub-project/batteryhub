@@ -1,3 +1,19 @@
+/*
+ * Copyright 2016 Hugo Matalonga
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package hmatalonga.greenhub.fragments;
 
 import android.content.Context;
@@ -24,27 +40,39 @@ import hmatalonga.greenhub.protocol.SampleSender;
 import hmatalonga.greenhub.sampling.BatteryEstimator;
 
 /**
- * Home Fragment
- * Created by hugo on 27-03-2016.
+ * Home Fragment.
  */
 public class HomeFragment extends Fragment {
+
     private static TextView sStatusText = null;
+
     private static String status = "";
+
     private static GreenHub sApp;
+
     private Context mContext;
+
     private BatteryEstimator mEstimator;
+
     // private String mJson;
+
     private List<DeviceResourceCard> mDeviceResourceCards;
+
     private RecyclerView mRecyclerView;
+
     private TextView mBatteryText;
+
     private ProgressBar mProgressBar;
+
     private String mValue;
+
     private Thread mLocalThread;
+
     private int mCurrentBatteryValue;
 
-
     @Override
-    public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, final ViewGroup container,
+                             Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_home, container, false);
 
         mEstimator = BatteryEstimator.getInstance();
@@ -62,7 +90,8 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        GridLayoutManager layout = new GridLayoutManager(mContext, 1, GridLayoutManager.VERTICAL, false);
+        GridLayoutManager layout = new GridLayoutManager(mContext, 1, GridLayoutManager.VERTICAL,
+                false);
         mRecyclerView.setLayoutManager(layout);
         mRecyclerView.setHasFixedSize(true);
 
@@ -77,10 +106,11 @@ public class HomeFragment extends Fragment {
 
     @Override
     public void onResume() {
+        super.onResume();
+
         mBatteryText.setText(String.valueOf(mCurrentBatteryValue));
         mProgressBar.setProgress(mCurrentBatteryValue);
         sStatusText.setText(status);
-        super.onResume();
     }
 
     /**
@@ -120,6 +150,7 @@ public class HomeFragment extends Fragment {
 
     /**
      * Creates an array to feed data to the recyclerView
+     *
      * @param context Application context
      * @param estimator Provider of mobile status
      */
@@ -136,7 +167,8 @@ public class HomeFragment extends Fragment {
                 mValue = String.valueOf(estimator.getVoltage() + " V");
                 mDeviceResourceCards.add(new DeviceResourceCard("Voltage", mValue));
                 // Health
-                mDeviceResourceCards.add(new DeviceResourceCard("Health", estimator.getHealthStatus()));
+                mDeviceResourceCards.add(new DeviceResourceCard("Health",
+                        estimator.getHealthStatus()));
                 // Memory
 //                double memUsed = Math.round((Inspector.readMemory(context)[1] / 1024) * 100.0) / 100.0;
 //                mValue = String.valueOf(memUsed) + " MB";

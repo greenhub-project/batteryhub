@@ -10,12 +10,12 @@ import org.junit.runner.RunWith;
 import static org.junit.Assert.*;
 
 /**
- * Instrumentation test, which will execute on an Android device.
+ * App Package Name test, which will assert the package name.
  *
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
 @RunWith(AndroidJUnit4.class)
-public class ExampleInstrumentedTest {
+public class AppPackageNameTest {
     @Test
     public void useAppContext() throws Exception {
         // Context of the app under test.

@@ -1,4 +1,4 @@
-package hmatalonga.greenhub.utils;
+package hmatalonga.greenhub.util;
 
 import android.graphics.Canvas;
 import android.graphics.Color;

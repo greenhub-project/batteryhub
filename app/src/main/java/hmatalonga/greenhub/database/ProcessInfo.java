@@ -3,7 +3,7 @@ package hmatalonga.greenhub.database;
 import java.util.Arrays;
 import java.util.List;
 
-import hmatalonga.greenhub.utils.StringHelper;
+import hmatalonga.greenhub.util.StringHelper;
 
 /**
  * Created by hugo on 09-04-2016.

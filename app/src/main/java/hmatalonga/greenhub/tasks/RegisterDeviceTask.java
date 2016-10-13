@@ -5,7 +5,7 @@ import android.util.Log;
 
 import hmatalonga.greenhub.GreenHub;
 import hmatalonga.greenhub.fragments.HomeFragment;
-import hmatalonga.greenhub.utils.NetworkWatcher;
+import hmatalonga.greenhub.util.NetworkWatcher;
 
 /**
  * Task to register devices on the web server
