@@ -13,7 +13,7 @@ android {
     }
     signingConfigs {
         base {
-            keyAlias 'greenhubbasekey'
+            keyAlias 'GreenHubKey'
             keyPassword 'greenhub'
             storeFile file('../greenhub-base-key.jks')
             storePassword 'greenhub'

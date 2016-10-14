@@ -21,6 +21,6 @@ public class AppPackageNameTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("hmatalonga.greenhub", appContext.getPackageName());
+        assertEquals("hmatalonga.greenhub2", appContext.getPackageName());
     }
 }
