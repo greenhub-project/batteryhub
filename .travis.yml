@@ -5,7 +5,7 @@ sudo: required
 android:
   components:
     # The BuildTools version used by your project
-    - build-tools-24.0.2
+    - build-tools-24.0.3
 
     # The SDK version used to compile your project
     - android-24
@@ -21,11 +21,10 @@ android:
 
 before_install:
   - chmod +x gradlew
-  # TODO: Remove the following line when Travis' platform-tools are updated to v24+
-  # - echo yes | android update sdk -a --filter platform-tools --no-ui --force
 
 # Emulator Management: Create, Start and Wait
 before_script:
+  - android list targets
   - echo no | android create avd --force -n test -t android-24 --abi armeabi-v7a
   - emulator -avd test -no-audio -no-window &
   - android-wait-for-emulator
