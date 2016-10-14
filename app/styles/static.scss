@@ -1,0 +1,77 @@
+$icon-font-path: '../fonts/';
+
+// bower:scss
+@import "bower_components/bootstrap-sass/assets/stylesheets/_bootstrap.scss";
+// endbower
+
+@import "variables";
+
+@import 'https://fonts.googleapis.com/css?family=Lato|Montserrat|Open+Sans';
+
+.browserupgrade {
+  margin: 0.2em 0;
+  background: #ccc;
+  color: #000;
+  padding: 0.2em 0;
+}
+
+body {
+  font-family: 'Open Sans', sans-serif;
+}
+
+h1,
+h2,
+h3 {
+  font-family: 'Lato', sans-serif;
+}
+
+.logo-title {
+  font-family: 'Montserrat', sans-serif;
+  color: $gray;
+
+  span {
+    color: $green;
+  }
+}
+
+nav {
+  margin-top: 30px;
+  text-align: right;
+
+  a {
+    padding: 0 20px;
+  }
+}
+
+.header {
+  margin: 20px 0 50px 0;
+  padding: 10vh 0;
+  text-align: center;
+  color: #fff;
+
+  p {
+    font-size: 1.2em;
+  }
+}
+
+.about {
+  background: url(../images/backdrop-about.jpg) no-repeat scroll 50% / cover transparent;
+}
+
+.roadmap {
+  background: url(../images/backdrop-roadmap.jpg) no-repeat scroll 50% / cover transparent;
+}
+
+.api {
+  background: url(../images/backdrop-api.jpg) no-repeat scroll 50% / cover transparent;
+}
+
+footer {
+  padding-bottom: 20px;
+}
+
+@media(max-width: 768px) {
+  nav {
+    text-align: center;
+  }
+}
