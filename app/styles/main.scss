@@ -65,7 +65,10 @@ h3 {
 
     .info {
       margin-top: 50px;
-      font-weight: 700;
+
+      a {
+        font-weight: 700;
+      }
     }
   }
 }
