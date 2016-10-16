@@ -40,3 +40,6 @@ proguard/
 assets/
 screens/
 dist/
+
+greenhub-build
+greenhub-docker-build
