@@ -1,11 +1,13 @@
-FROM openjdk:8-jdk-alpine
+FROM ubuntu:16.04
 
 MAINTAINER Hugo Matalonga <hmatalonga@gmail.com>
 
 ENV ANDROID_HOME /opt/android-sdk-linux
 ENV ANDROID_SDK_URL https://dl.google.com/android/android-sdk_r24.4.1-linux.tgz
 
-RUN apk add --no-cache curl ca-certificates bash
+RUN dpkg --add-architecture i386
+RUN apt-get update -qq
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y curl openjdk-8-jdk libc6:i386 libstdc++6:i386 libgcc1:i386 libncurses5:i386 libz1:i386
 
 # Download Android SDK tools
 RUN mkdir -p /opt && curl -sL ${ANDROID_SDK_URL} | tar xz -C /opt
@@ -20,10 +22,13 @@ RUN echo y | android update sdk --no-ui --all --filter extra-android-support | g
 RUN echo y | android update sdk --no-ui --all --filter android-24 | grep 'package installed'
 
 # build tools
-RUN echo y | android update sdk --no-ui --all --filter build-tools-24.0.3 | grep 'package installed'
+RUN echo y | android update sdk --no-ui --all --filter build-tools-24.0.2 | grep 'package installed'
 
-# Android image for emulator
-RUN echo y | android update sdk --no-ui --all --filter sys-img-armeabi-v7a-android-24 | grep 'package installed'
+# For the moment an Android image for emulator is not necessary
+# RUN echo y | android update sdk --no-ui --all --filter sys-img-armeabi-v7a-android-24 | grep 'package installed'
 
 # extras
 RUN echo y | android update sdk --no-ui --all --filter extra-android-m2repository | grep 'package installed'
+
+# Cleaning
+RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
