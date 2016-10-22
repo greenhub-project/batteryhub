@@ -10,7 +10,7 @@ Learn more at [hmatalonga.github.io/greenhub](hmatalonga.github.io/greenhub).
 
 The Android app is available [here](https://github.com/hmatalonga/greenhub/releases/download/v1.0-alpha.1/greenhub-v1.0-alpha.1.apk).
 
-**Disclamer:** The project is still under heavy development, at the moment is in alpha stage.
+**Disclamer:** The project is still under heavy development, at the moment is in alpha stage. Currently no data is being uploaded since the web server is not online yet.
 
 ## Build Instructions
 
@@ -35,10 +35,23 @@ $ gradlew.bat check
 
 
 ### Docker
-If is the first time building the Android app with Docker, it is necessary to build a local Docker image before running it. Afterwards just run the container:
+If it is the first time building the Android app with Docker, it is necessary to build a local Docker image before running it. Afterwards just run a container:
 ```shell
 $ docker build -t hmatalonga/greenhub-android . # Only necessary for first build
-$ docker run -it --name container-name -v `pwd`:/greenhub -w /greenhub hmatalonga/greenhub-android /bin/sh -c "./gradlew assembleDebug; ./gradlew check"
+$ docker run -it --name container-name \        # Choose a container name
+-v `pwd`:/usr/src/app \                         # DO NOT change this src path
+hmatalonga/greenhub-android \
+/bin/sh -c \
+"./gradlew assembleDebug; ./gradlew check"
+```
+
+To execute another gradle task, simply create a new container:
+```shell
+$ docker run -it --name container-name \        # Choose another container name
+-v `pwd`:/usr/src/app \                         # DO NOT change this src path
+hmatalonga/greenhub-android \
+/bin/sh -c \
+"./gradlew task-name"
 ```
 
 To start an existing container, type:
@@ -46,14 +59,27 @@ To start an existing container, type:
 $ docker start -i container-name
 ```
 
+One line build, for copy-paste:
+```shell
+docker build -t hmatalonga/greenhub-android . && docker run -it --name greenhub-app -v `pwd`:/usr/src/app hmatalonga/greenhub-android /bin/sh -c "./gradlew assembleDebug; ./gradlew check"
+```
+
+To list all available gradle tasks run `./gradlew tasks`.
+
+#### Need help?
+Having problems building GreenHub? Please see the [Troubleshooting guide](https://github.com/hmatalonga/greenhub/wiki/Troubleshooting).
+
 For more details, please check our [wiki](https://github.com/hmatalonga/greenhub/wiki).
 
 ## Issues
 If you think you have found a bug or have a feature request, refer to the [issues page](https://github.com/hmatalonga/greenhub/issues), proper labels are provided.
 Before opening a new issue, be sure to search existing ones to avoid duplicates. Please try to include steps to reproduce the problem.
 
+### Known issues
+- The Android app can't communicate with the web server using mobile data Internet connection;
+
 ## Contributing
-Please read through our [contributing guidelines](CONTRIBUTING.md), which gives directions for opening issues, coding standards and development process.
+Please read through our [contributing guidelines](CONTRIBUTING.md). Included are directions for opening issues, coding standards and development process.
 
 ### Code of Conduct
 GreenHub has adopted a code of conduct that we expect project participants to adhere to.

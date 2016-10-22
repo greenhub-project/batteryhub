@@ -2,6 +2,8 @@ FROM ubuntu:16.04
 
 MAINTAINER Hugo Matalonga <hmatalonga@gmail.com>
 
+# Docker Android image for development environment
+
 ENV ANDROID_HOME /opt/android-sdk-linux
 ENV ANDROID_SDK_URL https://dl.google.com/android/android-sdk_r24.4.1-linux.tgz
 
@@ -32,3 +34,7 @@ RUN echo y | android update sdk --no-ui --all --filter extra-android-m2repositor
 
 # Cleaning
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# Create app directory
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
