@@ -1,5 +1,33 @@
+<!--
+  ~ Copyright (c) 2016 Hugo Matalonga & João Paulo Fernandes
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
 <resources>
+
     <string name="app_name">GreenHub</string>
+
+    <string name="accept">Accept</string>
+
+    <string name="decline">Decline</string>
+
+    <!-- Short text welcoming the user to the application -->
+    <string name="welcome_to_greenhub_app">Welcome to the GreenHub app!</string>
+
+    <!-- Medium-length welcome text indicating the subsequent text is important legal information -->
+    <string name="welcome_text">Before we begin, here is some important legal information regarding your use of this app. This will only take a minute!</string>
+
     <string name="action_summary">Summary</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_settings">Settings</string>

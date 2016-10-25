@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Hugo Matalonga
+ * Copyright (C) 2016 Hugo Matalonga & João Paulo Fernandes
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,14 +29,12 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import hmatalonga.greenhub.GreenHub;
 import hmatalonga.greenhub.R;
-import hmatalonga.greenhub.adapters.RVAdapter;
-import hmatalonga.greenhub.model.DeviceResourceCard;
-import hmatalonga.greenhub.protocol.SampleSender;
-import hmatalonga.greenhub.sampling.BatteryEstimator;
+import hmatalonga.greenhub.managers.sampling.BatteryEstimator;
+import hmatalonga.greenhub.models.DeviceResourceCard;
+import hmatalonga.greenhub.ui.adapters.RVAdapter;
 
 /**
  * Home Fragment.
@@ -56,7 +53,7 @@ public class HomeFragment extends Fragment {
 
     // private String mJson;
 
-    private List<DeviceResourceCard> mDeviceResourceCards;
+    private ArrayList<DeviceResourceCard> mDeviceResourceCards;
 
     private RecyclerView mRecyclerView;
 

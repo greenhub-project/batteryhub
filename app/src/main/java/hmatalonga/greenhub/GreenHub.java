@@ -28,10 +28,10 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.util.SparseArray;
 
-import hmatalonga.greenhub.protocol.CommunicationManager;
-import hmatalonga.greenhub.protocol.RegisterHandler;
-import hmatalonga.greenhub.model.Device;
-import hmatalonga.greenhub.sampling.BatteryEstimator;
+import hmatalonga.greenhub.managers.sampling.BatteryEstimator;
+import hmatalonga.greenhub.models.Device;
+import hmatalonga.greenhub.network.CommunicationManager;
+import hmatalonga.greenhub.network.RegisterHandler;
 import hmatalonga.greenhub.ui.MainActivity;
 
 /**
@@ -60,8 +60,8 @@ public class GreenHub {
         importanceToString.put(RunningAppProcessInfo.IMPORTANCE_VISIBLE, "Visible task");
         importanceToString.put(RunningAppProcessInfo.IMPORTANCE_FOREGROUND, "Foreground app");
 
-        importanceToString.put(Constants.IMPORTANCE_PERCEPTIBLE, "Perceptible task");
-        importanceToString.put(Constants.IMPORTANCE_SUGGESTION, "Suggestion");
+        importanceToString.put(Config.IMPORTANCE_PERCEPTIBLE, "Perceptible task");
+        importanceToString.put(Config.IMPORTANCE_SUGGESTION, "Suggestion");
 
         instance = this;
     }
@@ -82,10 +82,10 @@ public class GreenHub {
 
     public GreenHub(Context c) {
         context = c;
-        if (Constants.PRODUCTION)
-            serverURL = Constants.PUBLIC_SERVER_URL;
+        if (Config.PRODUCTION)
+            serverURL = Config.PUBLIC_SERVER_URL;
         else
-            serverURL = Constants.LOCAL_SERVER_URL;
+            serverURL = Config.LOCAL_SERVER_URL;
     }
 
     public void initModules() {
@@ -215,7 +215,7 @@ public class GreenHub {
     }
 
     public static String getRegisteredUuid() {
-        return Constants.REGISTERED_UUID;
+        return Config.REGISTERED_UUID;
     }
 
     public static void setMain(MainActivity mainActivity) {

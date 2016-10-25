@@ -2,21 +2,21 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 24
-    buildToolsVersion "24.0.2"
+    buildToolsVersion "${build_tools_version}"
     defaultConfig {
         applicationId "hmatalonga.greenhub"
         minSdkVersion 15
         targetSdkVersion 24
-        versionCode 1
-        versionName "v1.0-alpha.1"
+        version "${version_code}"
+        versionName "${version_name}"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     signingConfigs {
         base {
-            keyAlias 'GreenHubKey'
-            keyPassword 'greenhub'
-            storeFile file('../greenhub-base-key.jks')
-            storePassword 'greenhub'
+            keyAlias "${key_keyAlias}"
+            keyPassword "${key_keyPassword}"
+            storeFile file("${key_storefile}")
+            storePassword "${key_storePassword}"
         }
     }
     buildTypes {
@@ -50,14 +50,21 @@ dependencies {
     // Dependencies for unit tests which reside in the "tests" src folder.
     testCompile 'junit:junit:4.12'
     testCompile 'org.mockito:mockito-core:1.10.19'
+    // LeakCanary memory leaks library for testing purposes
+    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5'
+    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
+    testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
     // Android support libraries.
-    compile 'com.android.support:appcompat-v7:24.2.1'
-    compile 'com.android.support:design:24.2.1'
-    compile 'com.android.support:support-v4:24.2.1'
-    compile 'com.android.support:cardview-v7:24.2.1'
-    compile 'com.android.support:recyclerview-v7:24.2.1'
+    compile "com.android.support:appcompat-v7:${android_support_lib_version}"
+    compile "com.android.support:design:${android_support_lib_version}"
+    compile "com.android.support:support-v4:${android_support_lib_version}"
+    compile "com.android.support:cardview-v7:${android_support_lib_version}"
+    compile "com.android.support:recyclerview-v7:${android_support_lib_version}"
     // JSON utility library.
     compile 'com.google.code.gson:gson:2.6.2'
     // Android Volley library *to be migrated to Retrofit*
     compile 'eu.the4thfloor.volley:com.android.volley:2015.05.28'
+    // Retrofit library for networking operations
+    compile 'com.squareup.retrofit2:retrofit:2.1.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.1.0'
 }

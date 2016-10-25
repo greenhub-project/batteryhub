@@ -1,6 +1,23 @@
+/*
+ * Copyright (C) 2016 Hugo Matalonga & João Paulo Fernandes
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package hmatalonga.greenhub.ui;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -14,13 +31,13 @@ import android.view.View;
 
 import hmatalonga.greenhub.GreenHub;
 import hmatalonga.greenhub.R;
-import hmatalonga.greenhub.adapters.PagerAdapter;
 import hmatalonga.greenhub.fragments.HomeFragment;
-import hmatalonga.greenhub.sampling.Inspector;
+import hmatalonga.greenhub.managers.sampling.Inspector;
 import hmatalonga.greenhub.tasks.RegisterDeviceTask;
+import hmatalonga.greenhub.ui.adapters.PagerAdapter;
 import hmatalonga.greenhub.util.FontManager;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
     private static GreenHub sApp = null;
     private ViewPager mViewPager;
     private ActionBar mActionBar;
@@ -42,22 +59,22 @@ public class MainActivity extends AppCompatActivity {
         mActionBar.setTitle(mCurrentToolbarTitle);
 
         // Initialize Application instance
-        sApp = new GreenHub(getApplicationContext());
-        sApp.initModules();
+//        sApp = new GreenHub(getApplicationContext());
+//        sApp.initModules();
 
         // TODO: Create default xml preferences file
         // TODO: Create a chart menu with temp, voltage and battery level
         // PreferenceManager.setDefaultValues();
 
         // Initialize fragments content
-        HomeFragment.setApp(sApp);
+//        HomeFragment.setApp(sApp);
 
         // Run tasks --
-        HomeFragment.setStatus("Registering Device...");
+        HomeFragment.setStatus("Stopped");
         // Register device on the web server
-        new RegisterDeviceTask().execute(sApp);
+//        new RegisterDeviceTask().execute(sApp);
 
-        setupTabs();
+//        setupTabs();
     }
 
     @Override
@@ -72,18 +89,14 @@ public class MainActivity extends AppCompatActivity {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            Intent intent = new Intent(this, SettingsActivity.class);
-            startActivity(intent);
-            return true;
-        }
-        else if (id == R.id.action_summary) {
-            Intent intent = new Intent(Intent.ACTION_POWER_USAGE_SUMMARY);
-            startActivity(intent);
-            return true;
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                startActivity(new Intent(this, SettingsActivity.class));
+                return true;
+            case R.id.action_summary:
+                startActivity(new Intent(Intent.ACTION_POWER_USAGE_SUMMARY));
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -91,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-        sApp.startReceivers();
+        //sApp.startReceivers();
         // update status
         // refresh UI
         // Toast.makeText(getApplicationContext(), "App resumed", Toast.LENGTH_LONG).show();
@@ -100,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
-        sApp.stopReceivers();
+        //sApp.stopReceivers();
         Inspector.resetRunningProcessInfo();
         // Toast.makeText(getApplicationContext(), "App paused", Toast.LENGTH_LONG).show();
         super.onPause();
@@ -161,5 +174,10 @@ public class MainActivity extends AppCompatActivity {
     private void setupFont(View view) {
         Typeface iconFont = FontManager.getTypeface(getApplicationContext(), FontManager.FONTAWESOME);
         FontManager.markAsIconContainer(view, iconFont);
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
+
     }
 }
