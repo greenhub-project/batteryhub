@@ -19,7 +19,7 @@ function drawChart() {
 
   data.addRows([
     ['repo-docs', 'Repository documentation', 'docs',
-      new Date(2016, 9, 1), null, daysToMilliseconds(21), 60, null],
+      new Date(2016, 9, 1), null, daysToMilliseconds(30), 40, null],
     ['workflow', 'Workflow', 'task',
       new Date(2016, 9, 1), null, daysToMilliseconds(14), 100, null],
     ['travisCI', 'Continuous integration', 'tool',

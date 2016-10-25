@@ -2,10 +2,10 @@ $icon-font-path: '../fonts/';
 
 // bower:scss
 @import "bower_components/bootstrap-sass/assets/stylesheets/_bootstrap.scss";
+@import "bower_components/font-awesome/scss/font-awesome.scss";
 // endbower
 
-@import "variables";
-
+@import 'variables';
 @import 'https://fonts.googleapis.com/css?family=Lato|Montserrat|Open+Sans';
 
 .browserupgrade {
@@ -54,6 +54,12 @@ nav {
   }
 }
 
+.legal {
+  a {
+    padding: 0 10px;
+  }
+}
+
 .about {
   background: url(../images/backdrop-about.jpg) no-repeat scroll 50% / cover transparent;
 }
@@ -64,6 +70,14 @@ nav {
 
 .api {
   background: url(../images/backdrop-api.jpg) no-repeat scroll 50% / cover transparent;
+}
+
+.eula {
+  background: url(../images/backdrop-eula.jpg) no-repeat scroll 50% / cover transparent;
+}
+
+.privacy {
+  background: url(../images/backdrop-privacy.jpg) no-repeat scroll 50% / cover transparent;
 }
 
 footer {
