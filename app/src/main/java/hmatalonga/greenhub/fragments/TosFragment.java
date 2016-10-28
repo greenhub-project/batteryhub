@@ -28,13 +28,14 @@ import hmatalonga.greenhub.ui.WelcomeActivity;
 import hmatalonga.greenhub.util.SettingsUtils;
 
 import static hmatalonga.greenhub.util.LogUtils.LOGD;
+import static hmatalonga.greenhub.util.LogUtils.makeLogTag;
 
 /**
  * The Terms of Service fragment in the welcome screen.
  */
 public class TosFragment extends WelcomeFragment implements WelcomeActivity.WelcomeActivityContent {
 
-    private static final String TAG = "TosFragment";
+    private static final String TAG = makeLogTag("TosFragment");
 
     @Override
     public boolean shouldDisplay(Context context) {

@@ -14,27 +14,24 @@
  * limitations under the License.
  */
 
-package hmatalonga.greenhub.fragments;
-
-import android.os.Bundle;
-import android.app.Fragment;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
-import hmatalonga.greenhub.R;
+package hmatalonga.greenhub.models;
 
 /**
- * About Fragment.
+ * Settings data definition.
  */
-public class AboutFragment extends Fragment {
+public class Settings {
 
-    public static AboutFragment newInstance() {
-        return new AboutFragment();
-    }
+    private static final int FIELD_NUM = 5;
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_about, container, false);
-    }
+    private boolean bluetoothEnabled;
+
+    private boolean locationEnabled;
+
+    private boolean powersaverEnabled;
+
+    private boolean flashlightEnabled;
+
+    private boolean autoRotateEnabled;
+
+    private boolean nfcEnabled;
 }

@@ -19,7 +19,7 @@ package hmatalonga.greenhub.fragments;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -33,7 +33,7 @@ import java.util.ArrayList;
 import hmatalonga.greenhub.GreenHub;
 import hmatalonga.greenhub.R;
 import hmatalonga.greenhub.managers.sampling.BatteryEstimator;
-import hmatalonga.greenhub.models.DeviceResourceCard;
+import hmatalonga.greenhub.models.ui.DeviceResourceCard;
 import hmatalonga.greenhub.ui.adapters.RVAdapter;
 
 /**
@@ -66,6 +66,10 @@ public class HomeFragment extends Fragment {
     private Thread mLocalThread;
 
     private int mCurrentBatteryValue;
+
+    public static HomeFragment newInstance() {
+        return new HomeFragment();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container,

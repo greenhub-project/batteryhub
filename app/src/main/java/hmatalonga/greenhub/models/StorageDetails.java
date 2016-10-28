@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Hugo Matalonga & João Paulo Fernandes
+ * Copyright (c) 2016 Hugo Matalonga & João Paulo Fernandes
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,16 +17,24 @@
 package hmatalonga.greenhub.models;
 
 /**
- * Device Resource Card class model.
- *
- * Created by hugo on 05-04-2016.
+ * Storage Details data definition.
+ * Free and total storage space in megabytes
  */
-public class DeviceResourceCard {
-    public String title;
-    public String value;
+public class StorageDetails {
 
-    public DeviceResourceCard(String title, String value) {
-        this.title = title;
-        this.value = value;
-    }
+    private static final int FIELD_NUM = 5;
+
+    private int free;
+
+    private int total;
+
+    private int freeExternal;
+
+    private int freeSystem;
+
+    private int totalSystem;
+
+    private int freeSecondary;
+
+    private int totalSecondary;
 }

@@ -17,12 +17,16 @@
 package hmatalonga.greenhub.models;
 
 /**
- * Created by hugo on 13-04-2016.
+ * Cell Info data definition.
  */
 public class CellInfo {
     public int MCC = 0;
+
     public int MNC = 0;
+
     public int LAC = 0;
+
     public int CID = 0;
+
     public String radioType = null;
 }

@@ -19,16 +19,23 @@ package hmatalonga.greenhub.models;
 import hmatalonga.greenhub.util.StringHelper;
 
 /**
- * Created by hugo on 09-04-2016.
+ * CallInfo data definition.
  */
 public class CallInfo {
-    private static final int fieldNum = 4;
-    private double incomingCallTime; // optional
-    private double outgoingCallTime; // optional
-    private double nonCallTime; // optional
-    private String callStatus; // optional
 
-    public CallInfo() {}
+    private static final int FIELD_NUM = 4;
+
+    // Incoming call time sum since boot
+    private double incomingCallTime;
+
+    // Outgoing call time sum since boot
+    private double outgoingCallTime;
+
+    // Non-call time sum since boot
+    private double nonCallTime;
+
+    // Idle, offhook or ringing
+    private String callStatus;
 
     public double getIncomingCallTime() {
         return incomingCallTime;
@@ -64,7 +71,7 @@ public class CallInfo {
 
     public void parseString(String s) {
         String[] values = StringHelper.trimArray(s.split(";"));
-        if (values.length == fieldNum) {
+        if (values.length == FIELD_NUM) {
             try {
                 setIncomingCallTime(Double.parseDouble(values[0]));
                 setOutgoingCallTime(Double.parseDouble(values[1]));

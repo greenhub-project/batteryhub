@@ -19,18 +19,29 @@ package hmatalonga.greenhub.models;
 import hmatalonga.greenhub.util.StringHelper;
 
 /**
- * Battery Details data definition
- *
- * Created by hugo on 09-04-2016.
+ * Battery Details data definition.
  */
 public class BatteryDetails {
-    private static final int fieldNum = 6;
-    private String batteryCharger; // optional
-    private String batteryHealth; // optional
-    private double batteryVoltage; // optional
-    private double batteryTemperature; // optional
-    private String batteryTechnology; // optional
-    private double batteryCapacity; // optional
+
+    private static final int FIELD_NUM = 6;
+
+    // Currently ac, usb, or unplugged
+    private String batteryCharger;
+
+    // Currently Unknown, Unspecified failure, Dead, Cold, Overheat, Over voltage or Good
+    private String batteryHealth;
+
+    // Voltage in Volts
+    private double batteryVoltage;
+
+    // Temperature in Celsius
+    private double batteryTemperature;
+
+    // Battery technology
+    private String batteryTechnology;
+
+    // Capacity in mAh from Android Power Profile
+    private double batteryCapacity;
 
     public String getBatteryCharger() {
         return batteryCharger;
@@ -82,7 +93,7 @@ public class BatteryDetails {
 
     public void parseString(String s) {
         String[] values = StringHelper.trimArray(s.split(";"));
-        if (values.length == fieldNum) {
+        if (values.length == FIELD_NUM) {
             try {
                 setBatteryCharger(values[0]);
                 setBatteryHealth(values[1]);

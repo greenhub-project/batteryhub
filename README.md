@@ -6,9 +6,9 @@ GreenHub is a collaborative approach to power consumption analysis of mobile dev
 
 GreenHub is a fork of the Carat Project.
 
-Learn more at [hmatalonga.github.io/greenhub](hmatalonga.github.io/greenhub).
+Learn more at [hmatalonga.github.io/greenhub](https://hmatalonga.github.io/greenhub).
 
-The Android app is available [here](https://github.com/hmatalonga/greenhub/releases/download/v1.0-alpha.1/greenhub-v1.0-alpha.1.apk).
+The Android app is available [here](https://github.com/hmatalonga/greenhub/releases/download/v1.0-alpha.2/greenhub-v1.0-alpha.2.apk).
 
 **Disclamer:** The project is still under heavy development, at the moment is in alpha stage. Currently no data is being uploaded since the web server is not online yet.
 

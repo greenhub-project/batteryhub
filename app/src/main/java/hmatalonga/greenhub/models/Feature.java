@@ -19,12 +19,15 @@ package hmatalonga.greenhub.models;
 import hmatalonga.greenhub.util.StringHelper;
 
 /**
- * Created by hugo on 09-04-2016.
+ * Feature data definition.
  */
 public class Feature {
-    private static final int fieldNum = 2;
-    private String key; // optional
-    private String value; // optional
+
+    private static final int FIELD_NUM = 2;
+
+    private String key;
+
+    private String value;
 
     public String getKey() {
         return key;
@@ -44,7 +47,7 @@ public class Feature {
 
     public void parseString(String s) {
         String[] values = StringHelper.trimArray(s.split(";"));
-        if (values.length == fieldNum) {
+        if (values.length == FIELD_NUM) {
             try {
                 setKey(values[0]);
                 setValue(values[1]);

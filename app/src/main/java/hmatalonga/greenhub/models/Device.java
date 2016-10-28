@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Hugo Matalonga & João Paulo Fernandes
+ * Copyright (c) 2016 Hugo Matalonga & João Paulo Fernandes
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,9 +17,7 @@
 package hmatalonga.greenhub.models;
 
 /**
- * Device class model.
- *
- * Created by hugo on 26-03-2016.
+ * Device data definition.
  */
 public class Device {
     private String uuId;

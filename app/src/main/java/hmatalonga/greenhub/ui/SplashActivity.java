@@ -21,7 +21,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 /**
- * Entry Activity with a splash screen logo.
+ * Entry Point Activity with a splash screen logo.
  */
 public class SplashActivity extends AppCompatActivity {
 
@@ -29,7 +29,7 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Starts Main Activity and loads its contents
+        // Starts Main Activity and loading its contents
         startActivity(new Intent(this, MainActivity.class));
 
         // Finishes the current Splash Activity

@@ -32,6 +32,7 @@ import hmatalonga.greenhub.ui.MainActivity;
 import hmatalonga.greenhub.ui.WelcomeActivity;
 
 import static hmatalonga.greenhub.util.LogUtils.LOGD;
+import static hmatalonga.greenhub.util.LogUtils.makeLogTag;
 
 /**
  * A Fragment class for use with {@link WelcomeActivity} to embed content into the activity.
@@ -40,8 +41,7 @@ import static hmatalonga.greenhub.util.LogUtils.LOGD;
  */
 public abstract class WelcomeFragment extends Fragment {
 
-    private static final String TAG = "WelcomeFragment";
-
+    private static final String TAG = makeLogTag(WelcomeFragment.class);
     protected Activity mActivity;
 
     @SuppressWarnings("deprecation")
@@ -200,10 +200,10 @@ public abstract class WelcomeFragment extends Fragment {
     /**
      * The Container for the WelcomeActivityContent.
      */
-    interface WelcomeFragmentContainer {
+    public interface WelcomeFragmentContainer {
 
         /**
-         * Retrieve a positive action button from the container.
+         * Retrieve a posistive action button from the container.
          *
          * @return the positive action button.
          */

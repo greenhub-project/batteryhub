@@ -45,14 +45,9 @@
         <item name="android:windowBackground">@drawable/splash_screen</item>
     </style>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-    </style>
+    <style name="Theme.GreenHub.Main" parent="Theme.GreenHub" />
 
+    <style name="AppTheme" parent="Theme.GreenHub" />
 
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
@@ -63,7 +58,7 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
 
-    <style name="GreenHubBaseTheme" parent="AppTheme"/>
+    <style name="GreenHubBaseTheme" parent="Theme.GreenHub"/>
 
     <style name="TextAppearance.Body1" parent="TextAppearance.AppCompat.Body1">
         <item name="android:textSize">14sp</item>

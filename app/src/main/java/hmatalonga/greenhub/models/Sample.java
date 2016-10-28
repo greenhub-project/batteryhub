@@ -21,35 +21,91 @@ import com.google.gson.Gson;
 import java.util.List;
 
 /**
- * Created by hugo on 09-04-2016.
+ * Sample data definition.
  */
 public class Sample {
-    private static Gson gson = new Gson();
+    private static final Gson PARSER = new Gson();
 
-    private String uuId; // required
-    private double timestamp; // optional
-    private List<ProcessInfo> piList; // optional
-    private String batteryState; // optional
-    private double batteryLevel; // optional
-    private int memoryWired; // optional
-    private int memoryActive; // optional
-    private int memoryInactive; // optional
-    private int memoryFree; // optional
-    private int memoryUser; // optional
-    private String triggeredBy; // optional
-    private String networkStatus; // optional
-    private double distanceTraveled; // optional
-    private int screenBrightness; // optional
-    private NetworkDetails networkDetails; // optional
-    private BatteryDetails batteryDetails; // optional
-    private CpuStatus cpuStatus; // optional
-    private List<String> locationProviders; // optional
-    private CallInfo callInfo; // optional
-    private int screenOn; // optional
-    private String timeZone; // optional
-    private int unknownSources; // optional
-    private int developerMode; // optional
-    private List<Feature> extra; // optional
+    // ID for the current device
+    private String uuId;
+
+    // Timestamp of sample created time
+    private double timestamp;
+
+    // List of processes running
+    private List<ProcessInfo> piList;
+
+    // State of the battery. ie. charging, discharging, etc.
+    private String batteryState;
+
+    // Level of the battery (0 - 1.0) translates to percentage
+    private double batteryLevel;
+
+    // Total wired memory
+    private int memoryWired;
+
+    // Total active memory
+    private int memoryActive;
+
+    // Total inactive memory
+    private int memoryInactive;
+
+    // Total free memory
+    private int memoryFree;
+
+    // Total user memory
+    private int memoryUser;
+
+    // Trigger reason
+    private String triggeredBy;
+
+    // Reachability status
+    private String networkStatus;
+
+    // If locationchange triggers, then this will have a value
+    private double distanceTraveled;
+
+    // Brightness value, 0-255
+    private int screenBrightness;
+
+    // Network status struct, with info on the active network, mobile,  and wifi
+    private NetworkDetails networkDetails;
+
+    // Battery status struct, with battery health, charger, voltage, temperature, etc.
+    private BatteryDetails batteryDetails;
+
+    // CPU information, such as cpu usage percentage
+    private CpuStatus cpuStatus;
+
+    // Enabled location providers
+    private List<String> locationProviders;
+
+    // Call ratios and information
+    private CallInfo callInfo;
+
+    // If screen is on == 1, off == 0
+    private int screenOn;
+
+    // Device timezone abbreviation
+    private String timeZone;
+
+    // Unknown source app installation on == 1, off == 0
+    private int unknownSources;
+
+    // Developer mode on == 1, off == 0
+    private int developerMode;
+
+    // Extra features for extensibility
+    private List<Feature> extra;
+
+    // Current set of Settings
+    private Settings settings;
+
+    // Current storage details of device
+    private StorageDetails storageDetails;
+
+    // Two-letter country code from network or SIM
+    private String countryCode;
 
     public String getUuId() {
         return uuId;
@@ -69,10 +125,6 @@ public class Sample {
 
     public List<ProcessInfo> getPiList() {
         return piList;
-    }
-
-    public String getPiListJSON() {
-        return gson.toJson(piList);
     }
 
     public void setPiList(List<ProcessInfo> piList) {

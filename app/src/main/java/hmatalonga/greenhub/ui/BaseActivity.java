@@ -24,6 +24,11 @@ import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+
+import hmatalonga.greenhub.R;
+
+import static hmatalonga.greenhub.util.LogUtils.makeLogTag;
 
 /**
  * A base activity that handles common functionality in the app.
@@ -31,9 +36,12 @@ import android.support.v7.app.AppCompatActivity;
 public abstract class BaseActivity extends AppCompatActivity implements
         SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private static final String TAG = "BaseActivity";
+    private static final String TAG = makeLogTag(BaseActivity.class);
 
     private Handler mHandler;
+
+    // Primary toolbar
+    private Toolbar mActionBarToolbar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -44,6 +52,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
             Intent intent = new Intent(this, WelcomeActivity.class);
             startActivity(intent);
             finish();
+            return;
         }
 
         mHandler = new Handler();
@@ -55,5 +64,58 @@ public abstract class BaseActivity extends AppCompatActivity implements
         if (ab != null) {
             ab.setDisplayHomeAsUpEnabled(true);
         }
+    }
+
+    @Override
+    public void setContentView(int layoutResID) {
+        super.setContentView(layoutResID);
+        getActionBarToolbar();
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+//        setupNavDrawer();
+//        setupAccountBox();
+//
+//        trySetupSwipeRefresh();
+//        updateSwipeRefreshProgressBarTop();
+//
+//        View mainContent = findViewById(R.id.main_content);
+//        if (mainContent != null) {
+//            mainContent.setAlpha(0);
+//            mainContent.animate().alpha(1).setDuration(MAIN_CONTENT_FADEIN_DURATION);
+//        } else {
+//            LOGW(TAG, "No view with ID main_content to fade in.");
+//        }
+    }
+
+    protected Toolbar getActionBarToolbar() {
+        if (mActionBarToolbar == null) {
+            mActionBarToolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
+            if (mActionBarToolbar != null) {
+                setSupportActionBar(mActionBarToolbar);
+            }
+        }
+        return mActionBarToolbar;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+//        if (mGCMRegisterTask != null) {
+//            LOGD(TAG, "Cancelling GCM registration task.");
+//            mGCMRegisterTask.cancel(true);
+//        }
+//
+//        try {
+//            GCMRegistrar.onDestroy(this);
+//        } catch (Exception e) {
+//            LOGW(TAG, "C2DM unregistration error", e);
+//        }
+
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        sp.unregisterOnSharedPreferenceChangeListener(this);
     }
 }

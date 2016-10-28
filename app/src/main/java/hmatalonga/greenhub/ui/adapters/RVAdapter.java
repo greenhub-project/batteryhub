@@ -26,7 +26,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import hmatalonga.greenhub.R;
-import hmatalonga.greenhub.models.DeviceResourceCard;
+import hmatalonga.greenhub.models.ui.DeviceResourceCard;
 
 /**
  * RecyclerView Adapter Class

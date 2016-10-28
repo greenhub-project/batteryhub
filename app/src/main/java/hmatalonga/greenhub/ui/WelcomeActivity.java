@@ -24,6 +24,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.Button;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,17 +32,19 @@ import java.util.List;
 
 import hmatalonga.greenhub.R;
 import hmatalonga.greenhub.fragments.TosFragment;
+import hmatalonga.greenhub.fragments.WelcomeFragment;
 
 import static hmatalonga.greenhub.util.LogUtils.LOGD;
+import static hmatalonga.greenhub.util.LogUtils.makeLogTag;
 
 /**
- * WelcomeActivity.
+ * Terms of Service activity activated via
+ * {@link hmatalonga.greenhub.ui.BaseActivity} functionality.
  */
-public class WelcomeActivity extends AppCompatActivity{
+public class WelcomeActivity extends AppCompatActivity implements WelcomeFragment.WelcomeFragmentContainer {
 
-    private static final String TAG = "WelcomeActivity";
-
-    private WelcomeActivityContent mContentFragment;
+    private static final String TAG = makeLogTag(WelcomeActivity.class);
+    WelcomeActivityContent mContentFragment;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -112,6 +115,34 @@ public class WelcomeActivity extends AppCompatActivity{
         return new ArrayList<WelcomeActivityContent>(Collections.singletonList(
                 new TosFragment()
         ));
+    }
+
+    @Override
+    public Button getPositiveButton() {
+        return (Button) findViewById(R.id.button_accept);
+    }
+
+    @Override
+    public void setPositiveButtonEnabled(Boolean enabled) {
+        try {
+            getPositiveButton().setEnabled(enabled);
+        } catch (NullPointerException e) {
+            LOGD(TAG, "Positive welcome button doesn't exist to set enabled.");
+        }
+    }
+
+    @Override
+    public Button getNegativeButton() {
+        return (Button) findViewById(R.id.button_decline);
+    }
+
+    @Override
+    public void setNegativeButtonEnabled(Boolean enabled) {
+        try {
+            getNegativeButton().setEnabled(enabled);
+        } catch (NullPointerException e) {
+            LOGD(TAG, "Negative welcome button doesn't exist to set enabled.");
+        }
     }
 
     /**

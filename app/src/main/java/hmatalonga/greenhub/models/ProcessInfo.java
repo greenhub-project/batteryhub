@@ -16,27 +16,46 @@
 
 package hmatalonga.greenhub.models;
 
+import android.support.annotation.Nullable;
+
 import java.util.Arrays;
 import java.util.List;
 
 import hmatalonga.greenhub.util.StringHelper;
 
 /**
- * Created by hugo on 09-04-2016.
+ * Process Info data definition.
  */
 public class ProcessInfo {
-    private static final int fieldNum = 9;
-    private int pId; // optional
-    private String pName; // optional
-    private String applicationLabel; // optional
-    private boolean isSystemApp; // optional
-    private String importance; // optional
-    private String versionName; // optional
-    private int versionCode; // optional
-    private List<String> appSignatures; // optional
-    private String installationPkg; // optional
 
-    public ProcessInfo() {}
+    private static final int FIELD_NUM = 9;
+
+    // Process Id
+    private int pId;
+
+    // Process Name
+    private String name;
+
+    // Human readable application name
+    private String applicationLabel;
+
+    // If the app is a system app or update to a system app
+    private boolean isSystemApp;
+
+    // Foreground, visible, background, service, empty
+    private String importance;
+
+    // Version of app, human-readable
+    private String versionName; // optional
+
+    // Version of app, android version code
+    private int versionCode;
+
+    // Signatures of the app from PackageInfo.signatures (it can be empty)
+    private List<String> appSignatures;
+
+    // Package that installed this process, e.g. com.google.play
+    private String installationPkg;
 
     public int getpId() {
         return pId;
@@ -46,12 +65,12 @@ public class ProcessInfo {
         this.pId = pId;
     }
 
-    public String getpName() {
-        return pName;
+    public String getName() {
+        return name;
     }
 
-    public void setpName(String pName) {
-        this.pName = pName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getApplicationLabel() {
@@ -102,7 +121,7 @@ public class ProcessInfo {
         return appSignatures;
     }
 
-    public void setAppSignatures(List<String> appSignatures) {
+    public void setAppSignatures(@Nullable List<String> appSignatures) {
         this.appSignatures = appSignatures;
     }
 
@@ -110,7 +129,7 @@ public class ProcessInfo {
         return installationPkg;
     }
 
-    public void setInstallationPkg(String installationPkg) {
+    public void setInstallationPkg(@Nullable String installationPkg) {
         this.installationPkg = installationPkg;
     }
 
@@ -128,10 +147,10 @@ public class ProcessInfo {
 
     public void parseString(String s) {
         String[] values = StringHelper.trimArray(s.split(";"));
-        if (values.length == fieldNum) {
+        if (values.length == FIELD_NUM) {
             try {
                 setpId(Integer.parseInt(values[0]));
-                setpName(values[1]);
+                setName(values[1]);
                 setApplicationLabel(values[2]);
                 setSystemApp(Boolean.parseBoolean(values[3]));
                 setImportance(values[4]);
@@ -147,7 +166,7 @@ public class ProcessInfo {
 
     @Override
     public String toString() {
-        return String.valueOf(pId) + ";" + pName + ";" + applicationLabel + ";" +
+        return String.valueOf(pId) + ";" + name + ";" + applicationLabel + ";" +
                 String.valueOf(isSystemApp) + ";" + importance + ";" + versionName + ";" +
                 String.valueOf(versionCode) + ";" + appSignatures + ";" + installationPkg;
     }

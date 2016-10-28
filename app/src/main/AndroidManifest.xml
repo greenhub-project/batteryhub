@@ -58,7 +58,7 @@
         <activity
             android:name="hmatalonga.greenhub.ui.MainActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/Theme.GreenHub.Main"/>
 
         <activity
             android:name=".ui.SettingsActivity"

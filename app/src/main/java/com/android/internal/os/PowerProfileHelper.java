@@ -10,8 +10,7 @@ public class PowerProfileHelper {
     public static PowerProfile pp = null;
 
     public static double getAverageWifiPower(Context context){
-        if (pp == null)
-            pp = new PowerProfile(context);
+        if (pp == null) pp = new PowerProfile(context);
 
         //double wifiScanCost=powCal.getAveragePower(PowerProfile.POWER_WIFI_SCAN);
         double wifiOnCost=pp.getAveragePower(PowerProfile.POWER_WIFI_ON);

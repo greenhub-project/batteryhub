@@ -19,18 +19,53 @@ package hmatalonga.greenhub.models;
 import hmatalonga.greenhub.util.StringHelper;
 
 /**
- * Created by hugo on 09-04-2016.
+ * Network Details data definition.
  */
 public class NetworkDetails {
-    private static final int fieldNum = 8;
-    private String networkType; // optional
-    private String mobileNetworkType; // optional
-    private String mobileDataStatus; // optional
-    private String mobileDataActivity; // optional
-    private boolean roamingEnabled; // optional
-    private String wifiStatus; // optional
-    private int wifiSignalStrength; // optional
-    private int wifiLinkSpeed; // optional
+
+    private static final int FIELD_NUM = 14;
+
+    // wifi, mobile or unknown
+    private String networkType;
+
+    // GPRS, EDGE, UMTS, etc.
+    private String mobileNetworkType;
+
+    // connecting, connected, disconnected, suspended
+    private String mobileDataStatus;
+
+    // none, in, out, inout, dormant
+    private String mobileDataActivity;
+
+    // True if currently roaming in a foreign mobile network
+    private boolean roamingEnabled;
+
+    // disabled, disabling, enabled, enabling, unknown
+    private String wifiStatus;
+
+    // As given by getRssi()
+    private int wifiSignalStrength;
+
+    // Link speed in Mbps
+    private int wifiLinkSpeed;
+
+    // Sent and received data
+    private NetworkStatistics networkStatistics;
+
+    // Wifi access point status: disabled, disabling, enabled, enabling, unknown
+    private String wifiApStatus;
+
+    // Network infrastructure provider, unbound
+    private String networkOperator;
+
+    // Service provider, bound to sim
+    private String simOperator;
+
+    // Numeric country code
+    private String mcc;
+
+    // Numeric network code
+    private String mnc;
 
     public String getNetworkType() {
         return networkType;
@@ -96,18 +131,66 @@ public class NetworkDetails {
         this.wifiLinkSpeed = wifiLinkSpeed;
     }
 
+    public NetworkStatistics getNetworkStatistics() {
+        return networkStatistics;
+    }
+
+    public void setNetworkStatistics(NetworkStatistics networkStatistics) {
+        this.networkStatistics = networkStatistics;
+    }
+
+    public String getWifiApStatus() {
+        return wifiApStatus;
+    }
+
+    public void setWifiApStatus(String wifiApStatus) {
+        this.wifiApStatus = wifiApStatus;
+    }
+
+    public String getNetworkOperator() {
+        return networkOperator;
+    }
+
+    public void setNetworkOperator(String networkOperator) {
+        this.networkOperator = networkOperator;
+    }
+
+    public String getSimOperator() {
+        return simOperator;
+    }
+
+    public void setSimOperator(String simOperator) {
+        this.simOperator = simOperator;
+    }
+
+    public String getMcc() {
+        return mcc;
+    }
+
+    public void setMcc(String mcc) {
+        this.mcc = mcc;
+    }
+
+    public String getMnc() {
+        return mnc;
+    }
+
+    public void setMnc(String mnc) {
+        this.mnc = mnc;
+    }
+
     public void parseString(String s) {
         String[] values = StringHelper.trimArray(s.split(";"));
-        if (values.length == fieldNum) {
+        if (values.length == FIELD_NUM) {
             try {
-                setNetworkType(values[0]);
-                setMobileNetworkType(values[1]);
-                setMobileDataStatus(values[2]);
-                setMobileDataActivity(values[3]);
-                setRoamingEnabled(Boolean.parseBoolean(values[4]));
-                setWifiStatus(values[5]);
-                setWifiSignalStrength(Integer.parseInt(values[5]));
-                setWifiLinkSpeed(Integer.parseInt(values[6]));
+                networkType = values[0];
+                mobileNetworkType = values[1];
+                mobileDataStatus = values[2];
+                mobileDataActivity = values[3];
+                roamingEnabled = Boolean.parseBoolean(values[4]);
+                wifiStatus = values[5];
+                wifiSignalStrength = Integer.parseInt(values[6]);
+                wifiLinkSpeed = Integer.parseInt(values[7]);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -116,8 +199,8 @@ public class NetworkDetails {
 
     @Override
     public String toString() {
-        return networkType + ";" + mobileNetworkType + ";"  + mobileDataActivity + ";" +
-                String.valueOf(roamingEnabled) + ";" + wifiStatus + ";" +
-                String.valueOf(wifiSignalStrength) + ";" + String.valueOf(wifiLinkSpeed);
+        return getNetworkType() + ";" + getMobileNetworkType() + ";"  + getMobileDataActivity() + ";" +
+                String.valueOf(isRoamingEnabled()) + ";" + getWifiStatus() + ";" +
+                String.valueOf(getWifiSignalStrength()) + ";" + String.valueOf(getWifiLinkSpeed());
     }
 }

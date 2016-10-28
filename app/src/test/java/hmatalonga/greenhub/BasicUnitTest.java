@@ -14,27 +14,18 @@
  * limitations under the License.
  */
 
-package hmatalonga.greenhub.fragments;
+package hmatalonga.greenhub;
 
-import android.os.Bundle;
-import android.app.Fragment;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import org.junit.Test;
 
-import hmatalonga.greenhub.R;
+import static org.junit.Assert.*;
 
 /**
- * About Fragment.
+ * To work on unit tests, switch the Test Artifact in the Build Variants view.
  */
-public class AboutFragment extends Fragment {
-
-    public static AboutFragment newInstance() {
-        return new AboutFragment();
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_about, container, false);
+public class BasicUnitTest {
+    @Test
+    public void addition_isCorrect() throws Exception {
+        assertEquals(4, 2 + 2);
     }
 }

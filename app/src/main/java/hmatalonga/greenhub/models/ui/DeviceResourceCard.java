@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-package hmatalonga.greenhub;
-
-import org.junit.Test;
-
-import static org.junit.Assert.*;
+package hmatalonga.greenhub.models.ui;
 
 /**
- * To work on unit tests, switch the Test Artifact in the Build Variants view.
+ * Device Resource Card class model.
+ *
+ * Created by hugo on 05-04-2016.
  */
-public class ExampleUnitTest {
-    @Test
-    public void addition_isCorrect() throws Exception {
-        assertEquals(5, 2 + 2);
+public class DeviceResourceCard {
+    public String title;
+    public String value;
+
+    public DeviceResourceCard(String title, String value) {
+        this.title = title;
+        this.value = value;
     }
 }

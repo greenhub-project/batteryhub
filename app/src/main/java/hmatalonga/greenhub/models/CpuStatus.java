@@ -19,12 +19,20 @@ package hmatalonga.greenhub.models;
 import hmatalonga.greenhub.util.StringHelper;
 
 /**
- * Created by hugo on 09-04-2016.
+ * CPU Status data definition.
  */
 public class CpuStatus {
-    private static final int fieldNum = 2;
-    private double cpuUsage; // optional
-    private double uptime; // optional
+
+    private static final int FIELD_NUM = 3;
+
+    // CPU usage fraction (0-1)
+    private double cpuUsage;
+
+    // Uptime in seconds
+    private double uptime;
+
+    // Experimental sleep time
+    private double sleeptime;
 
     public double getCpuUsage() {
         return cpuUsage;
@@ -42,9 +50,17 @@ public class CpuStatus {
         this.uptime = uptime;
     }
 
+    public double getSleeptime() {
+        return sleeptime;
+    }
+
+    public void setSleeptime(double sleeptime) {
+        this.sleeptime = sleeptime;
+    }
+
     public void parseString(String s) {
         String[] values = StringHelper.trimArray(s.split(";"));
-        if (values.length == fieldNum) {
+        if (values.length == FIELD_NUM) {
             try {
                 setCpuUsage(Double.parseDouble(values[0]));
                 setUptime(Double.parseDouble(values[1]));

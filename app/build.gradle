@@ -58,13 +58,16 @@ dependencies {
     compile "com.android.support:appcompat-v7:${android_support_lib_version}"
     compile "com.android.support:design:${android_support_lib_version}"
     compile "com.android.support:support-v4:${android_support_lib_version}"
+    compile "com.android.support:support-v13:${android_support_lib_version}"
     compile "com.android.support:cardview-v7:${android_support_lib_version}"
     compile "com.android.support:recyclerview-v7:${android_support_lib_version}"
-    // JSON utility library.
-    compile 'com.google.code.gson:gson:2.6.2'
     // Android Volley library *to be migrated to Retrofit*
     compile 'eu.the4thfloor.volley:com.android.volley:2015.05.28'
+    // JSON utility library.
+    compile 'com.google.code.gson:gson:2.6.2'
     // Retrofit library for networking operations
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
     compile 'com.squareup.retrofit2:converter-gson:2.1.0'
+    // greenrobot for event communications
+    compile 'org.greenrobot:eventbus:3.0.0'
 }
