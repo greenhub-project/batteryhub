@@ -28,7 +28,7 @@ import java.util.Date;
 
 import hmatalonga.greenhub.Config;
 import hmatalonga.greenhub.managers.storage.GreenHubDb;
-import hmatalonga.greenhub.models.Sample;
+import hmatalonga.greenhub.models.data.Sample;
 import hmatalonga.greenhub.util.Notifier;
 
 /**

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Hugo Matalonga & João Paulo Fernandes
+ * Copyright (c) 2016 Hugo Matalonga & João Paulo Fernandes
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package hmatalonga.greenhub.models;
+package hmatalonga.greenhub.models.data;
 
 import android.support.annotation.Nullable;
 
@@ -46,7 +46,7 @@ public class ProcessInfo {
     private String importance;
 
     // Version of app, human-readable
-    private String versionName; // optional
+    private String versionName;
 
     // Version of app, android version code
     private int versionCode;

@@ -49,8 +49,8 @@ public class Notifier {
             NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
                     context)
                     .setSmallIcon(R.drawable.ic_information_white_24dp)
-                    .setContentTitle("Please open GreenHub")
-                    .setContentText("Please open GreenHub. Samples to send:")
+                    .setContentTitle("Please open GreenHubHelper")
+                    .setContentText("Please open GreenHubHelper. Samples to send:")
                     .setNumber(samples);
             mBuilder.setContentIntent(launchCarat);
             //mBuilder.setSound(null);

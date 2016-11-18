@@ -36,10 +36,10 @@ import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import hmatalonga.greenhub.GreenHub;
+import hmatalonga.greenhub.GreenHubHelper;
 import hmatalonga.greenhub.fragments.HomeFragment;
 import hmatalonga.greenhub.managers.storage.GreenHubDb;
-import hmatalonga.greenhub.models.Sample;
+import hmatalonga.greenhub.models.data.Sample;
 import hmatalonga.greenhub.util.NetworkWatcher;
 
 /**
@@ -50,10 +50,10 @@ import hmatalonga.greenhub.util.NetworkWatcher;
 public class CommunicationManager {
     private static final String TAG = "CommunicationManager";
 
-    private static RequestQueue sQueue = Volley.newRequestQueue(GreenHub.getContext());
+    private static RequestQueue sQueue = Volley.newRequestQueue(GreenHubHelper.getContext());
     private static Map<String, String> sParams = new HashMap<>();
 
-    private GreenHub mApp;
+    private GreenHubHelper mApp;
     private Gson mGson;
     private Context mContext;
     private SortedMap<Long, Sample> map;
@@ -62,16 +62,16 @@ public class CommunicationManager {
     private int sTimeout = 5000; // 5s default for socket timeout
     private int done, samplesCount;
 
-    public CommunicationManager(GreenHub app) {
+    public CommunicationManager(GreenHubHelper app) {
         this.mApp = app;
-        this.mContext = GreenHub.getContext();
+        this.mContext = GreenHubHelper.getContext();
         this.mGson = new Gson();
         db = GreenHubDb.getInstance(mContext);
     }
 
-    public CommunicationManager(GreenHub app, int timeout) {
+    public CommunicationManager(GreenHubHelper app, int timeout) {
         this.mApp = app;
-        this.mContext = GreenHub.getContext();
+        this.mContext = GreenHubHelper.getContext();
         this.mGson = new Gson();
         this.sTimeout = timeout;
         db = GreenHubDb.getInstance(mContext);

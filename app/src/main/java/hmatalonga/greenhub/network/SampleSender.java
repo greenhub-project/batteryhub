@@ -28,11 +28,11 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import hmatalonga.greenhub.Config;
-import hmatalonga.greenhub.GreenHub;
+import hmatalonga.greenhub.GreenHubHelper;
 import hmatalonga.greenhub.R;
 import hmatalonga.greenhub.managers.sampling.Inspector;
 import hmatalonga.greenhub.managers.storage.GreenHubDb;
-import hmatalonga.greenhub.models.Sample;
+import hmatalonga.greenhub.models.data.Sample;
 
 /**
  * Created by hugo on 15-04-2016.
@@ -44,14 +44,14 @@ public class SampleSender {
 
     private static final Object sendLock = new Object();
 
-    GreenHub app = null;
+    GreenHubHelper app = null;
 
     // Prevent instantiation
     private SampleSender(){}
 
-    public static void sendSamples(GreenHub app) {
+    public static void sendSamples(GreenHubHelper app) {
         synchronized(sendLock){
-            Context c = GreenHub.getContext();
+            Context c = GreenHubHelper.getContext();
 
             String networkStatus = Inspector.getNetworkStatus(c);
             String networkType = Inspector.getNetworkType(c);
@@ -67,7 +67,7 @@ public class SampleSender {
                 int samples = db.countSamples();
 
                 /* Click Tracking: Track sample sending. */
-//                String uuId = p.getString(GreenHub.getRegisteredUuid(), "UNKNOWN");
+//                String uuId = p.getString(GreenHubHelper.getRegisteredUuid(), "UNKNOWN");
 //                HashMap<String, String> options = new HashMap<String, String>();
 //                options.put("count", samples+"");
 //                ClickTracking.track(uuId, "sendingsamples", options, c);
@@ -95,7 +95,7 @@ public class SampleSender {
                                         Log.d(TAG, "Uploaded " + success
                                                 + " samples out of " + map.size());
 //                                    if (success > 0)
-//                                        GreenHub.getStorage().samplesReported(success);
+//                                        GreenHubHelper.getStorage().samplesReported(success);
                                     Sample last = map.get(map.lastKey());
 
 									/*

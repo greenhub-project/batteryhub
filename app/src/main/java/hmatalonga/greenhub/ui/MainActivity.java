@@ -93,8 +93,8 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
 
     @Override
     protected void onPause() {
-        //sApp.stopReceivers();
-        Inspector.resetRunningProcessInfo();
+        // sApp.stopReceivers();
+        // Inspector.resetRunningProcessInfo();
         // Toast.makeText(getApplicationContext(), "App paused", Toast.LENGTH_LONG).show();
         super.onPause();
     }
@@ -113,7 +113,7 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
         loadViews();
 
         // Initialize Application instance
-//        sApp = new GreenHub(getApplicationContext());
+//        sApp = new GreenHubHelper(getApplicationContext());
 //        sApp.initModules();
 
         // TODO: Create default xml preferences file

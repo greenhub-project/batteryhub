@@ -18,24 +18,24 @@ package hmatalonga.greenhub.tasks;
 
 import android.os.AsyncTask;
 
-import hmatalonga.greenhub.GreenHub;
+import hmatalonga.greenhub.GreenHubHelper;
 import hmatalonga.greenhub.fragments.HomeFragment;
 import hmatalonga.greenhub.util.NetworkWatcher;
 
 /**
  * Task to register devices on the web server.
  */
-public class RegisterDeviceTask extends AsyncTask<GreenHub, Void, Void> {
+public class RegisterDeviceTask extends AsyncTask<GreenHubHelper, Void, Void> {
 
     private static final String TAG = "RegisterDeviceTask";
 
     @Override
-    protected Void doInBackground(GreenHub... params) {
-        GreenHub app = params[0];
+    protected Void doInBackground(GreenHubHelper... params) {
+        GreenHubHelper app = params[0];
 
         if (app == null) return null;
 
-        if (NetworkWatcher.hasInternet(GreenHub.getContext())) {
+        if (NetworkWatcher.hasInternet(GreenHubHelper.getContext())) {
             app.registerHandler.registerClient();
         } else {
             HomeFragment.setStatus("Not connected");

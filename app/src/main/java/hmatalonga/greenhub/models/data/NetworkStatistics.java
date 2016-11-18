@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package hmatalonga.greenhub.models;
+package hmatalonga.greenhub.models.data;
 
 /**
  * Network Statistics data definition.

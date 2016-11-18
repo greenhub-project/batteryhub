@@ -16,25 +16,14 @@
 
 package hmatalonga.greenhub.models;
 
+import static hmatalonga.greenhub.util.LogUtils.makeLogTag;
+
 /**
- * Storage Details data definition.
- * Free and total storage space in megabytes
+ * Battery.
  */
-public class StorageDetails {
+public class Battery {
 
-    private static final int FIELD_NUM = 5;
+    private static final String TAG = makeLogTag(Battery.class);
 
-    private int free;
 
-    private int total;
-
-    private int freeExternal;
-
-    private int freeSystem;
-
-    private int totalSystem;
-
-    private int freeSecondary;
-
-    private int totalSecondary;
 }

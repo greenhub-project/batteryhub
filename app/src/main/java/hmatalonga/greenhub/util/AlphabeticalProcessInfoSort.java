@@ -49,7 +49,7 @@ import android.content.Context;
 
 import java.util.Comparator;
 
-import hmatalonga.greenhub.models.ProcessInfo;
+import hmatalonga.greenhub.models.data.ProcessInfo;
 
 /**
  * Created by hugo on 02-07-2016.
@@ -68,8 +68,8 @@ public class AlphabeticalProcessInfoSort implements
         if (lhs.isSetApplicationLabel() && rhs.isSetApplicationLabel())
             return lhs.getApplicationLabel().compareTo(rhs.getApplicationLabel());
 
-        String l = lhs.getpName();
-        String r = rhs.getpName();
+        String l = lhs.getName();
+        String r = rhs.getName();
         if (l != null && r != null)
             return l.compareTo(r);
         else

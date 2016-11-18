@@ -25,7 +25,7 @@ import java.util.ArrayList;
 
 import hmatalonga.greenhub.R;
 import hmatalonga.greenhub.managers.sampling.Inspector;
-import hmatalonga.greenhub.models.ProcessInfo;
+import hmatalonga.greenhub.models.data.ProcessInfo;
 import hmatalonga.greenhub.ui.adapters.ProcessInfoAdapter;
 
 public class ProcessListActivity extends AppCompatActivity {

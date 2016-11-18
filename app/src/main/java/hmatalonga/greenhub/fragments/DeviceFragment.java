@@ -27,7 +27,6 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import hmatalonga.greenhub.GreenHub;
 import hmatalonga.greenhub.R;
 import hmatalonga.greenhub.managers.sampling.Inspector;
 import hmatalonga.greenhub.ui.ProcessListActivity;
@@ -52,9 +51,9 @@ public class DeviceFragment extends Fragment {
         final View view = inflater.inflate(R.layout.fragment_device, container, false);
 
         // Load Application Context to the fragment
-        mContext = GreenHub.getContext();
+        // mContext = GreenHubHelper.getContext();
 
-        loadComponents(view);
+        // loadComponents(view);
 
         return view;
     }

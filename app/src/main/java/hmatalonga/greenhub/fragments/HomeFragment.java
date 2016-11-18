@@ -30,7 +30,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import hmatalonga.greenhub.GreenHub;
+import hmatalonga.greenhub.GreenHubHelper;
 import hmatalonga.greenhub.R;
 import hmatalonga.greenhub.managers.sampling.BatteryEstimator;
 import hmatalonga.greenhub.models.ui.DeviceResourceCard;
@@ -45,7 +45,7 @@ public class HomeFragment extends Fragment {
 
     private static String status = "";
 
-    private static GreenHub sApp;
+    private static GreenHubHelper sApp;
 
     private Context mContext;
 
@@ -77,7 +77,7 @@ public class HomeFragment extends Fragment {
         final View view = inflater.inflate(R.layout.fragment_home, container, false);
 
         mEstimator = BatteryEstimator.getInstance();
-        mContext = GreenHub.getContext();
+        mContext = GreenHubHelper.getContext();
         mRecyclerView = (RecyclerView) view.findViewById(R.id.rv);
         assert mRecyclerView != null;
 
@@ -100,7 +100,7 @@ public class HomeFragment extends Fragment {
         mBatteryText = (TextView) view.findViewById(R.id.batteryCurrentValue);
         mProgressBar = (ProgressBar) view.findViewById(R.id.batteryProgressbar);
 
-        populateView();
+        // populateView();
 
         return view;
     }
@@ -109,16 +109,16 @@ public class HomeFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        mBatteryText.setText(String.valueOf(mCurrentBatteryValue));
-        mProgressBar.setProgress(mCurrentBatteryValue);
-        sStatusText.setText(status);
+//        mBatteryText.setText(String.valueOf(mCurrentBatteryValue));
+//        mProgressBar.setProgress(mCurrentBatteryValue);
+//        sStatusText.setText(status);
     }
 
     /**
      *
      * @return
      */
-    public static GreenHub getApp() {
+    public static GreenHubHelper getApp() {
         return sApp;
     }
 
@@ -126,7 +126,7 @@ public class HomeFragment extends Fragment {
      *
      * @param app
      */
-    public static void setApp(GreenHub app) {
+    public static void setApp(GreenHubHelper app) {
         HomeFragment.sApp = app;
     }
 

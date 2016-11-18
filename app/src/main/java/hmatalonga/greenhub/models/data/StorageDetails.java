@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Hugo Matalonga & João Paulo Fernandes
+ * Copyright (c) 2016 Hugo Matalonga & João Paulo Fernandes
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,20 +14,27 @@
  * limitations under the License.
  */
 
-package hmatalonga.greenhub.models;
+package hmatalonga.greenhub.models.data;
 
 /**
- * Call Month data definition.
+ * Storage Details data definition.
+ * Free and total storage space in megabytes
  */
-public class CallMonth {
+public class StorageDetails {
 
-    public int tolCallInNum     = 0;
+    private static final int FIELD_NUM = 5;
 
-    public int tolCallOutNum    = 0;
+    private int free;
 
-    public int tolMissedCallNum = 0;
+    private int total;
 
-    public long tolCallInDur    = 0;
+    private int freeExternal;
 
-    public long tolCallOutDur   = 0;
+    private int freeSystem;
+
+    private int totalSystem;
+
+    private int freeSecondary;
+
+    private int totalSecondary;
 }

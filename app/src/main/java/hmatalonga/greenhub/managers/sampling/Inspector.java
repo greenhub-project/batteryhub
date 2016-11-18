@@ -46,6 +46,7 @@
 package hmatalonga.greenhub.managers.sampling;
 
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningAppProcessInfo;
@@ -67,6 +68,7 @@ import android.net.NetworkInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.BatteryManager;
+import android.os.Build;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
@@ -108,20 +110,25 @@ import java.util.Set;
 import java.util.TimeZone;
 
 import hmatalonga.greenhub.Config;
-import hmatalonga.greenhub.GreenHub;
-import hmatalonga.greenhub.models.BatteryDetails;
-import hmatalonga.greenhub.models.CallMonth;
-import hmatalonga.greenhub.models.CellInfo;
-import hmatalonga.greenhub.models.CpuStatus;
-import hmatalonga.greenhub.models.Feature;
-import hmatalonga.greenhub.models.NetworkDetails;
-import hmatalonga.greenhub.models.ProcessInfo;
-import hmatalonga.greenhub.models.Sample;
+import hmatalonga.greenhub.GreenHubHelper;
+import hmatalonga.greenhub.models.data.BatteryDetails;
+import hmatalonga.greenhub.models.data.CallMonth;
+import hmatalonga.greenhub.models.data.CellInfo;
+import hmatalonga.greenhub.models.data.CpuStatus;
+import hmatalonga.greenhub.models.data.Feature;
+import hmatalonga.greenhub.models.data.NetworkDetails;
+import hmatalonga.greenhub.models.data.ProcessInfo;
+import hmatalonga.greenhub.models.data.Sample;
+
+import static hmatalonga.greenhub.util.LogUtils.makeLogTag;
 
 /**
  * Inspector
  */
 public final class Inspector {
+
+    private static final String TAG = makeLogTag("Inspector");
+
     private static final boolean collectSignatures = true;
     public static final String SIG_SENT = "sig-sent:";
     public static final String SIG_SENT_256 = "sigs-sent:";
@@ -132,11 +139,7 @@ public final class Inspector {
     public static final String DISABLED = "disabled:";
 
     private static final int READ_BUFFER_SIZE = 2 * 1024;
-    // Network status constants
-    public static String NETWORKSTATUS_DISCONNECTED = "disconnected";
-    public static String NETWORKSTATUS_DISCONNECTING = "disconnecting";
-    public static String NETWORKSTATUS_CONNECTED = "connected";
-    public static String NETWORKSTATUS_CONNECTING = "connecting";
+
     // Network type constants
     public static String TYPE_UNKNOWN = "unknown";
     // Data State constants
@@ -198,8 +201,6 @@ public final class Inspector {
     // private static final String TAG="FeaturesPowerConsumption";
 
     public static final int UUID_LENGTH = 16;
-    private static final String TAG = "Sampling";
-
     private static double lastBatteryLevel;
     private static double currentBatteryLevel;
 
@@ -253,7 +254,6 @@ public final class Inspector {
     }
 
     /**
-     *
      * Take in currentLevel and scale as doubles to avoid loss of precision issues.
      * Note that Carat stores battery level as a value between 0 and 1, e.g. 0.45 for 45%.
      * @param currentLevel Current battery level, usually in percent.
@@ -270,8 +270,9 @@ public final class Inspector {
 		 * percentage change has happened. Check the comments in the
 		 * broadcast receiver (sampler).
 		 */
-        if (level != getCurrentBatteryLevel())
+        if (level != getCurrentBatteryLevel()) {
             setCurrentBatteryLevel(level);
+        }
     }
 
     /**
@@ -623,9 +624,9 @@ public final class Inspector {
                     continue;
                 packages.add(pi.processName);
                 ProcessInfo item = new ProcessInfo();
-                item.setImportance(GreenHub.importanceString(pi.importance));
+                item.setImportance(GreenHubHelper.importanceString(pi.importance));
                 item.setpId(pi.pid);
-                item.setpName(pi.processName);
+                item.setName(pi.processName);
                 l.add(item);
             }
         }
@@ -641,7 +642,7 @@ public final class Inspector {
                 item.setImportance(pi.foreground ? "Foreground app" : "Service");
                 item.setpId(pi.pid);
                 //item.setApplicationLabel(pi.service.flattenToString());
-                item.setpName(pi.process);
+                item.setName(pi.process);
 
                 l.add(item);
             }
@@ -771,13 +772,13 @@ public final class Inspector {
 //		 * Blacklist: Key chain, google partner set up, package installer,
 //		 * package access helper
 //		 */
-//        if (GreenHub.getStorage() != null) {
-//            List<String> blacklist = GreenHub.getStorage().getBlacklist();
+//        if (GreenHubHelper.getStorage() != null) {
+//            List<String> blacklist = GreenHubHelper.getStorage().getBlacklist();
 //            if (blacklist != null && blacklist.size() > 0 && processName != null && blacklist.contains(processName)) {
 //                return true;
 //            }
 //
-//            blacklist = GreenHub.getStorage().getGloblist();
+//            blacklist = GreenHubHelper.getStorage().getGloblist();
 //            if (blacklist != null && blacklist.size() > 0 && processName != null) {
 //                for (String glob : blacklist) {
 //                    if (glob == null)
@@ -791,7 +792,7 @@ public final class Inspector {
 //                }
 //            }
 //        }
-//        String label = GreenHub.labelForApp(c, processName);
+//        String label = GreenHubHelper.labelForApp(c, processName);
 //
 //        if (processName != null && label != null && label.equals(processName)) {
 //            // Log.v("Hiding uninstalled", processName);
@@ -962,7 +963,7 @@ public final class Inspector {
                     if (pak.signatures.length > 0) {
                         List<String> sigList = getSignatures(pak);
                         ProcessInfo pi = new ProcessInfo();
-                        pi.setpName(pkg);
+                        pi.setName(pkg);
                         pi.setApplicationLabel(label);
                         pi.setVersionCode(vc);
                         pi.setpId(-1);
@@ -1018,7 +1019,7 @@ public final class Inspector {
         if (pak.signatures.length > 0) {
             List<String> sigList;
             sigList = getSignatures(pak);
-            pi.setpName(pkg);
+            pi.setName(pkg);
             pi.setApplicationLabel(label);
             pi.setVersionCode(vc);
             pi.setpId(-1);
@@ -1059,7 +1060,7 @@ public final class Inspector {
             ipkg = getInstalledPackages(context, false);
 
         for (ProcessInfo pi : list) {
-            String pname = pi.getpName();
+            String pname = pi.getName();
             if (ipkg != null && ipkg.containsKey(pname))
                 ipkg.remove(pname);
             procs.add(pname);
@@ -1094,7 +1095,7 @@ public final class Inspector {
             }
             item.setImportance(pi.getImportance());
             item.setpId(pi.getpId());
-            item.setpName(pname);
+            item.setName(pname);
 
             String installationSource = null;
             if (!pi.isSystemApp()) {
@@ -1202,7 +1203,7 @@ public final class Inspector {
      */
     private static ProcessInfo uninstalledItem(String pname, String pref, SharedPreferences.Editor e) {
         ProcessInfo item = new ProcessInfo();
-        item.setpName(pname);
+        item.setName(pname);
         List<String> sigs = new LinkedList<>();
         sigs.add("uninstalled");
         item.setAppSignatures(sigs);
@@ -1223,7 +1224,7 @@ public final class Inspector {
      */
     private static ProcessInfo disabledItem(String pname, String pref, SharedPreferences.Editor e) {
         ProcessInfo item = new ProcessInfo();
-        item.setpName(pname);
+        item.setName(pname);
         item.setpId(-1);
         item.setImportance(Config.IMPORTANCE_DISABLED);
         // Remember to remove it so we do not send
@@ -1814,25 +1815,30 @@ public final class Inspector {
         long now = System.currentTimeMillis();
         long bootTime = now - uptime;
 
-        String[] queries = new String[] { android.provider.CallLog.Calls.TYPE, android.provider.CallLog.Calls.DATE,
-                android.provider.CallLog.Calls.DURATION };
+        String[] queries = new String[] {
+                android.provider.CallLog.Calls.TYPE,
+                android.provider.CallLog.Calls.DATE,
+                android.provider.CallLog.Calls.DURATION
+        };
 
-        Cursor cur = null;
+        Cursor cursor = null;
 
         try {
-            cur = context.getContentResolver().query(android.provider.CallLog.Calls.CONTENT_URI, queries,
+            cursor = context.getContentResolver().query(
+                    android.provider.CallLog.Calls.CONTENT_URI, queries,
                     android.provider.CallLog.Calls.DATE + " > " + bootTime, null,
-                    android.provider.CallLog.Calls.DATE + " ASC");
+                    android.provider.CallLog.Calls.DATE + " ASC"
+            );
         }
         catch (SecurityException e) {
             e.printStackTrace();
         }
 
-        if (cur != null) {
-            if (cur.moveToFirst()) {
-                while (!cur.isAfterLast()) {
-                    type = cur.getInt(0);
-                    dur = cur.getLong(2);
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                while (!cursor.isAfterLast()) {
+                    type = cursor.getInt(0);
+                    dur = cursor.getLong(2);
                     switch (type) {
                         case android.provider.CallLog.Calls.INCOMING_TYPE:
                             callInSeconds += dur;
@@ -1842,12 +1848,12 @@ public final class Inspector {
                             break;
                         default:
                     }
-                    cur.moveToNext();
+                    cursor.moveToNext();
                 }
             } else {
                 Log.w("CallDurFromBoot", "No calls listed");
             }
-            cur.close();
+            cursor.close();
         } else {
             Log.w("CallDurFromBoot", "Cursor is null");
         }
@@ -1969,9 +1975,8 @@ public final class Inspector {
      * @return true when app installation from unknown sources is enabled.
      */
     public static int allowUnknownSources(Context context) {
-        ContentResolver res = context.getContentResolver();
-        int unknownSources = Settings.Secure.getInt(res, Settings.Secure.INSTALL_NON_MARKET_APPS, 0);
-        return unknownSources;
+        ContentResolver contentResolver = context.getContentResolver();
+        return Settings.Secure.getInt(contentResolver, Settings.Secure.INSTALL_NON_MARKET_APPS, 0);
     }
 
     /**
@@ -1980,9 +1985,21 @@ public final class Inspector {
      * @return true when developer mode is enabled.
      */
     public static int isDeveloperModeOn(Context context) {
-        ContentResolver res = context.getContentResolver();
-        return Settings.Secure.getInt(res, Settings.Secure.ADB_ENABLED, 0);
+        ContentResolver contentResolver = context.getContentResolver();
         // In API level 17, this is Settings.Global.ADB_ENABLED.
+        if (Build.VERSION.SDK_INT >= 17) {
+            return isDeveloperModeOnGetSettingGlobal(contentResolver);
+        }
+        return isDeveloperModeOnGetSetting(contentResolver);
+    }
+
+    private static int isDeveloperModeOnGetSetting(ContentResolver contentResolver) {
+        return Settings.Secure.getInt(contentResolver, Settings.Secure.ADB_ENABLED, 0);
+    }
+
+    @TargetApi(17)
+    private static int isDeveloperModeOnGetSettingGlobal(ContentResolver contentResolver) {
+        return Settings.Secure.getInt(contentResolver, Settings.Global.ADB_ENABLED, 0);
     }
 
 	/*
@@ -2044,7 +2061,7 @@ public final class Inspector {
         // Construct sample and return it in the end
         Sample mySample = new Sample();
         // SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(context);
-        // p.getString(GreenHub.getRegisteredUuid(), null);
+        // p.getString(GreenHubHelper.getRegisteredUuid(), null);
         String uuId = getUuid(context);
         mySample.setUuId(uuId);
         mySample.setTriggeredBy(action);

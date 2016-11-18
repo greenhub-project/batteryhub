@@ -19,6 +19,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="hmatalonga.greenhub">
 
+    <uses-permission android:name="android.permission.READ_CALL_LOG" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <!-- For sending and receiving Samples and reports. -->
     <uses-permission android:name="android.permission.INTERNET" />

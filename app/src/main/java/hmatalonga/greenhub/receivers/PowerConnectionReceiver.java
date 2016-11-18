@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Hugo Matalonga & João Paulo Fernandes
+ * Copyright (c) 2016 Hugo Matalonga & João Paulo Fernandes
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package hmatalonga.greenhub.managers.sampling;
+package hmatalonga.greenhub.receivers;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

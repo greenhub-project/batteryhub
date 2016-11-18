@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Hugo Matalonga & João Paulo Fernandes
+ * Copyright (c) 2016 Hugo Matalonga & João Paulo Fernandes
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,19 +14,20 @@
  * limitations under the License.
  */
 
-package hmatalonga.greenhub.models;
+package hmatalonga.greenhub.models.data;
 
 /**
- * Cell Info data definition.
+ * Call Month data definition.
  */
-public class CellInfo {
-    public int MCC = 0;
+public class CallMonth {
 
-    public int MNC = 0;
+    public int tolCallInNum     = 0;
 
-    public int LAC = 0;
+    public int tolCallOutNum    = 0;
 
-    public int CID = 0;
+    public int tolMissedCallNum = 0;
 
-    public String radioType = null;
+    public long tolCallInDur    = 0;
+
+    public long tolCallOutDur   = 0;
 }

@@ -21,12 +21,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-import hmatalonga.greenhub.models.BatteryDetails;
-import hmatalonga.greenhub.models.CpuStatus;
-import hmatalonga.greenhub.models.Feature;
-import hmatalonga.greenhub.models.NetworkDetails;
-import hmatalonga.greenhub.models.ProcessInfo;
-import hmatalonga.greenhub.models.Sample;
+import hmatalonga.greenhub.models.data.BatteryDetails;
+import hmatalonga.greenhub.models.data.CpuStatus;
+import hmatalonga.greenhub.models.data.Feature;
+import hmatalonga.greenhub.models.data.NetworkDetails;
+import hmatalonga.greenhub.models.data.ProcessInfo;
+import hmatalonga.greenhub.models.data.Sample;
 import hmatalonga.greenhub.util.StringHelper;
 
 /**

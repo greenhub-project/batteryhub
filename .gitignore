@@ -41,6 +41,7 @@ proguard/
 assets/
 screens/
 dist/
+docs/
 
 greenhub-build
 greenhub-docker-build

@@ -31,10 +31,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import hmatalonga.greenhub.Config;
-import hmatalonga.greenhub.GreenHub;
+import hmatalonga.greenhub.GreenHubHelper;
 import hmatalonga.greenhub.fragments.HomeFragment;
 import hmatalonga.greenhub.managers.sampling.Inspector;
-import hmatalonga.greenhub.models.Device;
+import hmatalonga.greenhub.models.data.Device;
 
 /**
  * Registers devices on server for first-run, connects device to server and provides uuid.
@@ -44,23 +44,23 @@ import hmatalonga.greenhub.models.Device;
 public class RegisterHandler {
     private static final String TAG = "RegisterHandler";
 
-    private static RequestQueue sQueue = Volley.newRequestQueue(GreenHub.getContext());
+    private static RequestQueue sQueue = Volley.newRequestQueue(GreenHubHelper.getContext());
     private static Map<String, String> sParams = new HashMap<>();
     
-    private GreenHub sApp = null;
+    private GreenHubHelper sApp = null;
     private int sTimeout = 5000; // 5s default for socket timeout
 
-    public RegisterHandler(GreenHub app) {
+    public RegisterHandler(GreenHubHelper app) {
         this.sApp = app;
     }
 
-    public RegisterHandler(GreenHub app, int timeout) {
+    public RegisterHandler(GreenHubHelper app, int timeout) {
         this.sApp = app;
         this.sTimeout = timeout;
     }
 
     public Device registerClient() {
-        Device device = new Device(Inspector.getAndroidId(GreenHub.getContext()));
+        Device device = new Device(Inspector.getAndroidId(GreenHubHelper.getContext()));
         device.setTimestamp(System.currentTimeMillis() / 1000.0);
         device.setModel(Inspector.getModel());
         device.setManufacturer(Inspector.getManufacturer());
@@ -130,14 +130,14 @@ public class RegisterHandler {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Toast.makeText(GreenHub.getContext(), response.replaceAll("\n", ""),
+                        Toast.makeText(GreenHubHelper.getContext(), response.replaceAll("\n", ""),
                                 Toast.LENGTH_LONG).show();
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(GreenHub.getContext(), "Test failed",
+                        Toast.makeText(GreenHubHelper.getContext(), "Test failed",
                                 Toast.LENGTH_LONG).show();
                     }
                 });

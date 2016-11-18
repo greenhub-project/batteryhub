@@ -37,7 +37,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import hmatalonga.greenhub.Config;
-import hmatalonga.greenhub.models.Sample;
+import hmatalonga.greenhub.models.data.Sample;
 
 /**
  * Created by hugo on 16-04-2016.
@@ -383,7 +383,7 @@ public class GreenHubDb {
 
         // If you change the database schema, you must increment the database version.
         public static final int DATABASE_VERSION = 1;
-        public static final String DATABASE_NAME = "GreenHub.db";
+        public static final String DATABASE_NAME = "GreenHubHelper.db";
 
         private static final String FTS_TABLE_CREATE = "CREATE VIRTUAL TABLE "
                 + GreenHubDbContract.GreenHubEntry.SAMPLES_VIRTUAL_TABLE + " USING fts3 (" + createStatement()

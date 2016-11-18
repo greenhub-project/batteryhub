@@ -29,7 +29,7 @@ import android.util.Log;
 import android.util.SparseArray;
 
 import hmatalonga.greenhub.managers.sampling.BatteryEstimator;
-import hmatalonga.greenhub.models.Device;
+import hmatalonga.greenhub.models.data.Device;
 import hmatalonga.greenhub.network.CommunicationManager;
 import hmatalonga.greenhub.network.RegisterHandler;
 import hmatalonga.greenhub.ui.MainActivity;
@@ -38,9 +38,9 @@ import hmatalonga.greenhub.ui.MainActivity;
  * App class
  * Created by hugo on 24-03-2016.
  */
-public class GreenHub {
-    private static final String TAG = "GreenHub";
-    private static GreenHub instance;
+public class GreenHubHelper {
+    private static final String TAG = "GreenHubHelper";
+    private static GreenHubHelper instance;
 
     public static Context context = null;
     public static SharedPreferences preferences = null;
@@ -76,11 +76,11 @@ public class GreenHub {
 
     public final String serverURL;
 
-    // GreenHub app Modules
+    // GreenHubHelper app Modules
     public CommunicationManager communicationManager = null;
     public RegisterHandler registerHandler = null;
 
-    public GreenHub(Context c) {
+    public GreenHubHelper(Context c) {
         context = c;
         if (Config.PRODUCTION)
             serverURL = Config.PUBLIC_SERVER_URL;
@@ -118,7 +118,7 @@ public class GreenHub {
 
                 estimator = BatteryEstimator.getInstance();
 
-                // Unregister, since GreenHub may have been started multiple times, since reboot
+                // Unregister, since GreenHubHelper may have been started multiple times, since reboot
 //                try {
 //                    main.unregisterReceiver(estimator);
 //                } catch (IllegalArgumentException e) {
@@ -131,26 +131,10 @@ public class GreenHub {
 
         new Thread() {
             public void run() {
-                registerHandler = new RegisterHandler(GreenHub.this);
-                communicationManager = new CommunicationManager(GreenHub.this);
+                registerHandler = new RegisterHandler(GreenHubHelper.this);
+                communicationManager = new CommunicationManager(GreenHubHelper.this);
             }
         }.start();
-    }
-
-    /**
-     * Converts <code>importance</code> to a human readable string.
-     *
-     * @param importance
-     *            the importance from Android process info.
-     * @return a human readable String describing the importance.
-     */
-    public static String importanceString(int importance) {
-        String s = importanceToString.get(importance);
-        if (s == null || s.length() == 0) {
-            Log.e("Importance not found:", "" + importance);
-            s = "Unknown";
-        }
-        return s;
     }
 
     public static String translatedPriority(String importanceString) {

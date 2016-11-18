@@ -31,7 +31,7 @@ import android.util.Log;
 import java.util.List;
 
 import hmatalonga.greenhub.Config;
-import hmatalonga.greenhub.GreenHub;
+import hmatalonga.greenhub.GreenHubHelper;
 
 /**
  * Provides current Mobile status
@@ -182,7 +182,7 @@ public class BatteryEstimator extends WakefulBroadcastReceiver implements Locati
         Thread t = new Thread() {
             public void run() {
                 if (context == null)
-                    context = GreenHub.getContext();
+                    context = GreenHubHelper.getContext();
 
                 IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
                 Intent batteryStatus = context.registerReceiver(null, ifilter);
