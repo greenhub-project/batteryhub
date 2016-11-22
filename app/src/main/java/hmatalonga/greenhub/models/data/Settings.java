@@ -17,7 +17,7 @@
 package hmatalonga.greenhub.models.data;
 
 /**
- * Settings data definition.
+ * SettingsInfo data definition.
  */
 public class Settings {
 
@@ -34,4 +34,52 @@ public class Settings {
     private boolean autoRotateEnabled;
 
     private boolean nfcEnabled;
+
+    public boolean isBluetoothEnabled() {
+        return bluetoothEnabled;
+    }
+
+    public void setBluetoothEnabled(boolean bluetoothEnabled) {
+        this.bluetoothEnabled = bluetoothEnabled;
+    }
+
+    public boolean isLocationEnabled() {
+        return locationEnabled;
+    }
+
+    public void setLocationEnabled(boolean locationEnabled) {
+        this.locationEnabled = locationEnabled;
+    }
+
+    public boolean isPowersaverEnabled() {
+        return powersaverEnabled;
+    }
+
+    public void setPowersaverEnabled(boolean powersaverEnabled) {
+        this.powersaverEnabled = powersaverEnabled;
+    }
+
+    public boolean isFlashlightEnabled() {
+        return flashlightEnabled;
+    }
+
+    public void setFlashlightEnabled(boolean flashlightEnabled) {
+        this.flashlightEnabled = flashlightEnabled;
+    }
+
+    public boolean isAutoRotateEnabled() {
+        return autoRotateEnabled;
+    }
+
+    public void setAutoRotateEnabled(boolean autoRotateEnabled) {
+        this.autoRotateEnabled = autoRotateEnabled;
+    }
+
+    public boolean isNfcEnabled() {
+        return nfcEnabled;
+    }
+
+    public void setNfcEnabled(boolean nfcEnabled) {
+        this.nfcEnabled = nfcEnabled;
+    }
 }

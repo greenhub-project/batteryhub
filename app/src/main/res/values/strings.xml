@@ -70,7 +70,7 @@
 
     <string name="wifi_only_key">wifionly</string>
 
-    <!-- Strings related to Settings -->
+    <!-- Strings related to SettingsInfo -->
 
     <!-- Example settings for Data & Sync -->
     <string name="pref_header_data_sync">Data &amp; sync</string>

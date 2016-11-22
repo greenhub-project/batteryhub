@@ -34,6 +34,7 @@ import hmatalonga.greenhub.Config;
 import hmatalonga.greenhub.GreenHubHelper;
 import hmatalonga.greenhub.fragments.HomeFragment;
 import hmatalonga.greenhub.managers.sampling.Inspector;
+import hmatalonga.greenhub.models.Specifications;
 import hmatalonga.greenhub.models.data.Device;
 
 /**
@@ -60,15 +61,15 @@ public class RegisterHandler {
     }
 
     public Device registerClient() {
-        Device device = new Device(Inspector.getAndroidId(GreenHubHelper.getContext()));
+        Device device = new Device(Specifications.getAndroidId(GreenHubHelper.getContext()));
         device.setTimestamp(System.currentTimeMillis() / 1000.0);
-        device.setModel(Inspector.getModel());
-        device.setManufacturer(Inspector.getManufacturer());
-        device.setBrand(Inspector.getBrand());
-        device.setProduct(Inspector.getProductName());
-        device.setOsVersion(Inspector.getOsVersion());
-        device.setKernelVersion(Inspector.getKernelVersion());
-        device.setSerialNumber(Inspector.getBuildSerial());
+        device.setModel(Specifications.getModel());
+        device.setManufacturer(Specifications.getManufacturer());
+        device.setBrand(Specifications.getBrand());
+        device.setProduct(Specifications.getProductName());
+        device.setOsVersion(Specifications.getOsVersion());
+        device.setKernelVersion(Specifications.getKernelVersion());
+        device.setSerialNumber(Specifications.getBuildSerial());
 
         postRegistration(device);
 

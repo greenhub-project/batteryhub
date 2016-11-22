@@ -21,6 +21,7 @@ import android.app.ActivityManager.RunningServiceInfo;
 import android.content.Context;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -37,12 +38,12 @@ public class Application {
 
     private static final String TAG = makeLogTag(Application.class);
 
-    public static List<ProcessInfo> getRunningAppInfo(Context context) {
+    public static ArrayList<ProcessInfo> getRunningAppInfo(final Context context) {
         List<RunningAppProcessInfo> runningProcessInfo = Process.getRunningProcessInfo(context);
         List<RunningServiceInfo> runningServices = Service.getRunningServiceInfo(context);
 
         Set<String> packages = new HashSet<>();
-        List<ProcessInfo> processInfoList = new ArrayList<>();
+        ArrayList<ProcessInfo> processInfoList = new ArrayList<>();
 
         if (runningProcessInfo != null) {
             for (RunningAppProcessInfo pi : runningProcessInfo) {
@@ -82,7 +83,7 @@ public class Application {
      * @param appName the package name or process name of the application.
      * @return true if the application is running, false otherwise.
      */
-    public static boolean isRunning(Context context, String appName) {
+    public static boolean isRunning(final Context context, String appName) {
         List<RunningAppProcessInfo> runningProcessInfo = Process.getRunningProcessInfo(context);
         List<RunningServiceInfo> services = Service.getRunningServiceInfo(context);
 
@@ -99,5 +100,39 @@ public class Application {
         }
 
         return false;
+    }
+
+    /**
+     * Get highest priority process for the package.
+     *
+     * @param context
+     * @param packageName
+     * @return
+     */
+    public static String getAppPriority(Context context, String packageName){
+        List<RunningAppProcessInfo> processInfos = Process.getRunningProcessInfo(context);
+        List<RunningServiceInfo> serviceInfos = Service.getRunningServiceInfo(context);
+        int highestPriority = Integer.MAX_VALUE;
+
+        // Check if there are running services for the package
+        for(RunningServiceInfo si : serviceInfos) {
+            if(si.service.getPackageName().equals(packageName)){
+                highestPriority = RunningAppProcessInfo.IMPORTANCE_SERVICE;
+            }
+
+        }
+        // Check if there are running processes for the package
+        for(RunningAppProcessInfo pi : processInfos){
+            if(Arrays.asList(pi.pkgList).contains(packageName)) {
+                if(pi.importance < highestPriority){
+                    highestPriority = pi.importance;
+                }
+            }
+        }
+
+        return StringHelper.translatedPriority(
+                context,
+                StringHelper.importanceString(highestPriority)
+        );
     }
 }

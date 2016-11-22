@@ -31,6 +31,7 @@ import java.util.Collections;
 import hmatalonga.greenhub.GreenHubHelper;
 import hmatalonga.greenhub.R;
 import hmatalonga.greenhub.managers.sampling.Inspector;
+import hmatalonga.greenhub.models.Package;
 import hmatalonga.greenhub.models.data.ProcessInfo;
 import hmatalonga.greenhub.util.AlphabeticalProcessInfoSort;
 
@@ -98,7 +99,7 @@ public class ProcessInfoAdapter extends BaseAdapter {
         if (x == null) return convertView;
 
         String p = x.getName();
-        PackageInfo pak = Inspector.getPackageInfo(mContext, p);
+        PackageInfo pak = Package.getPackageInfo(mContext, p);
         String ver = "";
         if (pak != null) {
             ver = pak.versionName;

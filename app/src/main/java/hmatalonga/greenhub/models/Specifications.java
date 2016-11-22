@@ -21,7 +21,13 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 
+import java.lang.reflect.Method;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
+
+import hmatalonga.greenhub.Config;
+import hmatalonga.greenhub.models.data.Feature;
 
 import static hmatalonga.greenhub.util.LogUtils.LOGD;
 import static hmatalonga.greenhub.util.LogUtils.makeLogTag;
@@ -37,6 +43,7 @@ public class Specifications {
     private static final String TAG = makeLogTag(Specifications.class);
     private static final String PREF_UNIQUE_ID = "PREF_UNIQUE_ID";
     private static final String TYPE_UNKNOWN = "unknown";
+    private static final int UUID_LENGTH = 16;
 
     /**
      * Provides a {@link SharedPreferences} instance.
@@ -80,6 +87,63 @@ public class Specifications {
         SharedPreferences sp = getSharedPreferences(context);
         sp.edit().putString(PREF_UNIQUE_ID, id).apply();
         LOGD(TAG, "Android ID Key of device set to: " + id);
+    }
+
+    /**
+     * Generate a time-based, random identifier.
+     *
+     * @param c
+     *            the app's Context
+     * @return a time-based, random identifier.
+     */
+    public static String getTimeBasedUuid(Context c, boolean includeTimestamp) { //
+        String aID = getAndroidId(c);
+        String wifiMac = Wifi.getMacAddress(c);
+        String devid = Phone.getDeviceId(c);
+        String concat = "";
+        if (aID != null)
+            concat = aID;
+        else
+            concat = "0000000000000000";
+        if (wifiMac != null)
+            concat += wifiMac;
+        else
+            concat += "00:00:00:00:00:00";
+
+        // IMEI is 15 characters, decimal, while MEID is 14 characters, hex. Add
+        // a space if length is less than 15:
+        if (devid != null) {
+            concat += devid;
+            if (devid.length() < 15)
+                concat += " ";
+        } else
+            concat += "000000000000000";
+        if (includeTimestamp) {
+            long timestamp = System.currentTimeMillis();
+            concat += timestamp;
+        }
+
+        // Log.d(STAG,
+        // "AID="+aID+" wifiMac="+wifiMac+" devid="+devid+" rawUUID=" +concat );
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-512");
+            md.update(concat.getBytes());
+            byte[] mdbytes = md.digest();
+            StringBuilder hexString = new StringBuilder();
+            for (int i = 0; i < mdbytes.length; i++) {
+                String hx = Integer.toHexString(0xFF & mdbytes[i]);
+                if (hx.equals("0"))
+                    hexString.append("00");
+                else
+                    hexString.append(hx);
+            }
+            String uuid = hexString.toString().substring(0, UUID_LENGTH);
+            // FlurryAgent.logEvent("ANDROID_ID=" + aID +" UUID=" + uuid);
+            return uuid;
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return aID;
+        }
     }
 
     /**
@@ -151,5 +215,57 @@ public class Specifications {
      */
     public static String getProductName() {
         return android.os.Build.PRODUCT;
+    }
+
+    /**
+     * Get the java.vm.version system property as a Feature("vm", version).
+     *
+     * @return a Feature instance with the key "vm" and value of the "java.vm.version" system property.
+     */
+    public static Feature getVmVersion() {
+        Feature vmVersion = new Feature();
+        String vm = System.getProperty("java.vm.version");
+
+        if (vm == null) vm = "";
+        vmVersion.setKey("vm");
+        vmVersion.setValue(vm);
+
+        return vmVersion;
+    }
+
+    /**
+     * Undocumented call to read a string value from system properties.
+     * WARNING: Uses reflection, data might not always be available.
+     * @param context Application context
+     * @param property Property name
+     * @return Property value
+     * @throws Exception
+     */
+    public static String getSystemProperty(final Context context, String property) throws Exception {
+        Class<?> systemProperties = Class.forName("android.os.SystemProperties");
+        Method get = systemProperties.getMethod("get", String.class);
+        get.setAccessible(true);
+        return ((String) get.invoke(context, property));
+    }
+
+    /**
+     * Retrieves service provider using an undocumented system properties call.
+     * WARNING: Uses reflection, data might not always be available.
+     * @param context
+     * @param property
+     * @return
+     */
+    public static String getStringFromSystemProperty(final Context context, String property){
+        try {
+            String operator = getSystemProperty(context, property);
+            if(operator != null && operator.length() > 0){
+                return operator;
+            }
+        } catch (Exception e){
+            if(Config.DEBUG && e != null && e.getLocalizedMessage() != null){
+                LOGD(TAG, "Failed getting service provider: " + e.getLocalizedMessage());
+            }
+        }
+        return null;
     }
 }

@@ -98,7 +98,7 @@ public class Sample {
     // Extra features for extensibility
     private List<Feature> extra;
 
-    // Current set of Settings
+    // Current set of SettingsInfo
     private Settings settings;
 
     // Current storage details of device
@@ -301,5 +301,29 @@ public class Sample {
 
     public int getPiListSize() {
         return (this.piList == null) ? 0 : this.piList.size();
+    }
+
+    public Settings getSettings() {
+        return settings;
+    }
+
+    public void setSettings(Settings settings) {
+        this.settings = settings;
+    }
+
+    public StorageDetails getStorageDetails() {
+        return storageDetails;
+    }
+
+    public void setStorageDetails(StorageDetails storageDetails) {
+        this.storageDetails = storageDetails;
+    }
+
+    public String getCountryCode() {
+        return countryCode;
+    }
+
+    public void setCountryCode(String countryCode) {
+        this.countryCode = countryCode;
     }
 }

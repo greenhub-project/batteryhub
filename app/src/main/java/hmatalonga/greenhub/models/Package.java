@@ -174,7 +174,7 @@ public class Package {
                     if (filterSystem & isSystemApp)
                         continue;
                     if (pak.signatures.length > 0) {
-                        List<String> sigList = getSignatures(pak);
+                        List<String> sigList = Signatures.getSignatureList(pak);
                         ProcessInfo pi = new ProcessInfo();
                         pi.setName(pkg);
                         pi.setApplicationLabel(label);
@@ -201,9 +201,7 @@ public class Package {
      * Returns info about an installed package. Will be called when receiving
      * the PACKAGE_ADDED or PACKAGE_REPLACED intent.
      *
-     * @param context
-     * @param filterSystem
-     *            if true, exclude system packages.
+     * @param context the Context.
      * @return a list of installed packages on the device.
      */
     public static ProcessInfo getInstalledPackage(Context context, String pkg) {
@@ -229,7 +227,7 @@ public class Package {
         isSystemApp = isSystemApp || (flags & ApplicationInfo.FLAG_UPDATED_SYSTEM_APP) > 0;
 
         if (pak.signatures.length > 0) {
-            List<String> sigList = getSignatures(pak);
+            List<String> sigList = Signatures.getSignatureList(pak);
             pi.setName(pkg);
             pi.setApplicationLabel(label);
             pi.setVersionCode(vc);

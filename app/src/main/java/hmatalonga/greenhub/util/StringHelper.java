@@ -17,14 +17,17 @@
 package hmatalonga.greenhub.util;
 
 import android.app.ActivityManager.RunningAppProcessInfo;
+import android.content.Context;
 import android.util.SparseArray;
 
 import java.util.List;
 
+import hmatalonga.greenhub.R;
+
 import static hmatalonga.greenhub.util.LogUtils.LOGE;
 
 /**
- * Created by hugo on 17-04-2016.
+ * StringHelper.
  */
 public class StringHelper {
     // Used to map importances to human readable strings for sending samples to
@@ -55,6 +58,31 @@ public class StringHelper {
         return s;
     }
 
+    public static String translatedPriority(final Context context, String importanceString) {
+        if (importanceString == null) {
+            return context.getString(R.string.priorityDefault);
+        }
+
+        switch (importanceString) {
+            case "Not running":
+                return context.getString(R.string.prioritynotrunning);
+            case "Background process":
+                return context.getString(R.string.prioritybackground);
+            case "Service":
+                return context.getString(R.string.priorityservice);
+            case "Visible task":
+                return context.getString(R.string.priorityvisible);
+            case "Foreground app":
+                return context.getString(R.string.priorityforeground);
+            case "Perceptible task":
+                return context.getString(R.string.priorityperceptible);
+            case "Suggestion":
+                return context.getString(R.string.prioritysuggestion);
+            default:
+                return context.getString(R.string.priorityDefault);
+        }
+    }
+
     public static String formatProcessName(String processName) {
         // TODO: Is this the right thing to do? Remove part after ":" in process names
         int indexOf = processName.lastIndexOf(':');
@@ -67,6 +95,22 @@ public class StringHelper {
             array[i] = array[i].trim();
         }
         return array;
+    }
+
+    public static String convertToHex(byte[] data) {
+        StringBuilder builder = new StringBuilder();
+        for (byte b : data) {
+            int halfByte = (b >>> 4) & 0x0F;
+            int twoHalfs = 0;
+            do {
+                builder.append(
+                        (0 <= halfByte) && (halfByte <= 9) ?
+                                (char) ('0' + halfByte) : (char) ('a' + (halfByte - 10))
+                );
+                halfByte = b & 0x0F;
+            } while (twoHalfs++ < 1);
+        }
+        return builder.toString();
     }
 
     public static String convertToString(Object obj) {

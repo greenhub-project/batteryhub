@@ -32,6 +32,7 @@ import java.util.List;
 
 import hmatalonga.greenhub.Config;
 import hmatalonga.greenhub.GreenHubHelper;
+import hmatalonga.greenhub.models.LocationInfo;
 
 /**
  * Provides current Mobile status
@@ -67,7 +68,7 @@ public class BatteryEstimator extends WakefulBroadcastReceiver implements Locati
         try {
             LocationManager lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
             lm.removeUpdates(this);
-            List<String> providers = Inspector.getEnabledLocationProviders(context);
+            List<String> providers = LocationInfo.getEnabledLocationProviders(context);
             if (providers != null) {
                 for (String provider : providers)
                     lm.requestLocationUpdates(provider, Config.FRESHNESS_TIMEOUT, 0, this);
@@ -108,7 +109,7 @@ public class BatteryEstimator extends WakefulBroadcastReceiver implements Locati
 
             // Update last known location...
             if (lastKnownLocation == null)
-                lastKnownLocation = Inspector.getLastKnownLocation(context);
+                lastKnownLocation = LocationInfo.getLastKnownLocation(context);
 
             Intent service = new Intent(context, BatteryEstimatorService.class);
             service.putExtra("OriginalAction", intent.getAction());
@@ -168,7 +169,7 @@ public class BatteryEstimator extends WakefulBroadcastReceiver implements Locati
 
             // Update last known location...
             if (lastKnownLocation == null)
-                lastKnownLocation = Inspector.getLastKnownLocation(context);
+                lastKnownLocation = LocationInfo.getLastKnownLocation(context);
 
             Intent service = new Intent(context, BatteryEstimatorService.class);
             service.putExtra("distance", distance);

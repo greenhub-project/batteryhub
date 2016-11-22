@@ -47,9 +47,9 @@ import hmatalonga.greenhub.R;
  * the list of settings.
  * <p/>
  * See <a href="http://developer.android.com/design/patterns/settings.html">
- * Android Design: Settings</a> for design guidelines and the <a
- * href="http://developer.android.com/guide/topics/ui/settings.html">Settings
- * API Guide</a> for more information on developing a Settings UI.
+ * Android Design: SettingsInfo</a> for design guidelines and the <a
+ * href="http://developer.android.com/guide/topics/ui/settings.html">SettingsInfo
+ * API Guide</a> for more information on developing a SettingsInfo UI.
  */
 public class SettingsActivity extends AppCompatPreferenceActivity {
     /**

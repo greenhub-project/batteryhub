@@ -32,6 +32,7 @@ import hmatalonga.greenhub.GreenHubHelper;
 import hmatalonga.greenhub.R;
 import hmatalonga.greenhub.managers.sampling.Inspector;
 import hmatalonga.greenhub.managers.storage.GreenHubDb;
+import hmatalonga.greenhub.models.Network;
 import hmatalonga.greenhub.models.data.Sample;
 
 /**
@@ -51,19 +52,19 @@ public class SampleSender {
 
     public static void sendSamples(GreenHubHelper app) {
         synchronized(sendLock){
-            Context c = GreenHubHelper.getContext();
+            Context context = GreenHubHelper.getContext();
 
-            String networkStatus = Inspector.getNetworkStatus(c);
-            String networkType = Inspector.getNetworkType(c);
+            String networkStatus = Network.getStatus(context);
+            String networkType = Network.getType(context);
 
-            final SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(c);
-            final boolean useWifiOnly = p.getBoolean(c.getString(R.string.wifi_only_key), false);
+            final SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(context);
+            final boolean useWifiOnly = p.getBoolean(context.getString(R.string.wifi_only_key), false);
 
-            boolean connected = (!useWifiOnly && networkStatus.equals(Inspector.NETWORKSTATUS_CONNECTED))
+            boolean connected = (!useWifiOnly && networkStatus.equals(Network.NETWORKSTATUS_CONNECTED))
                     || networkType.equals("WIFI");
 
             if (connected) {
-                GreenHubDb db = GreenHubDb.getInstance(c);
+                GreenHubDb db = GreenHubDb.getInstance(context);
                 int samples = db.countSamples();
 
                 /* Click Tracking: Track sample sending. */
@@ -76,7 +77,7 @@ public class SampleSender {
                 int successSum = 0;
                 for (int batches = 0; batches < Config.SAMPLE_MAX_BATCHES && batches < samples
                         / Config.COMMS_MAX_UPLOAD_BATCH + 1; batches++) {
-                    SortedMap<Long, Sample> map = GreenHubDb.getInstance(c).queryOldestSamples(Config.COMMS_MAX_UPLOAD_BATCH);
+                    SortedMap<Long, Sample> map = GreenHubDb.getInstance(context).queryOldestSamples(Config.COMMS_MAX_UPLOAD_BATCH);
                     if (map.size() > 0) {
 
 //                        int progress = (int) (successSum * 1.0 / samples * 100.0);
@@ -126,7 +127,7 @@ public class SampleSender {
                                             uploaded.add(s);
                                         i += 1;
                                     }
-                                    int deleted = GreenHubDb.getInstance(c).deleteSamples(uploaded);
+                                    int deleted = GreenHubDb.getInstance(context).deleteSamples(uploaded);
                                     successSum += success;
                                 } catch (Throwable th) {
                                     tries++;

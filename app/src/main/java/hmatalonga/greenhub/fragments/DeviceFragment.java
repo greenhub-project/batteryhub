@@ -29,6 +29,9 @@ import android.widget.TextView;
 
 import hmatalonga.greenhub.R;
 import hmatalonga.greenhub.managers.sampling.Inspector;
+import hmatalonga.greenhub.models.Cpu;
+import hmatalonga.greenhub.models.Memory;
+import hmatalonga.greenhub.models.Specifications;
 import hmatalonga.greenhub.ui.ProcessListActivity;
 
 /**
@@ -93,15 +96,15 @@ public class DeviceFragment extends Fragment {
      */
     private void populateView(final View view) {
         TextView textView = (TextView) view.findViewById(R.id.IdValue);
-        textView.setText(Inspector.getAndroidId(mContext));
+        textView.setText(Specifications.getAndroidId(mContext));
         textView = (TextView) view.findViewById(R.id.OsVersionValue);
-        textView.setText(Inspector.getOsVersion());
+        textView.setText(Specifications.getOsVersion());
         textView = (TextView) view.findViewById(R.id.deviceModelValue);
-        textView.setText(Inspector.getModel());
+        textView.setText(Specifications.getModel());
         textView = (TextView) view.findViewById(R.id.kernelValue);
-        textView.setText(Inspector.getKernelVersion());
+        textView.setText(Specifications.getKernelVersion());
         textView = (TextView) view.findViewById(R.id.manufacturerValue);
-        textView.setText(Inspector.getManufacturer());
+        textView.setText(Specifications.getManufacturer());
     }
 
     /**
@@ -110,7 +113,7 @@ public class DeviceFragment extends Fragment {
      * @param view View to update
      */
     private void setMemoryBars(final View view) {
-        int[] totalAndUsed = Inspector.readMeminfo();
+        int[] totalAndUsed = Memory.readMemoryInfo();
 
         ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.memoryUsedProgressBar);
         progressBar.setMax(totalAndUsed[0] + totalAndUsed[1]);
@@ -124,13 +127,13 @@ public class DeviceFragment extends Fragment {
 
         getActivity().runOnUiThread(new Runnable() {
             public void run() {
-                long[] currentPoint = Inspector.readUsagePoint();
+                long[] currentPoint = Cpu.readUsagePoint();
                 double cpu = 0;
 
                 if (mLastPoint == null) {
                     mLastPoint = currentPoint;
                 } else {
-                    cpu = Inspector.getUsage(mLastPoint, currentPoint);
+                    cpu = Cpu.getUsage(mLastPoint, currentPoint);
                 }
 
                 // CPU usage

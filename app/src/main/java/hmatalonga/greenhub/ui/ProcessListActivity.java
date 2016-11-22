@@ -25,6 +25,8 @@ import java.util.ArrayList;
 
 import hmatalonga.greenhub.R;
 import hmatalonga.greenhub.managers.sampling.Inspector;
+import hmatalonga.greenhub.models.Application;
+import hmatalonga.greenhub.models.Process;
 import hmatalonga.greenhub.models.data.ProcessInfo;
 import hmatalonga.greenhub.ui.adapters.ProcessInfoAdapter;
 
@@ -40,7 +42,7 @@ public class ProcessListActivity extends AppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         ListView lv = (ListView) findViewById(R.id.processList);
-        ArrayList<ProcessInfo> searchResults = Inspector.getRunningAppInfo(this);
+        ArrayList<ProcessInfo> searchResults = Application.getRunningAppInfo(this);
         lv.setAdapter(new ProcessInfoAdapter(this, searchResults));
     }
 }

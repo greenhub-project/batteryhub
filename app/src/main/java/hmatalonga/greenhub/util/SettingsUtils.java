@@ -34,6 +34,10 @@ public class SettingsUtils {
      * Boolean indicating whether ToS has been accepted.
      */
     public static final String PREF_TOS_ACCEPTED = "pref_tos_accepted";
+    /**
+     * Boolean indicating whether to send installed packages with the samples.
+     */
+    public static final String PREF_SEND_INSTALLED_PACKAGES = "pref_send_installed";
 
     /**
      * Return true if user has accepted the
@@ -55,5 +59,42 @@ public class SettingsUtils {
     public static void markTosAccepted(final Context context, boolean newValue) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         sp.edit().putBoolean(PREF_TOS_ACCEPTED, newValue).apply();
+    }
+
+    public static void markInstalledPackagesIncluded(final Context context, boolean newValue) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        sp.edit().putBoolean(PREF_SEND_INSTALLED_PACKAGES, newValue).apply();
+    }
+
+    public static boolean isInstalledPackagesIncluded(final Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getBoolean(PREF_SEND_INSTALLED_PACKAGES, false);
+    }
+
+    /**
+     * Helper method to register a settings_prefs listener. This method does not automatically handle
+     * {@code unregisterOnSharedPreferenceChangeListener() un-registering} the listener at the end
+     * of the {@code context} lifecycle.
+     *
+     * @param context  Context to be used to lookup the {@link android.content.SharedPreferences}.
+     * @param listener Listener to register.
+     */
+    public static void registerOnSharedPreferenceChangeListener(final Context context,
+                                                                SharedPreferences.OnSharedPreferenceChangeListener listener) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        sp.registerOnSharedPreferenceChangeListener(listener);
+    }
+
+    /**
+     * Helper method to un-register a settings_prefs listener typically registered with
+     * {@code registerOnSharedPreferenceChangeListener()}
+     *
+     * @param context  Context to be used to lookup the {@link android.content.SharedPreferences}.
+     * @param listener Listener to un-register.
+     */
+    public static void unregisterOnSharedPreferenceChangeListener(final Context context,
+                                                                  SharedPreferences.OnSharedPreferenceChangeListener listener) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        sp.unregisterOnSharedPreferenceChangeListener(listener);
     }
 }

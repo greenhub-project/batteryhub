@@ -20,10 +20,14 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningAppProcessInfo;
 import android.content.Context;
+import android.content.SharedPreferences;
 
 import java.lang.ref.WeakReference;
+import java.util.LinkedList;
 import java.util.List;
 
+import hmatalonga.greenhub.Config;
+import hmatalonga.greenhub.models.data.ProcessInfo;
 import hmatalonga.greenhub.util.StringHelper;
 
 import static hmatalonga.greenhub.util.LogUtils.makeLogTag;
@@ -59,6 +63,47 @@ public class Process {
 
         runningAppInfo = new WeakReference<>(runningAppProcesses);
         return runningAppProcesses;
+    }
+
+    /**
+     * Helper to set application to the uninstalled state in the GreenHub sample.
+     *
+     * @param pName the package that was uninstalled.
+     * @param pref The preference that stored the uninstallation directive. This preference will be deleted to ensure uninstallations are not sent multiple times.
+     * @param e the Editor (passed and not created here for efficiency)
+     * @return a new ProcessInfo entry describing the uninstalled item.
+     */
+    public static ProcessInfo uninstalledItem(String pName, String pref, SharedPreferences.Editor e) {
+        ProcessInfo item = new ProcessInfo();
+        item.setName(pName);
+        List<String> sigs = new LinkedList<>();
+        sigs.add("uninstalled");
+        item.setAppSignatures(sigs);
+        item.setpId(-1);
+        item.setImportance(Config.IMPORTANCE_UNINSTALLED);
+        // Remember to remove it so we do not send
+        // multiple uninstall events
+        e.remove(pref);
+        return item;
+    }
+
+    /**
+     * Helper to set application to the disabled state in the GreenHub sample.
+     *
+     * @param pName the package that was disabled.
+     * @param pref The preference that stored the disabled directive. This preference will be deleted to ensure disabled apps are not sent multiple times.
+     * @param e the Editor (passed and not created here for efficiency)
+     * @return a new ProcessInfo entry describing the uninstalled item.
+     */
+    public static ProcessInfo disabledItem(String pName, String pref, SharedPreferences.Editor e) {
+        ProcessInfo item = new ProcessInfo();
+        item.setName(pName);
+        item.setpId(-1);
+        item.setImportance(Config.IMPORTANCE_DISABLED);
+        // Remember to remove it so we do not send
+        // multiple uninstall events
+        e.remove(pref);
+        return item;
     }
 
     public static void clear() {

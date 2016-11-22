@@ -31,6 +31,30 @@ public class Cpu {
 
     private static final String TAG = makeLogTag(Cpu.class);
 
+    // FIXME: Describe this. Why are there so many fields? Why is it divided by
+    // 100?
+	/*
+	 * The value of HZ varies across kernel versions and hardware platforms. On
+	 * i386 the situation is as follows: on kernels up to and including 2.4.x,
+	 * HZ was 100, giving a jiffy value of 0.01 seconds; starting with 2.6.0, HZ
+	 * was raised to 1000, giving a jiffy of 0.001 seconds. Since kernel 2.6.13,
+	 * the HZ value is a kernel configuration parameter and can be 100, 250 (the
+	 * default) or 1000, yielding a jiffies value of, respectively, 0.01, 0.004,
+	 * or 0.001 seconds. Since kernel 2.6.20, a further frequency is available:
+	 * 300, a number that divides evenly for the common video frame rates (PAL,
+	 * 25 HZ; NTSC, 30 HZ).
+	 *
+	 * I will leave the unit of cpu time as the jiffy and we can discuss later.
+	 *
+	 * 0 name of cpu 1 space 2 user time 3 nice time 4 sys time 5 idle time(it
+	 * is not include in the cpu total time) 6 iowait time 7 irg time 8 softirg
+	 * time
+	 *
+	 * the idleTotal[5] is the idle time which always changes. There are two
+	 * spaces between cpu and user time.That is a tricky thing and messed up
+	 * splitting.:)
+	 */
+
     public static synchronized long[] readUsagePoint() {
         long idle = 0;
         long cpu = 0;

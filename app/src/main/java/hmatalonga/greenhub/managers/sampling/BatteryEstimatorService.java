@@ -128,7 +128,7 @@ public class BatteryEstimatorService extends IntentService {
 
             if (lastSample != null) {
                 Inspector.setLastBatteryLevel(lastSample.getBatteryLevel());
-            } else if (Inspector.getLastBatteryLevel(context) == 0) {
+            } else if (Inspector.getLastBatteryLevel() == 0) {
                 // before taking the first sample in a batch, first record the battery level
                 Inspector.setLastBatteryLevel(Inspector.getCurrentBatteryLevel());
                 // take a sample and store it in the database
@@ -142,7 +142,7 @@ public class BatteryEstimatorService extends IntentService {
 			 * The current battery level might also have been changed while the
 			 * device has been taking a sample.
 			 */
-            boolean batteryLevelChanged = Inspector.getLastBatteryLevel(context) != Inspector.getCurrentBatteryLevel();
+            boolean batteryLevelChanged = Inspector.getLastBatteryLevel() != Inspector.getCurrentBatteryLevel();
 
             if (batteryLevelChanged) {
 				/* among all occurrence of the event BATTERY_CHANGED, only take a sample
@@ -150,7 +150,7 @@ public class BatteryEstimatorService extends IntentService {
 				 * (BATTERY_CHANGED happens whenever the battery temperature or voltage of other parameters change)
 				 */
                 Log.i(TAG, "The battery percentage changed. About to take a new sample "
-                        + "(currentBatteryLevel=" + Inspector.getCurrentBatteryLevel() + ", lastBatteryLevel=" + Inspector.getLastBatteryLevel(context)+ ")");
+                        + "(currentBatteryLevel=" + Inspector.getCurrentBatteryLevel() + ", lastBatteryLevel=" + Inspector.getLastBatteryLevel()+ ")");
 
                 // take a sample and store it in the database
                 this.getSample(context, intent, lastSample, sampleDB);
