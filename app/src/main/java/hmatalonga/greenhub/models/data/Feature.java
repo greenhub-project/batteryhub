@@ -16,49 +16,27 @@
 
 package hmatalonga.greenhub.models.data;
 
-import hmatalonga.greenhub.util.StringHelper;
+import com.activeandroid.Model;
+import com.activeandroid.annotation.Column;
+import com.activeandroid.annotation.Table;
 
 /**
  * Feature data definition.
  */
-public class Feature {
+@Table(name = "Features")
+public class Feature extends Model {
 
-    private static final int FIELD_NUM = 2;
+    // Sample FK
+    @Column(name = "Sample")
+    public Sample sample;
 
-    private String key;
+    @Column(name = "FeatureKey")
+    public String key;
 
-    private String value;
+    @Column(name = "FeatureValue")
+    public String value;
 
-    public String getKey() {
-        return key;
-    }
-
-    public void setKey(String key) {
-        this.key = key;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
-
-    public void parseString(String s) {
-        String[] values = StringHelper.trimArray(s.split(";"));
-        if (values.length == FIELD_NUM) {
-            try {
-                setKey(values[0]);
-                setValue(values[1]);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    @Override
-    public String toString() {
-        return key + ";" + value;
+    public Feature() {
+        super();
     }
 }

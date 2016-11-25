@@ -31,19 +31,19 @@ import android.util.Log;
 import java.util.List;
 
 import hmatalonga.greenhub.Config;
-import hmatalonga.greenhub.GreenHubHelper;
+import hmatalonga.greenhub.GreenHubApp;
+import hmatalonga.greenhub.util.GreenHubHelper;
 import hmatalonga.greenhub.models.LocationInfo;
 
 /**
- * Provides current Mobile status
+ * Provides current Device data readings.
+ *
  * Created by hugo on 09-04-2016.
  */
-public class BatteryEstimator extends WakefulBroadcastReceiver implements LocationListener {
+public class DataEstimator extends WakefulBroadcastReceiver implements LocationListener {
     private static final String TAG = "Estimator";
     public static final int MAX_SAMPLES = 250;
 
-    private static BatteryEstimator instance = null;
-    private Context context = null;
     private Location lastKnownLocation = null;
     private double distance = 0.0;
     private long lastNotify;
@@ -58,20 +58,18 @@ public class BatteryEstimator extends WakefulBroadcastReceiver implements Locati
     private float temperature;
     private float voltage;
 
-    public static BatteryEstimator getInstance() {
-        if (instance == null)
-            BatteryEstimator.instance = new BatteryEstimator();
-        return instance;
-    }
+    private Context mContext;
 
     private void requestLocationUpdates() {
         try {
-            LocationManager lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-            lm.removeUpdates(this);
-            List<String> providers = LocationInfo.getEnabledLocationProviders(context);
+            LocationManager manager = (LocationManager)
+                    mContext.getSystemService(Context.LOCATION_SERVICE);
+            manager.removeUpdates(this);
+            List<String> providers = LocationInfo.getEnabledLocationProviders(mContext);
             if (providers != null) {
-                for (String provider : providers)
-                    lm.requestLocationUpdates(provider, Config.FRESHNESS_TIMEOUT, 0, this);
+                for (String provider : providers) {
+                    manager.requestLocationUpdates(provider, Config.FRESHNESS_TIMEOUT, 0, this);
+                }
             }
         }
         catch (SecurityException e) {
@@ -81,6 +79,10 @@ public class BatteryEstimator extends WakefulBroadcastReceiver implements Locati
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        if (mContext == null) {
+            mContext = context;
+        }
+
         try {
             level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
             scale = intent.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
@@ -96,25 +98,24 @@ public class BatteryEstimator extends WakefulBroadcastReceiver implements Locati
             e.printStackTrace();
         }
 
-        /* On some phones, scale is always 0. */
-        if (scale == 0)
-            scale = 100;
+        // On some phones, scale is always 0.
+        if (scale == 0) scale = 100;
+
         if (level > 0) {
             Inspector.setCurrentBatteryLevel(level, scale);
 
-            if (this.context == null) {
-                this.context = context;
-                requestLocationUpdates();
-            }
+            requestLocationUpdates();
 
             // Update last known location...
-            if (lastKnownLocation == null)
+            if (lastKnownLocation == null) {
                 lastKnownLocation = LocationInfo.getLastKnownLocation(context);
+            }
 
-            Intent service = new Intent(context, BatteryEstimatorService.class);
+            Intent service = new Intent(context, DataEstimatorService.class);
             service.putExtra("OriginalAction", intent.getAction());
             service.fillIn(intent, 0);
             service.putExtra("distance", distance);
+
             startWakefulService(context, service);
         }
     }
@@ -141,7 +142,7 @@ public class BatteryEstimator extends WakefulBroadcastReceiver implements Locati
         requestLocationUpdates();
     }
 
-    public void getCurrentStatus(Context context) {
+    public void getCurrentStatus(final Context context) {
         IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
         Intent batteryStatus = context.registerReceiver(null, ifilter);
         assert batteryStatus != null;
@@ -162,16 +163,13 @@ public class BatteryEstimator extends WakefulBroadcastReceiver implements Locati
         if (level > 0) {
             Inspector.setCurrentBatteryLevel(level, scale);
 
-            if (this.context == null) {
-                this.context = context;
-                requestLocationUpdates();
-            }
+            requestLocationUpdates();
 
             // Update last known location...
             if (lastKnownLocation == null)
                 lastKnownLocation = LocationInfo.getLastKnownLocation(context);
 
-            Intent service = new Intent(context, BatteryEstimatorService.class);
+            Intent service = new Intent(context, DataEstimatorService.class);
             service.putExtra("distance", distance);
             startWakefulService(context, service);
         }
@@ -182,11 +180,8 @@ public class BatteryEstimator extends WakefulBroadcastReceiver implements Locati
 
         Thread t = new Thread() {
             public void run() {
-                if (context == null)
-                    context = GreenHubHelper.getContext();
-
                 IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
-                Intent batteryStatus = context.registerReceiver(null, ifilter);
+                Intent batteryStatus = mContext.registerReceiver(null, ifilter);
                 assert batteryStatus != null;
 
                 level = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);

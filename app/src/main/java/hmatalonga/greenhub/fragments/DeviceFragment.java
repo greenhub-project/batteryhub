@@ -28,7 +28,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import hmatalonga.greenhub.R;
-import hmatalonga.greenhub.managers.sampling.Inspector;
 import hmatalonga.greenhub.models.Cpu;
 import hmatalonga.greenhub.models.Memory;
 import hmatalonga.greenhub.models.Specifications;
@@ -38,10 +37,6 @@ import hmatalonga.greenhub.ui.ProcessListActivity;
  * Device Fragment.
  */
 public class DeviceFragment extends Fragment {
-
-    public static DeviceFragment newInstance() {
-        return new DeviceFragment();
-    }
 
     private Context mContext;
 
@@ -53,10 +48,7 @@ public class DeviceFragment extends Fragment {
                              Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_device, container, false);
 
-        // Load Application Context to the fragment
-        // mContext = GreenHubHelper.getContext();
-
-        // loadComponents(view);
+        mContext = view.getContext();
 
         return view;
     }
@@ -64,7 +56,11 @@ public class DeviceFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        clean();
+        clear();
+    }
+
+    public static DeviceFragment newInstance() {
+        return new DeviceFragment();
     }
 
     // Private Helper Methods ----------------------------------------------------------------------
@@ -147,7 +143,7 @@ public class DeviceFragment extends Fragment {
     /**
      * Cleans local variables preventing memory leaks.
      */
-    private void clean() {
+    private void clear() {
         mContext = null;
         mLastPoint = null;
     }

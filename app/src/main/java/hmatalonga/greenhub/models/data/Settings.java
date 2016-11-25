@@ -16,70 +16,43 @@
 
 package hmatalonga.greenhub.models.data;
 
+import com.activeandroid.Model;
+import com.activeandroid.annotation.Column;
+import com.activeandroid.annotation.Table;
+
 /**
  * SettingsInfo data definition.
  */
-public class Settings {
+@Table(name = "Settings")
+public class Settings extends Model {
 
-    private static final int FIELD_NUM = 5;
+    @Column(name = "BluetoothEnabled")
+    public boolean bluetoothEnabled;
 
-    private boolean bluetoothEnabled;
+    @Column(name = "LocationEnabled")
+    public boolean locationEnabled;
 
-    private boolean locationEnabled;
+    @Column(name = "PowerSaverEnabled")
+    public boolean powersaverEnabled;
 
-    private boolean powersaverEnabled;
+    @Column(name = "FlashLightEnabled")
+    public boolean flashlightEnabled;
 
-    private boolean flashlightEnabled;
+    @Column(name = "AutoRotateEnabled")
+    public boolean autoRotateEnabled;
 
-    private boolean autoRotateEnabled;
+    @Column(name = "NfcEnabled")
+    public boolean nfcEnabled;
 
-    private boolean nfcEnabled;
+    // Unknown source app installation on == 1, off == 0
+    @Column(name = "UnknownSources")
+    public int unknownSources;
 
-    public boolean isBluetoothEnabled() {
-        return bluetoothEnabled;
-    }
-
-    public void setBluetoothEnabled(boolean bluetoothEnabled) {
-        this.bluetoothEnabled = bluetoothEnabled;
-    }
-
-    public boolean isLocationEnabled() {
-        return locationEnabled;
-    }
-
-    public void setLocationEnabled(boolean locationEnabled) {
-        this.locationEnabled = locationEnabled;
-    }
-
-    public boolean isPowersaverEnabled() {
-        return powersaverEnabled;
-    }
-
-    public void setPowersaverEnabled(boolean powersaverEnabled) {
-        this.powersaverEnabled = powersaverEnabled;
-    }
-
-    public boolean isFlashlightEnabled() {
-        return flashlightEnabled;
-    }
-
-    public void setFlashlightEnabled(boolean flashlightEnabled) {
-        this.flashlightEnabled = flashlightEnabled;
-    }
-
-    public boolean isAutoRotateEnabled() {
-        return autoRotateEnabled;
-    }
-
-    public void setAutoRotateEnabled(boolean autoRotateEnabled) {
-        this.autoRotateEnabled = autoRotateEnabled;
-    }
-
-    public boolean isNfcEnabled() {
-        return nfcEnabled;
-    }
-
-    public void setNfcEnabled(boolean nfcEnabled) {
-        this.nfcEnabled = nfcEnabled;
+    // Developer mode on == 1, off == 0
+    @Column(name = "DeveloperMode")
+    public int developerMode;
+    
+    public Settings() {
+        super();
     }
 }

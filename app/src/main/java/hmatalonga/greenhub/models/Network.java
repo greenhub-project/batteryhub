@@ -206,11 +206,11 @@ public class Network {
     }
 
     /* Check is it network roaming */
-    public static boolean getRoamingStatus(Context context) {
+    public static int getRoamingStatus(Context context) {
         TelephonyManager manager = (TelephonyManager)
                 context.getSystemService(Context.TELEPHONY_SERVICE);
 
-        return manager.isNetworkRoaming();
+        return (manager.isNetworkRoaming()) ? 1 : 0;
     }
 
     /* Get data state */

@@ -16,93 +16,47 @@
 
 package hmatalonga.greenhub.models.data;
 
+import com.activeandroid.Model;
+import com.activeandroid.annotation.Column;
+import com.activeandroid.annotation.Table;
+
 /**
  * Device data definition.
  */
-public class Device {
-    private String uuId;
-    private double timestamp;
-    private String model;
-    private String manufacturer;
-    private String brand;
-    private String product;
-    private String osVersion;
-    private String kernelVersion;
-    private String serialNumber;
+@Table(name = "Devices")
+public class Device extends Model {
 
-    public Device(String uuId) {
-        this.setUuId(uuId);
-    }
+    @Column(name = "UuId")
+    public String uuId;
 
-    public String getUuId() {
-        return uuId;
-    }
+    @Column(name = "Timestamp")
+    public double timestamp;
 
-    public void setUuId(String uuId) {
-        this.uuId = uuId;
-    }
+    @Column(name = "Model")
+    public String model;
 
-    public double getTimestamp() {
-        return timestamp;
-    }
+    @Column(name = "Manufacturer")
+    public String manufacturer;
 
-    public void setTimestamp(double timestamp) {
-        this.timestamp = timestamp;
-    }
+    @Column(name = "Brand")
+    public String brand;
 
-    public String getModel() {
-        return model;
-    }
+    @Column(name = "Product")
+    public String product;
 
-    public void setModel(String model) {
-        this.model = model;
-    }
+    @Column(name = "OsVersion")
+    public String osVersion;
 
-    public String getManufacturer() {
-        return manufacturer;
-    }
+    @Column(name = "KernelVersion")
+    public String kernelVersion;
 
-    public void setManufacturer(String manufacturer) {
-        this.manufacturer = manufacturer;
-    }
+    @Column(name = "SerialNumber")
+    public String serialNumber;
 
-    public String getBrand() {
-        return brand;
-    }
+    @Column(name = "IsRoot")
+    public int isRoot;
 
-    public void setBrand(String brand) {
-        this.brand = brand;
-    }
-
-    public String getProduct() {
-        return product;
-    }
-
-    public void setProduct(String product) {
-        this.product = product;
-    }
-
-    public String getOsVersion() {
-        return osVersion;
-    }
-
-    public void setOsVersion(String osVersion) {
-        this.osVersion = osVersion;
-    }
-
-    public String getKernelVersion() {
-        return kernelVersion;
-    }
-
-    public void setKernelVersion(String kernelVersion) {
-        this.kernelVersion = kernelVersion;
-    }
-
-    public String getSerialNumber() {
-        return serialNumber;
-    }
-
-    public void setSerialNumber(String serialNumber) {
-        this.serialNumber = serialNumber;
+    public Device() {
+        super();
     }
 }

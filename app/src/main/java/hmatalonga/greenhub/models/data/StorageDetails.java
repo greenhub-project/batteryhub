@@ -16,92 +16,42 @@
 
 package hmatalonga.greenhub.models.data;
 
+import com.activeandroid.Model;
+import com.activeandroid.annotation.Column;
+import com.activeandroid.annotation.Table;
+
 /**
  * Storage Details data definition.
  * Free and total storage space in megabytes
  */
-public class StorageDetails {
+@Table(name = "StorageDetails")
+public class StorageDetails extends Model {
 
-    private static final int FIELD_NUM = 8;
+    @Column(name = "Free")
+    public int free;
 
-    private int free;
+    @Column(name = "Total")
+    public int total;
 
-    private int total;
+    @Column(name = "FreeExternal")
+    public int freeExternal;
 
-    private int freeExternal;
+    @Column(name = "TotalExternal")
+    public int totalExternal;
 
-    private int totalExternal;
+    @Column(name = "FreeSystem")
+    public int freeSystem;
 
-    private int freeSystem;
+    @Column(name = "TotalSystem")
+    public int totalSystem;
 
-    private int totalSystem;
+    @Column(name = "FreeSecondary")
+    public int freeSecondary;
 
-    private int freeSecondary;
-
-    private int totalSecondary;
-
-
-    public int getFree() {
-        return free;
-    }
-
-    public void setFree(int free) {
-        this.free = free;
-    }
-
-    public int getTotal() {
-        return total;
-    }
-
-    public void setTotal(int total) {
-        this.total = total;
-    }
-
-    public int getFreeExternal() {
-        return freeExternal;
-    }
-
-    public void setFreeExternal(int freeExternal) {
-        this.freeExternal = freeExternal;
-    }
-
-    public int getTotalExternal() {
-        return totalExternal;
-    }
-
-    public void setTotalExternal(int totalExternal) {
-        this.totalExternal = totalExternal;
-    }
-
-    public int getFreeSystem() {
-        return freeSystem;
-    }
-
-    public void setFreeSystem(int freeSystem) {
-        this.freeSystem = freeSystem;
-    }
-
-    public int getTotalSystem() {
-        return totalSystem;
-    }
-
-    public void setTotalSystem(int totalSystem) {
-        this.totalSystem = totalSystem;
-    }
-
-    public int getFreeSecondary() {
-        return freeSecondary;
-    }
-
-    public void setFreeSecondary(int freeSecondary) {
-        this.freeSecondary = freeSecondary;
-    }
-
-    public int getTotalSecondary() {
-        return totalSecondary;
-    }
-
-    public void setTotalSecondary(int totalSecondary) {
-        this.totalSecondary = totalSecondary;
+    @Column(name = "TotalSecondary")
+    public int totalSecondary;
+    
+    public StorageDetails() {
+        super();
     }
 }

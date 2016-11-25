@@ -70,4 +70,6 @@ dependencies {
     compile 'com.squareup.retrofit2:converter-gson:2.1.0'
     // greenrobot for event communications
     compile 'org.greenrobot:eventbus:3.0.0'
+    // ORM library
+    compile 'com.michaelpardo:activeandroid:3.1.0-SNAPSHOT'
 }

@@ -16,76 +16,33 @@
 
 package hmatalonga.greenhub.models.data;
 
-import hmatalonga.greenhub.util.StringHelper;
+import com.activeandroid.Model;
+import com.activeandroid.annotation.Column;
+import com.activeandroid.annotation.Table;
 
 /**
  * CallInfo data definition.
  */
-public class CallInfo {
-
-    private static final int FIELD_NUM = 4;
+@Table(name = "CallsInfo")
+public class CallInfo extends Model {
 
     // Incoming call time sum since boot
-    private double incomingCallTime;
+    @Column(name = "IncomingCallTime")
+    public double incomingCallTime;
 
     // Outgoing call time sum since boot
-    private double outgoingCallTime;
+    @Column(name = "OutgoingCallTime")
+    public double outgoingCallTime;
 
     // Non-call time sum since boot
-    private double nonCallTime;
+    @Column(name = "NonCallTime")
+    public double nonCallTime;
 
     // Idle, offhook or ringing
-    private String callStatus;
+    @Column(name = "CallStatus")
+    public String callStatus;
 
-    public double getIncomingCallTime() {
-        return incomingCallTime;
-    }
-
-    public void setIncomingCallTime(double incomingCallTime) {
-        this.incomingCallTime = incomingCallTime;
-    }
-
-    public double getOutgoingCallTime() {
-        return outgoingCallTime;
-    }
-
-    public void setOutgoingCallTime(double outgoingCallTime) {
-        this.outgoingCallTime = outgoingCallTime;
-    }
-
-    public double getNonCallTime() {
-        return nonCallTime;
-    }
-
-    public void setNonCallTime(double nonCallTime) {
-        this.nonCallTime = nonCallTime;
-    }
-
-    public String getCallStatus() {
-        return callStatus;
-    }
-
-    public void setCallStatus(String callStatus) {
-        this.callStatus = callStatus;
-    }
-
-    public void parseString(String s) {
-        String[] values = StringHelper.trimArray(s.split(";"));
-        if (values.length == FIELD_NUM) {
-            try {
-                setIncomingCallTime(Double.parseDouble(values[0]));
-                setOutgoingCallTime(Double.parseDouble(values[1]));
-                setNonCallTime(Double.parseDouble(values[2]));
-                setCallStatus(values[3]);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    @Override
-    public String toString() {
-        return String.valueOf(incomingCallTime) + ";" + String.valueOf(outgoingCallTime) + ";" +
-                String.valueOf(nonCallTime) + ";" + callStatus;
+    public CallInfo() {
+        super();
     }
 }

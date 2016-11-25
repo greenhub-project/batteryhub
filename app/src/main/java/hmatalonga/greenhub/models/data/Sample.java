@@ -16,314 +16,122 @@
 
 package hmatalonga.greenhub.models.data;
 
-import com.google.gson.Gson;
+import com.activeandroid.Model;
+import com.activeandroid.annotation.Column;
+import com.activeandroid.annotation.Table;
 
 import java.util.List;
 
 /**
  * Sample data definition.
  */
-public class Sample {
-    private static final Gson PARSER = new Gson();
+@Table(name = "Samples")
+public class Sample extends Model {
 
     // ID for the current device
-    private String uuId;
+    @Column(name = "UuId")
+    public String uuId;
 
     // Timestamp of sample created time
-    private double timestamp;
-
-    // List of processes running
-    private List<ProcessInfo> piList;
+    @Column(name = "Timestamp")
+    public double timestamp;
 
     // State of the battery. ie. charging, discharging, etc.
-    private String batteryState;
+    @Column(name = "BatteryState")
+    public String batteryState;
 
     // Level of the battery (0 - 1.0) translates to percentage
-    private double batteryLevel;
+    @Column(name = "BatteryLevel")
+    public double batteryLevel;
 
     // Total wired memory
-    private int memoryWired;
+    @Column(name = "MemoryWired")
+    public int memoryWired;
 
     // Total active memory
-    private int memoryActive;
+    @Column(name = "MemoryActive")
+    public int memoryActive;
 
     // Total inactive memory
-    private int memoryInactive;
+    @Column(name = "MemoryInactive")
+    public int memoryInactive;
 
     // Total free memory
-    private int memoryFree;
+    @Column(name = "MemoryFree")
+    public int memoryFree;
 
     // Total user memory
-    private int memoryUser;
+    @Column(name = "MemoryUser")
+    public int memoryUser;
 
     // Trigger reason
-    private String triggeredBy;
+    @Column(name = "TriggeredBy")
+    public String triggeredBy;
 
     // Reachability status
-    private String networkStatus;
+    @Column(name = "NetworkStatus")
+    public String networkStatus;
 
     // If locationchange triggers, then this will have a value
-    private double distanceTraveled;
+    @Column(name = "DistanceTraveled")
+    public double distanceTraveled;
 
     // Brightness value, 0-255
-    private int screenBrightness;
+    @Column(name = "ScreenBrightness")
+    public int screenBrightness;
 
     // Network status struct, with info on the active network, mobile,  and wifi
-    private NetworkDetails networkDetails;
+    @Column(name = "NetworkDetails")
+    public NetworkDetails networkDetails;
 
+    @Column(name = "BatteryDetails")
     // Battery status struct, with battery health, charger, voltage, temperature, etc.
-    private BatteryDetails batteryDetails;
+    public BatteryDetails batteryDetails;
 
     // CPU information, such as cpu usage percentage
-    private CpuStatus cpuStatus;
-
-    // Enabled location providers
-    private List<String> locationProviders;
+    @Column(name = "CpuStatus")
+    public CpuStatus cpuStatus;
 
     // Call ratios and information
-    private CallInfo callInfo;
+    @Column(name = "CallInfo")
+    public CallInfo callInfo;
 
     // If screen is on == 1, off == 0
-    private int screenOn;
+    @Column(name = "ScreenOn")
+    public int screenOn;
 
     // Device timezone abbreviation
-    private String timeZone;
-
-    // Unknown source app installation on == 1, off == 0
-    private int unknownSources;
-
-    // Developer mode on == 1, off == 0
-    private int developerMode;
-
-    // Extra features for extensibility
-    private List<Feature> extra;
+    @Column(name = "TimeZone")
+    public String timeZone;
 
     // Current set of SettingsInfo
-    private Settings settings;
+    @Column(name = "Settings")
+    public Settings settings;
 
     // Current storage details of device
-    private StorageDetails storageDetails;
+    @Column(name = "StorageDetails")
+    public StorageDetails storageDetails;
 
     // Two-letter country code from network or SIM
-    private String countryCode;
-
-    public String getUuId() {
-        return uuId;
+    @Column(name = "CountryCode")
+    public String countryCode;
+    
+    public Sample() {
+        super();
     }
 
-    public void setUuId(String uuId) {
-        this.uuId = uuId;
+    // List of processes running
+    public List<ProcessInfo> processInfos() {
+        return getMany(ProcessInfo.class, "Sample");
     }
 
-    public double getTimestamp() {
-        return timestamp;
+    // Extra features for extensibility
+    public List<Feature> features() {
+        return getMany(Feature.class, "Sample");
     }
 
-    public void setTimestamp(double timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    public List<ProcessInfo> getPiList() {
-        return piList;
-    }
-
-    public void setPiList(List<ProcessInfo> piList) {
-        this.piList = piList;
-    }
-
-    public String getBatteryState() {
-        return batteryState;
-    }
-
-    public void setBatteryState(String batteryState) {
-        this.batteryState = batteryState;
-    }
-
-    public double getBatteryLevel() {
-        return batteryLevel;
-    }
-
-    public void setBatteryLevel(double batteryLevel) {
-        this.batteryLevel = batteryLevel;
-    }
-
-    public int getMemoryWired() {
-        return memoryWired;
-    }
-
-    public void setMemoryWired(int memoryWired) {
-        this.memoryWired = memoryWired;
-    }
-
-    public int getMemoryActive() {
-        return memoryActive;
-    }
-
-    public void setMemoryActive(int memoryActive) {
-        this.memoryActive = memoryActive;
-    }
-
-    public int getMemoryInactive() {
-        return memoryInactive;
-    }
-
-    public void setMemoryInactive(int memoryInactive) {
-        this.memoryInactive = memoryInactive;
-    }
-
-    public int getMemoryFree() {
-        return memoryFree;
-    }
-
-    public void setMemoryFree(int memoryFree) {
-        this.memoryFree = memoryFree;
-    }
-
-    public int getMemoryUser() {
-        return memoryUser;
-    }
-
-    public void setMemoryUser(int memoryUser) {
-        this.memoryUser = memoryUser;
-    }
-
-    public String getTriggeredBy() {
-        return triggeredBy;
-    }
-
-    public void setTriggeredBy(String triggeredBy) {
-        this.triggeredBy = triggeredBy;
-    }
-
-    public String getNetworkStatus() {
-        return networkStatus;
-    }
-
-    public void setNetworkStatus(String networkStatus) {
-        this.networkStatus = networkStatus;
-    }
-
-    public double getDistanceTraveled() {
-        return distanceTraveled;
-    }
-
-    public void setDistanceTraveled(double distanceTraveled) {
-        this.distanceTraveled = distanceTraveled;
-    }
-
-    public int getScreenBrightness() {
-        return screenBrightness;
-    }
-
-    public void setScreenBrightness(int screenBrightness) {
-        this.screenBrightness = screenBrightness;
-    }
-
-    public NetworkDetails getNetworkDetails() {
-        return networkDetails;
-    }
-
-    public void setNetworkDetails(NetworkDetails networkDetails) {
-        this.networkDetails = networkDetails;
-    }
-
-    public BatteryDetails getBatteryDetails() {
-        return batteryDetails;
-    }
-
-    public void setBatteryDetails(BatteryDetails batteryDetails) {
-        this.batteryDetails = batteryDetails;
-    }
-
-    public CpuStatus getCpuStatus() {
-        return cpuStatus;
-    }
-
-    public void setCpuStatus(CpuStatus cpuStatus) {
-        this.cpuStatus = cpuStatus;
-    }
-
-    public List<String> getLocationProviders() {
-        return locationProviders;
-    }
-
-    public void setLocationProviders(List<String> locationProviders) {
-        this.locationProviders = locationProviders;
-    }
-
-    public CallInfo getCallInfo() {
-        return callInfo;
-    }
-
-    public void setCallInfo(CallInfo callInfo) {
-        this.callInfo = callInfo;
-    }
-
-    public int getScreenOn() {
-        return screenOn;
-    }
-
-    public void setScreenOn(int screenOn) {
-        this.screenOn = screenOn;
-    }
-
-    public String getTimeZone() {
-        return timeZone;
-    }
-
-    public void setTimeZone(String timeZone) {
-        this.timeZone = timeZone;
-    }
-
-    public int getUnknownSources() {
-        return unknownSources;
-    }
-
-    public void setUnknownSources(int unknownSources) {
-        this.unknownSources = unknownSources;
-    }
-
-    public int getDeveloperMode() {
-        return developerMode;
-    }
-
-    public void setDeveloperMode(int developerMode) {
-        this.developerMode = developerMode;
-    }
-
-    public List<Feature> getExtra() {
-        return extra;
-    }
-
-    public void setExtra(List<Feature> extra) {
-        this.extra = extra;
-    }
-
-    public int getPiListSize() {
-        return (this.piList == null) ? 0 : this.piList.size();
-    }
-
-    public Settings getSettings() {
-        return settings;
-    }
-
-    public void setSettings(Settings settings) {
-        this.settings = settings;
-    }
-
-    public StorageDetails getStorageDetails() {
-        return storageDetails;
-    }
-
-    public void setStorageDetails(StorageDetails storageDetails) {
-        this.storageDetails = storageDetails;
-    }
-
-    public String getCountryCode() {
-        return countryCode;
-    }
-
-    public void setCountryCode(String countryCode) {
-        this.countryCode = countryCode;
+    // Enabled location providers
+    public List<LocationProvider> locationProviders() {
+        return getMany(LocationProvider.class, "Sample");
     }
 }

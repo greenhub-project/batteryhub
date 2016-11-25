@@ -16,9 +16,13 @@
 
 package hmatalonga.greenhub;
 
-import android.app.Application;
+import android.content.Intent;
+import android.content.IntentFilter;
 
+import com.activeandroid.app.Application;
 import com.squareup.leakcanary.LeakCanary;
+
+import hmatalonga.greenhub.managers.sampling.DataEstimator;
 
 /**
  * GreenHubApp
@@ -26,6 +30,8 @@ import com.squareup.leakcanary.LeakCanary;
 public class GreenHubApp extends Application {
 
     private static final String TAG = "GreenHubApp";
+
+    private DataEstimator mEstimator;
 
     @Override
     public void onCreate() {
@@ -36,5 +42,22 @@ public class GreenHubApp extends Application {
             return;
         }
         LeakCanary.install(this);
+
+        new Thread() {
+            private IntentFilter intentFilter;
+
+            public void run() {
+                intentFilter = new IntentFilter();
+                intentFilter.addAction(Intent.ACTION_BATTERY_CHANGED);
+
+                mEstimator = new DataEstimator();
+
+                registerReceiver(mEstimator, intentFilter);
+            }
+        }.start();
+    }
+
+    public DataEstimator getEstimator() {
+        return mEstimator;
     }
 }

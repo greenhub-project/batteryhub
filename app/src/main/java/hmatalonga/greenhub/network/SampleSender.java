@@ -28,32 +28,30 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import hmatalonga.greenhub.Config;
-import hmatalonga.greenhub.GreenHubHelper;
+import hmatalonga.greenhub.util.GreenHubHelper;
 import hmatalonga.greenhub.R;
-import hmatalonga.greenhub.managers.sampling.Inspector;
 import hmatalonga.greenhub.managers.storage.GreenHubDb;
 import hmatalonga.greenhub.models.Network;
 import hmatalonga.greenhub.models.data.Sample;
 
+import static hmatalonga.greenhub.util.LogUtils.makeLogTag;
+
 /**
- * Created by hugo on 15-04-2016.
+ * Sample Sender
  */
 public class SampleSender {
-    private static final String TAG = "sendSamples";
+
+    private static final String TAG = makeLogTag(SampleSender.class);
 
     private static final String TRY_AGAIN = " will try again later.";
 
-    private static final Object sendLock = new Object();
-
-    GreenHubHelper app = null;
+    private static final Object SEND_LOCK = new Object();
 
     // Prevent instantiation
     private SampleSender(){}
 
-    public static void sendSamples(GreenHubHelper app) {
-        synchronized(sendLock){
-            Context context = GreenHubHelper.getContext();
-
+    public static void sendSamples(final Context context) {
+        synchronized(SEND_LOCK){
             String networkStatus = Network.getStatus(context);
             String networkType = Network.getType(context);
 
@@ -67,13 +65,6 @@ public class SampleSender {
                 GreenHubDb db = GreenHubDb.getInstance(context);
                 int samples = db.countSamples();
 
-                /* Click Tracking: Track sample sending. */
-//                String uuId = p.getString(GreenHubHelper.getRegisteredUuid(), "UNKNOWN");
-//                HashMap<String, String> options = new HashMap<String, String>();
-//                options.put("count", samples+"");
-//                ClickTracking.track(uuId, "sendingsamples", options, c);
-                /* End Click Tracking: Track sample sending. */
-
                 int successSum = 0;
                 for (int batches = 0; batches < Config.SAMPLE_MAX_BATCHES && batches < samples
                         / Config.COMMS_MAX_UPLOAD_BATCH + 1; batches++) {
@@ -84,7 +75,7 @@ public class SampleSender {
 //                        CaratApplication.setActionProgress(progress, successSum + "/"
 //                                + samples +" "+ app.getString(R.string.samplesreported), false);
 
-                        if (app.communicationManager != null) {
+                        if (true) { // communication
                             int tries = 0;
                             while (tries < 2) {
                                 try {
@@ -141,41 +132,7 @@ public class SampleSender {
                         Log.w(TAG, "No samples to send." + TRY_AGAIN);
                     }
                 }
-
-                /* Click Tracking: Track sample sending. */
-//                options.put("count", successSum+"");
-//                ClickTracking.track(uuId, "sentsamples", options, c);
-                /* End Click Tracking: Track sample sending. */
-
-            }/* else if (networkStatus
-                    .equals(SamplingLibrary.NETWORKSTATUS_CONNECTING)) {
-                Log.w(TAG, "Network status: " + networkStatus
-                        + ", trying again in 10s.");
-                connecting = true;
-            } else {
-                Log.w(TAG, "Network status: " + networkStatus + TRY_AGAIN);
-                connecting = false;
             }
-            if (connecting) {
-                // wait for wifi to come up
-                try {
-                    Thread.sleep(CaratApplication.COMMS_WIFI_WAIT);
-                } catch (InterruptedException e1) {
-                    // ignore
-                }
-                connecting = false;
-            } else {
-                try {
-                    Thread.sleep(CaratApplication.COMMS_INTERVAL);
-                } catch (InterruptedException e) {
-                    // wait for wifi to come up
-                    try {
-                        Thread.sleep(CaratApplication.COMMS_WIFI_WAIT);
-                    } catch (InterruptedException e1) {
-                        // ignore
-                    }
-                }
-            }*/
         }
     }
 }

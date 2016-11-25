@@ -16,18 +16,32 @@
 
 package hmatalonga.greenhub.models.data;
 
+import com.activeandroid.Model;
+import com.activeandroid.annotation.Column;
+import com.activeandroid.annotation.Table;
+
 /**
  * Call Month data definition.
  */
-public class CallMonth {
+@Table(name = "CallsMonth")
+public class CallMonth extends Model {
 
-    public int tolCallInNum     = 0;
+    @Column(name = "TotalCallInNum")
+    public int totalCallInNum = 0;
 
-    public int tolCallOutNum    = 0;
+    @Column(name = "TotalCallOutNum")
+    public int totalCallOutNum = 0;
 
-    public int tolMissedCallNum = 0;
+    @Column(name = "TotalMissedCallNum")
+    public int totalMissedCallNum = 0;
 
-    public long tolCallInDur    = 0;
+    @Column(name = "TotalCallInDur")
+    public long totalCallInDur = 0;
 
-    public long tolCallOutDur   = 0;
+    @Column(name = "TotalCallOutDur")
+    public long totalCallOutDur = 0;
+
+    public CallMonth() {
+        super();
+    }
 }

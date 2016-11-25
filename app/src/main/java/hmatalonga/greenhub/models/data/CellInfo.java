@@ -16,17 +16,32 @@
 
 package hmatalonga.greenhub.models.data;
 
+import com.activeandroid.Model;
+import com.activeandroid.annotation.Column;
+import com.activeandroid.annotation.Table;
+
 /**
  * Cell Info data definition.
  */
-public class CellInfo {
-    public int MCC = 0;
+@Table(name = "CellInfos")
+public class CellInfo extends Model {
 
-    public int MNC = 0;
+    @Column(name = "Mcc")
+    public int mcc = 0;
 
-    public int LAC = 0;
+    @Column(name = "Mnc")
+    public int mnc = 0;
 
-    public int CID = 0;
+    @Column(name = "Lac")
+    public int lac = 0;
 
+    @Column(name = "Cid")
+    public int cid = 0;
+
+    @Column(name = "RadioType")
     public String radioType = null;
+
+    public CellInfo() {
+        super();
+    }
 }

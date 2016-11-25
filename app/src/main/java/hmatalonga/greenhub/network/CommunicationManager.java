@@ -36,7 +36,8 @@ import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import hmatalonga.greenhub.GreenHubHelper;
+import hmatalonga.greenhub.Config;
+import hmatalonga.greenhub.util.GreenHubHelper;
 import hmatalonga.greenhub.fragments.HomeFragment;
 import hmatalonga.greenhub.managers.storage.GreenHubDb;
 import hmatalonga.greenhub.models.data.Sample;
@@ -50,7 +51,7 @@ import hmatalonga.greenhub.util.NetworkWatcher;
 public class CommunicationManager {
     private static final String TAG = "CommunicationManager";
 
-    private static RequestQueue sQueue = Volley.newRequestQueue(GreenHubHelper.getContext());
+    private static RequestQueue sQueue = Volley.newRequestQueue(null);
     private static Map<String, String> sParams = new HashMap<>();
 
     private GreenHubHelper mApp;
@@ -64,14 +65,14 @@ public class CommunicationManager {
 
     public CommunicationManager(GreenHubHelper app) {
         this.mApp = app;
-        this.mContext = GreenHubHelper.getContext();
+        this.mContext = null;
         this.mGson = new Gson();
         db = GreenHubDb.getInstance(mContext);
     }
 
     public CommunicationManager(GreenHubHelper app, int timeout) {
         this.mApp = app;
-        this.mContext = GreenHubHelper.getContext();
+        this.mContext = null;
         this.mGson = new Gson();
         this.sTimeout = timeout;
         db = GreenHubDb.getInstance(mContext);
@@ -81,13 +82,13 @@ public class CommunicationManager {
         boolean connected = NetworkWatcher.hasInternet(mContext);
 
         if (!connected) {
-            HomeFragment.setStatus("Not connected");
+            // HomeFragment.setStatus("Not connected");
             return;
         }
         samplesCount = db.countSamples();
         done = 0;
 
-        HomeFragment.setStatus("Samples sent " + done + "/" + samplesCount);
+        // HomeFragment.setStatus("Samples sent " + done + "/" + samplesCount);
 
         map = db.queryOldestSamples(samplesCount); // Config.COMMS_MAX_UPLOAD_BATCH
 
@@ -95,7 +96,7 @@ public class CommunicationManager {
             uploadSamples(map.values());
         else {
             Log.w(TAG, "No samples to send.");
-            HomeFragment.setStatus("No samples to send.");
+            // HomeFragment.setStatus("No samples to send.");
         }
     }
 
@@ -117,7 +118,7 @@ public class CommunicationManager {
      * @return if uploaded successfully returns true, otherwise returns false
      */
     private void uploadSample(final Sample sample) {
-        String url = mApp.serverURL + "/samples";
+        String url = Config.PUBLIC_SERVER_URL + "/samples";
         sParams.clear();
         sParams.put("data", mGson.toJson(sample));
 
@@ -153,7 +154,7 @@ public class CommunicationManager {
             done++;
 
             // status
-            HomeFragment.setStatus("Samples sent " + done + "/" + samplesCount);
+            // HomeFragment.setStatus("Samples sent " + done + "/" + samplesCount);
 
             if (done == samplesCount) {
                 // status finished
@@ -169,7 +170,7 @@ public class CommunicationManager {
             else
                 uploadSample(samples.get(done));
         }
-        else
-            HomeFragment.setStatus("Error sending samples. Try again later");
+        else;
+             //HomeFragment.setStatus("Error sending samples. Try again later");
     }
 }

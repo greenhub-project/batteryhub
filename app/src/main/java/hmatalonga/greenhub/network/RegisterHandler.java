@@ -31,9 +31,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import hmatalonga.greenhub.Config;
-import hmatalonga.greenhub.GreenHubHelper;
+import hmatalonga.greenhub.util.GreenHubHelper;
 import hmatalonga.greenhub.fragments.HomeFragment;
-import hmatalonga.greenhub.managers.sampling.Inspector;
 import hmatalonga.greenhub.models.Specifications;
 import hmatalonga.greenhub.models.data.Device;
 
@@ -45,7 +44,7 @@ import hmatalonga.greenhub.models.data.Device;
 public class RegisterHandler {
     private static final String TAG = "RegisterHandler";
 
-    private static RequestQueue sQueue = Volley.newRequestQueue(GreenHubHelper.getContext());
+    private static RequestQueue sQueue = Volley.newRequestQueue(null);
     private static Map<String, String> sParams = new HashMap<>();
     
     private GreenHubHelper sApp = null;
@@ -61,7 +60,7 @@ public class RegisterHandler {
     }
 
     public Device registerClient() {
-        Device device = new Device(Specifications.getAndroidId(GreenHubHelper.getContext()));
+        Device device = new Device(Specifications.getAndroidId(null));
         device.setTimestamp(System.currentTimeMillis() / 1000.0);
         device.setModel(Specifications.getModel());
         device.setManufacturer(Specifications.getManufacturer());
@@ -77,7 +76,7 @@ public class RegisterHandler {
     }
 
     private void postRegistration(final Device device) {
-        String url = sApp.serverURL + "/devices";
+        String url = Config.PUBLIC_SERVER_URL + "/devices";
         sParams.clear();
         sParams.put("uuid", device.getUuId());
         sParams.put("model", device.getModel());
@@ -99,14 +98,14 @@ public class RegisterHandler {
                         response = response.replaceAll("\n", "");
                         if (!response.equals("Device was registered"))
                             response = "Device is already registered";
-                        HomeFragment.setStatus(response);
+                        // update response
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         error.printStackTrace();
-                        HomeFragment.setStatus("Error on registering!");
+                        // update response
                     }
         }){
             @Override
@@ -131,14 +130,14 @@ public class RegisterHandler {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Toast.makeText(GreenHubHelper.getContext(), response.replaceAll("\n", ""),
+                        Toast.makeText(null, response.replaceAll("\n", ""),
                                 Toast.LENGTH_LONG).show();
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(GreenHubHelper.getContext(), "Test failed",
+                        Toast.makeText(null, "Test failed",
                                 Toast.LENGTH_LONG).show();
                     }
                 });

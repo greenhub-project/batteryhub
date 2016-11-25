@@ -16,6 +16,7 @@
 
 package hmatalonga.greenhub.managers.storage;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -27,16 +28,19 @@ import hmatalonga.greenhub.models.data.Feature;
 import hmatalonga.greenhub.models.data.NetworkDetails;
 import hmatalonga.greenhub.models.data.ProcessInfo;
 import hmatalonga.greenhub.models.data.Sample;
+import hmatalonga.greenhub.models.data.Settings;
 import hmatalonga.greenhub.util.StringHelper;
 
+import static hmatalonga.greenhub.util.LogUtils.makeLogTag;
+
 /**
- * Created by hugo on 13-04-2016.
+ * SampleReader
  */
 public class SampleReader {
+    private static final String TAG = makeLogTag(SampleReader.class);
 
-    public static HashMap<String, String> writeSample(Sample sample) {
+    public static HashMap<String, String> writeSample(final Sample sample) {
         HashMap<String, String> map = new HashMap<>();
-        assert sample != null;
 
         map.put("uuId", sample.getUuId());
         map.put("timestamp", StringHelper.convertToString(sample.getTimestamp()));
@@ -67,15 +71,19 @@ public class SampleReader {
     }
 
     public static Sample readSample(Object data) {
-        if (data == null || !(data instanceof HashMap<?, ?>))
+        if (data == null || !(data instanceof HashMap<?, ?>)) {
             return null;
+        }
 
+        @SuppressWarnings("unchecked")
         HashMap<String, String> map = (HashMap<String, String>) data;
-        Sample sample = new Sample();
 
+        // Prepare new Sample object to fill in
+        Sample sample = new Sample();
         NetworkDetails networkDetails = new NetworkDetails();
         BatteryDetails batteryDetails = new BatteryDetails();
         CpuStatus cpuStatus = new CpuStatus();
+        Settings settings = new Settings();
 
         for (String key : map.keySet()) {
             switch (key) {
@@ -93,9 +101,9 @@ public class SampleReader {
                     List<ProcessInfo> piList = new ArrayList<>();
                     ProcessInfo item;
                     String[] processes = map.get(key).split(",");
-                    for (String proc : processes) {
+                    for (String process : processes) {
                         item = new ProcessInfo();
-                        item.parseString(proc);
+                        item.parseString(process);
                         piList.add(item);
                     }
                     sample.setPiList(piList);
@@ -220,6 +228,9 @@ public class SampleReader {
                     }
                     sample.setExtra(extra);
                     break;
+                case "settings":
+                    settings.parseString(map.get(key));
+                    sample.setSettings(settings);
             }
         }
         return sample;

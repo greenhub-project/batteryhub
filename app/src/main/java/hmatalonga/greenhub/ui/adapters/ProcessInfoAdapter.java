@@ -28,12 +28,12 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import hmatalonga.greenhub.GreenHubHelper;
+import hmatalonga.greenhub.util.GreenHubHelper;
 import hmatalonga.greenhub.R;
-import hmatalonga.greenhub.managers.sampling.Inspector;
 import hmatalonga.greenhub.models.Package;
 import hmatalonga.greenhub.models.data.ProcessInfo;
 import hmatalonga.greenhub.util.AlphabeticalProcessInfoSort;
+import hmatalonga.greenhub.util.StringHelper;
 
 /**
  * Process List Adapter.
@@ -114,7 +114,9 @@ public class ProcessInfoAdapter extends BaseAdapter {
         } else {
             holder.txtName.setText(truncate(GreenHubHelper.labelForApp(mContext, p) + " " + ver));
         }
-        holder.txtBenefit.setText(truncate(GreenHubHelper.translatedPriority(x.getImportance())));
+        holder.txtBenefit.setText(
+                truncate(StringHelper.translatedPriority(mContext, x.getImportance()))
+        );
 
         return convertView;
     }

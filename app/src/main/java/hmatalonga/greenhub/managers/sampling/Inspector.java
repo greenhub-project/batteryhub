@@ -150,7 +150,7 @@ public final class Inspector {
         double level = currentLevel / scale;
 		/*
 		 * whenever we get these two arguments (extras from the intent:
-		 * EXTRA_LEVEL & EXTRA_SCALE), it doens't necessarily mean that a battery
+		 * EXTRA_LEVEL & EXTRA_SCALE), it doesn't necessarily mean that a battery
 		 * percentage change has happened. Check the comments in the
 		 * broadcast receiver (sampler).
 		 */

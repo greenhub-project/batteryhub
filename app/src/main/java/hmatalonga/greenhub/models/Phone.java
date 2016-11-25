@@ -155,7 +155,7 @@ public class Phone {
             e.printStackTrace();
         }
 
-        // uptime is ms, so it needs to be divided by 1000
+        // upTime is ms, so it needs to be divided by 1000
         long nonCallTime = uptime / 1000 - callInSeconds - callOutSeconds;
         result[0] = callInSeconds;
         result[1] = callOutSeconds;
@@ -164,7 +164,7 @@ public class Phone {
     }
 
     /* Get a monthly call duration record */
-    //TODO: Refactor!!
+    // TODO: Refactor!!
     public static Map<String, CallMonth> getMonthCallDur(Context context) {
 
         Map<String, CallMonth> callMonth = new HashMap<>();
@@ -212,20 +212,20 @@ public class Phone {
                     tmpTime = time;
 
                     if (callType == 1) {
-                        curMonth.tolCallInNum++;
-                        curMonth.tolCallInDur += callDur;
-                        callInDur.put("tolCallInNum", String.valueOf(curMonth.tolCallInNum));
-                        callInDur.put("tolCallInDur", String.valueOf(curMonth.tolCallInDur));
+                        curMonth.totalCallInNum++;
+                        curMonth.totalCallInDur += callDur;
+                        callInDur.put("totalCallInNum", String.valueOf(curMonth.totalCallInNum));
+                        callInDur.put("totalCallInDur", String.valueOf(curMonth.totalCallInDur));
                     }
                     if (callType == 2) {
-                        curMonth.tolCallOutNum++;
-                        curMonth.tolCallOutDur += callDur;
-                        callOutDur.put("tolCallOutNum", String.valueOf(curMonth.tolCallOutNum));
-                        callOutDur.put("tolCallOutDur", String.valueOf(curMonth.tolCallOutDur));
+                        curMonth.totalCallOutNum++;
+                        curMonth.totalCallOutDur += callDur;
+                        callOutDur.put("totalCallOutNum", String.valueOf(curMonth.totalCallOutNum));
+                        callOutDur.put("totalCallOutDur", String.valueOf(curMonth.totalCallOutDur));
                     }
                     if (callType == 3) {
-                        curMonth.tolMissedCallNum++;
-                        callInDur.put("tolMissedCallNum", String.valueOf(curMonth.tolMissedCallNum));
+                        curMonth.totalMissedCallNum++;
+                        callInDur.put("totalMissedCallNum", String.valueOf(curMonth.totalMissedCallNum));
                     }
                 }
             }

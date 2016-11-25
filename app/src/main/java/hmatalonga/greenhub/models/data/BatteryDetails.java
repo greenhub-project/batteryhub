@@ -16,101 +16,43 @@
 
 package hmatalonga.greenhub.models.data;
 
-import hmatalonga.greenhub.util.StringHelper;
+import com.activeandroid.Model;
+import com.activeandroid.annotation.Column;
+import com.activeandroid.annotation.Table;
 
 /**
  * Battery Details data definition.
  */
-public class BatteryDetails {
-
-    private static final int FIELD_NUM = 6;
+@Table(name = "BatteryDetails")
+public class BatteryDetails extends Model {
 
     // Currently ac, usb, or unplugged
-    private String batteryCharger;
+    @Column(name = "BatteryCharger")
+    public String batteryCharger;
 
     // Currently Unknown, Unspecified failure, Dead, Cold, Overheat, Over voltage or Good
-    private String batteryHealth;
+    @Column(name = "BatteryHealth")
+    public String batteryHealth;
 
     // Voltage in Volts
-    private double batteryVoltage;
+    @Column(name = "BatteryVoltage")
+    public double batteryVoltage;
 
     // Temperature in Celsius
-    private double batteryTemperature;
+    @Column(name = "BatteryTemperature")
+    public double batteryTemperature;
 
     // Battery technology
-    private String batteryTechnology;
+    @Column(name = "BatteryTechnology")
+    public String batteryTechnology;
 
-    // Capacity in mAh from Android Power Profile
-    private double batteryCapacity;
+    // Capacity in mAh
+    @Column(name = "BatteryCapacity")
+    public double batteryCapacity;
 
-    public String getBatteryCharger() {
-        return batteryCharger;
-    }
+    // age factor ...
 
-    public void setBatteryCharger(String batteryCharger) {
-        this.batteryCharger = batteryCharger;
-    }
-
-    public String getBatteryHealth() {
-        return batteryHealth;
-    }
-
-    public void setBatteryHealth(String batteryHealth) {
-        this.batteryHealth = batteryHealth;
-    }
-
-    public double getBatteryVoltage() {
-        return batteryVoltage;
-    }
-
-    public void setBatteryVoltage(double batteryVoltage) {
-        this.batteryVoltage = batteryVoltage;
-    }
-
-    public double getBatteryTemperature() {
-        return batteryTemperature;
-    }
-
-    public void setBatteryTemperature(double batteryTemperature) {
-        this.batteryTemperature = batteryTemperature;
-    }
-
-    public String getBatteryTechnology() {
-        return batteryTechnology;
-    }
-
-    public void setBatteryTechnology(String batteryTechnology) {
-        this.batteryTechnology = batteryTechnology;
-    }
-
-    public double getBatteryCapacity() {
-        return batteryCapacity;
-    }
-
-    public void setBatteryCapacity(double batteryCapacity) {
-        this.batteryCapacity = batteryCapacity;
-    }
-
-    public void parseString(String s) {
-        String[] values = StringHelper.trimArray(s.split(";"));
-        if (values.length == FIELD_NUM) {
-            try {
-                setBatteryCharger(values[0]);
-                setBatteryHealth(values[1]);
-                setBatteryVoltage(Double.parseDouble(values[2]));
-                setBatteryTemperature(Double.parseDouble(values[3]));
-                setBatteryTechnology(values[4]);
-                setBatteryCapacity(Double.parseDouble(values[5]));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    @Override
-    public String toString() {
-        return batteryCharger + ";" + batteryHealth + ";" + String.valueOf(batteryVoltage) + ";" +
-                String.valueOf(batteryTemperature) + ";" + batteryTechnology + ";" +
-                String.valueOf(batteryCapacity);
+    public BatteryDetails() {
+        super();
     }
 }

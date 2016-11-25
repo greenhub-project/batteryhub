@@ -61,6 +61,7 @@ public class SimCard {
 
     /**
      * Experimental call to retrieve sim operator names by subscription ids.
+     *
      * @param context Application context
      * @return SIM operator name/names with ";" as a delimiter for many.
      */
@@ -88,6 +89,7 @@ public class SimCard {
     /**
      * Retrieves sim operator name using an undocumented telephony manager call.
      * WARNING: Uses reflection, data might not always be available.
+     *
      * @param context
      * @param subId
      * @return

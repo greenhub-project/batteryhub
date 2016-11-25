@@ -26,48 +26,47 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.provider.BaseColumns;
 import android.util.Log;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import java.util.HashMap;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import hmatalonga.greenhub.Config;
 import hmatalonga.greenhub.models.data.Sample;
 
 /**
+ *
  * Created by hugo on 16-04-2016.
  */
 public class GreenHubDb {
     private static final String TAG = "GreenHubDb";
 
-    private static final HashMap<String, String> mColumnMap;
-    private static final Object dbLock;
+    private static final HashMap<String, String> COLUMN_MAP;
+    private static final Object DB_LOCK;
 
-    private static GreenHubDb instance = null;
+    private static GreenHubDb sInstance = null;
 
-    private Sample lastSample = null;
-    private SQLiteDatabase db = null;
-    private GreenHubDbHelper helper = null;
+    private Sample mLastSample = null;
+    private SQLiteDatabase mDatabase = null;
+    private GreenHubDbHelper mHelper = null;
 
     static {
-        dbLock = new Object();
-        mColumnMap = buildColumnMap();
+        DB_LOCK = new Object();
+        COLUMN_MAP = buildColumnMap();
     }
 
-    public static GreenHubDb getInstance(Context context) {
-        if (instance == null)
-            instance = new GreenHubDb(context);
-        return instance;
+    public static GreenHubDb getInstance(final Context context) {
+        if (sInstance == null) {
+            sInstance = new GreenHubDb(context);
+        }
+        return sInstance;
     }
 
-    private GreenHubDb(Context context) {
-        synchronized (dbLock) {
-            helper = new GreenHubDbHelper(context);
+    private GreenHubDb(final Context context) {
+        synchronized (DB_LOCK) {
+            mHelper = new GreenHubDbHelper(context);
         }
     }
 
@@ -78,9 +77,8 @@ public class GreenHubDb {
      */
     @Override
     protected void finalize() throws Throwable {
-        synchronized (dbLock) {
-            if (db != null)
-                db.close();
+        synchronized (DB_LOCK) {
+            if (mDatabase != null) mDatabase.close();
         }
         super.finalize();
     }
@@ -125,14 +123,14 @@ public class GreenHubDb {
          */
         SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
         builder.setTables(GreenHubDbContract.GreenHubEntry.SAMPLES_VIRTUAL_TABLE);
-        builder.setProjectionMap(mColumnMap);
+        builder.setProjectionMap(COLUMN_MAP);
 
-        Cursor cursor = builder.query(db, columns, selection, selectionArgs,
+        Cursor cursor = builder.query(mDatabase, columns, selection, selectionArgs,
                 groupBy, having, sortOrder);
 
-        if (cursor == null)
+        if (cursor == null) {
             return null;
-        else if (!cursor.moveToFirst()) {
+        } else if (!cursor.moveToFirst()) {
             cursor.close();
             return null;
         }
@@ -142,17 +140,17 @@ public class GreenHubDb {
 
     public int countSamples() {
         try {
-            synchronized (dbLock) {
-                if (db == null || !db.isOpen()) {
+            synchronized (DB_LOCK) {
+                if (mDatabase == null || !mDatabase.isOpen()) {
                     try {
-                        db = helper.getWritableDatabase();
+                        mDatabase = mHelper.getWritableDatabase();
                     } catch (android.database.sqlite.SQLiteException ex){
                         Log.e(TAG, "Could not open database", ex);
                         return -1;
                     }
                 }
 
-                Cursor cursor = db.rawQuery("select count(timestamp) FROM " +
+                Cursor cursor = mDatabase.rawQuery("select count(timestamp) FROM " +
                         GreenHubDbContract.GreenHubEntry.SAMPLES_VIRTUAL_TABLE, null);
 
                 if (cursor == null)
@@ -181,15 +179,15 @@ public class GreenHubDb {
         SortedMap<Long, Sample> results = new TreeMap<>();
 
         try {
-            synchronized (dbLock) {
-                if (db == null || !db.isOpen()) {
+            synchronized (DB_LOCK) {
+                if (mDatabase == null || !mDatabase.isOpen()) {
                     try {
-                        db = helper.getWritableDatabase();
+                        mDatabase = mHelper.getWritableDatabase();
                     } catch (android.database.sqlite.SQLiteException ex) {
                         return results;
                     }
                 }
-                String[] columns = mColumnMap.keySet().toArray(new String[mColumnMap.size()]);
+                String[] columns = COLUMN_MAP.keySet().toArray(new String[COLUMN_MAP.size()]);
 
                 Cursor cursor = query(null, null, columns, null, null, GreenHubDbContract.GreenHubEntry.COLUMN_TIMESTAMP +
                         " ASC LIMIT " + how_many);
@@ -221,16 +219,16 @@ public class GreenHubDb {
     }
 
     private int delete(String whereClause, String[] whereArgs) {
-        return db.delete(GreenHubDbContract.GreenHubEntry.SAMPLES_VIRTUAL_TABLE, whereClause, whereArgs);
+        return mDatabase.delete(GreenHubDbContract.GreenHubEntry.SAMPLES_VIRTUAL_TABLE, whereClause, whereArgs);
     }
 
     public int deleteSamples(Set<Long> row_ids) {
         int ret = 0;
 
         try {
-            synchronized (dbLock) {
-                if (db == null || !db.isOpen())
-                    db = helper.getWritableDatabase();
+            synchronized (DB_LOCK) {
+                if (mDatabase == null || !mDatabase.isOpen())
+                    mDatabase = mHelper.getWritableDatabase();
 
                 StringBuilder sb = new StringBuilder();
                 int i = 0;
@@ -246,8 +244,8 @@ public class GreenHubDb {
                 sb.append(")");
                 ret = delete("rowid in " + sb.toString(), null);
 
-                if (db != null && db.isOpen()) {
-                    db.close();
+                if (mDatabase != null && mDatabase.isOpen()) {
+                    mDatabase.close();
                 }
             }
         } catch (Throwable th) {
@@ -258,21 +256,27 @@ public class GreenHubDb {
     }
 
     private Sample queryLastSample() {
-        String[] columns = mColumnMap.keySet().toArray(new String[mColumnMap.size()]);
+        String[] columns = COLUMN_MAP.keySet().toArray(new String[COLUMN_MAP.size()]);
 
-        Cursor cursor = query(null, null, columns, null, null, GreenHubDbContract.GreenHubEntry.COLUMN_TIMESTAMP
-                + " DESC LIMIT 1");
+        Cursor cursor = query(
+                null,
+                null,
+                columns,
+                null,
+                null,
+                GreenHubDbContract.GreenHubEntry.COLUMN_TIMESTAMP + " DESC LIMIT 1"
+        );
 
-        if (cursor == null)
+        if (cursor == null) {
             // There are no results
             return null;
-        else {
+        } else {
             cursor.moveToFirst();
             if (!cursor.isAfterLast()) {
-                Sample s = fillSample(cursor);
+                Sample sample = fillSample(cursor);
                 cursor.close();
-                lastSample = s;
-                return s;
+                mLastSample = sample;
+                return sample;
             }
             cursor.close();
 
@@ -280,70 +284,65 @@ public class GreenHubDb {
         }
     }
 
-    /*
-     * Read a sample from the current position of the cursor. TODO: Needs to be
-     * updated when fields update.
+    /**
+     * Reads a sample from the current position of the cursor.
+     *
+     * @param cursor
+     * @return
      */
     private Sample fillSample(Cursor cursor) {
-        Sample s = null;
+        String json = cursor.getString(
+                cursor.getColumnIndex(GreenHubDbContract.GreenHubEntry.COLUMN_SAMPLE)
+        );
 
-        byte[] sampleB = cursor.getBlob(cursor.getColumnIndex(GreenHubDbContract.GreenHubEntry.COLUMN_SAMPLE));
-        if (sampleB != null) {
-            ObjectInputStream oi;
-            try {
-                oi = new ObjectInputStream(new ByteArrayInputStream(sampleB));
-                Object o = oi.readObject();
-                if (o != null)
-                    s = SampleReader.readSample(o);
-            } catch (IOException | ClassNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
-
-        return s;
+        return (json != null) ? getSampleFromJson(json) : null;
     }
 
-    public Sample getLastSample(Context c) {
+    private Sample getSampleFromJson(String json) {
+        Gson gson = new Gson();
+        return gson.fromJson(json, new TypeToken<Sample>() {}.getType());
+    }
+
+    public Sample getLastSample() {
         try {
-            synchronized (dbLock) {
-                if (db == null || !db.isOpen()) {
+            synchronized (DB_LOCK) {
+                if (mDatabase == null || !mDatabase.isOpen()) {
                     try {
-                        db = helper.getWritableDatabase();
+                        mDatabase = mHelper.getWritableDatabase();
                     } catch (android.database.sqlite.SQLiteException ex){
                         Log.e(TAG, "Could not open database", ex);
-                        return lastSample;
+                        return mLastSample;
                     }
                 }
-                if (lastSample == null)
+                if (mLastSample == null)
                     queryLastSample();
             }
         } catch (Throwable th) {
             Log.e(TAG, "Failed to get last sample!", th);
         }
 
-        return lastSample;
+        return mLastSample;
     }
 
     /**
      * Store the sample into the database
-     * @param s the sample to be saved
+     * @param sample the sample to be saved
      * @return positive int if the operation is successful, otherwise zero
      */
-    public long putSample(Sample s) {
+    public long putSample(Sample sample) {
         long id = 0;
         try {
-            synchronized (dbLock) {
-                if (db == null || !db.isOpen())
-                    db = helper.getWritableDatabase();
+            synchronized (DB_LOCK) {
+                if (mDatabase == null || !mDatabase.isOpen()) {
+                    mDatabase = mHelper.getWritableDatabase();
+                }
 
                 // force init
-                id = addSample(s);
+                id = addSample(sample);
 
-                if (id >= 0)
-                    lastSample = SampleReader.readSample(s);
+                if (id >= 0) mLastSample = sample;
 
-                if (db != null && db.isOpen())
-                    db.close();
+                mDatabase.close();
             }
         } catch (Throwable th) {
             Log.e(TAG, "Failed to add a sample!", th);
@@ -357,40 +356,40 @@ public class GreenHubDb {
      *
      * @return rowId or -1 if failed
      */
-    private long addSample(Sample s) {
-        if (Config.DEBUG)
-            Log.d("CaratSampleDB.addSample", "The sample's battery level=" + s.getBatteryLevel());
-
+    private long addSample(Sample sample) {
         ContentValues initialValues = new ContentValues();
-        initialValues.put(GreenHubDbContract.GreenHubEntry.COLUMN_TIMESTAMP, s.getTimestamp());
-        // Write the sample hashmap as a blob
-        try {
-            ByteArrayOutputStream bo = new ByteArrayOutputStream();
-            ObjectOutputStream oo = new ObjectOutputStream(bo);
-            oo.writeObject(SampleReader.writeSample(s));
-            initialValues.put(GreenHubDbContract.GreenHubEntry.COLUMN_SAMPLE, bo.toByteArray());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        initialValues.put(
+                GreenHubDbContract.GreenHubEntry.COLUMN_TIMESTAMP,
+                sample.getTimestamp()
+        );
 
-        return db.insert(GreenHubDbContract.GreenHubEntry.SAMPLES_VIRTUAL_TABLE, null, initialValues);
+        // Write the sample as a JSON string
+        Gson gson = new Gson();
+        initialValues.put(
+                GreenHubDbContract.GreenHubEntry.COLUMN_SAMPLE,
+                gson.toJson(sample)
+        );
+
+        return mDatabase.insert(
+                GreenHubDbContract.GreenHubEntry.SAMPLES_VIRTUAL_TABLE,
+                null,
+                initialValues
+        );
     }
 
-    public static class GreenHubDbHelper extends SQLiteOpenHelper {
-        private final Context mHelperContext;
+    private static class GreenHubDbHelper extends SQLiteOpenHelper {
         private SQLiteDatabase mDatabase;
 
-
         // If you change the database schema, you must increment the database version.
-        public static final int DATABASE_VERSION = 1;
-        public static final String DATABASE_NAME = "GreenHubHelper.db";
+        static final int DATABASE_VERSION = 1;
+        static final String DATABASE_NAME = "GreenHubHelper.mDatabase";
 
         private static final String FTS_TABLE_CREATE = "CREATE VIRTUAL TABLE "
                 + GreenHubDbContract.GreenHubEntry.SAMPLES_VIRTUAL_TABLE + " USING fts3 (" + createStatement()
                 + ");";
 
         private static String createStatement() {
-            Set<String> set = mColumnMap.keySet();
+            Set<String> set = COLUMN_MAP.keySet();
             StringBuilder b = new StringBuilder();
             int i = 0;
             int size = set.size() - 1;
@@ -406,9 +405,8 @@ public class GreenHubDb {
             return b.toString();
         }
 
-        public GreenHubDbHelper(Context context) {
+        GreenHubDbHelper(Context context) {
             super(context, DATABASE_NAME, null, DATABASE_VERSION);
-            mHelperContext = context;
         }
 
         public void onCreate(SQLiteDatabase db) {

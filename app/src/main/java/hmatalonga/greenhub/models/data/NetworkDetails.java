@@ -16,191 +16,73 @@
 
 package hmatalonga.greenhub.models.data;
 
-import hmatalonga.greenhub.util.StringHelper;
+import com.activeandroid.Model;
+import com.activeandroid.annotation.Column;
+import com.activeandroid.annotation.Table;
 
 /**
  * Network Details data definition.
  */
-public class NetworkDetails {
-
-    private static final int FIELD_NUM = 14;
+@Table(name = "NetworkDetails")
+public class NetworkDetails extends Model {
 
     // wifi, mobile or unknown
-    private String networkType;
+    @Column(name = "NetworkType")
+    public String networkType;
 
     // GPRS, EDGE, UMTS, etc.
-    private String mobileNetworkType;
+    @Column(name = "MobileNetworkType")
+    public String mobileNetworkType;
 
     // connecting, connected, disconnected, suspended
-    private String mobileDataStatus;
+    @Column(name = "MobileDataStatus")
+    public String mobileDataStatus;
 
     // none, in, out, inout, dormant
-    private String mobileDataActivity;
+    @Column(name = "MobileDataActivity")
+    public String mobileDataActivity;
 
-    // True if currently roaming in a foreign mobile network
-    private boolean roamingEnabled;
+    // 1 if currently roaming in a foreign mobile network, 0 otherwise
+    @Column(name = "RoamingEnabled")
+    public int roamingEnabled;
 
     // disabled, disabling, enabled, enabling, unknown
-    private String wifiStatus;
+    @Column(name = "WifiStatus")
+    public String wifiStatus;
 
     // As given by getRssi()
-    private int wifiSignalStrength;
+    @Column(name = "WifiSignalStrength")
+    public int wifiSignalStrength;
 
     // Link speed in Mbps
-    private int wifiLinkSpeed;
+    @Column(name = "WifiLinkSpeed")
+    public int wifiLinkSpeed;
 
     // Sent and received data
-    private NetworkStatistics networkStatistics;
+    @Column(name = "NetworkStatistics")
+    public NetworkStatistics networkStatistics;
 
     // Wifi access point status: disabled, disabling, enabled, enabling, unknown
-    private String wifiApStatus;
+    @Column(name = "WifiApStatus")
+    public String wifiApStatus;
 
     // Network infrastructure provider, unbound
-    private String networkOperator;
+    @Column(name = "NetworkOperator")
+    public String networkOperator;
 
     // Service provider, bound to sim
-    private String simOperator;
+    @Column(name = "SimOperator")
+    public String simOperator;
 
     // Numeric country code
-    private String mcc;
+    @Column(name = "Mcc")
+    public String mcc;
 
     // Numeric network code
-    private String mnc;
-
-    public String getNetworkType() {
-        return networkType;
-    }
-
-    public void setNetworkType(String networkType) {
-        this.networkType = networkType;
-    }
-
-    public String getMobileNetworkType() {
-        return mobileNetworkType;
-    }
-
-    public void setMobileNetworkType(String mobileNetworkType) {
-        this.mobileNetworkType = mobileNetworkType;
-    }
-
-    public String getMobileDataStatus() {
-        return mobileDataStatus;
-    }
-
-    public void setMobileDataStatus(String mobileDataStatus) {
-        this.mobileDataStatus = mobileDataStatus;
-    }
-
-    public String getMobileDataActivity() {
-        return mobileDataActivity;
-    }
-
-    public void setMobileDataActivity(String mobileDataActivity) {
-        this.mobileDataActivity = mobileDataActivity;
-    }
-
-    public boolean isRoamingEnabled() {
-        return roamingEnabled;
-    }
-
-    public void setRoamingEnabled(boolean roamingEnabled) {
-        this.roamingEnabled = roamingEnabled;
-    }
-
-    public String getWifiStatus() {
-        return wifiStatus;
-    }
-
-    public void setWifiStatus(String wifiStatus) {
-        this.wifiStatus = wifiStatus;
-    }
-
-    public int getWifiSignalStrength() {
-        return wifiSignalStrength;
-    }
-
-    public void setWifiSignalStrength(int wifiSignalStrength) {
-        this.wifiSignalStrength = wifiSignalStrength;
-    }
-
-    public int getWifiLinkSpeed() {
-        return wifiLinkSpeed;
-    }
-
-    public void setWifiLinkSpeed(int wifiLinkSpeed) {
-        this.wifiLinkSpeed = wifiLinkSpeed;
-    }
-
-    public NetworkStatistics getNetworkStatistics() {
-        return networkStatistics;
-    }
-
-    public void setNetworkStatistics(NetworkStatistics networkStatistics) {
-        this.networkStatistics = networkStatistics;
-    }
-
-    public String getWifiApStatus() {
-        return wifiApStatus;
-    }
-
-    public void setWifiApStatus(String wifiApStatus) {
-        this.wifiApStatus = wifiApStatus;
-    }
-
-    public String getNetworkOperator() {
-        return networkOperator;
-    }
-
-    public void setNetworkOperator(String networkOperator) {
-        this.networkOperator = networkOperator;
-    }
-
-    public String getSimOperator() {
-        return simOperator;
-    }
-
-    public void setSimOperator(String simOperator) {
-        this.simOperator = simOperator;
-    }
-
-    public String getMcc() {
-        return mcc;
-    }
-
-    public void setMcc(String mcc) {
-        this.mcc = mcc;
-    }
-
-    public String getMnc() {
-        return mnc;
-    }
-
-    public void setMnc(String mnc) {
-        this.mnc = mnc;
-    }
-
-    public void parseString(String s) {
-        String[] values = StringHelper.trimArray(s.split(";"));
-        if (values.length == FIELD_NUM) {
-            try {
-                networkType = values[0];
-                mobileNetworkType = values[1];
-                mobileDataStatus = values[2];
-                mobileDataActivity = values[3];
-                roamingEnabled = Boolean.parseBoolean(values[4]);
-                wifiStatus = values[5];
-                wifiSignalStrength = Integer.parseInt(values[6]);
-                wifiLinkSpeed = Integer.parseInt(values[7]);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    @Override
-    public String toString() {
-        return getNetworkType() + ";" + getMobileNetworkType() + ";"  + getMobileDataActivity() + ";" +
-                String.valueOf(isRoamingEnabled()) + ";" + getWifiStatus() + ";" +
-                String.valueOf(getWifiSignalStrength()) + ";" + String.valueOf(getWifiLinkSpeed());
+    @Column(name = "Mnc")
+    public String mnc;
+    
+    public NetworkDetails() {
+        super();
     }
 }

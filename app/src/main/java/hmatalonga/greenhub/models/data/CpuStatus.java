@@ -16,62 +16,29 @@
 
 package hmatalonga.greenhub.models.data;
 
-import hmatalonga.greenhub.util.StringHelper;
+import com.activeandroid.Model;
+import com.activeandroid.annotation.Column;
+import com.activeandroid.annotation.Table;
 
 /**
  * CPU Status data definition.
  */
-public class CpuStatus {
-
-    private static final int FIELD_NUM = 3;
+@Table(name = "CpuStatuses")
+public class CpuStatus extends Model {
 
     // CPU usage fraction (0-1)
-    private double cpuUsage;
+    @Column(name = "CpuUsage")
+    public double cpuUsage;
 
     // Uptime in seconds
-    private double uptime;
+    @Column(name = "UpTime")
+    public double upTime;
 
     // Experimental sleep time
-    private double sleeptime;
+    @Column(name = "SleepTime")
+    public double sleepTime;
 
-    public double getCpuUsage() {
-        return cpuUsage;
-    }
-
-    public void setCpuUsage(double cpuUsage) {
-        this.cpuUsage = cpuUsage;
-    }
-
-    public double getUptime() {
-        return uptime;
-    }
-
-    public void setUptime(double uptime) {
-        this.uptime = uptime;
-    }
-
-    public double getSleeptime() {
-        return sleeptime;
-    }
-
-    public void setSleeptime(double sleeptime) {
-        this.sleeptime = sleeptime;
-    }
-
-    public void parseString(String s) {
-        String[] values = StringHelper.trimArray(s.split(";"));
-        if (values.length == FIELD_NUM) {
-            try {
-                setCpuUsage(Double.parseDouble(values[0]));
-                setUptime(Double.parseDouble(values[1]));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    @Override
-    public String toString() {
-        return String.valueOf(cpuUsage) + ";" + String.valueOf(uptime);
+    public CpuStatus() {
+        super();
     }
 }

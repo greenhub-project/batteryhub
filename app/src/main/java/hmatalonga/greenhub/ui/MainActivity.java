@@ -124,7 +124,6 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
 //        HomeFragment.setApp(sApp);
 
         // Run tasks --
-        HomeFragment.setStatus("Stopped");
         // Register device on the web server
 //        new RegisterDeviceTask().execute(sApp);
     }

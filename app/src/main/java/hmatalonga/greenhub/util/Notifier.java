@@ -24,7 +24,7 @@ import android.support.v4.app.NotificationCompat;
 
 import hmatalonga.greenhub.Config;
 import hmatalonga.greenhub.R;
-import hmatalonga.greenhub.managers.sampling.BatteryEstimator;
+import hmatalonga.greenhub.managers.sampling.DataEstimator;
 import hmatalonga.greenhub.managers.storage.GreenHubDb;
 import hmatalonga.greenhub.ui.MainActivity;
 
@@ -33,32 +33,32 @@ import hmatalonga.greenhub.ui.MainActivity;
  */
 public class Notifier {
     public static void toOpenApp(Context context) {
-        long now = System.currentTimeMillis();
-        long lastNotify = BatteryEstimator.getInstance().getLastNotify();
-
-        // Do not notify if it is less than 2 days from last notification
-        if (lastNotify + Config.FRESHNESS_TIMEOUT_QUICKHOGS > now)
-            return;
-
-        int samples = GreenHubDb.getInstance(context).countSamples();
-        if (samples >= BatteryEstimator.MAX_SAMPLES){
-            BatteryEstimator.getInstance().setLastNotify(now);
-            PendingIntent launchCarat = PendingIntent.getActivity(context, 0,
-                    new Intent(context, MainActivity.class), 0);
-
-            NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
-                    context)
-                    .setSmallIcon(R.drawable.ic_information_white_24dp)
-                    .setContentTitle("Please open GreenHubHelper")
-                    .setContentText("Please open GreenHubHelper. Samples to send:")
-                    .setNumber(samples);
-            mBuilder.setContentIntent(launchCarat);
-            //mBuilder.setSound(null);
-            mBuilder.setAutoCancel(true);
-            NotificationManager mNotificationManager = (NotificationManager) context
-                    .getSystemService(Context.NOTIFICATION_SERVICE);
-            mNotificationManager.notify(1, mBuilder.build());
-        }
+//        long now = System.currentTimeMillis();
+//        long lastNotify = DataEstimator.getGson().getLastNotify();
+//
+//        // Do not notify if it is less than 2 days from last notification
+//        if (lastNotify + Config.FRESHNESS_TIMEOUT_QUICKHOGS > now)
+//            return;
+//
+//        int samples = GreenHubDb.getGson(context).countSamples();
+//        if (samples >= DataEstimator.MAX_SAMPLES){
+//            DataEstimator.getGson().setLastNotify(now);
+//            PendingIntent launchCarat = PendingIntent.getActivity(context, 0,
+//                    new Intent(context, MainActivity.class), 0);
+//
+//            NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
+//                    context)
+//                    .setSmallIcon(R.drawable.ic_information_white_24dp)
+//                    .setContentTitle("Please open GreenHubHelper")
+//                    .setContentText("Please open GreenHubHelper. Samples to send:")
+//                    .setNumber(samples);
+//            mBuilder.setContentIntent(launchCarat);
+//            //mBuilder.setSound(null);
+//            mBuilder.setAutoCancel(true);
+//            NotificationManager mNotificationManager = (NotificationManager) context
+//                    .getSystemService(Context.NOTIFICATION_SERVICE);
+//            mNotificationManager.notify(1, mBuilder.build());
+//        }
 
     }
 }
