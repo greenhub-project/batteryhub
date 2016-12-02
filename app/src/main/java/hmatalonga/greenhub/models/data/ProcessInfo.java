@@ -16,60 +16,40 @@
 
 package hmatalonga.greenhub.models.data;
 
-import com.activeandroid.Model;
-import com.activeandroid.annotation.Column;
-import com.activeandroid.annotation.Table;
-
 import java.util.List;
+
+import io.realm.RealmList;
+import io.realm.RealmObject;
 
 /**
  * Process Info data definition.
  */
-@Table(name = "ProcessInfos")
-public class ProcessInfo extends Model {
-
-    // Sample FK
-    @Column(name = "Sample")
-    public Sample sample;
+public class ProcessInfo extends RealmObject {
 
     // Process Id
-    @Column(name = "ProcessId")
     public int processId;
 
     // Process Name
-    @Column(name = "Name")
     public String name;
 
     // Human readable application name
-    @Column(name = "ApplicationLabel")
     public String applicationLabel;
 
     // If the app is a system app or update to a system app
-    @Column(name = "IsSystemApp")
     public boolean isSystemApp;
 
     // Foreground, visible, background, service, empty
-    @Column(name = "Importance")
     public String importance;
 
     // Version of app, human-readable
-    @Column(name = "VersionName")
     public String versionName;
 
     // Version of app, android version code
-    @Column(name = "VersionCode")
     public int versionCode;
 
     // Package that installed this process, e.g. com.google.play
-    @Column(name = "InstallationPkg")
     public String installationPkg;
-    
-    public ProcessInfo() {
-        super();
-    }
 
     // Signatures of the app from PackageInfo.signatures (it can be empty)
-    public List<AppSignature> appSignatures() {
-        return getMany(AppSignature.class, "ProcessInfo");
-    }
+    public RealmList<AppSignature> appSignatures;
 }

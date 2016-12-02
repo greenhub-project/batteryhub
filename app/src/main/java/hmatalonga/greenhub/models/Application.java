@@ -51,9 +51,9 @@ public class Application {
                 if (packages.contains(pi.processName)) continue;
                 packages.add(pi.processName);
                 ProcessInfo item = new ProcessInfo();
-                item.setImportance(StringHelper.importanceString(pi.importance));
-                item.setpId(pi.pid);
-                item.setName(pi.processName);
+                item.importance = StringHelper.importanceString(pi.importance);
+                item.processId = pi.pid;
+                item.name = pi.processName;
                 processInfoList.add(item);
             }
         }
@@ -64,10 +64,10 @@ public class Application {
                 if (packages.contains(pi.process)) continue;
                 packages.add(pi.process);
                 ProcessInfo item = new ProcessInfo();
-                item.setImportance(pi.foreground ? "Foreground app" : "Service");
-                item.setpId(pi.pid);
+                item.importance = pi.foreground ? "Foreground app" : "Service";
+                item.processId = pi.pid;
                 // item.setApplicationLabel(pi.service.flattenToString());
-                item.setName(pi.process);
+                item.name = pi.process;
 
                 processInfoList.add(item);
             }

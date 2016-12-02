@@ -19,13 +19,7 @@ package hmatalonga.greenhub.network;
 import android.content.Context;
 import android.util.Log;
 
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
+
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -37,10 +31,9 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import hmatalonga.greenhub.Config;
-import hmatalonga.greenhub.util.GreenHubHelper;
-import hmatalonga.greenhub.fragments.HomeFragment;
 import hmatalonga.greenhub.managers.storage.GreenHubDb;
 import hmatalonga.greenhub.models.data.Sample;
+import hmatalonga.greenhub.util.GreenHubHelper;
 import hmatalonga.greenhub.util.NetworkWatcher;
 
 /**
@@ -51,7 +44,6 @@ import hmatalonga.greenhub.util.NetworkWatcher;
 public class CommunicationManager {
     private static final String TAG = "CommunicationManager";
 
-    private static RequestQueue sQueue = Volley.newRequestQueue(null);
     private static Map<String, String> sParams = new HashMap<>();
 
     private GreenHubHelper mApp;
@@ -118,35 +110,6 @@ public class CommunicationManager {
      * @return if uploaded successfully returns true, otherwise returns false
      */
     private void uploadSample(final Sample sample) {
-        String url = Config.PUBLIC_SERVER_URL + "/samples";
-        sParams.clear();
-        sParams.put("data", mGson.toJson(sample));
-
-        // Request a string response from the provided URL.
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.i(TAG, response);
-                        handleResponse(response);
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        error.printStackTrace();
-                    }
-                }){
-            @Override
-            protected Map<String, String> getParams() {
-                return sParams;
-            }
-        };
-        stringRequest.setRetryPolicy(new DefaultRetryPolicy(sTimeout,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-
-        // Add the request to the RequestQueue.
-        sQueue.add(stringRequest);
     }
 
     private void handleResponse(String response) {

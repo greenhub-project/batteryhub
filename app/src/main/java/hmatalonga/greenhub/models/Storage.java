@@ -34,6 +34,7 @@ public class Storage {
     /**
      * Storage details for internal, external, secondary and system partitions.
      * External and secondary storage details are not exactly reliable.
+     *
      * @return Thrift-compatible StorageDetails object
      */
     public static StorageDetails getStorageDetails(){
@@ -43,30 +44,30 @@ public class Storage {
         File path = Environment.getDataDirectory();
         long[] internal = getStorageDetailsForPath(path);
         if(internal.length == 2){
-            sd.setFree((int)internal[0]);
-            sd.setTotal((int)internal[1]);
+            sd.free = (int) internal[0];
+            sd.total = (int) internal[1];
         }
 
         // External
         long[] external = getExternalStorageDetails();
         if(external.length == 2){
-            sd.setFreeExternal((int)external[0]);
-            sd.setTotalExternal((int)external[1]);
+            sd.freeExternal = (int) external[0];
+            sd.totalExternal = (int) external[1];
         }
 
         // Secondary
         long[] secondary = getSecondaryStorageDetails();
         if(secondary.length == 2){
-            sd.setFreeSecondary((int)secondary[0]);
-            sd.setTotalSecondary((int)secondary[1]);
+            sd.freeSecondary = (int) secondary[0];
+            sd.totalSecondary = (int) secondary[1];
         }
 
         // System
         path = Environment.getRootDirectory();
         long[] system = getStorageDetailsForPath(path);
         if(system.length == 2){
-            sd.setFreeSystem((int)system[0]);
-            sd.setTotalSystem((int)system[1]);
+            sd.freeSystem = (int) system[0];
+            sd.totalSystem = (int) system[1];
         }
 
         return sd;

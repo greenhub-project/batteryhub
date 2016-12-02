@@ -16,18 +16,18 @@
 
 package hmatalonga.greenhub.models.data;
 
-import com.activeandroid.Model;
-import com.activeandroid.annotation.Column;
+import io.realm.RealmObject;
 
 /**
  * LocationProvider.
  */
-public class LocationProvider extends Model {
+public class LocationProvider extends RealmObject {
 
-    // Sample FK
-    @Column(name = "Sample")
-    public Sample sample;
-
-    @Column(name = "Provider", index = true)
     public String provider;
+
+    public LocationProvider() {}
+
+    public LocationProvider(String provider) {
+        this.provider = provider;
+    }
 }

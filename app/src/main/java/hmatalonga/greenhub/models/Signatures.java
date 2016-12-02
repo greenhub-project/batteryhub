@@ -31,6 +31,7 @@ import java.security.interfaces.RSAPublicKey;
 import java.util.LinkedList;
 import java.util.List;
 
+import hmatalonga.greenhub.models.data.AppSignature;
 import hmatalonga.greenhub.util.StringHelper;
 
 import static hmatalonga.greenhub.util.LogUtils.LOGE;
@@ -42,14 +43,14 @@ public class Signatures {
 
     private static final String TAG = "Signatures";
 
-    public static List<String> getSignatureList(PackageInfo pak) {
-        List<String> signatureList = new LinkedList<>();
+    public static List<AppSignature> getSignatureList(PackageInfo pak) {
+        List<AppSignature> signatureList = new LinkedList<>();
         String[] pmInfos = pak.requestedPermissions;
 
         if (pmInfos != null) {
             byte[] bytes = Permissions.getPermissionBytes(pmInfos);
             String hexB = StringHelper.convertToHex(bytes);
-            signatureList.add(hexB);
+            signatureList.add(new AppSignature(hexB));
         }
         Signature[] sigs = pak.signatures;
 
@@ -60,13 +61,13 @@ public class Signatures {
                 md.update(s.toByteArray());
                 byte[] dig = md.digest();
                 // Add SHA-1
-                signatureList.add(StringHelper.convertToHex(dig));
+                signatureList.add(new AppSignature(StringHelper.convertToHex(dig)));
 
                 CertificateFactory fac = CertificateFactory.getInstance("X.509");
                 if (fac == null)
                     continue;
-                X509Certificate cert = (X509Certificate) fac.generateCertificate(new ByteArrayInputStream(s
-                        .toByteArray()));
+                X509Certificate cert = (X509Certificate) 
+                        fac.generateCertificate(new ByteArrayInputStream(s.toByteArray()));
                 if (cert == null)
                     continue;
                 PublicKey pkPublic = cert.getPublicKey();
@@ -86,7 +87,7 @@ public class Signatures {
                             md.update(data);
                         dig = md.digest();
                         // Add SHA-256 of modulus
-                        signatureList.add(StringHelper.convertToHex(dig));
+                        signatureList.add(new AppSignature(StringHelper.convertToHex(dig)));
                         break;
                     }
                     case "DSA": {
@@ -101,7 +102,7 @@ public class Signatures {
                             md.update(data);
                         dig = md.digest();
                         // Add SHA-256 of public key (DSA)
-                        signatureList.add(StringHelper.convertToHex(dig));
+                        signatureList.add(new AppSignature(StringHelper.convertToHex(dig)));
                         break;
                     }
                     default:

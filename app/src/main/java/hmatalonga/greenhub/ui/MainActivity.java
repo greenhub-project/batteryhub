@@ -17,6 +17,7 @@
 package hmatalonga.greenhub.ui;
 
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -27,8 +28,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import hmatalonga.greenhub.GreenHubApp;
 import hmatalonga.greenhub.R;
 import hmatalonga.greenhub.fragments.HomeFragment;
+import hmatalonga.greenhub.managers.sampling.DataEstimator;
 import hmatalonga.greenhub.managers.sampling.Inspector;
 import hmatalonga.greenhub.ui.adapters.TabAdapter;
 import hmatalonga.greenhub.ui.layouts.MainTabLayout;
@@ -43,6 +46,7 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
     private ViewPager mViewPager;
     private MainTabLayout mTabLayout;
     private TabAdapter mTabAdapter;
+    private GreenHubApp mApp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,6 +114,8 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
     }
 
     private void loadComponents() {
+        mApp = (GreenHubApp) getApplication();
+
         loadViews();
 
         // Initialize Application instance

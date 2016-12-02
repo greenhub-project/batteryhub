@@ -14,28 +14,16 @@
  * limitations under the License.
  */
 
-package hmatalonga.greenhub.models.data;
-
-import io.realm.RealmObject;
+package hmatalonga.greenhub.events;
 
 /**
- * SettingsInfo data definition.
+ * BatteryLevelEvent.
  */
-public class Settings extends RealmObject {
+public class BatteryLevelEvent {
 
-    public boolean bluetoothEnabled;
+    public final int level;
 
-    public boolean locationEnabled;
-
-    public boolean powersaverEnabled;
-
-    public boolean flashlightEnabled;
-
-    public boolean nfcEnabled;
-
-    // Unknown source app installation on == 1, off == 0
-    public int unknownSources;
-
-    // Developer mode on == 1, off == 0
-    public int developerMode;
+    public BatteryLevelEvent(int level) {
+        this.level = level;
+    }
 }

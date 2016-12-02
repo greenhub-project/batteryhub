@@ -33,29 +33,6 @@ public class Battery {
 
     private static final String TAG = makeLogTag(Battery.class);
 
-    public static int getBatteryChargeCounter(final Context context) {
-        if (Build.VERSION.SDK_INT >= 21) {
-            BatteryManager manager = (BatteryManager)
-                    context.getSystemService(Context.BATTERY_SERVICE);
-            return manager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CHARGE_COUNTER);
-        }
-        return -1;
-    }
-
-    public static double getBatteryCapacity(final Context context) {
-        try {
-            // Please note: Uses reflection, API not available on all devices
-            Class<?> powerProfile = Class.forName("com.android.internal.os.PowerProfile");
-            Object mPowerProfile = powerProfile.getConstructor(Context.class).newInstance(context);
-            Method getAveragePower = powerProfile.getMethod("getAveragePower", String.class);
-            getAveragePower.setAccessible(true);
-            return ((double) getAveragePower.invoke(mPowerProfile, "battery.capacity"));
-        } catch (Throwable th) {
-            th.printStackTrace();
-            return -1;
-        }
-    }
-
     public static double getBatteryVoltage(final Context context) {
         Intent receiver =
                 context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
@@ -65,5 +42,73 @@ public class Battery {
         double voltage = receiver.getIntExtra(BatteryManager.EXTRA_VOLTAGE, 0);
 
         return (voltage == -1) ? voltage : voltage / 1000;
+    }
+
+    public static int getBatteryCapacity(final Context context) {
+        if (Build.VERSION.SDK_INT >= 21) {
+            BatteryManager manager = (BatteryManager)
+                    context.getSystemService(Context.BATTERY_SERVICE);
+            int value = manager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
+
+            return (value != Integer.MIN_VALUE) ? value : -1;
+        }
+
+        try {
+            // Please note: Uses reflection, API not available on all devices
+            Class<?> powerProfile = Class.forName("com.android.internal.os.PowerProfile");
+            Object mPowerProfile = powerProfile.getConstructor(Context.class).newInstance(context);
+            Method getAveragePower = powerProfile.getMethod("getAveragePower", String.class);
+            getAveragePower.setAccessible(true);
+            return ((int) getAveragePower.invoke(mPowerProfile, "battery.capacity"));
+        } catch (Throwable th) {
+            th.printStackTrace();
+        }
+
+        return -1;
+    }
+
+    public static int getBatteryChargeCounter(final Context context) {
+        if (Build.VERSION.SDK_INT >= 21) {
+            BatteryManager manager = (BatteryManager)
+                    context.getSystemService(Context.BATTERY_SERVICE);
+            return manager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CHARGE_COUNTER);
+        }
+        return -1;
+    }
+
+    public static int getBatteryCurrentAverage(final Context context) {
+        int value = -1;
+
+        if (Build.VERSION.SDK_INT >= 21) {
+            BatteryManager manager = (BatteryManager)
+                    context.getSystemService(Context.BATTERY_SERVICE);
+            value = manager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_AVERAGE);
+        }
+
+        return (value != Integer.MIN_VALUE) ? value : -1;
+    }
+
+    public static int getBatteryCurrentNow(final Context context) {
+        int value = -1;
+
+        if (Build.VERSION.SDK_INT >= 21) {
+            BatteryManager manager = (BatteryManager)
+                    context.getSystemService(Context.BATTERY_SERVICE);
+            value = manager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW);
+        }
+
+        return (value != Integer.MIN_VALUE) ? value : -1;
+    }
+
+    public static long getBatteryEnergyCounter(final Context context) {
+        long value = -1;
+
+        if (Build.VERSION.SDK_INT >= 21) {
+            BatteryManager manager = (BatteryManager)
+                    context.getSystemService(Context.BATTERY_SERVICE);
+            value = manager.getLongProperty(BatteryManager.BATTERY_PROPERTY_ENERGY_COUNTER);
+        }
+
+        return (value != Long.MIN_VALUE) ? value : -1;
     }
 }

@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'realm-android'
 
 android {
     compileSdkVersion 24
@@ -61,8 +62,6 @@ dependencies {
     compile "com.android.support:support-v13:${android_support_lib_version}"
     compile "com.android.support:cardview-v7:${android_support_lib_version}"
     compile "com.android.support:recyclerview-v7:${android_support_lib_version}"
-    // Android Volley library *to be migrated to Retrofit*
-    compile 'eu.the4thfloor.volley:com.android.volley:2015.05.28'
     // JSON utility library.
     compile 'com.google.code.gson:gson:2.6.2'
     // Retrofit library for networking operations
@@ -70,6 +69,4 @@ dependencies {
     compile 'com.squareup.retrofit2:converter-gson:2.1.0'
     // greenrobot for event communications
     compile 'org.greenrobot:eventbus:3.0.0'
-    // ORM library
-    compile 'com.michaelpardo:activeandroid:3.1.0-SNAPSHOT'
 }

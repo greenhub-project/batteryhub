@@ -38,6 +38,7 @@
     <uses-permission android:name="android.permission.BROADCAST_STICKY" />
     <!-- Required for programmatic killing of apps -->
     <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
+    <uses-permission android:name="android.permission.BATTERY_STATS"/>
 
     <application
         android:name=".GreenHubApp"

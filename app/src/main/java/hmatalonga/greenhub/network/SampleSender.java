@@ -43,8 +43,6 @@ public class SampleSender {
 
     private static final String TAG = makeLogTag(SampleSender.class);
 
-    private static final String TRY_AGAIN = " will try again later.";
-
     private static final Object SEND_LOCK = new Object();
 
     // Prevent instantiation
@@ -98,7 +96,7 @@ public class SampleSender {
 									 * CurrentTimeMillis / 1000
 									 * (see getSample() in SamplingLibrary)
 									 */
-                                    long lastSampleTime = (long) last.getTimestamp() * 1000; // in currentTimeMillis
+                                    long lastSampleTime = (long) last.timestamp * 1000; // in currentTimeMillis
                                     SimpleDateFormat sdf = new SimpleDateFormat("MMM dd,yyyy HH:mm");
                                     Date resultdate = new Date(lastSampleTime);
                                     if (Config.DEBUG)
@@ -125,11 +123,10 @@ public class SampleSender {
                                 }
                             }
                         } else {
-                            Log.w(TAG, "CommunicationManager is not ready yet."
-                                    + TRY_AGAIN);
+                            Log.w(TAG, "CommunicationManager is not ready yet.");
                         }
                     } else {
-                        Log.w(TAG, "No samples to send." + TRY_AGAIN);
+                        Log.w(TAG, "No samples to send.");
                     }
                 }
             }

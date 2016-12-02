@@ -16,33 +16,22 @@
 
 package hmatalonga.greenhub.models.data;
 
-import com.activeandroid.Model;
-import com.activeandroid.annotation.Column;
-import com.activeandroid.annotation.Table;
+import io.realm.RealmObject;
 
 /**
  * Network Statistics data definition.
  */
-@Table(name = "NetworkStatistics")
-public class NetworkStatistics extends Model {
+public class NetworkStatistics extends RealmObject {
 
     // Amount of wifi data received
-    @Column(name = "WifiReceived")
     public double wifiReceived;
 
     // Amount of wifi data sent
-    @Column(name = "WifiSent")
     public double wifiSent;
 
     // Amount of mobile data received
-    @Column(name = "MobileReceived")
     public double mobileReceived;
 
     // Amount of mobile data sent
-    @Column(name = "MobileSent")
     public double mobileSent;
-
-    public NetworkStatistics() {
-        super();
-    }
 }

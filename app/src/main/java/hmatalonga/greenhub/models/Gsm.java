@@ -56,18 +56,18 @@ public class Gsm {
         if (Phone.getType(context).equals(PHONE_TYPE_CDMA)) {
             CdmaCellLocation cdmaLocation = (CdmaCellLocation) manager.getCellLocation();
 
-            cellInfo.CID = cdmaLocation.getBaseStationId();
-            cellInfo.LAC = cdmaLocation.getNetworkId();
-            cellInfo.MNC = cdmaLocation.getSystemId();
-            cellInfo.MCC = Integer.parseInt(netOperator.substring(0, 3));
+            cellInfo.cid = cdmaLocation.getBaseStationId();
+            cellInfo.lac = cdmaLocation.getNetworkId();
+            cellInfo.mnc = cdmaLocation.getSystemId();
+            cellInfo.mcc = Integer.parseInt(netOperator.substring(0, 3));
             cellInfo.radioType = Network.getMobileNetworkType(context);
         } else if (Phone.getType(context).equals(PHONE_TYPE_GSM)) {
             GsmCellLocation gsmLocation = (GsmCellLocation) manager.getCellLocation();
 
-            cellInfo.MCC = Integer.parseInt(netOperator.substring(0, 3));
-            cellInfo.MNC = Integer.parseInt(netOperator.substring(3));
-            cellInfo.LAC = gsmLocation.getLac();
-            cellInfo.CID = gsmLocation.getCid();
+            cellInfo.mcc = Integer.parseInt(netOperator.substring(0, 3));
+            cellInfo.mnc = Integer.parseInt(netOperator.substring(3));
+            cellInfo.lac = gsmLocation.getLac();
+            cellInfo.cid = gsmLocation.getCid();
             cellInfo.radioType = Network.getMobileNetworkType(context);
         }
 

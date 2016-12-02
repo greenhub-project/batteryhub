@@ -51,8 +51,8 @@ public class ProcessInfoAdapter extends BaseAdapter {
         mContext = context;
         sSearchArrayList = results;
         for (ProcessInfo item: sSearchArrayList)
-            if (!item.isSetApplicationLabel()) {
-                item.setApplicationLabel(GreenHubHelper.labelForApp(context, item.getName()));
+            if (item.applicationLabel != null) {
+                item.applicationLabel = GreenHubHelper.labelForApp(context, item.name);
             }
 
         Collections.sort(sSearchArrayList, new AlphabeticalProcessInfoSort(context));
@@ -98,7 +98,7 @@ public class ProcessInfoAdapter extends BaseAdapter {
 
         if (x == null) return convertView;
 
-        String p = x.getName();
+        String p = x.name;
         PackageInfo pak = Package.getPackageInfo(mContext, p);
         String ver = "";
         if (pak != null) {
@@ -109,13 +109,13 @@ public class ProcessInfoAdapter extends BaseAdapter {
 
         holder.appIcon.setImageDrawable(GreenHubHelper.iconForApp(mContext, p));
         holder.pkgName.setText(truncate(p));
-        if (x.isSetApplicationLabel()) {
-            holder.txtName.setText(truncate(x.getApplicationLabel() + " " + ver));
+        if (x.applicationLabel != null) {
+            holder.txtName.setText(truncate(x.applicationLabel + " " + ver));
         } else {
             holder.txtName.setText(truncate(GreenHubHelper.labelForApp(mContext, p) + " " + ver));
         }
         holder.txtBenefit.setText(
-                truncate(StringHelper.translatedPriority(mContext, x.getImportance()))
+                truncate(StringHelper.translatedPriority(mContext, x.importance))
         );
 
         return convertView;

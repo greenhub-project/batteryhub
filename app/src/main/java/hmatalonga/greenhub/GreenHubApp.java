@@ -16,13 +16,16 @@
 
 package hmatalonga.greenhub;
 
+import android.app.Application;
 import android.content.Intent;
 import android.content.IntentFilter;
 
-import com.activeandroid.app.Application;
 import com.squareup.leakcanary.LeakCanary;
 
 import hmatalonga.greenhub.managers.sampling.DataEstimator;
+import hmatalonga.greenhub.util.SettingsUtils;
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
 
 /**
  * GreenHubApp
@@ -31,7 +34,7 @@ public class GreenHubApp extends Application {
 
     private static final String TAG = "GreenHubApp";
 
-    private DataEstimator mEstimator;
+    public DataEstimator estimator;
 
     @Override
     public void onCreate() {
@@ -43,21 +46,24 @@ public class GreenHubApp extends Application {
         }
         LeakCanary.install(this);
 
-        new Thread() {
-            private IntentFilter intentFilter;
+        // Database init
+        Realm.init(this);
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
+        Realm.setDefaultConfiguration(realmConfiguration);
 
-            public void run() {
-                intentFilter = new IntentFilter();
-                intentFilter.addAction(Intent.ACTION_BATTERY_CHANGED);
+        if (SettingsUtils.isTosAccepted(getApplicationContext())) {
+            new Thread() {
+                private IntentFilter intentFilter;
 
-                mEstimator = new DataEstimator();
+                public void run() {
+                    intentFilter = new IntentFilter();
+                    intentFilter.addAction(Intent.ACTION_BATTERY_CHANGED);
 
-                registerReceiver(mEstimator, intentFilter);
-            }
-        }.start();
-    }
+                    estimator = new DataEstimator();
 
-    public DataEstimator getEstimator() {
-        return mEstimator;
+                    registerReceiver(estimator, intentFilter);
+                }
+            }.start();
+        }
     }
 }

@@ -174,17 +174,16 @@ public class Package {
                     if (filterSystem & isSystemApp)
                         continue;
                     if (pak.signatures.length > 0) {
-                        List<String> sigList = Signatures.getSignatureList(pak);
                         ProcessInfo pi = new ProcessInfo();
-                        pi.setName(pkg);
-                        pi.setApplicationLabel(label);
-                        pi.setVersionCode(vc);
-                        pi.setpId(-1);
-                        pi.setSystemApp(isSystemApp);
-                        pi.setAppSignatures(sigList);
-                        pi.setImportance(Config.IMPORTANCE_NOT_RUNNING);
-                        pi.setInstallationPkg(pm.getInstallerPackageName(pkg));
-                        pi.setVersionName(pak.versionName);
+                        pi.name = pkg;
+                        pi.applicationLabel = label;
+                        pi.versionCode = vc;
+                        pi.processId = -1;
+                        pi.isSystemApp = isSystemApp;
+                        pi.appSignatures.addAll(Signatures.getSignatureList(pak));
+                        pi.importance = Config.IMPORTANCE_NOT_RUNNING;
+                        pi.installationPkg = pm.getInstallerPackageName(pkg);
+                        pi.versionName = pak.versionName;
                         //TODO: disbaled for debugging
 //						pi.setTrafficRecord(trafficRecord);
                         result.put(pkg, pi);
@@ -227,16 +226,15 @@ public class Package {
         isSystemApp = isSystemApp || (flags & ApplicationInfo.FLAG_UPDATED_SYSTEM_APP) > 0;
 
         if (pak.signatures.length > 0) {
-            List<String> sigList = Signatures.getSignatureList(pak);
-            pi.setName(pkg);
-            pi.setApplicationLabel(label);
-            pi.setVersionCode(vc);
-            pi.setpId(-1);
-            pi.setSystemApp(isSystemApp);
-            pi.setAppSignatures(sigList);
-            pi.setImportance(Config.IMPORTANCE_NOT_RUNNING);
-            pi.setInstallationPkg(pm.getInstallerPackageName(pkg));
-            pi.setVersionName(pak.versionName);
+            pi.name = pkg;
+            pi.applicationLabel = label;
+            pi.versionCode = vc;
+            pi.processId = -1;
+            pi.isSystemApp = isSystemApp;
+            pi.appSignatures.addAll(Signatures.getSignatureList(pak));
+            pi.importance = Config.IMPORTANCE_NOT_RUNNING;
+            pi.installationPkg = pm.getInstallerPackageName(pkg);
+            pi.versionName = pak.versionName;
         }
         return pi;
     }

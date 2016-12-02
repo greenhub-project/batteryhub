@@ -16,47 +16,30 @@
 
 package hmatalonga.greenhub.models.data;
 
-import com.activeandroid.Model;
-import com.activeandroid.annotation.Column;
-import com.activeandroid.annotation.Table;
+import io.realm.RealmObject;
 
 /**
  * Device data definition.
  */
-@Table(name = "Devices")
-public class Device extends Model {
+public class Device extends RealmObject {
 
-    @Column(name = "UuId")
     public String uuId;
 
-    @Column(name = "Timestamp")
     public double timestamp;
 
-    @Column(name = "Model")
     public String model;
 
-    @Column(name = "Manufacturer")
     public String manufacturer;
 
-    @Column(name = "Brand")
     public String brand;
 
-    @Column(name = "Product")
     public String product;
 
-    @Column(name = "OsVersion")
     public String osVersion;
 
-    @Column(name = "KernelVersion")
     public String kernelVersion;
 
-    @Column(name = "SerialNumber")
     public String serialNumber;
 
-    @Column(name = "IsRoot")
     public int isRoot;
-
-    public Device() {
-        super();
-    }
 }

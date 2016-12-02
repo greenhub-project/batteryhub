@@ -134,7 +134,7 @@ public class DataEstimatorService extends IntentService {
             Sample lastSample = sampleDB.getLastSample();
 
             if (lastSample != null) {
-                Inspector.setLastBatteryLevel(lastSample.getBatteryLevel());
+                Inspector.setLastBatteryLevel(lastSample.batteryLevel);
             }
 
             if (Inspector.getLastBatteryLevel() == 0) {
@@ -187,21 +187,21 @@ public class DataEstimatorService extends IntentService {
     private void getSample(Context context, Intent intent, Sample lastSample, GreenHubDb sampleDB) {
         // String action = intent.getStringExtra("OriginalAction");
         // Log.i("SamplerService.getSample()", "Original intent: " +action);
-        String lastBatteryState = lastSample != null ? lastSample.getBatteryState() : "Unknown";
-        Sample s = Inspector.getSample(context, intent, lastBatteryState);
+        String lastBatteryState = lastSample != null ? lastSample.batteryState : "Unknown";
+        Sample sample = Inspector.getSample(context, intent, lastBatteryState);
         // Set mDistance to current mDistance value
-        if (s != null){
-            s.setDistanceTraveled(mDistance);
+        if (sample != null) {
+            sample.distanceTraveled = mDistance;
             // FIX: Do not use same mDistance again.
             mDistance = 0;
         }
 
         // Write to database
         // But only after first real numbers
-        if (s != null && !s.getBatteryState().equals("Unknown") && s.getBatteryLevel() >= 0) {
+        if (sample != null && !sample.batteryState.equals("Unknown") && sample.batteryLevel >= 0) {
             // store the sample into the database
-            long id = sampleDB.putSample(s);
-            Log.i(TAG, "Took sample " + id + " for " + intent.getAction());
+            // long id = sampleDB.putSample(sample);
+            Log.i(TAG, "Took sample " + 0 + " for " + intent.getAction());
             //FlurryAgent.logEvent(intent.getAction());
             //  Log.d(TAG, "current battery level (just before quitting getSample() ): " + SamplingLibrary.getCurrentBatteryLevel());
         }

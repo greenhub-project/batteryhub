@@ -360,7 +360,7 @@ public class GreenHubDb {
         ContentValues initialValues = new ContentValues();
         initialValues.put(
                 GreenHubDbContract.GreenHubEntry.COLUMN_TIMESTAMP,
-                sample.getTimestamp()
+                sample.timestamp
         );
 
         // Write the sample as a JSON string

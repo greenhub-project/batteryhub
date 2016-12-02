@@ -32,7 +32,7 @@ public class Gps {
      * @param context The Context
      * @return whether or not GPS is enabled
      */
-    public static boolean isEnabled(Context context) {
+    public static boolean isEnabled(final Context context) {
         LocationManager manager = (LocationManager)
                 context.getSystemService(Context.LOCATION_SERVICE);
         return manager.isProviderEnabled(LocationManager.GPS_PROVIDER);

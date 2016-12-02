@@ -27,22 +27,42 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 
 import hmatalonga.greenhub.GreenHubApp;
+import hmatalonga.greenhub.events.BatteryLevelEvent;
+import hmatalonga.greenhub.managers.sampling.Inspector;
 import hmatalonga.greenhub.util.GreenHubHelper;
 import hmatalonga.greenhub.R;
 import hmatalonga.greenhub.managers.sampling.DataEstimator;
 import hmatalonga.greenhub.models.ui.DeviceResourceCard;
+import io.realm.Realm;
+
+import static hmatalonga.greenhub.util.LogUtils.LOGI;
+import static hmatalonga.greenhub.util.LogUtils.makeLogTag;
 
 /**
  * Home Fragment.
  */
 public class HomeFragment extends Fragment {
 
+    private static final String TAG = makeLogTag("HomeFragment");
+
+    private Realm mRealm;
+
     private Context mContext;
+
     private RecyclerView mRecyclerView;
+
+    private TextView mBatteryCurrentValue;
+
+    private ProgressBar mBatteryCircleBar;
 
     public static HomeFragment newInstance() {
         return new HomeFragment();
@@ -55,8 +75,6 @@ public class HomeFragment extends Fragment {
 
         mContext = view.getContext();
 
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.rv);
-
         FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fabSendSample);
         assert fab != null;
         fab.setOnClickListener(new View.OnClickListener() {
@@ -64,6 +82,8 @@ public class HomeFragment extends Fragment {
             public void onClick(View view) {
             }
         });
+
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.rv);
 
         GridLayoutManager layout = new GridLayoutManager(
                 mContext,
@@ -74,18 +94,31 @@ public class HomeFragment extends Fragment {
         mRecyclerView.setLayoutManager(layout);
         mRecyclerView.setHasFixedSize(true);
 
+        mBatteryCurrentValue = (TextView) view.findViewById(R.id.batteryCurrentValue);
+        mBatteryCircleBar = (ProgressBar) view.findViewById(R.id.batteryProgressbar);
+
         return view;
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+        mRealm = Realm.getDefaultInstance();
     }
 
-    /**
-     * Set all values for layout view elements
-     */
-    private void populateView() {
+    @Override
+    public void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
+        mRealm.close();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void updateBatteryLevelUI(BatteryLevelEvent event) {
+        String text = "" + event.level;
+        mBatteryCurrentValue.setText(text);
+        mBatteryCircleBar.setProgress(event.level);
     }
 
     /**

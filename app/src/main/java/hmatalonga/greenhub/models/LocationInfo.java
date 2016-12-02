@@ -23,9 +23,11 @@ import android.location.LocationManager;
 import android.telephony.CellLocation;
 import android.telephony.TelephonyManager;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import hmatalonga.greenhub.Config;
+import hmatalonga.greenhub.models.data.LocationProvider;
 
 import static hmatalonga.greenhub.util.LogUtils.LOGD;
 import static hmatalonga.greenhub.util.LogUtils.makeLogTag;
@@ -124,11 +126,18 @@ public class LocationInfo {
      * @param context from onReceive or app.
      * @return
      */
-    public static List<String> getEnabledLocationProviders(Context context) {
+    public static List<LocationProvider> getEnabledLocationProviders(Context context) {
         LocationManager manager = (LocationManager)
                 context.getSystemService(Context.LOCATION_SERVICE);
 
-        return manager.getProviders(true);
+        List<String> providers = manager.getProviders(true);
+        List<LocationProvider> locationProviders = new LinkedList<>();
+
+        for (String provider : providers) {
+            locationProviders.add(new LocationProvider(provider));
+        }
+
+        return locationProviders;
     }
 
     public static String getBestProvider(Context context) {

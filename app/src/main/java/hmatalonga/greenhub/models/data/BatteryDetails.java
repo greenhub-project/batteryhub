@@ -16,43 +16,42 @@
 
 package hmatalonga.greenhub.models.data;
 
-import com.activeandroid.Model;
-import com.activeandroid.annotation.Column;
-import com.activeandroid.annotation.Table;
+import io.realm.RealmObject;
 
 /**
  * Battery Details data definition.
  */
-@Table(name = "BatteryDetails")
-public class BatteryDetails extends Model {
+public class BatteryDetails extends RealmObject {
 
     // Currently ac, usb, or unplugged
-    @Column(name = "BatteryCharger")
     public String batteryCharger;
 
     // Currently Unknown, Unspecified failure, Dead, Cold, Overheat, Over voltage or Good
-    @Column(name = "BatteryHealth")
     public String batteryHealth;
 
     // Voltage in Volts
-    @Column(name = "BatteryVoltage")
     public double batteryVoltage;
 
     // Temperature in Celsius
-    @Column(name = "BatteryTemperature")
     public double batteryTemperature;
 
     // Battery technology
-    @Column(name = "BatteryTechnology")
     public String batteryTechnology;
 
     // Capacity in mAh
-    @Column(name = "BatteryCapacity")
-    public double batteryCapacity;
+    public int batteryCapacity;
+
+    // Battery capacity in microampere-hours
+    public int batteryChargeCounter;
+
+    // Average battery current in microamperes
+    public int batteryCurrentAverage;
+
+    // Instantaneous battery current in microamperes
+    public int batteryCurrentNow;
+
+    // Battery remaining energy in nanowatt-hours
+    public long batteryEnergyCounter;
 
     // age factor ...
-
-    public BatteryDetails() {
-        super();
-    }
 }

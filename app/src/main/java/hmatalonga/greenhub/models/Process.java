@@ -27,6 +27,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import hmatalonga.greenhub.Config;
+import hmatalonga.greenhub.models.data.AppSignature;
 import hmatalonga.greenhub.models.data.ProcessInfo;
 import hmatalonga.greenhub.util.StringHelper;
 
@@ -75,12 +76,10 @@ public class Process {
      */
     public static ProcessInfo uninstalledItem(String pName, String pref, SharedPreferences.Editor e) {
         ProcessInfo item = new ProcessInfo();
-        item.setName(pName);
-        List<String> sigs = new LinkedList<>();
-        sigs.add("uninstalled");
-        item.setAppSignatures(sigs);
-        item.setpId(-1);
-        item.setImportance(Config.IMPORTANCE_UNINSTALLED);
+        item.name = pName;
+        item.appSignatures.add(new AppSignature("uninstalled"));
+        item.processId = -1;
+        item.importance = Config.IMPORTANCE_UNINSTALLED;
         // Remember to remove it so we do not send
         // multiple uninstall events
         e.remove(pref);
@@ -97,9 +96,9 @@ public class Process {
      */
     public static ProcessInfo disabledItem(String pName, String pref, SharedPreferences.Editor e) {
         ProcessInfo item = new ProcessInfo();
-        item.setName(pName);
-        item.setpId(-1);
-        item.setImportance(Config.IMPORTANCE_DISABLED);
+        item.name = pName;
+        item.processId = -1;
+        item.importance = Config.IMPORTANCE_DISABLED;
         // Remember to remove it so we do not send
         // multiple uninstall events
         e.remove(pref);

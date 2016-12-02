@@ -28,10 +28,14 @@ import android.os.Bundle;
 import android.support.v4.content.WakefulBroadcastReceiver;
 import android.util.Log;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.List;
 
 import hmatalonga.greenhub.Config;
 import hmatalonga.greenhub.GreenHubApp;
+import hmatalonga.greenhub.events.BatteryLevelEvent;
+import hmatalonga.greenhub.models.data.LocationProvider;
 import hmatalonga.greenhub.util.GreenHubHelper;
 import hmatalonga.greenhub.models.LocationInfo;
 
@@ -65,10 +69,15 @@ public class DataEstimator extends WakefulBroadcastReceiver implements LocationL
             LocationManager manager = (LocationManager)
                     mContext.getSystemService(Context.LOCATION_SERVICE);
             manager.removeUpdates(this);
-            List<String> providers = LocationInfo.getEnabledLocationProviders(mContext);
+            List<LocationProvider> providers = LocationInfo.getEnabledLocationProviders(mContext);
             if (providers != null) {
-                for (String provider : providers) {
-                    manager.requestLocationUpdates(provider, Config.FRESHNESS_TIMEOUT, 0, this);
+                for (LocationProvider locationProvider : providers) {
+                    manager.requestLocationUpdates(
+                            locationProvider.provider,
+                            Config.FRESHNESS_TIMEOUT,
+                            0,
+                            this
+                    );
                 }
             }
         }
@@ -115,6 +124,8 @@ public class DataEstimator extends WakefulBroadcastReceiver implements LocationL
             service.putExtra("OriginalAction", intent.getAction());
             service.fillIn(intent, 0);
             service.putExtra("distance", distance);
+
+            EventBus.getDefault().post(new BatteryLevelEvent(level));
 
             startWakefulService(context, service);
         }

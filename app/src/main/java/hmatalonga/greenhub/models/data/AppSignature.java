@@ -16,18 +16,18 @@
 
 package hmatalonga.greenhub.models.data;
 
-import com.activeandroid.Model;
-import com.activeandroid.annotation.Column;
+import io.realm.RealmObject;
 
 /**
  * AppSignature.
  */
-public class AppSignature extends Model {
+public class AppSignature extends RealmObject {
 
-    // ProcessInfo FK
-    @Column(name = "ProcessInfo")
-    public ProcessInfo processInfo;
-
-    @Column(name = "Signature", index = true)
     public String signature;
+
+    public AppSignature() {}
+
+    public AppSignature(String signature) {
+        this.signature = signature;
+    }
 }

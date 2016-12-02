@@ -52,6 +52,8 @@ import java.util.Comparator;
 import hmatalonga.greenhub.models.data.ProcessInfo;
 
 /**
+ * AlphabeticalProcessInfoSort
+ *
  * Created by hugo on 02-07-2016.
  */
 public class AlphabeticalProcessInfoSort implements
@@ -65,11 +67,11 @@ public class AlphabeticalProcessInfoSort implements
 
     @Override
     public int compare(ProcessInfo lhs, ProcessInfo rhs) {
-        if (lhs.isSetApplicationLabel() && rhs.isSetApplicationLabel())
-            return lhs.getApplicationLabel().compareTo(rhs.getApplicationLabel());
+        if (lhs.applicationLabel != null && rhs.applicationLabel != null)
+            return lhs.applicationLabel.compareTo(rhs.applicationLabel);
 
-        String l = lhs.getName();
-        String r = rhs.getName();
+        String l = lhs.name;
+        String r = rhs.name;
         if (l != null && r != null)
             return l.compareTo(r);
         else

@@ -16,32 +16,20 @@
 
 package hmatalonga.greenhub.models.data;
 
-import com.activeandroid.Model;
-import com.activeandroid.annotation.Column;
-import com.activeandroid.annotation.Table;
+import io.realm.RealmObject;
 
 /**
  * Cell Info data definition.
  */
-@Table(name = "CellInfos")
-public class CellInfo extends Model {
+public class CellInfo extends RealmObject {
 
-    @Column(name = "Mcc")
     public int mcc = 0;
 
-    @Column(name = "Mnc")
     public int mnc = 0;
 
-    @Column(name = "Lac")
     public int lac = 0;
 
-    @Column(name = "Cid")
     public int cid = 0;
 
-    @Column(name = "RadioType")
     public String radioType = null;
-
-    public CellInfo() {
-        super();
-    }
 }

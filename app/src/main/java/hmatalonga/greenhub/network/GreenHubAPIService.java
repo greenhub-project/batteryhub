@@ -14,28 +14,21 @@
  * limitations under the License.
  */
 
-package hmatalonga.greenhub.models.data;
+package hmatalonga.greenhub.network;
 
-import io.realm.RealmObject;
+import hmatalonga.greenhub.models.data.Device;
+import hmatalonga.greenhub.models.data.Sample;
+import retrofit2.Call;
+import retrofit2.http.Body;
+import retrofit2.http.POST;
 
 /**
- * SettingsInfo data definition.
+ * GreenHub API Interface.
  */
-public class Settings extends RealmObject {
+public interface GreenHubAPIService {
+    @POST("devices")
+    Call<Device> createDevice(@Body Device device);
 
-    public boolean bluetoothEnabled;
-
-    public boolean locationEnabled;
-
-    public boolean powersaverEnabled;
-
-    public boolean flashlightEnabled;
-
-    public boolean nfcEnabled;
-
-    // Unknown source app installation on == 1, off == 0
-    public int unknownSources;
-
-    // Developer mode on == 1, off == 0
-    public int developerMode;
+    @POST("samples")
+    Call<Sample> createSample(@Body Sample sample);
 }

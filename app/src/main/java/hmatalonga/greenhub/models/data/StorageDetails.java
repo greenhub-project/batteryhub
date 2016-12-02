@@ -16,42 +16,27 @@
 
 package hmatalonga.greenhub.models.data;
 
-import com.activeandroid.Model;
-import com.activeandroid.annotation.Column;
-import com.activeandroid.annotation.Table;
+import io.realm.RealmObject;
 
 /**
  * Storage Details data definition.
  * Free and total storage space in megabytes
  */
-@Table(name = "StorageDetails")
-public class StorageDetails extends Model {
+public class StorageDetails extends RealmObject {
 
-    @Column(name = "Free")
     public int free;
 
-    @Column(name = "Total")
     public int total;
 
-    @Column(name = "FreeExternal")
     public int freeExternal;
 
-    @Column(name = "TotalExternal")
     public int totalExternal;
 
-    @Column(name = "FreeSystem")
     public int freeSystem;
 
-    @Column(name = "TotalSystem")
     public int totalSystem;
 
-    @Column(name = "FreeSecondary")
     public int freeSecondary;
 
-    @Column(name = "TotalSecondary")
     public int totalSecondary;
-    
-    public StorageDetails() {
-        super();
-    }
 }

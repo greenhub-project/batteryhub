@@ -19,6 +19,7 @@ package hmatalonga.greenhub.models;
 import android.bluetooth.BluetoothAdapter;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.nfc.NfcAdapter;
 import android.os.Build;
 import android.provider.Settings;
 
@@ -49,8 +50,9 @@ public class SettingsInfo {
     }
 
     /**
+     * Check if Developer Mode is enabled on the device's settings
      *
-     * @param context
+     * @param context the Application Context
      * @return true when developer mode is enabled.
      */
     public static int isDeveloperModeOn(final Context context) {
@@ -68,10 +70,21 @@ public class SettingsInfo {
 
     /**
      * Checks if bluetooth is enabled on the device
+     *
      * @return True if bluetooth is enabled
      */
     public static boolean isBluetoothEnabled() {
         BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
+        return adapter != null && adapter.isEnabled();
+    }
+
+    /**
+     * Checks if NFC is enabled on the device
+     *
+     * @return True if NFC is enabled
+     */
+    public static boolean isNfcEnabled(final Context context) {
+        NfcAdapter adapter = NfcAdapter.getDefaultAdapter(context);
         return adapter != null && adapter.isEnabled();
     }
 }

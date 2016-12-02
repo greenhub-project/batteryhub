@@ -16,27 +16,14 @@
 
 package hmatalonga.greenhub.models.data;
 
-import com.activeandroid.Model;
-import com.activeandroid.annotation.Column;
-import com.activeandroid.annotation.Table;
+import io.realm.RealmObject;
 
 /**
  * Feature data definition.
  */
-@Table(name = "Features")
-public class Feature extends Model {
+public class Feature extends RealmObject {
 
-    // Sample FK
-    @Column(name = "Sample")
-    public Sample sample;
-
-    @Column(name = "FeatureKey")
     public String key;
 
-    @Column(name = "FeatureValue")
     public String value;
-
-    public Feature() {
-        super();
-    }
 }

@@ -16,33 +16,22 @@
 
 package hmatalonga.greenhub.models.data;
 
-import com.activeandroid.Model;
-import com.activeandroid.annotation.Column;
-import com.activeandroid.annotation.Table;
+import io.realm.RealmObject;
 
 /**
  * CallInfo data definition.
  */
-@Table(name = "CallsInfo")
-public class CallInfo extends Model {
+public class CallInfo extends RealmObject {
 
     // Incoming call time sum since boot
-    @Column(name = "IncomingCallTime")
     public double incomingCallTime;
 
     // Outgoing call time sum since boot
-    @Column(name = "OutgoingCallTime")
     public double outgoingCallTime;
 
     // Non-call time sum since boot
-    @Column(name = "NonCallTime")
     public double nonCallTime;
 
     // Idle, offhook or ringing
-    @Column(name = "CallStatus")
     public String callStatus;
-
-    public CallInfo() {
-        super();
-    }
 }

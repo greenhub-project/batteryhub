@@ -227,8 +227,8 @@ public class Specifications {
         String vm = System.getProperty("java.vm.version");
 
         if (vm == null) vm = "";
-        vmVersion.setKey("vm");
-        vmVersion.setValue(vm);
+        vmVersion.key = "vm";
+        vmVersion.value = vm;
 
         return vmVersion;
     }

@@ -16,32 +16,20 @@
 
 package hmatalonga.greenhub.models.data;
 
-import com.activeandroid.Model;
-import com.activeandroid.annotation.Column;
-import com.activeandroid.annotation.Table;
+import io.realm.RealmObject;
 
 /**
  * Call Month data definition.
  */
-@Table(name = "CallsMonth")
-public class CallMonth extends Model {
+public class CallMonth extends RealmObject {
 
-    @Column(name = "TotalCallInNum")
     public int totalCallInNum = 0;
 
-    @Column(name = "TotalCallOutNum")
     public int totalCallOutNum = 0;
 
-    @Column(name = "TotalMissedCallNum")
     public int totalMissedCallNum = 0;
 
-    @Column(name = "TotalCallInDur")
     public long totalCallInDur = 0;
 
-    @Column(name = "TotalCallOutDur")
     public long totalCallOutDur = 0;
-
-    public CallMonth() {
-        super();
-    }
 }

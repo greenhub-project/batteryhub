@@ -16,29 +16,19 @@
 
 package hmatalonga.greenhub.models.data;
 
-import com.activeandroid.Model;
-import com.activeandroid.annotation.Column;
-import com.activeandroid.annotation.Table;
+import io.realm.RealmObject;
 
 /**
  * CPU Status data definition.
  */
-@Table(name = "CpuStatuses")
-public class CpuStatus extends Model {
+public class CpuStatus extends RealmObject {
 
     // CPU usage fraction (0-1)
-    @Column(name = "CpuUsage")
     public double cpuUsage;
 
     // Uptime in seconds
-    @Column(name = "UpTime")
     public double upTime;
 
     // Experimental sleep time
-    @Column(name = "SleepTime")
     public double sleepTime;
-
-    public CpuStatus() {
-        super();
-    }
 }
