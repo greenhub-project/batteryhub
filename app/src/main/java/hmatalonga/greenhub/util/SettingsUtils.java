@@ -35,6 +35,10 @@ public class SettingsUtils {
      */
     public static final String PREF_TOS_ACCEPTED = "pref_tos_accepted";
     /**
+     * Boolean indicating whether ToS has been accepted.
+     */
+    public static final String PREF_DEVICE_REGISTERED = "pref_device_registered";
+    /**
      * Boolean indicating whether to send installed packages with the samples.
      */
     public static final String PREF_SEND_INSTALLED_PACKAGES = "pref_send_installed";
@@ -49,7 +53,6 @@ public class SettingsUtils {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         return sp.getBoolean(PREF_TOS_ACCEPTED, false);
     }
-
     /**
      * Mark {@code newValue whether} the user has accepted the TOS so the app doesn't ask again.
      *
@@ -59,6 +62,29 @@ public class SettingsUtils {
     public static void markTosAccepted(final Context context, boolean newValue) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         sp.edit().putBoolean(PREF_TOS_ACCEPTED, newValue).apply();
+    }
+
+    /**
+     * Mark {@code newValue whether} the device has registered in the web server
+     * so the app doesn't register again.
+     *
+     * @param context Context to be used to edit the {@link android.content.SharedPreferences}.
+     * @param newValue New value that will be set.
+     */
+    public static void markDeviceAccepted(final Context context, boolean newValue) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        sp.edit().putBoolean(PREF_DEVICE_REGISTERED, newValue).apply();
+    }
+
+    /**
+     * Return true if device has been registered in the web server,
+     * false if they haven't (yet).
+     *
+     * @param context Context to be used to lookup the {@link android.content.SharedPreferences}.
+     */
+    public static boolean isDeviceRegistered(final Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getBoolean(PREF_DEVICE_REGISTERED, false);
     }
 
     public static void markInstalledPackagesIncluded(final Context context, boolean newValue) {

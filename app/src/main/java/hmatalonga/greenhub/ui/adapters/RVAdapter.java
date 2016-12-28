@@ -21,12 +21,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import hmatalonga.greenhub.R;
-import hmatalonga.greenhub.models.ui.DeviceResourceCard;
+import hmatalonga.greenhub.models.ui.BatteryCard;
 
 /**
  * RecyclerView Adapter Class
@@ -38,21 +40,25 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.DashboardViewHolde
     static class DashboardViewHolder extends RecyclerView.ViewHolder {
 
         CardView cv;
-        public TextView title;
+        public ImageView icon;
+        public TextView label;
         public TextView value;
+        public View indicator;
 
         DashboardViewHolder(View itemView) {
             super(itemView);
             cv = (CardView) itemView.findViewById(R.id.cv);
-            title = (TextView) itemView.findViewById(R.id.dashboard_title);
-            value = (TextView) itemView.findViewById(R.id.dashboard_value);
+            icon = (ImageView) itemView.findViewById(R.id.icon);
+            label = (TextView) itemView.findViewById(R.id.label);
+            value = (TextView) itemView.findViewById(R.id.value);
+            indicator = itemView.findViewById(R.id.indicator);
         }
     }
 
-    private ArrayList<DeviceResourceCard> mDeviceResourceCards;
+    private ArrayList<BatteryCard> mBatteryCards;
 
-    public RVAdapter(ArrayList<DeviceResourceCard> deviceResourceCards){
-        mDeviceResourceCards = deviceResourceCards;
+    public RVAdapter(ArrayList<BatteryCard> batteryCards){
+        this.mBatteryCards = batteryCards;
     }
 
     @Override
@@ -62,19 +68,35 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.DashboardViewHolde
 
     @Override
     public DashboardViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.dashboard_item,
-                viewGroup, false);
-        return new DashboardViewHolder(v);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(
+                R.layout.battery_item_card_view,
+                viewGroup,
+                false
+        );
+        return new DashboardViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(DashboardViewHolder personViewHolder, int i) {
-        personViewHolder.title.setText(mDeviceResourceCards.get(i).title);
-        personViewHolder.value.setText(mDeviceResourceCards.get(i).value);
+    public void onBindViewHolder(DashboardViewHolder viewHolder, int i) {
+        viewHolder.icon.setImageResource(mBatteryCards.get(i).icon);
+        viewHolder.label.setText(mBatteryCards.get(i).label);
+        viewHolder.value.setText(mBatteryCards.get(i).value);
+        viewHolder.indicator.setBackgroundColor(mBatteryCards.get(i).indicator);
     }
 
     @Override
     public int getItemCount() {
-        return mDeviceResourceCards.size();
+        return mBatteryCards.size();
+    }
+
+    public void swap(ArrayList<BatteryCard> list){
+        if (mBatteryCards != null) {
+            mBatteryCards.clear();
+            mBatteryCards.addAll(list);
+        }
+        else {
+            mBatteryCards = list;
+        }
+        notifyDataSetChanged();
     }
 }

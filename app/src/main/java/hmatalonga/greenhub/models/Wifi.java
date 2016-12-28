@@ -22,6 +22,7 @@ import android.content.Context;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
+import android.text.format.Formatter;
 
 import java.lang.reflect.Method;
 import java.net.NetworkInterface;
@@ -66,7 +67,7 @@ public class Wifi {
      * Get Wifi MAC ADDR. Hashed and used in UUID calculation.
      */
     @SuppressLint("HardwareIds")
-    public static String getMacAddress(Context context) {
+    public static String getMacAddress(final Context context) {
         if (Build.VERSION.SDK_INT >= 23) return getMacAddressMarshmallow();
 
         WifiManager manager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
@@ -74,6 +75,17 @@ public class Wifi {
 
         WifiInfo wifiInfo = manager.getConnectionInfo();
         return (wifiInfo == null) ? null : wifiInfo.getMacAddress();
+    }
+
+    @SuppressWarnings("deprecation")
+    public static String getIpAddress(final Context context) {
+        WifiManager manager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        if (manager == null) return null;
+
+        WifiInfo wifiInfo = manager.getConnectionInfo();
+
+        // TODO: Formatter.formatIpAddress() is deprecated! Replace it...
+        return (wifiInfo == null) ? null : Formatter.formatIpAddress(wifiInfo.getIpAddress());
     }
 
     /**

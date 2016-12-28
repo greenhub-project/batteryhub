@@ -22,8 +22,11 @@ import android.content.IntentFilter;
 import android.os.BatteryManager;
 import android.os.Build;
 
+import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.lang.reflect.Method;
 
+import static hmatalonga.greenhub.util.LogUtils.LOGI;
 import static hmatalonga.greenhub.util.LogUtils.makeLogTag;
 
 /**
@@ -59,6 +62,7 @@ public class Battery {
             Object mPowerProfile = powerProfile.getConstructor(Context.class).newInstance(context);
             Method getAveragePower = powerProfile.getMethod("getAveragePower", String.class);
             getAveragePower.setAccessible(true);
+            // TODO: java.lang.ClassCastException: java.lang.Double cannot be cast to java.lang.Integer
             return ((int) getAveragePower.invoke(mPowerProfile, "battery.capacity"));
         } catch (Throwable th) {
             th.printStackTrace();
@@ -89,15 +93,19 @@ public class Battery {
     }
 
     public static int getBatteryCurrentNow(final Context context) {
-        int value = -1;
+        int value;
+
+        // TODO: Check if value = 0 then device doesn't support this...
 
         if (Build.VERSION.SDK_INT >= 21) {
             BatteryManager manager = (BatteryManager)
                     context.getSystemService(Context.BATTERY_SERVICE);
             value = manager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW);
+        } else {
+           value = getBatteryCurrentNowLegacy();
         }
 
-        return (value != Integer.MIN_VALUE) ? value : -1;
+        return (value != Integer.MIN_VALUE) ? value / 1000 : -1;
     }
 
     public static long getBatteryEnergyCounter(final Context context) {
@@ -110,5 +118,20 @@ public class Battery {
         }
 
         return (value != Long.MIN_VALUE) ? value : -1;
+    }
+
+    public static int getBatteryCurrentNowLegacy() {
+        int value = -1;
+
+        try {
+            RandomAccessFile reader = new RandomAccessFile("/sys/class/power_supply/battery/current_now", "r");
+            String average = reader.readLine();
+            value = Integer.parseInt(average);
+            reader.close();
+        } catch (IOException e) {
+            // Device has no current_avg file available
+            LOGI(TAG, "Device has no current_avg file available");
+        }
+        return -value;
     }
 }

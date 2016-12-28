@@ -22,6 +22,8 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -30,7 +32,7 @@ import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import hmatalonga.greenhub.Config;
+import hmatalonga.greenhub.events.StatusEvent;
 import hmatalonga.greenhub.managers.storage.GreenHubDb;
 import hmatalonga.greenhub.models.data.Sample;
 import hmatalonga.greenhub.util.GreenHubHelper;
@@ -50,16 +52,17 @@ public class CommunicationManager {
     private Gson mGson;
     private Context mContext;
     private SortedMap<Long, Sample> map;
-    private GreenHubDb db;
+    private GreenHubDb database;
     private ArrayList<Sample> samples;
     private int sTimeout = 5000; // 5s default for socket timeout
-    private int done, samplesCount;
+    private int done;
+    private long samplesCount;
 
     public CommunicationManager(GreenHubHelper app) {
         this.mApp = app;
         this.mContext = null;
         this.mGson = new Gson();
-        db = GreenHubDb.getInstance(mContext);
+        database = new GreenHubDb();
     }
 
     public CommunicationManager(GreenHubHelper app, int timeout) {
@@ -67,7 +70,7 @@ public class CommunicationManager {
         this.mContext = null;
         this.mGson = new Gson();
         this.sTimeout = timeout;
-        db = GreenHubDb.getInstance(mContext);
+        database = new GreenHubDb();
     }
 
     public void sendSamples() {
@@ -77,18 +80,18 @@ public class CommunicationManager {
             // HomeFragment.setStatus("Not connected");
             return;
         }
-        samplesCount = db.countSamples();
+        samplesCount = database.count(Sample.class);
         done = 0;
 
         // HomeFragment.setStatus("Samples sent " + done + "/" + samplesCount);
 
-        map = db.queryOldestSamples(samplesCount); // Config.COMMS_MAX_UPLOAD_BATCH
+        // map = database.queryOldestSamples(samplesCount); // Config.COMMS_MAX_UPLOAD_BATCH
 
         if (map.size() > 0)
-            uploadSamples(map.values());
+            uploadSamples(null);
         else {
             Log.w(TAG, "No samples to send.");
-            // HomeFragment.setStatus("No samples to send.");
+            EventBus.getDefault().post(new StatusEvent("No samples to send."));
         }
     }
 
@@ -121,14 +124,14 @@ public class CommunicationManager {
 
             if (done == samplesCount) {
                 // status finished
-                SortedSet<Long> uploaded = new TreeSet<Long>();
+                SortedSet<Long> uploaded = new TreeSet<>();
                 int i = 0;
                 for (Long s : map.keySet()) {
                     if (i < done)
                         uploaded.add(s);
                     i += 1;
                 }
-                db.deleteSamples(uploaded);
+                // database.deleteSamples(uploaded);
             }
             else
                 uploadSample(samples.get(done));

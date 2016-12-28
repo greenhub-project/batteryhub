@@ -4,7 +4,7 @@
         <!--android:defaultValue="true"-->
         <!--android:key="example_switch"-->
         <!--android:summary="@string/pref_description_social_recommendations"-->
-        <!--android:title="@string/pref_title_social_recommendations"/>-->
+        <!--android:label="@string/pref_title_social_recommendations"/>-->
 
     <!--&lt;!&ndash; NOTE: EditTextPreference accepts EditText attributes. &ndash;&gt;-->
     <!--&lt;!&ndash; NOTE: EditTextPreference's summary should be set to its value by the activity code. &ndash;&gt;-->
@@ -16,7 +16,7 @@
         <!--android:maxLines="1"-->
         <!--android:selectAllOnFocus="true"-->
         <!--android:singleLine="true"-->
-        <!--android:title="@string/pref_title_display_name"/>-->
+        <!--android:label="@string/pref_title_display_name"/>-->
 
     <!--&lt;!&ndash; NOTE: Hide buttons to simplify the UI. Users can touch outside the dialog to-->
          <!--dismiss it. &ndash;&gt;-->
@@ -28,6 +28,6 @@
         <!--android:key="example_list"-->
         <!--android:negativeButtonText="@null"-->
         <!--android:positiveButtonText="@null"-->
-        <!--android:title="@string/pref_title_add_friends_to_messages"/>-->
+        <!--android:label="@string/pref_title_add_friends_to_messages"/>-->
 
 </PreferenceScreen>

@@ -20,6 +20,7 @@ import android.app.ActivityManager.RunningAppProcessInfo;
 import android.content.Context;
 import android.util.SparseArray;
 
+import java.text.NumberFormat;
 import java.util.List;
 
 import hmatalonga.greenhub.R;
@@ -90,6 +91,18 @@ public class StringHelper {
         return processName.substring(0, indexOf);
     }
 
+    public static String formatPercentageNumber(float number) {
+        NumberFormat defaultFormat = NumberFormat.getPercentInstance();
+        defaultFormat.setMinimumFractionDigits(0);
+        return defaultFormat.format(number);
+    }
+
+    public static String formatNumber(float number) {
+        NumberFormat defaultFormat = NumberFormat.getNumberInstance();
+        defaultFormat.setMinimumFractionDigits(1);
+        return defaultFormat.format(number);
+    }
+
     public static String[] trimArray(String[] array) {
         for (int i = 0; i < array.length; i++) {
             array[i] = array[i].trim();
@@ -121,4 +134,6 @@ public class StringHelper {
         }
         return String.valueOf(obj);
     }
+
+
 }

@@ -53,12 +53,15 @@ public class MainTabLayout extends TabLayout {
      */
     public void createTabs() {
         addTab(R.drawable.ic_home_white_24dp, R.string.title_fragment_home);
-        addTab(R.drawable.ic_account_white_24dp, R.string.title_fragment_device);
+        addTab(R.drawable.ic_cellphone_android_white_24dp, R.string.title_fragment_device);
+        addTab(R.drawable.ic_chart_areaspline_white_24dp, R.string.title_fragment_stats);
+        addTab(R.drawable.ic_history_white_24dp, R.string.title_fragment_history);
         addTab(R.drawable.ic_information_white_24dp, R.string.title_fragment_about);
     }
 
     /**
      * Adds a new tab to the layout provided the icon and string description resources.
+     *
      * @param iconId Icon Id resource
      * @param contentDescriptionId Content Description Id resource
      */

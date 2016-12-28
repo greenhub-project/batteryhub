@@ -69,16 +69,6 @@ public class SettingsInfo {
     }
 
     /**
-     * Checks if bluetooth is enabled on the device
-     *
-     * @return True if bluetooth is enabled
-     */
-    public static boolean isBluetoothEnabled() {
-        BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
-        return adapter != null && adapter.isEnabled();
-    }
-
-    /**
      * Checks if NFC is enabled on the device
      *
      * @return True if NFC is enabled

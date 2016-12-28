@@ -26,9 +26,9 @@ import retrofit2.http.POST;
  * GreenHub API Interface.
  */
 public interface GreenHubAPIService {
-    @POST("devices")
+    @POST("api/device")
     Call<Device> createDevice(@Body Device device);
 
-    @POST("samples")
+    @POST("api/sample")
     Call<Sample> createSample(@Body Sample sample);
 }

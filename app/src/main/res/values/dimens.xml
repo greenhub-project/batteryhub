@@ -20,11 +20,8 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
 
-    <!-- custom -->
-    <dimen name="device_summary_title">16dp</dimen>
-    <dimen name="device_summary_value">8dp</dimen>
-
     <!-- standard metrics -->
+    <dimen name="spacing_double">16dp</dimen>
     <dimen name="spacing_normal">8dp</dimen>
     <dimen name="spacing_micro">4dp</dimen>
     <dimen name="padding_normal">16dp</dimen>
@@ -48,4 +45,8 @@
     <dimen name="welcome_button_bar_elevation">6dp</dimen>
     <dimen name="welcome_content_width">@dimen/match_parent</dimen>
     <dimen name="welcome_title_size">20sp</dimen>
+
+    <!-- Device Fragment -->
+    <dimen name="list_item_margin">36dp</dimen>
+    <dimen name="list_sub_item_margin">24dp</dimen>
 </resources>

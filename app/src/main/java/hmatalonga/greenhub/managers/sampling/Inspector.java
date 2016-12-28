@@ -54,22 +54,28 @@ import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.graphics.Camera;
+import android.content.pm.PermissionInfo;
 import android.os.BatteryManager;
-import android.os.Build;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import org.greenrobot.eventbus.EventBus;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
 import hmatalonga.greenhub.Config;
+import hmatalonga.greenhub.events.StatusEvent;
 import hmatalonga.greenhub.models.Application;
 import hmatalonga.greenhub.models.Battery;
+import hmatalonga.greenhub.models.Bluetooth;
 import hmatalonga.greenhub.models.Cpu;
 import hmatalonga.greenhub.models.Gps;
 import hmatalonga.greenhub.models.LocationInfo;
@@ -84,7 +90,10 @@ import hmatalonga.greenhub.models.SimCard;
 import hmatalonga.greenhub.models.Specifications;
 import hmatalonga.greenhub.models.Storage;
 import hmatalonga.greenhub.models.Wifi;
+import hmatalonga.greenhub.models.data.AppPermission;
 import hmatalonga.greenhub.models.data.BatteryDetails;
+import hmatalonga.greenhub.models.data.BatterySession;
+import hmatalonga.greenhub.models.data.BatteryUsage;
 import hmatalonga.greenhub.models.data.CpuStatus;
 import hmatalonga.greenhub.models.data.Feature;
 import hmatalonga.greenhub.models.data.NetworkDetails;
@@ -190,6 +199,192 @@ public final class Inspector {
         return false;
     }
 
+    /**
+     * Returns a List of ProcessInfo objects, helper for getSample.
+     *
+     * @param context the Application Context.
+     * @return a List of ProcessInfo objects, helper for getSample.
+     */
+    private static List<ProcessInfo> getRunningProcessInfoForSample(final Context context) {
+        // Reset list for each sample
+        Process.clear();
+
+        List<ProcessInfo> list = Application.getRunningAppInfo(context);
+        List<ProcessInfo> result = new ArrayList<>();
+
+        PackageManager pm = context.getPackageManager();
+        // Collected in the same loop to save computation.
+        int[] procMem = new int[list.size()];
+
+        Set<String> procs = new HashSet<>();
+
+        boolean included = SettingsUtils.isInstalledPackagesIncluded(context);
+
+        Map<String, ProcessInfo> processInfoMap =
+                (included) ? Package.getInstalledPackages(context, false) : null;
+
+        for (ProcessInfo pi : list) {
+            String pName = pi.name;
+            if (processInfoMap != null && processInfoMap.containsKey(pName)) {
+                processInfoMap.remove(pName);
+            }
+
+            procs.add(pName);
+
+            ProcessInfo item = new ProcessInfo();
+            item.appPermissions = new RealmList<>();
+
+            PackageInfo packageInfo = Package.getPackageInfo(context, pName);
+
+            if (packageInfo != null) {
+                item.versionName = packageInfo.versionName;
+                item.versionCode = packageInfo.versionCode;
+                ApplicationInfo info = packageInfo.applicationInfo;
+
+                // Human readable label (if any)
+                String label = pm.getApplicationLabel(info).toString();
+                if (label.length() > 0) {
+                    item.applicationLabel = label;
+                }
+                int flags = packageInfo.applicationInfo.flags;
+                // Check if it is a system app
+                boolean isSystemApp = (flags & ApplicationInfo.FLAG_SYSTEM) > 0;
+                isSystemApp = isSystemApp || (flags & ApplicationInfo.FLAG_UPDATED_SYSTEM_APP) > 0;
+                item.isSystemApp = isSystemApp;
+
+                // Get app permissions
+                if (packageInfo.permissions != null) {
+                    for (PermissionInfo permission : packageInfo.permissions) {
+                        item.appPermissions.add(new AppPermission(permission.name));
+                    }
+                }
+
+				/*
+				 * boolean sigSent = p.getBoolean(SIG_SENT_256 + pname, false);
+				 * if (collectSignatures && !sigSent && pak.signatures != null
+				 * && pak.signatures.length > 0) { List<String> sigList =
+				 * getSignatures(pak); boolean sigSentOld =
+				 * p.getBoolean(SIG_SENT + pname, false); if (sigSentOld)
+				 * p.edit().remove(SIG_SENT + pname);
+				 * p.edit().putBoolean(SIG_SENT_256 + pname, true).commit();
+				 * item.setAppSignatures(sigList); }
+				 */
+            }
+            item.importance = pi.importance;
+            item.processId = pi.processId;
+            item.name = pi.name;
+
+            String installationSource = null;
+            if (!pi.isSystemApp) {
+                try {
+                    installationSource = pm.getInstallerPackageName(pName);
+                } catch (IllegalArgumentException iae) {
+                    Log.e(TAG, "Could not get installer for " + pName);
+                }
+            }
+            if (installationSource == null) {
+                installationSource = "null";
+            }
+            item.installationPkg = installationSource;
+
+            // TODO: More fields will need to be added here, but ProcessInfo needs to change.
+            // procMem[list.indexOf(pi)] = pi.getPId();
+            // uid lru
+
+            // add to result
+            result.add(item);
+        }
+
+        // Send installed packages if we were to do so.
+        if (processInfoMap != null && processInfoMap.size() > 0) {
+            result.addAll(processInfoMap.values());
+            SettingsUtils.markInstalledPackagesIncluded(context, false);
+        }
+
+        // Go through the preferences and look for UNINSTALL, INSTALL and
+        // REPLACE keys set by InstallReceiver.
+        updatePackagePreferences(context, result);
+
+        // FIXME: These are not used yet.
+        // ActivityManager pActivityManager = (ActivityManager) context.getSystemService(Activity.ACTIVITY_SERVICE);
+        // Debug.MemoryInfo[] memoryInfo = pActivityManager.getProcessMemoryInfo(procMem);
+        // for (Debug.MemoryInfo info : memoryInfo) {
+        // Decide which ones of info. we want, add to a new and improved ProcessInfo object
+        // FIXME: Not used yet, Sample needs more fields
+        // FIXME: Which memory fields to choose?
+        // int memory = info.dalvikPrivateDirty;
+        // }
+
+        return result;
+    }
+
+    private static void updatePackagePreferences(final Context context, List<ProcessInfo> result) {
+        // Go through the preferences and look for UNINSTALL, INSTALL and
+        // REPLACE keys set by InstallReceiver.
+        SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(context);
+        Set<String> ap = p.getAll().keySet();
+        SharedPreferences.Editor e = p.edit();
+        boolean edited = false;
+        for (String pref : ap) {
+            if (pref.startsWith(INSTALLED)) {
+                String pname = pref.substring(INSTALLED.length());
+                boolean installed = p.getBoolean(pref, false);
+                if (installed) {
+                    Log.i(TAG, "Installed:" + pname);
+                    ProcessInfo i = Package.getInstalledPackage(context, pname);
+                    if (i != null) {
+                        i.importance = Config.IMPORTANCE_INSTALLED;
+                        result.add(i);
+                        e.remove(pref);
+                        edited = true;
+                    }
+                }
+            } else if (pref.startsWith(REPLACED)) {
+                String pname = pref.substring(REPLACED.length());
+                boolean replaced = p.getBoolean(pref, false);
+                if (replaced) {
+                    Log.i(TAG, "Replaced:" + pname);
+                    ProcessInfo i = Package.getInstalledPackage(context, pname);
+                    if (i != null) {
+                        i.importance = Config.IMPORTANCE_REPLACED;
+                        result.add(i);
+                        e.remove(pref);
+                        edited = true;
+                    }
+                }
+            } else if (pref.startsWith(UNINSTALLED)) {
+                String pname = pref.substring(UNINSTALLED.length());
+                boolean uninstalled = p.getBoolean(pref, false);
+                if (uninstalled) {
+                    Log.i(TAG, "Uninstalled:" + pname);
+                    result.add(Process.uninstalledItem(pname, pref, e));
+                    edited = true;
+                }
+            } else if (pref.startsWith(DISABLED)) {
+                String pname = pref.substring(DISABLED.length());
+                boolean disabled = p.getBoolean(pref, false);
+                if (disabled) {
+                    Log.i(TAG, "Disabled app:" + pname);
+                    result.add(Process.disabledItem(pname, pref, e));
+                    edited = true;
+                }
+            }
+        }
+        if (edited) e.apply();
+    }
+
+    /**
+     * Helper method to collect all the extra information we wish to add to the sample into
+     * the Extra Feature list.
+     *
+     * @return a List<Feature> populated with extra items to collect outside of the protocol spec.
+     */
+    private static List<Feature> getExtras() {
+        LinkedList<Feature> res = new LinkedList<>();
+        res.add(Specifications.getVmVersion());
+        return res;
+    }
+
     static Sample getSample(final Context context, Intent intent, String lastBatteryState) {
         // Construct sample and return it in the end
         Sample newSample = new Sample();
@@ -210,7 +405,8 @@ public final class Inspector {
 
         newSample.uuId = Specifications.getAndroidId(context);
         newSample.triggeredBy = action;
-        newSample.timestamp = System.currentTimeMillis() / 1000.0;
+        newSample.timestamp = System.currentTimeMillis();
+        newSample.id = String.valueOf(newSample.timestamp).hashCode();
 
         // Record first data point for CPU usage
         long[] idleAndCpu1 = Cpu.readUsagePoint();
@@ -223,6 +419,7 @@ public final class Inspector {
         // be running when
         // those events (screen on / screen off) occur
 
+        EventBus.getDefault().post(new StatusEvent("Getting processes list..."));
         newSample.processInfos.addAll(getRunningProcessInfoForSample(context));
 
         newSample.screenBrightness = Screen.getBrightness(context);
@@ -377,12 +574,13 @@ public final class Inspector {
         // (returned by BatteryManager) is not Centigrade, it should be divided
         // by 10)
         batteryDetails.batteryTemperature =
-                intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, 0) / 10;
+                ((float) intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, 0)) / 10;
         // otherInfo.setBatteryTemperature(temperature);
 
         // current battery voltage in VOLTS (the unit of the returned value by
         // BatteryManager is millivolts)
-        batteryDetails.batteryVoltage = intent.getIntExtra(BatteryManager.EXTRA_VOLTAGE, 0) / 1000;
+        batteryDetails.batteryVoltage =
+                ((float) intent.getIntExtra(BatteryManager.EXTRA_VOLTAGE, 0)) / 1000;
         // otherInfo.setBatteryVoltage(voltage);
 
         batteryDetails.batteryCharger = batteryCharger;
@@ -425,7 +623,7 @@ public final class Inspector {
         newSample.storageDetails = Storage.getStorageDetails();
 
         // System settings
-        settings.bluetoothEnabled = SettingsInfo.isBluetoothEnabled();
+        settings.bluetoothEnabled = Bluetooth.isEnabled();
         settings.locationEnabled = Gps.isEnabled(context);
         settings.nfcEnabled = SettingsInfo.isNfcEnabled(context);
         settings.developerMode = SettingsInfo.isDeveloperModeOn(context);
@@ -446,179 +644,106 @@ public final class Inspector {
         return newSample;
     }
 
-    /**
-     * Returns a List of ProcessInfo objects, helper for getSample.
-     *
-     * @param context the Application Context.
-     * @return a List of ProcessInfo objects, helper for getSample.
-     */
-    private static List<ProcessInfo> getRunningProcessInfoForSample(final Context context) {
-        // Reset list for each sample
-        Process.clear();
+    static BatteryUsage getBatteryUsage(final Context context, Intent intent) {
+        BatteryUsage usage = new BatteryUsage();
+        BatteryDetails details = new BatteryDetails();
 
-        List<ProcessInfo> list = Application.getRunningAppInfo(context);
-        List<ProcessInfo> result = new ArrayList<>();
+        // Battery details
+        int health = intent.getIntExtra(BatteryManager.EXTRA_HEALTH, 0);
+        int status = intent.getIntExtra(BatteryManager.EXTRA_STATUS, 0);
+        int plugged = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, 0);
+        String batteryTechnology = intent.getExtras().getString(BatteryManager.EXTRA_TECHNOLOGY);
+        String batteryHealth = "Unknown";
+        String batteryCharger = "unplugged";
+        String batteryStatus;
 
-        PackageManager pm = context.getPackageManager();
-        // Collected in the same loop to save computation.
-        int[] procMem = new int[list.size()];
+        usage.timestamp = System.currentTimeMillis();
+        usage.id = String.valueOf(usage.timestamp).hashCode();
 
-        Set<String> procs = new HashSet<>();
-
-        boolean included = SettingsUtils.isInstalledPackagesIncluded(context);
-
-        Map<String, ProcessInfo> processInfoMap =
-                (included) ? Package.getInstalledPackages(context, false) : null;
-
-        for (ProcessInfo pi : list) {
-            String pName = pi.name;
-            if (processInfoMap != null && processInfoMap.containsKey(pName)) {
-                processInfoMap.remove(pName);
-            }
-
-            procs.add(pName);
-            ProcessInfo item = new ProcessInfo();
-            PackageInfo packageInfo = Package.getPackageInfo(context, pName);
-
-            if (packageInfo != null) {
-                item.versionName = packageInfo.versionName;
-                item.versionCode = packageInfo.versionCode;
-                ApplicationInfo info = packageInfo.applicationInfo;
-
-                // Human readable label (if any)
-                String label = pm.getApplicationLabel(info).toString();
-                if (label.length() > 0) {
-                    item.applicationLabel = label;
-                }
-                int flags = packageInfo.applicationInfo.flags;
-                // Check if it is a system app
-                boolean isSystemApp = (flags & ApplicationInfo.FLAG_SYSTEM) > 0;
-                isSystemApp = isSystemApp || (flags & ApplicationInfo.FLAG_UPDATED_SYSTEM_APP) > 0;
-                item.isSystemApp = isSystemApp;
-
-				/*
-				 * boolean sigSent = p.getBoolean(SIG_SENT_256 + pname, false);
-				 * if (collectSignatures && !sigSent && pak.signatures != null
-				 * && pak.signatures.length > 0) { List<String> sigList =
-				 * getSignatures(pak); boolean sigSentOld =
-				 * p.getBoolean(SIG_SENT + pname, false); if (sigSentOld)
-				 * p.edit().remove(SIG_SENT + pname);
-				 * p.edit().putBoolean(SIG_SENT_256 + pname, true).commit();
-				 * item.setAppSignatures(sigList); }
-				 */
-            }
-            item.importance = pi.importance;
-            item.processId = pi.processId;
-            item.name = pi.name;
-
-            String installationSource = null;
-            if (!pi.isSystemApp) {
-                try {
-                    installationSource = pm.getInstallerPackageName(pName);
-                } catch (IllegalArgumentException iae) {
-                    Log.e(TAG, "Could not get installer for " + pName);
-                }
-            }
-            if (installationSource == null) {
-                installationSource = "null";
-            }
-            item.installationPkg = installationSource;
-
-            // TODO: More fields will need to be added here, but ProcessInfo needs to change.
-            // procMem[list.indexOf(pi)] = pi.getPId();
-            // uid lru
-
-            // add to result
-            result.add(item);
+        switch (health) {
+            case BatteryManager.BATTERY_HEALTH_DEAD:
+                batteryHealth = "Dead";
+                break;
+            case BatteryManager.BATTERY_HEALTH_GOOD:
+                batteryHealth = "Good";
+                break;
+            case BatteryManager.BATTERY_HEALTH_OVER_VOLTAGE:
+                batteryHealth = "Over voltage";
+                break;
+            case BatteryManager.BATTERY_HEALTH_OVERHEAT:
+                batteryHealth = "Overheat";
+                break;
+            case BatteryManager.BATTERY_HEALTH_UNKNOWN:
+                batteryHealth = "Unknown";
+                break;
+            case BatteryManager.BATTERY_HEALTH_UNSPECIFIED_FAILURE:
+                batteryHealth = "Unspecified failure";
+                break;
         }
 
-        // Send installed packages if we were to do so.
-        if (processInfoMap != null && processInfoMap.size() > 0) {
-            result.addAll(processInfoMap.values());
-            SettingsUtils.markInstalledPackagesIncluded(context, false);
+        switch (status) {
+            case BatteryManager.BATTERY_STATUS_CHARGING:
+                batteryStatus = "Charging";
+                break;
+            case BatteryManager.BATTERY_STATUS_DISCHARGING:
+                batteryStatus = "Discharging";
+                break;
+            case BatteryManager.BATTERY_STATUS_FULL:
+                batteryStatus = "Full";
+                break;
+            case BatteryManager.BATTERY_STATUS_NOT_CHARGING:
+                batteryStatus = "Not charging";
+                break;
+            case BatteryManager.BATTERY_STATUS_UNKNOWN:
+                batteryStatus = "Unknown";
+                break;
+            default:
+                batteryStatus = "Unknown";
         }
 
-        // Go through the preferences and look for UNINSTALL, INSTALL and
-        // REPLACE keys set by InstallReceiver.
-        updatePackagePreferences(context, result);
+        switch (plugged) {
+            case BatteryManager.BATTERY_PLUGGED_AC:
+                batteryCharger = "ac";
+                break;
+            case BatteryManager.BATTERY_PLUGGED_USB:
+                batteryCharger = "usb";
+                break;
+        }
 
-        // FIXME: These are not used yet.
-        // ActivityManager pActivityManager = (ActivityManager) context.getSystemService(Activity.ACTIVITY_SERVICE);
-        // Debug.MemoryInfo[] memoryInfo = pActivityManager.getProcessMemoryInfo(procMem);
-        // for (Debug.MemoryInfo info : memoryInfo) {
-        // Decide which ones of info. we want, add to a new and improved ProcessInfo object
-        // FIXME: Not used yet, Sample needs more fields
-        // FIXME: Which memory fields to choose?
-        // int memory = info.dalvikPrivateDirty;
-        // }
+        details.batteryTemperature = ((float) intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, 0)) / 10;
 
-        return result;
+        // current battery voltage in VOLTS (the unit of the returned value by BatteryManager is millivolts)
+        details.batteryVoltage = ((float) intent.getIntExtra(BatteryManager.EXTRA_VOLTAGE, 0)) / 1000;
+
+        details.batteryCharger = batteryCharger;
+        details.batteryHealth = batteryHealth;
+        details.batteryTechnology = batteryTechnology;
+
+        // Battery other values with API level limitations
+        details.batteryCapacity = Battery.getBatteryCapacity(context);
+        details.batteryChargeCounter = Battery.getBatteryChargeCounter(context);
+        details.batteryCurrentAverage = Battery.getBatteryCurrentAverage(context);
+        details.batteryCurrentNow = Battery.getBatteryCurrentNow(context);
+        details.batteryEnergyCounter = Battery.getBatteryEnergyCounter(context);
+
+        usage.level = (float) sCurrentBatteryLevel;
+        usage.state = batteryStatus;
+        usage.screenOn = Screen.isOn(context);
+        usage.triggeredBy = intent.getAction();
+        usage.details = details;
+
+        return usage;
     }
 
-    private static void updatePackagePreferences(final Context context, List<ProcessInfo> result) {
-        // Go through the preferences and look for UNINSTALL, INSTALL and
-        // REPLACE keys set by InstallReceiver.
-        SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(context);
-        Set<String> ap = p.getAll().keySet();
-        SharedPreferences.Editor e = p.edit();
-        boolean edited = false;
-        for (String pref : ap) {
-            if (pref.startsWith(INSTALLED)) {
-                String pname = pref.substring(INSTALLED.length());
-                boolean installed = p.getBoolean(pref, false);
-                if (installed) {
-                    Log.i(TAG, "Installed:" + pname);
-                    ProcessInfo i = Package.getInstalledPackage(context, pname);
-                    if (i != null) {
-                        i.importance = Config.IMPORTANCE_INSTALLED;
-                        result.add(i);
-                        e.remove(pref);
-                        edited = true;
-                    }
-                }
-            } else if (pref.startsWith(REPLACED)) {
-                String pname = pref.substring(REPLACED.length());
-                boolean replaced = p.getBoolean(pref, false);
-                if (replaced) {
-                    Log.i(TAG, "Replaced:" + pname);
-                    ProcessInfo i = Package.getInstalledPackage(context, pname);
-                    if (i != null) {
-                        i.importance = Config.IMPORTANCE_REPLACED;
-                        result.add(i);
-                        e.remove(pref);
-                        edited = true;
-                    }
-                }
-            } else if (pref.startsWith(UNINSTALLED)) {
-                String pname = pref.substring(UNINSTALLED.length());
-                boolean uninstalled = p.getBoolean(pref, false);
-                if (uninstalled) {
-                    Log.i(TAG, "Uninstalled:" + pname);
-                    result.add(Process.uninstalledItem(pname, pref, e));
-                    edited = true;
-                }
-            } else if (pref.startsWith(DISABLED)) {
-                String pname = pref.substring(DISABLED.length());
-                boolean disabled = p.getBoolean(pref, false);
-                if (disabled) {
-                    Log.i(TAG, "Disabled app:" + pname);
-                    result.add(Process.disabledItem(pname, pref, e));
-                    edited = true;
-                }
-            }
-        }
-        if (edited) e.apply();
-    }
+    public static BatterySession getBatterySession(final Context context, Intent intent) {
+        BatterySession session = new BatterySession();
 
-    /**
-     * Helper method to collect all the extra information we wish to add to the sample into
-     * the Extra Feature list.
-     *
-     * @return a List<Feature> populated with extra items to collect outside of the protocol spec.
-     */
-    private static List<Feature> getExtras() {
-        LinkedList<Feature> res = new LinkedList<>();
-        res.add(Specifications.getVmVersion());
-        return res;
+        session.timestamp = System.currentTimeMillis();
+        session.id = String.valueOf(session.timestamp).hashCode();
+        session.level = (float) sCurrentBatteryLevel;
+        session.screenOn = Screen.isOn(context);
+        session.triggeredBy = intent.getAction();
+
+        return session;
     }
 }

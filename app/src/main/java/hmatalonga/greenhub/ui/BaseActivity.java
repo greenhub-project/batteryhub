@@ -26,7 +26,9 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
+import hmatalonga.greenhub.GreenHubApp;
 import hmatalonga.greenhub.R;
+import hmatalonga.greenhub.util.SettingsUtils;
 
 import static hmatalonga.greenhub.util.LogUtils.makeLogTag;
 
@@ -86,17 +88,6 @@ public abstract class BaseActivity extends AppCompatActivity implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
-//        if (mGCMRegisterTask != null) {
-//            LOGD(TAG, "Cancelling GCM registration task.");
-//            mGCMRegisterTask.cancel(true);
-//        }
-//
-//        try {
-//            GCMRegistrar.onDestroy(this);
-//        } catch (Exception e) {
-//            LOGW(TAG, "C2DM unregistration error", e);
-//        }
 
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
         sp.unregisterOnSharedPreferenceChangeListener(this);

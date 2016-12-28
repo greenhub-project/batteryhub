@@ -34,6 +34,8 @@
     <string name="title_activity_process">Process List</string>
     <string name="title_fragment_home">GreenHub</string>
     <string name="title_fragment_device">My Device</string>
+    <string name="title_fragment_stats">Statistics</string>
+    <string name="title_fragment_history">History</string>
     <string name="title_fragment_about">About</string>
 
     <!-- DeviceFragment -->

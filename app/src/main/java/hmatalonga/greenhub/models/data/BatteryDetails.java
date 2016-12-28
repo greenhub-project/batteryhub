@@ -41,16 +41,16 @@ public class BatteryDetails extends RealmObject {
     // Capacity in mAh
     public int batteryCapacity;
 
-    // Battery capacity in microampere-hours
+    // Battery capacity in microAmpere-hours
     public int batteryChargeCounter;
 
-    // Average battery current in microamperes
+    // Average battery current in microAmperes
     public int batteryCurrentAverage;
 
-    // Instantaneous battery current in microamperes
+    // Instantaneous battery current in microAmperes
     public int batteryCurrentNow;
 
-    // Battery remaining energy in nanowatt-hours
+    // Battery remaining energy in nanoWatt-hours
     public long batteryEnergyCounter;
 
     // age factor ...

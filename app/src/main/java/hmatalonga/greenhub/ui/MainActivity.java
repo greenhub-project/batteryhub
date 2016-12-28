@@ -17,25 +17,19 @@
 package hmatalonga.greenhub.ui;
 
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import hmatalonga.greenhub.GreenHubApp;
 import hmatalonga.greenhub.R;
-import hmatalonga.greenhub.fragments.HomeFragment;
 import hmatalonga.greenhub.managers.sampling.DataEstimator;
-import hmatalonga.greenhub.managers.sampling.Inspector;
 import hmatalonga.greenhub.ui.adapters.TabAdapter;
 import hmatalonga.greenhub.ui.layouts.MainTabLayout;
-import hmatalonga.greenhub.util.FontManager;
 
 import static hmatalonga.greenhub.util.LogUtils.makeLogTag;
 
@@ -43,10 +37,11 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
 
     private static final String TAG = makeLogTag(MainActivity.class);
 
-    private ViewPager mViewPager;
-    private MainTabLayout mTabLayout;
-    private TabAdapter mTabAdapter;
     private GreenHubApp mApp;
+
+    private ViewPager mViewPager;
+
+    public DataEstimator estimator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +50,12 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
         setContentView(R.layout.activity_main);
 
         loadComponents();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mApp.stopGreenHubService(estimator);
     }
 
     @Override
@@ -69,11 +70,10 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {}
 
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_settings:
                 startActivity(new Intent(this, SettingsActivity.class));
@@ -86,62 +86,27 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
         return false;
     }
 
-    @Override
-    protected void onResume() {
-        //sApp.startReceivers();
-        // update status
-        // refresh UI
-        // Toast.makeText(getApplicationContext(), "App resumed", Toast.LENGTH_LONG).show();
-        super.onResume();
-    }
-
-    @Override
-    protected void onPause() {
-        // sApp.stopReceivers();
-        // Inspector.resetRunningProcessInfo();
-        // Toast.makeText(getApplicationContext(), "App paused", Toast.LENGTH_LONG).show();
-        super.onPause();
-    }
-
-    @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
-
-    }
-
-    @Override
-    public boolean onMenuItemClick(MenuItem item) {
-        return false;
-    }
-
     private void loadComponents() {
+        estimator = new DataEstimator();
+
         mApp = (GreenHubApp) getApplication();
+        mApp.startGreenHubService(estimator);
 
         loadViews();
 
-        // Initialize Application instance
-//        sApp = new GreenHubHelper(getApplicationContext());
-//        sApp.initModules();
-
-        // TODO: Create default xml preferences file
-        // TODO: Create a chart menu with temp, voltage and battery level
-        // PreferenceManager.setDefaultValues();
-
-        // Initialize fragments content
-//        HomeFragment.setApp(sApp);
-
         // Run tasks --
         // Register device on the web server
-//        new RegisterDeviceTask().execute(sApp);
+        // new RegisterDeviceTask().execute(sApp);
     }
 
     private void loadViews() {
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
         mViewPager.setOffscreenPageLimit(TabAdapter.NUM_TABS - 1);
 
-        mTabAdapter = new TabAdapter(getFragmentManager());
+        TabAdapter mTabAdapter = new TabAdapter(getFragmentManager());
         mViewPager.setAdapter(mTabAdapter);
 
-        mTabLayout = (MainTabLayout) findViewById(R.id.tab_layout);
+        MainTabLayout mTabLayout = (MainTabLayout) findViewById(R.id.tab_layout);
         mTabLayout.createTabs();
 
         mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -165,10 +130,5 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
         });
 
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabLayout));
-    }
-
-    private void setupFont(View view) {
-        Typeface iconFont = FontManager.getTypeface(getApplicationContext(), FontManager.FONTAWESOME);
-        FontManager.markAsIconContainer(view, iconFont);
     }
 }

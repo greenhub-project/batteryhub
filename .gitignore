@@ -43,5 +43,7 @@ screens/
 dist/
 docs/
 
+# Project helper files
 greenhub-build
 greenhub-docker-build
+battery_class.txt

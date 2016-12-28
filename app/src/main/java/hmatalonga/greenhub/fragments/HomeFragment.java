@@ -16,15 +16,19 @@
 
 package hmatalonga.greenhub.fragments;
 
-import android.content.Context;
-import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
+import android.content.Context;
+import android.graphics.Color;
+import android.os.BatteryManager;
+import android.os.Bundle;
+import android.os.Handler;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,16 +39,20 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 
-import hmatalonga.greenhub.GreenHubApp;
-import hmatalonga.greenhub.events.BatteryLevelEvent;
-import hmatalonga.greenhub.managers.sampling.Inspector;
-import hmatalonga.greenhub.util.GreenHubHelper;
+import hmatalonga.greenhub.Config;
 import hmatalonga.greenhub.R;
+import hmatalonga.greenhub.events.BatteryLevelEvent;
+import hmatalonga.greenhub.events.PowerSourceEvent;
+import hmatalonga.greenhub.events.StatusEvent;
 import hmatalonga.greenhub.managers.sampling.DataEstimator;
-import hmatalonga.greenhub.models.ui.DeviceResourceCard;
-import io.realm.Realm;
+import hmatalonga.greenhub.managers.storage.GreenHubDb;
+import hmatalonga.greenhub.models.Battery;
+import hmatalonga.greenhub.models.data.BatteryUsage;
+import hmatalonga.greenhub.models.data.Sample;
+import hmatalonga.greenhub.models.ui.BatteryCard;
+import hmatalonga.greenhub.ui.MainActivity;
+import hmatalonga.greenhub.ui.adapters.RVAdapter;
 
-import static hmatalonga.greenhub.util.LogUtils.LOGI;
 import static hmatalonga.greenhub.util.LogUtils.makeLogTag;
 
 /**
@@ -54,15 +62,47 @@ public class HomeFragment extends Fragment {
 
     private static final String TAG = makeLogTag("HomeFragment");
 
-    private Realm mRealm;
-
     private Context mContext;
+
+    private MainActivity mActivity;
+
+    private GreenHubDb mDatabase;
+
+    private TextView mBatteryPercentage;
+
+    private TextView mBatteryCurrentNow;
+
+    private TextView mBatteryCurrentMin;
+
+    private TextView mBatteryCurrentMax;
+
+    private ImageView mPowerDischarging;
+
+    private ImageView mPowerAc;
+
+    private ImageView mPowerUsb;
+
+    private ImageView mPowerWireless;
+
+    private TextView mStatus;
+
+    private ProgressBar mBatteryCircleBar;
 
     private RecyclerView mRecyclerView;
 
-    private TextView mBatteryCurrentValue;
+    private RVAdapter mAdapter;
 
-    private ProgressBar mBatteryCircleBar;
+    private ArrayList<BatteryCard> mBatteryCards;
+
+    private Thread mLocalThread;
+
+    private Handler mHandler;
+
+    private int mMin;
+
+    private int mMax;
+
+    private String mActivePower;
 
     public static HomeFragment newInstance() {
         return new HomeFragment();
@@ -74,28 +114,55 @@ public class HomeFragment extends Fragment {
         final View view = inflater.inflate(R.layout.fragment_home, container, false);
 
         mContext = view.getContext();
+        mActivity = (MainActivity) getActivity();
+
+        mDatabase = new GreenHubDb();
 
         FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fabSendSample);
         assert fab != null;
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Toast.makeText(view.getContext(), "Usages: " + mDatabase.count(BatteryUsage.class), Toast.LENGTH_LONG).show();
             }
         });
 
         mRecyclerView = (RecyclerView) view.findViewById(R.id.rv);
+        mAdapter = null;
 
-        GridLayoutManager layout = new GridLayoutManager(
-                mContext,
-                1,
-                GridLayoutManager.VERTICAL,
-                false
-        );
+        LinearLayoutManager layout = new LinearLayoutManager(mContext) {
+            @Override
+            public boolean canScrollVertically() {
+                return false;
+            }
+        };
+
         mRecyclerView.setLayoutManager(layout);
         mRecyclerView.setHasFixedSize(true);
 
-        mBatteryCurrentValue = (TextView) view.findViewById(R.id.batteryCurrentValue);
+        mBatteryPercentage = (TextView) view.findViewById(R.id.batteryCurrentValue);
         mBatteryCircleBar = (ProgressBar) view.findViewById(R.id.batteryProgressbar);
+        mStatus = (TextView) view.findViewById(R.id.status);
+
+        mBatteryCurrentNow = (TextView) view.findViewById(R.id.batteryCurrentNow);
+        mBatteryCurrentMin = (TextView) view.findViewById(R.id.batteryCurrentMin);
+        mBatteryCurrentMax = (TextView) view.findViewById(R.id.batteryCurrentMax);
+
+        mPowerDischarging = (ImageView) view.findViewById(R.id.imgPowerDischarging);
+        mPowerAc = (ImageView) view.findViewById(R.id.imgPowerAc);
+        mPowerUsb = (ImageView) view.findViewById(R.id.imgPowerUsb);
+        mPowerWireless = (ImageView) view.findViewById(R.id.imgPowerWireless);
+        mActivePower = "";
+
+        if (mActivity.estimator != null) {
+            mBatteryPercentage.setText(Integer.toString(mActivity.estimator.getLevel()));
+            mBatteryCircleBar.setProgress(mActivity.estimator.getLevel());
+            loadData(mContext, mActivity.estimator);
+            loadPluggedState("home");
+        }
+
+        mHandler = new Handler();
+        mHandler.postDelayed(runnable, Config.REFRESH_CURRENT_INTERVAL);
 
         return view;
     }
@@ -104,21 +171,34 @@ public class HomeFragment extends Fragment {
     public void onStart() {
         super.onStart();
         EventBus.getDefault().register(this);
-        mRealm = Realm.getDefaultInstance();
+        mDatabase.getDefaultInstance();
     }
 
     @Override
     public void onStop() {
         super.onStop();
         EventBus.getDefault().unregister(this);
-        mRealm.close();
+        mDatabase.close();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void updateBatteryLevelUI(BatteryLevelEvent event) {
         String text = "" + event.level;
-        mBatteryCurrentValue.setText(text);
+        mBatteryPercentage.setText(text);
         mBatteryCircleBar.setProgress(event.level);
+
+        // Reload battery cards data from estimator
+        loadData(mContext, mActivity.estimator);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void updateStatus(StatusEvent event) {
+        mStatus.setText(event.status);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void updatePowerSource(PowerSourceEvent event) {
+        loadPluggedState(event.status);
     }
 
     /**
@@ -128,11 +208,127 @@ public class HomeFragment extends Fragment {
      * @param estimator Provider of mobile status
      */
     private void loadData(final Context context, final DataEstimator estimator) {
+        mLocalThread = new Thread(new Runnable() {
+            public void run() {
+                mBatteryCards = new ArrayList<>();
+                String value;
+                int color;
+
+                // Temperature
+                value = String.valueOf(estimator.getTemperature() + " ºC");
+                mBatteryCards.add(
+                        new BatteryCard(R.drawable.ic_thermometer_black_18dp, "Temperature", value)
+                );
+
+                // Voltage
+                value = String.valueOf(estimator.getVoltage() + " V");
+                mBatteryCards.add(
+                        new BatteryCard(R.drawable.ic_flash_black_18dp, "Voltage", value)
+                );
+
+                // Health
+                color = estimator.getHealthStatus().equals("Good") ? Color.GREEN : Color.RED;
+                mBatteryCards.add(
+                        new BatteryCard(R.drawable.ic_heart_black_18dp, "Health", estimator.getHealthStatus(), color)
+                );
+
+                // Technology
+                color = estimator.getTechnology().equals("Li-ion") ? Color.GRAY : Color.GREEN;
+                mBatteryCards.add(
+                        new BatteryCard(R.drawable.ic_wrench_black_18dp, "Technology", estimator.getTechnology(), color)
+                );
+            }
+        });
+
+        mLocalThread.start();
+        setAdapter();
     }
 
-    /**
-     *
-     */
     private void setAdapter(){
+        try {
+            mLocalThread.join();
+            if (mAdapter == null) {
+                mAdapter = new RVAdapter(mBatteryCards);
+                mRecyclerView.setAdapter(mAdapter);
+            } else {
+                mAdapter.swap(mBatteryCards);
+            }
+            mRecyclerView.invalidate();
+        }
+        catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
+
+    private void loadPluggedState(String status) {
+        mMin = Integer.MAX_VALUE;
+        mMax = Integer.MIN_VALUE;
+        String batteryCharger = "unplugged";
+
+        if (status.equals("home")) {
+            if (mActivity.estimator == null) return;
+
+            switch (mActivity.estimator.getPlugged()) {
+                case BatteryManager.BATTERY_PLUGGED_AC:
+                    batteryCharger = "ac";
+                    break;
+                case BatteryManager.BATTERY_PLUGGED_USB:
+                    batteryCharger = "usb";
+                    break;
+            }
+        } else {
+            batteryCharger = status;
+        }
+
+        switch (mActivePower) {
+            case "unplugged":
+                mPowerDischarging.setImageResource(R.drawable.ic_battery_50_grey600_24dp);
+                break;
+            case "ac":
+                mPowerAc.setImageResource(R.drawable.ic_power_plug_grey600_24dp);
+                break;
+            case "usb":
+                mPowerUsb.setImageResource(R.drawable.ic_usb_grey600_24dp);
+                break;
+            case "wireless":
+                mPowerWireless.setImageResource(R.drawable.ic_access_point_grey600_24dp);
+                break;
+        }
+
+        if (batteryCharger.equals("unplugged")) {
+            mPowerDischarging.setImageResource(R.drawable.ic_battery_50_white_24dp);
+        } else if (batteryCharger.equals("ac")) {
+            mPowerAc.setImageResource(R.drawable.ic_power_plug_white_24dp);
+        } else if (batteryCharger.equals("usb")) {
+            mPowerUsb.setImageResource(R.drawable.ic_usb_white_24dp);
+        } else if (batteryCharger.equals("wireless")) {
+            mPowerWireless.setImageResource(R.drawable.ic_access_point_white_24dp);
+        }
+
+        mActivePower = batteryCharger;
+    }
+
+    private Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            int now = Battery.getBatteryCurrentNow(mContext);
+            String value;
+
+            if (Math.abs(now) < Math.abs(mMin)) {
+                mMin = now;
+                value = "min: " + mMin + " mA";
+                mBatteryCurrentMin.setText(value);
+            }
+
+            if (Math.abs(now) > Math.abs(mMax)) {
+                mMax = now;
+                value = "max: " + mMax + " mA";
+                mBatteryCurrentMax.setText(value);
+            }
+
+            value = now + " mA";
+            mBatteryCurrentNow.setText(value);
+            mHandler.postDelayed(this, Config.REFRESH_CURRENT_INTERVAL);
+        }
+    };
 }

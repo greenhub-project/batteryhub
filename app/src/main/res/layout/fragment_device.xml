@@ -1,224 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
+<ScrollView
+    android:id="@+id/scrollview"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    >
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="16dp">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/spacing_normal">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Device Usage"
-            android:id="@+id/deviceUsageLabel"
-            android:layout_centerVertical="true" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <View
-            android:layout_width="fill_parent"
-            android:layout_height="1dip"
-            android:layout_below="@id/deviceUsageLabel"
-            android:background="@color/cardLayoutBackground"
-            android:layout_marginTop="4dp" />
+            <include layout="@layout/device_card_view"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Memory used"
-            android:id="@+id/memoryUsedLabel"
-            android:layout_below="@+id/deviceUsageLabel"
-            android:layout_alignLeft="@+id/deviceUsageLabel"
-            android:layout_alignStart="@+id/deviceUsageLabel"
-            android:layout_marginTop="16dp" />
+        </LinearLayout>
 
-        <ProgressBar
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/memoryUsedProgressBar"
-            android:layout_below="@+id/memoryUsedLabel"
-            android:layout_alignLeft="@+id/memoryUsedLabel"
-            android:layout_alignStart="@+id/memoryUsedLabel"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:progress="60"
-            android:indeterminate="false" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <ProgressBar
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/memoryActiveProgressBar"
-            android:progress="60"
-            android:layout_below="@+id/memoryActiveLabel"
-            android:layout_alignLeft="@+id/memoryActiveLabel"
-            android:layout_alignStart="@+id/memoryActiveLabel"
-            android:layout_alignRight="@+id/memoryUsedProgressBar"
-            android:layout_alignEnd="@+id/memoryUsedProgressBar"
-            android:indeterminate="false" />
+            <include layout="@layout/network_card_view"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Memory active"
-            android:id="@+id/memoryActiveLabel"
-            android:layout_below="@+id/memoryUsedProgressBar"
-            android:layout_alignLeft="@+id/memoryUsedProgressBar"
-            android:layout_alignStart="@+id/memoryUsedProgressBar"
-            android:layout_marginTop="16dp" />
+        </LinearLayout>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="CPU usage"
-            android:id="@+id/cpuUsageLabel"
-            android:layout_below="@+id/memoryActiveProgressBar"
-            android:layout_alignLeft="@+id/memoryActiveProgressBar"
-            android:layout_alignStart="@+id/memoryActiveProgressBar"
-            android:layout_marginTop="16dp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <ProgressBar
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/cpuUsageProgressBar"
-            android:progress="60"
-            android:layout_below="@+id/cpuUsageLabel"
-            android:layout_alignRight="@+id/memoryActiveProgressBar"
-            android:layout_alignEnd="@+id/memoryActiveProgressBar"
-            android:layout_alignLeft="@+id/cpuUsageLabel"
-            android:layout_alignStart="@+id/cpuUsageLabel"
-            android:indeterminate="false" />
+            <include layout="@layout/memory_card_view"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="GreenHub ID"
-            android:id="@+id/IdLabel"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
+        </LinearLayout>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="000000000000000"
-            android:id="@+id/IdValue"
-            android:layout_below="@+id/IdLabel"
-            android:layout_alignLeft="@+id/IdLabel"
-            android:layout_alignStart="@+id/IdLabel"
-            android:textColor="@color/black"
-            android:layout_marginTop="4dp" />
+    </LinearLayout>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="OS Version"
-            android:id="@+id/OsVersionLabel"
-            android:layout_below="@+id/IdValue"
-            android:layout_alignLeft="@+id/IdValue"
-            android:layout_alignStart="@+id/IdValue"
-            android:layout_marginTop="10dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="000000000000000"
-            android:id="@+id/OsVersionValue"
-            android:textColor="@color/black"
-            android:layout_below="@+id/OsVersionLabel"
-            android:layout_alignLeft="@+id/IdValue"
-            android:layout_marginTop="4dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Device model"
-            android:id="@+id/deviceModelLabel"
-            android:layout_marginTop="10dp"
-            android:layout_below="@+id/OsVersionValue"
-            android:layout_alignLeft="@+id/OsVersionValue"
-            android:layout_alignStart="@+id/OsVersionValue" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="000000000000000"
-            android:id="@+id/deviceModelValue"
-            android:textColor="@color/black"
-            android:layout_below="@+id/deviceModelLabel"
-            android:layout_alignLeft="@+id/OsVersionValue"
-            android:layout_marginTop="4dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Kernel Version"
-            android:id="@+id/kernelLabel"
-            android:layout_marginLeft="30dp"
-            android:layout_marginStart="30dp"
-            android:layout_alignParentTop="true"
-            android:layout_toRightOf="@+id/deviceUsageLabel"
-            android:layout_toEndOf="@+id/deviceUsageLabel" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="000000000000000"
-            android:id="@+id/kernelValue"
-            android:textColor="@color/black"
-            android:layout_below="@+id/kernelLabel"
-            android:layout_alignLeft="@+id/kernelLabel"
-            android:layout_alignStart="@+id/kernelLabel"
-            android:layout_marginTop="4dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Manufacturer"
-            android:id="@+id/manufacturerLabel"
-            android:layout_below="@+id/kernelValue"
-            android:layout_alignLeft="@+id/kernelValue"
-            android:layout_alignStart="@+id/kernelValue"
-            android:layout_marginTop="10dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="000000000000000"
-            android:id="@+id/manufacturerValue"
-            android:textColor="@color/black"
-            android:layout_below="@+id/manufacturerLabel"
-            android:layout_alignLeft="@+id/kernelValue"
-            android:layout_marginTop="4dp"  />
-
-        <Button
-            style="@style/Widget.AppCompat.Button.Borderless.Colored"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Process List"
-            android:id="@+id/btProcessList"
-            android:layout_alignTop="@+id/deviceModelLabel"
-            android:layout_alignLeft="@+id/manufacturerValue"
-            android:layout_alignStart="@+id/manufacturerValue"
-            android:layout_marginTop="10dp" />
-
-    </RelativeLayout>
-
-</android.support.design.widget.CoordinatorLayout>
+</ScrollView>

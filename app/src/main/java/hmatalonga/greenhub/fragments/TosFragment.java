@@ -18,12 +18,16 @@
 package hmatalonga.greenhub.fragments;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import hmatalonga.greenhub.GreenHubApp;
 import hmatalonga.greenhub.R;
+import hmatalonga.greenhub.managers.sampling.DataEstimator;
 import hmatalonga.greenhub.ui.WelcomeActivity;
 import hmatalonga.greenhub.util.SettingsUtils;
 

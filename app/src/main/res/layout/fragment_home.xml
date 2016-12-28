@@ -7,7 +7,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="16dp">
+        android:padding="@dimen/padding_normal">
 
         <ProgressBar
             android:id="@+id/batteryProgressbar"
@@ -22,7 +22,6 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true" />
-
 
         <TextView
             android:layout_width="wrap_content"
@@ -40,7 +39,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Time left"
+            android:text="Right now"
             android:textSize="12sp"
             android:id="@+id/batteryLabel"
             android:layout_above="@+id/batteryCurrentValue"
@@ -50,13 +49,37 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Not Available"
-            android:textSize="20sp"
-            android:id="@+id/batteryTimeLeft"
+            android:text="Measuring"
+            android:textSize="24sp"
+            android:id="@+id/batteryCurrentNow"
             android:layout_alignBaseline="@+id/batteryPercentageSign"
             android:layout_alignBottom="@+id/batteryPercentageSign"
             android:layout_toRightOf="@+id/batteryProgressbar"
             android:layout_toEndOf="@+id/batteryProgressbar" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:id="@+id/batteryCurrentMin"
+            android:layout_below="@+id/batteryCurrentNow"
+            android:layout_toRightOf="@+id/batteryProgressbar"
+            android:layout_toEndOf="@+id/batteryProgressbar"
+            android:layout_marginTop="13dp"
+            android:text="min: --" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="max: --"
+            android:textSize="14sp"
+            android:id="@+id/batteryCurrentMax"
+            android:layout_marginRight="12dp"
+            android:layout_marginEnd="12dp"
+            android:layout_alignBaseline="@+id/batteryCurrentMin"
+            android:layout_alignBottom="@+id/batteryCurrentMin"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -75,19 +98,25 @@
             android:id="@+id/rv"
             android:layout_below="@+id/batteryProgressbar"
             android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentBottom="true">
+            android:layout_alignParentStart="true">
         </android.support.v7.widget.RecyclerView>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="Status"
+            android:text="Idle"
             android:id="@+id/status"
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true" />
+
+        <include layout="@layout/power_source_view"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_above="@+id/status"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="48dp" />
 
     </RelativeLayout>
 

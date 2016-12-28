@@ -5,7 +5,7 @@
     <!--<header-->
         <!--android:fragment="hmatalonga.greenhub.ui.SettingsActivity$GeneralPreferenceFragment"-->
         <!--android:icon="@drawable/ic_info_black_24dp"-->
-        <!--android:title="@string/pref_header_general"/>-->
+        <!--android:label="@string/pref_header_general"/>-->
 
     <header
         android:fragment="hmatalonga.greenhub.ui.SettingsActivity$DataSyncPreferenceFragment"

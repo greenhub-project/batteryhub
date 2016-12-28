@@ -20,50 +20,66 @@ import android.app.Application;
 import android.content.Intent;
 import android.content.IntentFilter;
 
-import com.squareup.leakcanary.LeakCanary;
-
 import hmatalonga.greenhub.managers.sampling.DataEstimator;
-import hmatalonga.greenhub.util.SettingsUtils;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
+
+import static hmatalonga.greenhub.util.LogUtils.makeLogTag;
 
 /**
  * GreenHubApp
  */
 public class GreenHubApp extends Application {
 
-    private static final String TAG = "GreenHubApp";
+    private static final String TAG = makeLogTag(GreenHubApp.class);
 
-    public DataEstimator estimator;
+    public boolean isServiceRunning;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        if (LeakCanary.isInAnalyzerProcess(this)) {
-            // This process is dedicated to LeakCanary for heap analysis.
-            // You should not init your app in this process.
-            return;
-        }
-        LeakCanary.install(this);
+//        if (LeakCanary.isInAnalyzerProcess(this)) {
+//            // This process is dedicated to LeakCanary for heap analysis.
+//            // You should not init your app in this process.
+//            return;
+//        }
+//        LeakCanary.install(this);
+
+        isServiceRunning = false;
 
         // Database init
         Realm.init(this);
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
         Realm.setDefaultConfiguration(realmConfiguration);
+    }
 
-        if (SettingsUtils.isTosAccepted(getApplicationContext())) {
-            new Thread() {
-                private IntentFilter intentFilter;
+    public void startGreenHubService(final DataEstimator estimator) {
+        new Thread() {
+            private IntentFilter intentFilter;
 
-                public void run() {
-                    intentFilter = new IntentFilter();
-                    intentFilter.addAction(Intent.ACTION_BATTERY_CHANGED);
+            public void run() {
+                intentFilter = new IntentFilter();
+                intentFilter.addAction(Intent.ACTION_BATTERY_CHANGED);
 
-                    estimator = new DataEstimator();
+                registerReceiver(estimator, intentFilter);
 
+                // TODO: Add this config option to settings so user decides what to do
+                if (Config.EXTRA_SCREEN_ACTIONS) {
+                    intentFilter.addAction(Intent.ACTION_SCREEN_ON);
+                    registerReceiver(estimator, intentFilter);
+                    intentFilter.addAction(Intent.ACTION_SCREEN_OFF);
                     registerReceiver(estimator, intentFilter);
                 }
-            }.start();
+
+                isServiceRunning = true;
+            }
+        }.start();
+    }
+
+    public void stopGreenHubService(final DataEstimator estimator) {
+        if (estimator != null) {
+            unregisterReceiver(estimator);
+            isServiceRunning = false;
         }
     }
 }

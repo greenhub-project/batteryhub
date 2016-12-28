@@ -18,17 +18,23 @@ package hmatalonga.greenhub.models.data;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
+import io.realm.annotations.Index;
+import io.realm.annotations.PrimaryKey;
 
 /**
  * Sample data definition.
  */
 public class Sample extends RealmObject {
 
+    @PrimaryKey
+    public int id;
+
     // ID for the current device
     public String uuId;
 
     // Timestamp of sample created time
-    public double timestamp;
+    @Index
+    public long timestamp;
 
     // State of the battery. ie. charging, discharging, etc.
     public String batteryState;

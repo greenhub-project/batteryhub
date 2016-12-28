@@ -155,9 +155,17 @@ public class Network {
      * @param context the Context
      * @return true if the Internet is reachable.
      */
-    public static boolean isAvailable(Context context) {
+    public static boolean isAvailable(final Context context) {
         String network = getStatus(context);
         return network.equals(NETWORKSTATUS_CONNECTED);
+    }
+
+    public static boolean isMobileDataEnabled(final Context context) {
+        ConnectivityManager manager = (ConnectivityManager)
+                context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo info = manager.getActiveNetworkInfo();
+
+        return info != null && info.getType() == ConnectivityManager.TYPE_MOBILE;
     }
 
     /* Get network type */

@@ -50,6 +50,9 @@ public class ProcessInfo extends RealmObject {
     // Package that installed this process, e.g. com.google.play
     public String installationPkg;
 
+    // Package Permissions
+    public RealmList<AppPermission> appPermissions;
+
     // Signatures of the app from PackageInfo.signatures (it can be empty)
     public RealmList<AppSignature> appSignatures;
 }

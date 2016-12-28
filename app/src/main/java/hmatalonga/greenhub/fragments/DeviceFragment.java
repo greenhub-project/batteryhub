@@ -16,47 +16,72 @@
 
 package hmatalonga.greenhub.fragments;
 
-import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
 import android.app.Fragment;
+import android.content.Context;
+import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
+import hmatalonga.greenhub.Config;
 import hmatalonga.greenhub.R;
-import hmatalonga.greenhub.models.Cpu;
+import hmatalonga.greenhub.events.UpdateEvent;
+import hmatalonga.greenhub.models.Bluetooth;
 import hmatalonga.greenhub.models.Memory;
+import hmatalonga.greenhub.models.Network;
+import hmatalonga.greenhub.models.Phone;
 import hmatalonga.greenhub.models.Specifications;
-import hmatalonga.greenhub.ui.ProcessListActivity;
+import hmatalonga.greenhub.models.Wifi;
+
+import static hmatalonga.greenhub.util.LogUtils.makeLogTag;
 
 /**
  * Device Fragment.
  */
 public class DeviceFragment extends Fragment {
 
-    private Context mContext;
+    private static final String TAG = makeLogTag("DeviceFragment");
 
-    // Related to the CPU usage bar
-    private long[] mLastPoint = null;
+    private Context mContext = null;
+    private View mParentView = null;
+
+    private Handler mHandler;
+
+    private ProgressBar mMemoryBar;
+    private TextView mMemoryUsed;
+    private TextView mMemoryFree;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_device, container, false);
 
+        mParentView = view;
         mContext = view.getContext();
+        mHandler = new Handler();
+
+        loadComponents(view);
 
         return view;
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        clear();
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
     }
 
     public static DeviceFragment newInstance() {
@@ -66,85 +91,161 @@ public class DeviceFragment extends Fragment {
     // Private Helper Methods ----------------------------------------------------------------------
 
     /**
-     * Helper method to load all UI views.
+     * Helper method to load all UI views and set all values for layout view elements.
      *
      * @param view View to update
      */
     private void loadComponents(final View view) {
-        Button button = (Button) view.findViewById(R.id.btProcessList);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(mContext, ProcessListActivity.class);
-                startActivity(intent);
-            }
-        });
+        StringBuilder model = new StringBuilder();
+        TextView textView;
 
-        populateView(view);
+        // Create model device string
+        model.append(Specifications.getBrand());
+        model.append(" ");
+        model.append(Specifications.getModel());
 
-        setMemoryBars(view);
-    }
-
-    /**
-     * Set all values for layout view elements.
-     *
-     * @param view View to update
-     */
-    private void populateView(final View view) {
-        TextView textView = (TextView) view.findViewById(R.id.IdValue);
-        textView.setText(Specifications.getAndroidId(mContext));
-        textView = (TextView) view.findViewById(R.id.OsVersionValue);
+        // Device
+        textView = (TextView) view.findViewById(R.id.androidVersion);
         textView.setText(Specifications.getOsVersion());
-        textView = (TextView) view.findViewById(R.id.deviceModelValue);
-        textView.setText(Specifications.getModel());
-        textView = (TextView) view.findViewById(R.id.kernelValue);
-        textView.setText(Specifications.getKernelVersion());
-        textView = (TextView) view.findViewById(R.id.manufacturerValue);
-        textView.setText(Specifications.getManufacturer());
+        textView = (TextView) view.findViewById(R.id.androidImei);
+        textView.setText(Phone.getDeviceId(mContext));
+        textView = (TextView) view.findViewById(R.id.androidModel);
+        textView.setText(model);
+        textView = (TextView) view.findViewById(R.id.androidRoot);
+        textView.setText(Specifications.isRooted() ? "Yes" : "No");
+
+        // Network
+        updateWifiData(view, Wifi.isEnabled(mContext));
+        updateBluetoothData(view, Bluetooth.isEnabled());
+        updateMobileData(view, Network.isMobileDataEnabled(mContext));
+
+        // Memory
+        mMemoryBar = (ProgressBar) view.findViewById(R.id.memoryBar);
+        mMemoryBar.setIndeterminate(false);
+        mMemoryUsed = (TextView) view.findViewById(R.id.memoryUsed);
+        mMemoryFree = (TextView) view.findViewById(R.id.memoryFree);
+
+        mHandler.post(runnable);
     }
 
-    /**
-     * Set Memory bars values.
-     *
-     * @param view View to update
-     */
-    private void setMemoryBars(final View view) {
-        int[] totalAndUsed = Memory.readMemoryInfo();
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void updateData(UpdateEvent event) {
+        if (mParentView == null) return;
 
-        ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.memoryUsedProgressBar);
-        progressBar.setMax(totalAndUsed[0] + totalAndUsed[1]);
-        progressBar.setProgress(totalAndUsed[0]);
-        progressBar = (ProgressBar) view.findViewById(R.id.memoryActiveProgressBar);
-
-        if (totalAndUsed.length > 2) {
-            progressBar.setMax(totalAndUsed[2] + totalAndUsed[3]);
-            progressBar.setProgress(totalAndUsed[2]);
+        switch (event.field) {
+            case "wifi":
+                updateWifiData(mParentView, event.value);
+                break;
+            case "bluetooth":
+                updateBluetoothData(mParentView, event.value);
+                break;
+            case "mobile":
+                updateMobileData(mParentView, event.value);
+                break;
         }
-
-        getActivity().runOnUiThread(new Runnable() {
-            public void run() {
-                long[] currentPoint = Cpu.readUsagePoint();
-                double cpu = 0;
-
-                if (mLastPoint == null) {
-                    mLastPoint = currentPoint;
-                } else {
-                    cpu = Cpu.getUsage(mLastPoint, currentPoint);
-                }
-
-                // CPU usage
-                ProgressBar mText = (ProgressBar) view.findViewById(R.id.cpuUsageProgressBar);
-                mText.setMax(100);
-                mText.setProgress((int) (cpu * 100));
-            }
-        });
     }
+
+    private void updateWifiData(final View view, boolean value) {
+        TextView textView;
+
+        textView = (TextView) view.findViewById(R.id.wifi);
+        textView.setText(value ? "Yes" : "No");
+
+        // Display/Hide Additional Wifi fields
+        textView = (TextView) view.findViewById(R.id.ipAddressLabel);
+        textView.setVisibility(value ? View.VISIBLE : View.GONE);
+
+        // IP Address
+        textView = (TextView) view.findViewById(R.id.ipAddress);
+        if (value) {
+            textView.setText(Wifi.getIpAddress(mContext));
+        }
+        textView.setVisibility(value ? View.VISIBLE : View.GONE);
+
+        textView = (TextView) view.findViewById(R.id.macAddressLabel);
+        textView.setVisibility(value ? View.VISIBLE : View.GONE);
+
+        // MAC Address
+        textView = (TextView) view.findViewById(R.id.macAddress);
+        if (value) {
+            textView.setText(Wifi.getMacAddress(mContext));
+        }
+        textView.setVisibility(value ? View.VISIBLE : View.GONE);
+
+        textView = (TextView) view.findViewById(R.id.ssidLabel);
+        textView.setVisibility(value ? View.VISIBLE : View.GONE);
+
+        // SSID Network
+        textView = (TextView) view.findViewById(R.id.ssid);
+        if (value) {
+            textView.setText(Wifi.getInfo(mContext).getSSID());
+        }
+        textView.setVisibility(value ? View.VISIBLE : View.GONE);
+    }
+
+    private void updateBluetoothData(final View view, boolean value) {
+        TextView textView;
+
+        textView = (TextView) view.findViewById(R.id.bluetooth);
+        textView.setText(value ? "Yes" : "No");
+
+        // Bluetooth Address
+        textView = (TextView) view.findViewById(R.id.bluetoothAddress);
+        if (value) {
+            textView.setText(Bluetooth.getAddress());
+        }
+        textView.setVisibility(value ? View.VISIBLE : View.GONE);
+
+        textView = (TextView) view.findViewById(R.id.bluetoothAddressLabel);
+        textView.setVisibility(value ? View.VISIBLE : View.GONE);
+    }
+
+    private void updateMobileData(final View view, boolean value) {
+        TextView textView;
+
+        textView = (TextView) view.findViewById(R.id.mobileData);
+        textView.setText(value ? "Yes" : "No");
+
+        // Bluetooth Address
+        textView = (TextView) view.findViewById(R.id.networkType);
+        if (value) {
+            textView.setText(Network.getMobileNetworkType(mContext));
+        }
+        textView.setVisibility(value ? View.VISIBLE : View.GONE);
+
+        textView = (TextView) view.findViewById(R.id.networkTypeLabel);
+        textView.setVisibility(value ? View.VISIBLE : View.GONE);
+    }
+
+    private Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            // 1 total, 2 active
+            int[] memory = Memory.readMemoryInfo();
+            String value;
+
+            mMemoryBar.setMax(memory[1]);
+            mMemoryBar.setProgress(memory[1] - memory[2]);
+
+            value = (memory[1] - memory[2]) / 1024 + " MB";
+            mMemoryUsed.setText(value);
+
+            value = memory[2] / 1024 + " MB";
+            mMemoryFree.setText(value);
+
+            mHandler.postDelayed(this, Config.REFRESH_CURRENT_INTERVAL);
+        }
+    };
 
     /**
      * Cleans local variables preventing memory leaks.
      */
     private void clear() {
+        mParentView = null;
         mContext = null;
-        mLastPoint = null;
+        mHandler = null;
+        mMemoryBar = null;
+        mMemoryFree = null;
+        mMemoryUsed = null;
     }
 }

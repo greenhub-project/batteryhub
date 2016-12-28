@@ -16,11 +16,16 @@
 
 package hmatalonga.greenhub.network;
 
+import android.content.Context;
 import android.util.Log;
 
+import org.greenrobot.eventbus.EventBus;
+
 import hmatalonga.greenhub.Config;
+import hmatalonga.greenhub.events.StatusEvent;
 import hmatalonga.greenhub.models.Specifications;
 import hmatalonga.greenhub.models.data.Device;
+import hmatalonga.greenhub.util.SettingsUtils;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -36,21 +41,18 @@ public class RegisterHandler {
     private static final String TAG = "RegisterHandler";
 
     private GreenHubAPIService mService;
-    // 5s default for socket timeout
-    private int mTimeout = 5000;
 
-    public RegisterHandler(int timeout) {
+    public RegisterHandler() {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Config.LOCAL_SERVER_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         mService = retrofit.create(GreenHubAPIService.class);
-        mTimeout = timeout;
     }
 
-    public Device registerClient() {
+    public Device registerClient(final Context context) {
         Device device = new Device();
-        device.uuId = Specifications.getAndroidId(null);
+        device.uuId = Specifications.getAndroidId(context);
         device.timestamp = System.currentTimeMillis() / 1000.0;
         device.model = Specifications.getModel();
         device.manufacturer = Specifications.getManufacturer();
@@ -59,23 +61,26 @@ public class RegisterHandler {
         device.osVersion = Specifications.getOsVersion();
         device.kernelVersion = Specifications.getKernelVersion();
         device.serialNumber = Specifications.getBuildSerial();
+        device.isRoot = Specifications.isRooted() ? 1 : 0;
 
-        postRegistration(device);
+        postRegistration(context, device);
 
         return device;
     }
 
-    private void postRegistration(final Device device) {
+    private void postRegistration(final Context context, Device device) {
         Call<Device> call = mService.createDevice(device);
         call.enqueue(new Callback<Device>() {
             @Override
             public void onResponse(Call<Device> call, Response<Device> response) {
-
+                SettingsUtils.markDeviceAccepted(context, true);
+                EventBus.getDefault().post(new StatusEvent("Device registered successfully"));
             }
 
             @Override
             public void onFailure(Call<Device> call, Throwable t) {
-
+                SettingsUtils.markDeviceAccepted(context, false);
+                EventBus.getDefault().post(new StatusEvent("Error registering device"));
             }
         });
     }
