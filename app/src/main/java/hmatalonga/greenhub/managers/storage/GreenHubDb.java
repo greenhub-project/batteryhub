@@ -16,6 +16,8 @@
 
 package hmatalonga.greenhub.managers.storage;
 
+import java.util.Date;
+
 import hmatalonga.greenhub.models.data.BatteryDetails;
 import hmatalonga.greenhub.models.data.BatterySession;
 import hmatalonga.greenhub.models.data.BatteryUsage;
@@ -112,5 +114,9 @@ public class GreenHubDb {
 
     public RealmResults<BatteryUsage> allUsages() {
         return mRealm.where(BatteryUsage.class).findAll();
+    }
+
+    public RealmResults<BatteryUsage> betweenUsages(Date from, Date to) {
+        return mRealm.where(BatteryUsage.class).between("timestamp", from, to).findAll();
     }
 }

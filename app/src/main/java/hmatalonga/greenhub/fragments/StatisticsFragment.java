@@ -17,30 +17,29 @@
 package hmatalonga.greenhub.fragments;
 
 import android.app.Fragment;
+import android.content.Context;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
-import com.github.mikephil.charting.animation.Easing;
-import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
-import java.text.NumberFormat;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
-import java.util.List;
 
 import hmatalonga.greenhub.R;
+import hmatalonga.greenhub.events.ChartEvent;
+import hmatalonga.greenhub.events.StatusEvent;
 import hmatalonga.greenhub.managers.storage.GreenHubDb;
 import hmatalonga.greenhub.models.data.BatteryUsage;
-import hmatalonga.greenhub.util.DateUtils;
-import hmatalonga.greenhub.util.StringHelper;
+import hmatalonga.greenhub.models.ui.ChartCard;
+import hmatalonga.greenhub.ui.adapters.ChartRVAdapter;
 import io.realm.RealmResults;
 
 import static hmatalonga.greenhub.util.LogUtils.makeLogTag;
@@ -51,6 +50,16 @@ import static hmatalonga.greenhub.util.LogUtils.makeLogTag;
 public class StatisticsFragment extends Fragment {
 
     private static final String TAG = makeLogTag(StatisticsFragment.class);
+
+    private static final int INTERVAL_ALL = 1;
+    private static final int INTERVAL_24H = 2;
+    private static final int INTERVAL_5DAYS = 3;
+
+    private RecyclerView mRecyclerView;
+
+    private ChartRVAdapter mAdapter;
+
+    private ArrayList<ChartCard> mChartCards;
 
     private GreenHubDb mDatabase;
 
@@ -64,23 +73,14 @@ public class StatisticsFragment extends Fragment {
 
         mDatabase = new GreenHubDb();
 
-        // Battery Level
-        LineChart chart = (LineChart) view.findViewById(R.id.batteryLevelChart);
-        setup(chart, "Battery Level");
-        chart.setData(loadData("Battery Level", ColorTemplate.rgb("#E84813")));
-        chart.invalidate();
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.rv);
+        mAdapter = null;
 
-        // Battery Temperature
-        chart = (LineChart) view.findViewById(R.id.batteryTemperatureChart);
-        setup(chart, "Battery Temperature");
-        chart.setData(loadData("Battery Temperature", ColorTemplate.rgb("#E81332")));
-        chart.invalidate();
+        LinearLayoutManager layout = new LinearLayoutManager(view.getContext());
 
-        // Battery Voltage
-        chart = (LineChart) view.findViewById(R.id.batteryVoltageChart);
-        setup(chart, "Battery Voltage");
-        chart.setData(loadData("Battery Voltage", ColorTemplate.rgb("#FF15AC")));
-        chart.invalidate();
+        mRecyclerView.setLayoutManager(layout);
+        mRecyclerView.setHasFixedSize(true);
+        loadData(INTERVAL_ALL);
 
         return view;
     }
@@ -97,84 +97,69 @@ public class StatisticsFragment extends Fragment {
         mDatabase.close();
     }
 
-    private LineData loadData(String label, int color) {
-        RealmResults<BatteryUsage> results = mDatabase.allUsages();
-        List<Entry> entries = new ArrayList<>();
+    /**
+     * Creates an array to feed data to the recyclerView
+     */
+    private void loadData(int interval) {
+        RealmResults<BatteryUsage> results;
+        ChartCard card;
+        mChartCards = new ArrayList<>();
 
-        switch (label) {
-            case "Battery Level":
-                for (BatteryUsage usage : results) {
-                    entries.add(new Entry((float) usage.timestamp, usage.level));
-                }
-                break;
-            case "Battery Temperature":
-                for (BatteryUsage usage : results) {
-                    entries.add(new Entry((float) usage.timestamp, (float) usage.details.batteryTemperature));
-                }
-                break;
-            case "Battery Voltage":
-                for (BatteryUsage usage : results) {
-                    entries.add(new Entry((float) usage.timestamp, (float) usage.details.batteryVoltage));
-                }
-                break;
+        if (interval == INTERVAL_ALL) {
+            results = mDatabase.allUsages();
+        } else if (interval == INTERVAL_24H) {
+            results = mDatabase.betweenUsages(null, null);
+        } else if (interval == INTERVAL_5DAYS) {
+            results = mDatabase.betweenUsages(null, null);
+        } else {
+            results = mDatabase.allUsages();
         }
 
-        // add entries to dataset
-        LineDataSet lineDataSet = new LineDataSet(entries, null);
-        lineDataSet.setMode(LineDataSet.Mode.LINEAR);
-        lineDataSet.setDrawValues(false);
-        lineDataSet.setDrawCircleHole(false);
-        lineDataSet.setColor(color);
-        lineDataSet.setCircleColor(color);
-        lineDataSet.setLineWidth(1.8f);
-        lineDataSet.setDrawFilled(true);
-        lineDataSet.setFillColor(color);
-
-        return new LineData(lineDataSet);
-    }
-
-    private void setup(LineChart chart, final String label) {
-        IAxisValueFormatter formatterX = new IAxisValueFormatter() {
-            @Override
-            public String getFormattedValue(float value, AxisBase axis) {
-                return DateUtils.ConvertMilliSecondsToFormattedDate((long) value);
-            }
-        };
-
-        IAxisValueFormatter formatterY= new IAxisValueFormatter() {
-            @Override
-            public String getFormattedValue(float value, AxisBase axis) {
-                switch (label) {
-                    case "Battery Level":
-                        return StringHelper.formatPercentageNumber(value);
-                    case "Battery Temperature":
-                        return StringHelper.formatNumber(value) + " ºC";
-                    case "Battery Voltage":
-                        return StringHelper.formatNumber(value) + " V";
-                    default:
-                        return String.valueOf(value);
-                }
-            }
-        };
-
-        chart.getXAxis().setValueFormatter(formatterX);
-
-        if (label.equals("Battery Level")) {
-            chart.getAxisLeft().setAxisMaximum(1f);
+        // Battery Level
+        card = new ChartCard(
+                ChartRVAdapter.BATTERY_LEVEL,
+                "Battery Level (%)",
+                ColorTemplate.rgb("#E84813")
+        );
+        for (BatteryUsage usage : results) {
+            card.entries.add(new Entry((float) usage.timestamp, usage.level));
         }
+        mChartCards.add(card);
 
-        chart.setExtraBottomOffset(5f);
-        chart.getAxisLeft().setDrawGridLines(false);
-        chart.getAxisLeft().setValueFormatter(formatterY);
-        chart.getAxisRight().setDrawGridLines(false);
-        chart.getAxisRight().setDrawLabels(false);
-        chart.getXAxis().setDrawGridLines(false);
-        chart.getXAxis().setLabelCount(4);
-        chart.getXAxis().setGranularity(1f);
+        // Battery Temperature
+        card = new ChartCard(
+                ChartRVAdapter.BATTERY_TEMPERATURE,
+                "Battery Temperature (ºC)",
+                ColorTemplate.rgb("#E81332")
+        );
+        for (BatteryUsage usage : results) {
+            card.entries.add(new Entry((float) usage.timestamp, (float) usage.details.batteryTemperature));
+        }
+        mChartCards.add(card);
 
-        chart.getLegend().setEnabled(false);
-        chart.getDescription().setEnabled(false);
+        // Battery Voltage
+        card = new ChartCard(
+                ChartRVAdapter.BATTERY_VOLTAGE,
+                "Battery Voltage (V)",
+                ColorTemplate.rgb("#FF15AC")
+        );
+        for (BatteryUsage usage : results) {
+            card.entries.add(new Entry((float) usage.timestamp, (float) usage.details.batteryVoltage));
+        }
+        mChartCards.add(card);
 
-        chart.animateY(3000, Easing.EasingOption.EaseInBack);
+        setAdapter();
     }
+
+    private void setAdapter(){
+        if (mAdapter == null) {
+            mAdapter = new ChartRVAdapter(mChartCards);
+            mRecyclerView.setAdapter(mAdapter);
+        } else {
+            mAdapter.swap(mChartCards);
+        }
+        mRecyclerView.invalidate();
+    }
+
+
 }

@@ -15,14 +15,28 @@
   ~ limitations under the License.
   -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="@dimen/padding_normal">
+<shape
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Available soon..."/>
+    <solid
+        android:color="#444">
+    </solid>
 
-</LinearLayout>
+    <stroke
+        android:width="1dp"
+        android:color="#666">
+    </stroke>
+
+    <padding
+        android:left="5dp"
+        android:top="5dp"
+        android:right="5dp"
+        android:bottom="5dp">
+    </padding>
+
+    <corners
+        android:radius="@dimen/spacing_micro">
+    </corners>
+
+</shape>

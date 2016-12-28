@@ -14,25 +14,29 @@
  * limitations under the License.
  */
 
-package hmatalonga.greenhub.util;
+package hmatalonga.greenhub.models.ui;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Locale;
+import com.github.mikephil.charting.data.Entry;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * DateUtils.
+ * ChartCard.
  */
-public class DateUtils {
+public class ChartCard {
 
-    private static final String TAG = "DateUtils";
+    private static final String TAG = "ChartCard";
 
-    private static String dateFormat = "dd-MM HH:mm";
-    private static SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat, Locale.UK);
+    public int type;
+    public String label;
+    public int color;
+    public List<Entry> entries;
 
-    public static String ConvertMilliSecondsToFormattedDate(Long milliSeconds){
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(milliSeconds);
-        return simpleDateFormat.format(calendar.getTime());
+    public ChartCard(int type, String label, int color) {
+        this.type = type;
+        this.label = label;
+        this.color = color;
+        this.entries = new ArrayList<>();
     }
 }

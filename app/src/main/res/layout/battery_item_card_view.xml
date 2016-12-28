@@ -7,8 +7,7 @@
     android:layout_marginBottom="2dp"
     app:cardCornerRadius="@dimen/card_corner_radius"
     app:cardUseCompatPadding="true"
-    android:id="@+id/cv"
-    >
+    android:id="@+id/cv">
 
     <RelativeLayout
         android:layout_width="match_parent"

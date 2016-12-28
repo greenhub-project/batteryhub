@@ -25,7 +25,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import hmatalonga.greenhub.R;
 import hmatalonga.greenhub.models.ui.BatteryCard;
@@ -35,7 +34,7 @@ import hmatalonga.greenhub.models.ui.BatteryCard;
  *
  * Created by hugo on 05-04-2016.
  */
-public class RVAdapter extends RecyclerView.Adapter<RVAdapter.DashboardViewHolder> {
+public class BatteryRVAdapter extends RecyclerView.Adapter<BatteryRVAdapter.DashboardViewHolder> {
 
     static class DashboardViewHolder extends RecyclerView.ViewHolder {
 
@@ -57,7 +56,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.DashboardViewHolde
 
     private ArrayList<BatteryCard> mBatteryCards;
 
-    public RVAdapter(ArrayList<BatteryCard> batteryCards){
+    public BatteryRVAdapter(ArrayList<BatteryCard> batteryCards){
         this.mBatteryCards = batteryCards;
     }
 

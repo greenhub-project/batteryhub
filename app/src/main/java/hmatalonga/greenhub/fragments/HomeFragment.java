@@ -48,10 +48,9 @@ import hmatalonga.greenhub.managers.sampling.DataEstimator;
 import hmatalonga.greenhub.managers.storage.GreenHubDb;
 import hmatalonga.greenhub.models.Battery;
 import hmatalonga.greenhub.models.data.BatteryUsage;
-import hmatalonga.greenhub.models.data.Sample;
 import hmatalonga.greenhub.models.ui.BatteryCard;
 import hmatalonga.greenhub.ui.MainActivity;
-import hmatalonga.greenhub.ui.adapters.RVAdapter;
+import hmatalonga.greenhub.ui.adapters.BatteryRVAdapter;
 
 import static hmatalonga.greenhub.util.LogUtils.makeLogTag;
 
@@ -90,7 +89,7 @@ public class HomeFragment extends Fragment {
 
     private RecyclerView mRecyclerView;
 
-    private RVAdapter mAdapter;
+    private BatteryRVAdapter mAdapter;
 
     private ArrayList<BatteryCard> mBatteryCards;
 
@@ -157,7 +156,7 @@ public class HomeFragment extends Fragment {
         if (mActivity.estimator != null) {
             mBatteryPercentage.setText(Integer.toString(mActivity.estimator.getLevel()));
             mBatteryCircleBar.setProgress(mActivity.estimator.getLevel());
-            loadData(mContext, mActivity.estimator);
+            loadData(mActivity.estimator);
             loadPluggedState("home");
         }
 
@@ -188,7 +187,7 @@ public class HomeFragment extends Fragment {
         mBatteryCircleBar.setProgress(event.level);
 
         // Reload battery cards data from estimator
-        loadData(mContext, mActivity.estimator);
+        loadData(mActivity.estimator);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -204,10 +203,9 @@ public class HomeFragment extends Fragment {
     /**
      * Creates an array to feed data to the recyclerView
      *
-     * @param context Application context
      * @param estimator Provider of mobile status
      */
-    private void loadData(final Context context, final DataEstimator estimator) {
+    private void loadData(final DataEstimator estimator) {
         mLocalThread = new Thread(new Runnable() {
             public void run() {
                 mBatteryCards = new ArrayList<>();
@@ -248,7 +246,7 @@ public class HomeFragment extends Fragment {
         try {
             mLocalThread.join();
             if (mAdapter == null) {
-                mAdapter = new RVAdapter(mBatteryCards);
+                mAdapter = new BatteryRVAdapter(mBatteryCards);
                 mRecyclerView.setAdapter(mAdapter);
             } else {
                 mAdapter.swap(mBatteryCards);

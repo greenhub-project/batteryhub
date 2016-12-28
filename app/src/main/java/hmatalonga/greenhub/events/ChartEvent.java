@@ -14,25 +14,18 @@
  * limitations under the License.
  */
 
-package hmatalonga.greenhub.util;
-
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Locale;
+package hmatalonga.greenhub.events;
 
 /**
- * DateUtils.
+ * ChartEvent.
  */
-public class DateUtils {
+public class ChartEvent {
 
-    private static final String TAG = "DateUtils";
+    public final int chart;
+    public final int interval;
 
-    private static String dateFormat = "dd-MM HH:mm";
-    private static SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat, Locale.UK);
-
-    public static String ConvertMilliSecondsToFormattedDate(Long milliSeconds){
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(milliSeconds);
-        return simpleDateFormat.format(calendar.getTime());
+    public ChartEvent(int chart, int interval) {
+        this.chart = chart;
+        this.interval = interval;
     }
 }
