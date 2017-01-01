@@ -34,13 +34,13 @@ import hmatalonga.greenhub.fragments.HomeFragment;
  */
 public class TabAdapter extends FragmentStatePagerAdapter {
 
-    public static final int NUM_TABS = 5;
+    public static final int NUM_TABS = 4;
 
     private static final int TAB_HOME      = 0;
     private static final int TAB_MY_DEVICE = 1;
     private static final int TAB_CHARTS    = 2;
-    private static final int TAB_HISTORY   = 3;
-    private static final int TAB_ABOUT     = 4;
+    //private static final int TAB_HISTORY   = 3;
+    private static final int TAB_ABOUT     = 3;
 
     private final SparseArray<Fragment> mFragments = new SparseArray<>(NUM_TABS);
 
@@ -74,8 +74,8 @@ public class TabAdapter extends FragmentStatePagerAdapter {
                 return DeviceFragment.newInstance();
             case TAB_CHARTS:
                 return StatisticsFragment.newInstance();
-            case TAB_HISTORY:
-                return HistoryFragment.newInstance();
+//            case TAB_HISTORY:
+//                return HistoryFragment.newInstance();
             case TAB_ABOUT:
                 return AboutFragment.newInstance();
             default:

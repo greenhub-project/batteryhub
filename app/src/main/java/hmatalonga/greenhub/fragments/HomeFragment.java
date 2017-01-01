@@ -22,7 +22,6 @@ import android.graphics.Color;
 import android.os.BatteryManager;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -31,7 +30,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -45,9 +43,7 @@ import hmatalonga.greenhub.events.BatteryLevelEvent;
 import hmatalonga.greenhub.events.PowerSourceEvent;
 import hmatalonga.greenhub.events.StatusEvent;
 import hmatalonga.greenhub.managers.sampling.DataEstimator;
-import hmatalonga.greenhub.managers.storage.GreenHubDb;
 import hmatalonga.greenhub.models.Battery;
-import hmatalonga.greenhub.models.data.BatteryUsage;
 import hmatalonga.greenhub.models.ui.BatteryCard;
 import hmatalonga.greenhub.ui.MainActivity;
 import hmatalonga.greenhub.ui.adapters.BatteryRVAdapter;
@@ -64,8 +60,6 @@ public class HomeFragment extends Fragment {
     private Context mContext;
 
     private MainActivity mActivity;
-
-    private GreenHubDb mDatabase;
 
     private TextView mBatteryPercentage;
 
@@ -115,17 +109,6 @@ public class HomeFragment extends Fragment {
         mContext = view.getContext();
         mActivity = (MainActivity) getActivity();
 
-        mDatabase = new GreenHubDb();
-
-        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fabSendSample);
-        assert fab != null;
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(view.getContext(), "Usages: " + mDatabase.count(BatteryUsage.class), Toast.LENGTH_LONG).show();
-            }
-        });
-
         mRecyclerView = (RecyclerView) view.findViewById(R.id.rv);
         mAdapter = null;
 
@@ -153,13 +136,6 @@ public class HomeFragment extends Fragment {
         mPowerWireless = (ImageView) view.findViewById(R.id.imgPowerWireless);
         mActivePower = "";
 
-        if (mActivity.estimator != null) {
-            mBatteryPercentage.setText(Integer.toString(mActivity.estimator.getLevel()));
-            mBatteryCircleBar.setProgress(mActivity.estimator.getLevel());
-            loadData(mActivity.estimator);
-            loadPluggedState("home");
-        }
-
         mHandler = new Handler();
         mHandler.postDelayed(runnable, Config.REFRESH_CURRENT_INTERVAL);
 
@@ -170,14 +146,24 @@ public class HomeFragment extends Fragment {
     public void onStart() {
         super.onStart();
         EventBus.getDefault().register(this);
-        mDatabase.getDefaultInstance();
     }
 
     @Override
     public void onStop() {
         super.onStop();
         EventBus.getDefault().unregister(this);
-        mDatabase.close();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mActivity.getEstimator() != null) {
+            String level = Integer.toString(mActivity.getEstimator().getLevel());
+            mBatteryPercentage.setText(level);
+            mBatteryCircleBar.setProgress(mActivity.getEstimator().getLevel());
+            loadData(mActivity.getEstimator());
+            loadPluggedState("home");
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -187,7 +173,7 @@ public class HomeFragment extends Fragment {
         mBatteryCircleBar.setProgress(event.level);
 
         // Reload battery cards data from estimator
-        loadData(mActivity.estimator);
+        loadData(mActivity.getEstimator());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -264,9 +250,9 @@ public class HomeFragment extends Fragment {
         String batteryCharger = "unplugged";
 
         if (status.equals("home")) {
-            if (mActivity.estimator == null) return;
+            if (mActivity.getEstimator() == null) return;
 
-            switch (mActivity.estimator.getPlugged()) {
+            switch (mActivity.getEstimator().getPlugged()) {
                 case BatteryManager.BATTERY_PLUGGED_AC:
                     batteryCharger = "ac";
                     break;

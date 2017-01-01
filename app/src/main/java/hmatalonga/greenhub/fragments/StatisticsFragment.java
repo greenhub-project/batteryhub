@@ -17,28 +17,25 @@
 package hmatalonga.greenhub.fragments;
 
 import android.app.Fragment;
-import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-
 import java.util.ArrayList;
 
 import hmatalonga.greenhub.R;
-import hmatalonga.greenhub.events.ChartEvent;
-import hmatalonga.greenhub.events.StatusEvent;
-import hmatalonga.greenhub.managers.storage.GreenHubDb;
 import hmatalonga.greenhub.models.data.BatteryUsage;
 import hmatalonga.greenhub.models.ui.ChartCard;
+import hmatalonga.greenhub.ui.MainActivity;
 import hmatalonga.greenhub.ui.adapters.ChartRVAdapter;
 import io.realm.RealmResults;
 
@@ -52,16 +49,18 @@ public class StatisticsFragment extends Fragment {
     private static final String TAG = makeLogTag(StatisticsFragment.class);
 
     private static final int INTERVAL_ALL = 1;
+
     private static final int INTERVAL_24H = 2;
+
     private static final int INTERVAL_5DAYS = 3;
+
+    private MainActivity mActivity;
 
     private RecyclerView mRecyclerView;
 
     private ChartRVAdapter mAdapter;
 
     private ArrayList<ChartCard> mChartCards;
-
-    private GreenHubDb mDatabase;
 
     public static StatisticsFragment newInstance() {
         return new StatisticsFragment();
@@ -71,7 +70,7 @@ public class StatisticsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_statistics, container, false);
 
-        mDatabase = new GreenHubDb();
+        mActivity = (MainActivity) getActivity();
 
         mRecyclerView = (RecyclerView) view.findViewById(R.id.rv);
         mAdapter = null;
@@ -80,21 +79,29 @@ public class StatisticsFragment extends Fragment {
 
         mRecyclerView.setLayoutManager(layout);
         mRecyclerView.setHasFixedSize(true);
+
+        final BottomNavigationView bottomNavigationView =
+                (BottomNavigationView) view.findViewById(R.id.bottom_navigation);
+
+        bottomNavigationView.setOnNavigationItemSelectedListener(
+                new BottomNavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                        switch (item.getItemId()) {
+                            case R.id.action_24h:
+                                return true;
+                            case R.id.action_5days:
+                                return true;
+                            case R.id.action_everything:
+                                return true;
+                        }
+                        return false;
+                    }
+                });
+
         loadData(INTERVAL_ALL);
 
         return view;
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        mDatabase.getDefaultInstance();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        mDatabase.close();
     }
 
     /**
@@ -106,13 +113,13 @@ public class StatisticsFragment extends Fragment {
         mChartCards = new ArrayList<>();
 
         if (interval == INTERVAL_ALL) {
-            results = mDatabase.allUsages();
+            results = mActivity.database.allUsages();
         } else if (interval == INTERVAL_24H) {
-            results = mDatabase.betweenUsages(null, null);
+            results = mActivity.database.betweenUsages(null, null);
         } else if (interval == INTERVAL_5DAYS) {
-            results = mDatabase.betweenUsages(null, null);
+            results = mActivity.database.betweenUsages(null, null);
         } else {
-            results = mDatabase.allUsages();
+            results = mActivity.database.allUsages();
         }
 
         // Battery Level
@@ -160,6 +167,4 @@ public class StatisticsFragment extends Fragment {
         }
         mRecyclerView.invalidate();
     }
-
-
 }

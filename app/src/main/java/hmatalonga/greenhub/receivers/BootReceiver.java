@@ -20,8 +20,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import hmatalonga.greenhub.managers.sampling.DataEstimatorService;
+import hmatalonga.greenhub.util.Notifier;
 
+import static hmatalonga.greenhub.util.LogUtils.LOGI;
 import static hmatalonga.greenhub.util.LogUtils.makeLogTag;
 
 /**
@@ -39,10 +40,10 @@ public class BootReceiver extends BroadcastReceiver {
      */
     @Override
     public void onReceive(Context context, Intent intent) {
-//        if (intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED)) {
-//            Intent service = new Intent(context, DataEstimatorService.class);
-//            intent.putExtra("OriginalAction", intent.getAction());
-//            context.startGreenHubService(service);
-//        }
+        LOGI(TAG, "onReceive " + intent.getAction());
+        if (intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED)) {
+            LOGI(TAG, "Launching notification");
+            Notifier.testNotification(context);
+        }
     }
 }

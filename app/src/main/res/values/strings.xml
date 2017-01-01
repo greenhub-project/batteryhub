@@ -32,7 +32,7 @@
     <string name="action_settings">Settings</string>
     <string name="action_24h">24h</string>
     <string name="action_5days">5 days</string>
-    <string name="action_all_days">All days</string>
+    <string name="action_everything">Everything</string>
 
     <string name="title_activity_settings">Settings</string>
     <string name="title_activity_process">Process List</string>

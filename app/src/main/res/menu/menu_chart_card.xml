@@ -25,20 +25,19 @@
         android:orderInCategory="100"
         android:title="@string/action_24h"
         android:icon="@drawable/ic_alarm_white_24dp"
-        app:showAsAction="never"/>
+        app:showAsAction="ifRoom"/>
 
     <item
         android:id="@+id/action_5days"
         android:orderInCategory="200"
         android:title="@string/action_5days"
-        android:checked="true"
         android:icon="@drawable/ic_calendar_white_24dp"
-        app:showAsAction="never"/>
+        app:showAsAction="ifRoom"/>
 
     <item
-        android:id="@+id/action_all_days"
+        android:id="@+id/action_everything"
         android:orderInCategory="300"
-        android:title="@string/action_all_days"
+        android:title="@string/action_everything"
         android:icon="@drawable/ic_star_white_24dp"
-        app:showAsAction="never"/>
+        app:showAsAction="ifRoom"/>
 </menu>

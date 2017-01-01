@@ -24,6 +24,7 @@ import hmatalonga.greenhub.managers.sampling.DataEstimator;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 
+import static hmatalonga.greenhub.util.LogUtils.LOGI;
 import static hmatalonga.greenhub.util.LogUtils.makeLogTag;
 
 /**
@@ -33,7 +34,9 @@ public class GreenHubApp extends Application {
 
     private static final String TAG = makeLogTag(GreenHubApp.class);
 
-    public boolean isServiceRunning;
+    public static boolean isServiceRunning = false;
+
+    public DataEstimator estimator;
 
     @Override
     public void onCreate() {
@@ -45,38 +48,51 @@ public class GreenHubApp extends Application {
 //        }
 //        LeakCanary.install(this);
 
-        isServiceRunning = false;
-
         // Database init
         Realm.init(this);
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
         Realm.setDefaultConfiguration(realmConfiguration);
+
+        LOGI(TAG, "onCreate() called");
+
+        estimator = new DataEstimator();
+
+        LOGI(TAG, "isServiceRunning => " + String.valueOf(isServiceRunning));
+
+        LOGI(TAG, "startGreenHubService() called");
+
+        startGreenHubService();
     }
 
-    public void startGreenHubService(final DataEstimator estimator) {
-        new Thread() {
-            private IntentFilter intentFilter;
+    public void startGreenHubService() {
+        if (!isServiceRunning) {
+            LOGI(TAG, "GreenHubService starting...");
+            new Thread() {
+                private IntentFilter intentFilter;
 
-            public void run() {
-                intentFilter = new IntentFilter();
-                intentFilter.addAction(Intent.ACTION_BATTERY_CHANGED);
+                public void run() {
+                    intentFilter = new IntentFilter();
+                    intentFilter.addAction(Intent.ACTION_BATTERY_CHANGED);
 
-                registerReceiver(estimator, intentFilter);
-
-                // TODO: Add this config option to settings so user decides what to do
-                if (Config.EXTRA_SCREEN_ACTIONS) {
-                    intentFilter.addAction(Intent.ACTION_SCREEN_ON);
                     registerReceiver(estimator, intentFilter);
-                    intentFilter.addAction(Intent.ACTION_SCREEN_OFF);
-                    registerReceiver(estimator, intentFilter);
+
+                    // TODO: Add this config option to settings so user decides what to do
+                    if (Config.EXTRA_SCREEN_ACTIONS) {
+                        intentFilter.addAction(Intent.ACTION_SCREEN_ON);
+                        registerReceiver(estimator, intentFilter);
+                        intentFilter.addAction(Intent.ACTION_SCREEN_OFF);
+                        registerReceiver(estimator, intentFilter);
+                    }
+
+                    isServiceRunning = true;
                 }
-
-                isServiceRunning = true;
-            }
-        }.start();
+            }.start();
+        } else {
+            LOGI(TAG, "GreenHubService is already running...");
+        }
     }
 
-    public void stopGreenHubService(final DataEstimator estimator) {
+    public void stopGreenHubService() {
         if (estimator != null) {
             unregisterReceiver(estimator);
             isServiceRunning = false;

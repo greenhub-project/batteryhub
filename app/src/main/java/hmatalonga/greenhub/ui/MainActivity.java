@@ -19,18 +19,23 @@ package hmatalonga.greenhub.ui;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import hmatalonga.greenhub.GreenHubApp;
 import hmatalonga.greenhub.R;
 import hmatalonga.greenhub.managers.sampling.DataEstimator;
+import hmatalonga.greenhub.managers.storage.GreenHubDb;
 import hmatalonga.greenhub.ui.adapters.TabAdapter;
 import hmatalonga.greenhub.ui.layouts.MainTabLayout;
 
+import static hmatalonga.greenhub.util.LogUtils.LOGI;
 import static hmatalonga.greenhub.util.LogUtils.makeLogTag;
 
 public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClickListener {
@@ -41,7 +46,7 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
 
     private ViewPager mViewPager;
 
-    public DataEstimator estimator;
+    public GreenHubDb database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,13 +54,21 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
 
         setContentView(R.layout.activity_main);
 
+        LOGI(TAG, "onCreate() called");
+
         loadComponents();
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mApp.stopGreenHubService(estimator);
+    protected void onStart() {
+        super.onStart();
+        database.getDefaultInstance();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        database.close();
     }
 
     @Override
@@ -87,10 +100,9 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
     }
 
     private void loadComponents() {
-        estimator = new DataEstimator();
+        database = new GreenHubDb();
 
         mApp = (GreenHubApp) getApplication();
-        mApp.startGreenHubService(estimator);
 
         loadViews();
 
@@ -103,17 +115,33 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
         mViewPager.setOffscreenPageLimit(TabAdapter.NUM_TABS - 1);
 
-        TabAdapter mTabAdapter = new TabAdapter(getFragmentManager());
+        final TabAdapter mTabAdapter = new TabAdapter(getFragmentManager());
         mViewPager.setAdapter(mTabAdapter);
 
         MainTabLayout mTabLayout = (MainTabLayout) findViewById(R.id.tab_layout);
         mTabLayout.createTabs();
+
+        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fabSendSample);
+        if (fab == null) return;
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int count = database.allUsages().size();
+                Snackbar.make(view, "Based on " + count + " usages.", Snackbar.LENGTH_SHORT).show();
+            }
+        });
 
         mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 mViewPager.setCurrentItem(tab.getPosition());
                 getActionBarToolbar().setTitle(tab.getContentDescription());
+                if (tab.getPosition() == 0) {
+                    fab.show();
+                } else {
+                    fab.hide();
+                }
             }
 
             @Override
@@ -124,11 +152,13 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
                 //scroll the active fragment's contents to the top when user taps the current tab
-                // Fragment fragment = mTabAdapter.getFragment(tab.getPosition());
-                // Load here??
             }
         });
 
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabLayout));
+    }
+
+    public DataEstimator getEstimator() {
+        return mApp.estimator;
     }
 }

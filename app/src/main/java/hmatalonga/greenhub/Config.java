@@ -87,4 +87,6 @@ public final class Config {
     public static final int REFRESH_STATUS_BAR_INTERVAL = REFRESH_CURRENT_INTERVAL * 4;
 
     public static final String STATUS_IDLE = "Idle";
+
+    public static final int NOTIFICATION_BATTERY_STATUS = 1001;
 }
