@@ -25,7 +25,10 @@ import android.net.NetworkInfo;
 
 import org.greenrobot.eventbus.EventBus;
 
-import hmatalonga.greenhub.events.UpdateEvent;
+import hmatalonga.greenhub.Config;
+import hmatalonga.greenhub.events.RefreshEvent;
+import hmatalonga.greenhub.tasks.ServerStatusTask;
+import hmatalonga.greenhub.util.SettingsUtils;
 
 import static hmatalonga.greenhub.util.LogUtils.LOGI;
 import static hmatalonga.greenhub.util.LogUtils.makeLogTag;
@@ -58,24 +61,28 @@ public class ConnectivityReceiver extends BroadcastReceiver {
                         activeNetwork.isConnectedOrConnecting();
 
                 if (!isConnected) {
-                    EventBus.getDefault().post(new UpdateEvent("wifi", false));
-                    EventBus.getDefault().post(new UpdateEvent("mobile", false));
+                    EventBus.getDefault().post(new RefreshEvent("wifi", false));
+                    EventBus.getDefault().post(new RefreshEvent("mobile", false));
                     return;
                 }
 
+                if (SettingsUtils.fetchServerUrl(context).equals(Config.SERVER_URL_DEFAULT)) {
+                    new ServerStatusTask().execute(context);
+                }
+
                 if (activeNetwork.getType() == ConnectivityManager.TYPE_WIFI) {
-                    EventBus.getDefault().post(new UpdateEvent("wifi", true));
+                    EventBus.getDefault().post(new RefreshEvent("wifi", true));
                 }
                 else if (activeNetwork.getType() == ConnectivityManager.TYPE_MOBILE) {
-                    EventBus.getDefault().post(new UpdateEvent("mobile", true));
+                    EventBus.getDefault().post(new RefreshEvent("mobile", true));
                 }
                 break;
             case BluetoothAdapter.ACTION_STATE_CHANGED:
                 state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1);
                 if (state == BluetoothAdapter.STATE_ON) {
-                    EventBus.getDefault().post(new UpdateEvent("bluetooth", true));
+                    EventBus.getDefault().post(new RefreshEvent("bluetooth", true));
                 } else {
-                    EventBus.getDefault().post(new UpdateEvent("bluetooth", false));
+                    EventBus.getDefault().post(new RefreshEvent("bluetooth", false));
                 }
                 break;
         }

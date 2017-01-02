@@ -33,17 +33,16 @@ public class BootReceiver extends BroadcastReceiver {
     private static final String TAG = makeLogTag(BootReceiver.class);
 
     /**
-     * Used to start Sampler on reboot even when GreenHub is not started.
+     * Used to start Service on reboot even when GreenHub is not started.
      *
      * @param context the context
      * @param intent the intent (should be ACTION_BOOT_COMPLETED)
      */
     @Override
     public void onReceive(Context context, Intent intent) {
-        LOGI(TAG, "onReceive " + intent.getAction());
         if (intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED)) {
             LOGI(TAG, "Launching notification");
-            Notifier.testNotification(context);
+            Notifier.startStatusBar(context);
         }
     }
 }

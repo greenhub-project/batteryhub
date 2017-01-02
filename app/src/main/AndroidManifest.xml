@@ -63,13 +63,13 @@
         <activity
             android:name="hmatalonga.greenhub.ui.MainActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.GreenHub.Main"/>
 
         <activity
             android:name=".ui.SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:parentActivityName="hmatalonga.greenhub.ui.MainActivity">
+            android:parentActivityName="hmatalonga.greenhub.ui.MainActivity"
+            android:theme="@style/Theme.GreenHub.Main">
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

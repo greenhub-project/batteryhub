@@ -60,6 +60,7 @@ import hmatalonga.greenhub.events.StatusEvent;
 import hmatalonga.greenhub.managers.storage.GreenHubDb;
 import hmatalonga.greenhub.models.data.BatteryUsage;
 import hmatalonga.greenhub.models.data.Sample;
+import hmatalonga.greenhub.util.Notifier;
 
 import static hmatalonga.greenhub.util.LogUtils.LOGI;
 import static hmatalonga.greenhub.util.LogUtils.makeLogTag;
@@ -186,7 +187,7 @@ public class DataEstimatorService extends IntentService {
                 EventBus.getDefault().post(new StatusEvent("Getting new sample..."));
                 getSample(context, intent, lastSample, database);
                 getBatteryUsage(context, intent, database, false);
-                // Notifier.toOpenApp(context);
+                Notifier.updateStatusBar(context);
             } else {
                 if (Config.DEBUG) {
                     LOGI(TAG, "No battery percentage change. BatteryLevel => " + Inspector.getCurrentBatteryLevel());

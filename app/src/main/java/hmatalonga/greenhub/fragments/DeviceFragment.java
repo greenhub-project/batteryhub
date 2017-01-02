@@ -32,7 +32,7 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import hmatalonga.greenhub.Config;
 import hmatalonga.greenhub.R;
-import hmatalonga.greenhub.events.UpdateEvent;
+import hmatalonga.greenhub.events.RefreshEvent;
 import hmatalonga.greenhub.models.Bluetooth;
 import hmatalonga.greenhub.models.Memory;
 import hmatalonga.greenhub.models.Network;
@@ -80,8 +80,8 @@ public class DeviceFragment extends Fragment {
 
     @Override
     public void onStop() {
-        super.onStop();
         EventBus.getDefault().unregister(this);
+        super.onStop();
     }
 
     public static DeviceFragment newInstance() {
@@ -129,7 +129,7 @@ public class DeviceFragment extends Fragment {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void updateData(UpdateEvent event) {
+    public void refreshData(RefreshEvent event) {
         if (mParentView == null) return;
 
         switch (event.field) {

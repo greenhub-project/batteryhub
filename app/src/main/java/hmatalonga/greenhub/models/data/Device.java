@@ -25,8 +25,6 @@ public class Device extends RealmObject {
 
     public String uuId;
 
-    public double timestamp;
-
     public String model;
 
     public String manufacturer;

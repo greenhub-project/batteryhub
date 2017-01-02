@@ -74,7 +74,7 @@ public class CommunicationManager {
     }
 
     public void sendSamples() {
-        boolean connected = NetworkWatcher.hasInternet(mContext);
+        boolean connected = NetworkWatcher.hasInternet(mContext, NetworkWatcher.COMMUNICATION_MANAGER);
 
         if (!connected) {
             // HomeFragment.setStatus("Not connected");

@@ -48,7 +48,7 @@ public class SampleSender {
 
     public static void sendSamples(final Context context) {
         synchronized(SEND_LOCK){
-            boolean connected = NetworkWatcher.hasInternet(context);
+            boolean connected = NetworkWatcher.hasInternet(context, NetworkWatcher.COMMUNICATION_MANAGER);
         }
     }
 }

@@ -43,6 +43,7 @@ import hmatalonga.greenhub.events.BatteryLevelEvent;
 import hmatalonga.greenhub.events.PowerSourceEvent;
 import hmatalonga.greenhub.events.StatusEvent;
 import hmatalonga.greenhub.managers.sampling.DataEstimator;
+import hmatalonga.greenhub.managers.sampling.Inspector;
 import hmatalonga.greenhub.models.Battery;
 import hmatalonga.greenhub.models.ui.BatteryCard;
 import hmatalonga.greenhub.ui.MainActivity;
@@ -97,6 +98,8 @@ public class HomeFragment extends Fragment {
 
     private String mActivePower;
 
+    private boolean mRunning;
+
     public static HomeFragment newInstance() {
         return new HomeFragment();
     }
@@ -136,8 +139,11 @@ public class HomeFragment extends Fragment {
         mPowerWireless = (ImageView) view.findViewById(R.id.imgPowerWireless);
         mActivePower = "";
 
+        mMin = Integer.MAX_VALUE;
+        mMax = 0;
         mHandler = new Handler();
         mHandler.postDelayed(runnable, Config.REFRESH_CURRENT_INTERVAL);
+        mRunning = true;
 
         return view;
     }
@@ -150,8 +156,8 @@ public class HomeFragment extends Fragment {
 
     @Override
     public void onStop() {
-        super.onStop();
         EventBus.getDefault().unregister(this);
+        super.onStop();
     }
 
     @Override
@@ -184,6 +190,11 @@ public class HomeFragment extends Fragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void updatePowerSource(PowerSourceEvent event) {
         loadPluggedState(event.status);
+        if (mActivePower.equals("unplugged") && !mRunning) {
+            resetBatteryCurrent();
+            mHandler.postDelayed(runnable, Config.REFRESH_CURRENT_INTERVAL);
+            mRunning = true;
+        }
     }
 
     /**
@@ -292,11 +303,35 @@ public class HomeFragment extends Fragment {
         mActivePower = batteryCharger;
     }
 
+    private void resetBatteryCurrent() {
+        mMin = Integer.MAX_VALUE;
+        mMax = 0;
+        String value = "min: --";
+        mBatteryCurrentMin.setText(value);
+        value = "max: --";
+        mBatteryCurrentMax.setText(value);
+        value = "Measuring";
+        mBatteryCurrentNow.setText(value);
+    }
+
     private Runnable runnable = new Runnable() {
         @Override
         public void run() {
             int now = Battery.getBatteryCurrentNow(mContext);
+            double level = Inspector.getCurrentBatteryLevel();
             String value;
+
+            // If is charging and full battery stop runnable
+            if (!mActivePower.equals("unplugged") && level == 1.0) {
+                value = "min: --";
+                mBatteryCurrentMin.setText(value);
+                value = "max: --";
+                mBatteryCurrentMax.setText(value);
+                value = "Full";
+                mBatteryCurrentNow.setText(value);
+                mRunning = false;
+                return;
+            }
 
             if (Math.abs(now) < Math.abs(mMin)) {
                 mMin = now;

@@ -26,6 +26,7 @@ import hmatalonga.greenhub.models.data.Sample;
 import io.realm.Realm;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
+import io.realm.exceptions.RealmMigrationNeededException;
 
 import static hmatalonga.greenhub.util.LogUtils.LOGI;
 
@@ -39,7 +40,13 @@ public class GreenHubDb {
     private Realm mRealm;
 
     public GreenHubDb() {
-        mRealm = Realm.getDefaultInstance();
+        try {
+            mRealm = Realm.getDefaultInstance();
+        } catch (RealmMigrationNeededException e) {
+            // handle migration exception io.realm.exceptions.RealmMigrationNeededException
+            e.printStackTrace();
+            System.exit(1);
+        }
     }
 
     public void getDefaultInstance() {

@@ -56,8 +56,8 @@ public final class Config {
     public static final boolean DEBUG = true;
     public static final boolean PRODUCTION = false;
 
-    public static final String PUBLIC_SERVER_URL = "http://193.136.66.21:8002/";
-    public static final String LOCAL_SERVER_URL = "http://192.168.1.105/";
+    public static final String STATUS_URL = "https://hmatalonga.github.io/";
+    public static final String SERVER_URL_DEFAULT = "none";
 
     // Report Freshness timeout. Default: 15 minutes
     public static final long FRESHNESS_TIMEOUT = AlarmManager.INTERVAL_FIFTEEN_MINUTES;
@@ -67,12 +67,11 @@ public final class Config {
     public static final String REGISTERED_OS = "greenhub.registered.os";
     public static final String REGISTERED_MODEL = "greenhub.registered.model";
 
-    // Send up to 10 samples at a time
-    public static final int COMMS_MAX_UPLOAD_BATCH = 10;
-
     // Alarm event for sampling when battery has not changed for
     // SAMPLE_INTERVAL_MS. Currently not used.
     public static final String ACTION_GREENHUB_SAMPLE = "hmatalonga.greenhub.ACTION_SAMPLE";
+
+    public static final String GREENHUB_PACKAGE = "hmatalonga.greenhub";
 
     public static final String IMPORTANCE_NOT_RUNNING = "Not Running";
     public static final String IMPORTANCE_UNINSTALLED = "uninstalled";
@@ -82,9 +81,9 @@ public final class Config {
 
     public static final boolean EXTRA_SCREEN_ACTIONS = false;
 
-    public static final int SAMPLE_MAX_BATCHES = 500;
+    public static final int SAMPLE_MAX_BATCHES = 50;
     public static final int REFRESH_CURRENT_INTERVAL = 5000;
-    public static final int REFRESH_STATUS_BAR_INTERVAL = REFRESH_CURRENT_INTERVAL * 4;
+    public static final int REFRESH_STATUS_BAR_INTERVAL = REFRESH_CURRENT_INTERVAL * 6;
 
     public static final String STATUS_IDLE = "Idle";
 

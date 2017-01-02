@@ -21,6 +21,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import hmatalonga.greenhub.Config;
 import hmatalonga.greenhub.ui.WelcomeActivity;
 
 /**
@@ -38,6 +39,10 @@ public class SettingsUtils {
      * Boolean indicating whether ToS has been accepted.
      */
     public static final String PREF_DEVICE_REGISTERED = "pref_device_registered";
+    /**
+     * String containing Web Server url.
+     */
+    public static final String PREF_SERVER_URL = "pref_server_url";
     /**
      * Boolean indicating whether to send installed packages with the samples.
      */
@@ -85,6 +90,32 @@ public class SettingsUtils {
     public static boolean isDeviceRegistered(final Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         return sp.getBoolean(PREF_DEVICE_REGISTERED, false);
+    }
+
+    /**
+     * Save {@code url whether} of the web server.
+     *
+     * @param context Context to be used to edit the {@link android.content.SharedPreferences}.
+     * @param url New value that will be set.
+     */
+    public static void saveServerUrl(final Context context, String url) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        sp.edit().putString(PREF_SERVER_URL, url).apply();
+    }
+
+    /**
+     * Fetch stored {@code url} of the web server.
+     *
+     * @param context Context to be used to edit the {@link android.content.SharedPreferences}.
+     */
+    public static String fetchServerUrl(final Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getString(PREF_SERVER_URL, Config.SERVER_URL_DEFAULT);
+    }
+
+    public static boolean isServerUrlPresent(final Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return !sp.getString(PREF_SERVER_URL, Config.SERVER_URL_DEFAULT).equals(Config.SERVER_URL_DEFAULT);
     }
 
     public static void markInstalledPackagesIncluded(final Context context, boolean newValue) {

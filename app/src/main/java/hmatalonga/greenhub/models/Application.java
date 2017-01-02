@@ -19,6 +19,8 @@ package hmatalonga.greenhub.models;
 import android.app.ActivityManager.RunningAppProcessInfo;
 import android.app.ActivityManager.RunningServiceInfo;
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,6 +28,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import hmatalonga.greenhub.Config;
 import hmatalonga.greenhub.models.data.ProcessInfo;
 import hmatalonga.greenhub.util.StringHelper;
 

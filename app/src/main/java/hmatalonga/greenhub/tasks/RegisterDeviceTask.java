@@ -19,10 +19,7 @@ package hmatalonga.greenhub.tasks;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import hmatalonga.greenhub.network.RegisterHandler;
-import hmatalonga.greenhub.util.GreenHubHelper;
-import hmatalonga.greenhub.fragments.HomeFragment;
-import hmatalonga.greenhub.util.NetworkWatcher;
+import hmatalonga.greenhub.network.handlers.RegisterDeviceHandler;
 
 /**
  * Task to register devices on the web server.
@@ -33,8 +30,8 @@ public class RegisterDeviceTask extends AsyncTask<Context, Void, Void> {
 
     @Override
     protected Void doInBackground(Context... params) {
-        RegisterHandler handler = new RegisterHandler();
-        handler.registerClient(params[0]);
+        RegisterDeviceHandler handler = new RegisterDeviceHandler(params[0]);
+        handler.registerClient();
         return null;
     }
 }

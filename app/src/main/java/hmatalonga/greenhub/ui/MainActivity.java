@@ -16,11 +16,13 @@
 
 package hmatalonga.greenhub.ui;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.preference.PreferenceActivity;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
@@ -28,12 +30,18 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import hmatalonga.greenhub.Config;
 import hmatalonga.greenhub.GreenHubApp;
 import hmatalonga.greenhub.R;
 import hmatalonga.greenhub.managers.sampling.DataEstimator;
 import hmatalonga.greenhub.managers.storage.GreenHubDb;
+import hmatalonga.greenhub.tasks.RegisterDeviceTask;
+import hmatalonga.greenhub.tasks.ServerStatusTask;
 import hmatalonga.greenhub.ui.adapters.TabAdapter;
 import hmatalonga.greenhub.ui.layouts.MainTabLayout;
+import hmatalonga.greenhub.util.NetworkWatcher;
+import hmatalonga.greenhub.util.Notifier;
+import hmatalonga.greenhub.util.SettingsUtils;
 
 import static hmatalonga.greenhub.util.LogUtils.LOGI;
 import static hmatalonga.greenhub.util.LogUtils.makeLogTag;
@@ -45,6 +53,8 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
     private GreenHubApp mApp;
 
     private ViewPager mViewPager;
+
+    private Handler mHandler;
 
     public GreenHubDb database;
 
@@ -67,8 +77,8 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
 
     @Override
     protected void onStop() {
-        super.onStop();
         database.close();
+        super.onStop();
     }
 
     @Override
@@ -81,9 +91,6 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
         toolbar.setOnMenuItemClickListener(this);
         return true;
     }
-
-    @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {}
 
     @Override
     public boolean onMenuItemClick(MenuItem item) {
@@ -100,15 +107,30 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
     }
 
     private void loadComponents() {
-        database = new GreenHubDb();
+        final Context context = getApplicationContext();
 
+        database = new GreenHubDb();
         mApp = (GreenHubApp) getApplication();
 
         loadViews();
 
-        // Run tasks --
-        // Register device on the web server
-        // new RegisterDeviceTask().execute(sApp);
+        // if there is no Internet connection skip tasks
+        if (!NetworkWatcher.hasInternet(context, NetworkWatcher.BACKGROUND_TASKS)) return;
+
+        // Fetch web server status and update them
+        new ServerStatusTask().execute(context);
+
+        // Display Status bar
+        Notifier.startStatusBar(context);
+
+        mHandler = new Handler();
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Notifier.updateStatusBar(context);
+                mHandler.postDelayed(this, Config.REFRESH_STATUS_BAR_INTERVAL);
+            }
+        }, Config.REFRESH_STATUS_BAR_INTERVAL);
     }
 
     private void loadViews() {
@@ -127,8 +149,7 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int count = database.allUsages().size();
-                Snackbar.make(view, "Based on " + count + " usages.", Snackbar.LENGTH_SHORT).show();
+                // Upload Samples
             }
         });
 

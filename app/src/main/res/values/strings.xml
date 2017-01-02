@@ -77,37 +77,23 @@
     <string name="wifi_only_key">wifionly</string>
 
     <!-- Strings related to SettingsInfo -->
+    <string name="pref_header_sync">Sincronização</string>
+    <string name="pref_header_server">Servidor</string>
+    <string name="pref_header_about">Sobre</string>
 
-    <!-- Example settings for Data & Sync -->
-    <string name="pref_header_data_sync">Data &amp; sync</string>
+    <string name="pref_title_upload">Como envia</string>
 
-    <string name="pref_title_sync_frequency">Sync frequency</string>
-    <string-array name="pref_sync_frequency_titles">
-        <item>15 minutes</item>
-        <item>30 minutes</item>
-        <item>1 hour</item>
-        <item>3 hours</item>
-        <item>6 hours</item>
-        <item>Never</item>
-    </string-array>
-    <string-array name="pref_sync_frequency_values">
-        <item>15</item>
-        <item>30</item>
-        <item>60</item>
-        <item>180</item>
-        <item>360</item>
-        <item>-1</item>
-    </string-array>
+    <string name="pref_title_notifications">Sincronização automática</string>
+    <string name="pref_description_notifications">Permite o envio automático dos dados para o
+        servidor em segundo plano</string>
 
-    <string name="pref_title_sync_upload">Uploads</string>
-    <string-array name="pref_sync_upload_titles">
-        <item>Wi-Fi Only</item>
-        <item>Wi-Fi or data plan</item>
-    </string-array>
-    <string-array name="pref_sync_upload_values">
-        <item>-1</item>
-        <item>1</item>
-    </string-array>
+    <string name="pref_title_server_url">Endereço</string>
+
+    <string name="pref_title_copyright">&#169; 2016 JMM, Lda.</string>
+
+    <string name="pref_title_help">Ajuda</string>
+    <string name="pref_description_help">Se o botão de envio de dados não responder, por favor
+        encerre a aplicação e reinicie novamente.</string>
 
     <string name="title_activity_splash">SplashActivity</string>
 

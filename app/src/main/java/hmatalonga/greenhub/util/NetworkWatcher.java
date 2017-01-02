@@ -28,9 +28,12 @@ import java.net.InetAddress;
  */
 public class NetworkWatcher {
     private static final String TAG = "NetworkWatcher";
+
+    public static final int BACKGROUND_TASKS = 1;
+
+    public static final int COMMUNICATION_MANAGER = 2;
+
     private static boolean mobileDataAllowed = false;
-    private static String urlTest = "google.com";
-    private static boolean response = false;
 
     public NetworkWatcher() {}
 
@@ -42,48 +45,26 @@ public class NetworkWatcher {
         NetworkWatcher.mobileDataAllowed = mobileDataAllowed;
     }
 
-    public static String getUrlTest() {
-        return urlTest;
-    }
-
-    public static void setUrlTest(String urlTest) {
-        NetworkWatcher.urlTest = urlTest;
-    }
-
-    private static boolean isInternetAvailable() {
-        Thread t = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    InetAddress ipAddr = InetAddress.getByName(getUrlTest());
-                    response = !ipAddr.equals("");
-
-                } catch (Exception e) {
-                    response = false;
-                }
-            }
-        });
-
-        t.start();
-        try {
-            t.join();
-        } catch (Exception e) {
-            response = false;
-        }
-
-        return response;
-    }
-
-    public static boolean hasInternet(Context context) {
+    /**
+     * Checks for Internet connection.
+     *
+     * @param context Application context
+     * @param mode which module is requesting Internet access
+     * @return Whether or not it is connected
+     */
+    public static boolean hasInternet(Context context, int mode) {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         if (activeNetwork != null) { // connected to the internet
             if (activeNetwork.getType() == ConnectivityManager.TYPE_WIFI) {
-                // connected to wifi
-                return isInternetAvailable();
+                return activeNetwork.isConnected();
             } else if (activeNetwork.getType() == ConnectivityManager.TYPE_MOBILE) {
-                // connected to the mobile provider's data plan
-                return isMobileDataAllowed() && isInternetAvailable();
+                // if communication manager is calling check for settings on mobile data
+                if (mode == BACKGROUND_TASKS) {
+                    return activeNetwork.isConnected();
+                } else if (mode == COMMUNICATION_MANAGER) {
+                    return isMobileDataAllowed() && activeNetwork.isConnected();
+                }
             }
         }
         return false;

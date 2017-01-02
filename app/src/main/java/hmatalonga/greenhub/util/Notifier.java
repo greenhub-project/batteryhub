@@ -25,48 +25,44 @@ import android.support.v4.app.NotificationCompat;
 
 import hmatalonga.greenhub.Config;
 import hmatalonga.greenhub.R;
+import hmatalonga.greenhub.managers.sampling.Inspector;
+import hmatalonga.greenhub.models.Battery;
 import hmatalonga.greenhub.ui.MainActivity;
 
 /**
- * Created by hugo on 06-03-2016.
+ * Notifier
  */
 public class Notifier {
-    public static void toOpenApp(Context context) {
-//        long now = System.currentTimeMillis();
-//        long lastNotify = DataEstimator.getGson().getLastNotify();
-//
-//        // Do not notify if it is less than 2 days from last notification
-//        if (lastNotify + Config.FRESHNESS_TIMEOUT_QUICKHOGS > now)
-//            return;
-//
-//        int samples = GreenHubDb.getGson(context).countSamples();
-//        if (samples >= DataEstimator.MAX_SAMPLES){
-//            DataEstimator.getGson().setLastNotify(now);
-//            PendingIntent launchCarat = PendingIntent.getActivity(context, 0,
-//                    new Intent(context, MainActivity.class), 0);
-//
-//            NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
-//                    context)
-//                    .setSmallIcon(R.drawable.ic_information_white_24dp)
-//                    .setContentTitle("Please open GreenHubHelper")
-//                    .setContentText("Please open GreenHubHelper. Samples to send:")
-//                    .setNumber(samples);
-//            mBuilder.setContentIntent(launchCarat);
-//            //mBuilder.setSound(null);
-//            mBuilder.setAutoCancel(true);
-//            NotificationManager mNotificationManager = (NotificationManager) context
-//                    .getSystemService(Context.NOTIFICATION_SERVICE);
-//            mNotificationManager.notify(1, mBuilder.build());
-//        }
 
-    }
+    private static boolean isStatusBarShown = false;
 
-    public static void testNotification(final Context context) {
-        NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(context)
-                        .setSmallIcon(R.drawable.ic_information_white_24dp)
-                        .setContentTitle("My notification")
-                        .setContentText("Hello World!");
+    private static NotificationCompat.Builder sBuilder = null;
+    private static NotificationManager sNotificationManager = null;
+
+    public static void startStatusBar(final Context context) {
+        if (isStatusBarShown) return;
+
+        int now = Battery.getBatteryCurrentNow(context);
+        int level = (int) Inspector.getCurrentBatteryLevel() * 100;
+        String title = "Now: " + now + " mA";
+        String text = "GreenHub is running";
+
+        sBuilder = new NotificationCompat.Builder(context)
+                        .setContentTitle(title)
+                        .setContentText(text)
+                        .setAutoCancel(false)
+                        .setOngoing(true)
+                        .setPriority(NotificationCompat.PRIORITY_LOW);
+
+        if (level < 100) {
+            sBuilder.setSmallIcon(R.drawable.ic_stat_00_pct_charged + level);
+            if (level <= 15) {
+                sBuilder.setPriority(NotificationCompat.PRIORITY_HIGH);
+            }
+        } else {
+            sBuilder.setSmallIcon(R.drawable.ic_stat_z100_pct_charged);
+        }
+
         // Creates an explicit intent for an Activity in your app
         Intent resultIntent = new Intent(context, MainActivity.class);
 
@@ -84,10 +80,42 @@ public class Notifier {
                         0,
                         PendingIntent.FLAG_UPDATE_CURRENT
                 );
-        mBuilder.setContentIntent(resultPendingIntent);
-        NotificationManager mNotificationManager =
+        sBuilder.setContentIntent(resultPendingIntent);
+        sNotificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         // mId allows you to update the notification later on.
-        mNotificationManager.notify(Config.NOTIFICATION_BATTERY_STATUS, mBuilder.build());
+        sNotificationManager.notify(Config.NOTIFICATION_BATTERY_STATUS, sBuilder.build());
+        isStatusBarShown = true;
+    }
+
+    public static void updateStatusBar(final Context context) {
+        // In case status bar is not started yet call start method
+        if (!isStatusBarShown) {
+            startStatusBar(context);
+            return;
+        }
+
+        int now = Battery.getBatteryCurrentNow(context);
+        int level = (int) Inspector.getCurrentBatteryLevel() * 100;
+        String title = "Now: " + now + " mA";
+        String text = "GreenHub is running";
+
+        sBuilder.setContentTitle(title)
+                .setContentText(text)
+                .setAutoCancel(false)
+                .setOngoing(true)
+                .setPriority(NotificationCompat.PRIORITY_LOW);
+
+        if (level < 100) {
+            sBuilder.setSmallIcon(R.drawable.ic_stat_00_pct_charged + level);
+            if (level <= 15) {
+                sBuilder.setPriority(NotificationCompat.PRIORITY_HIGH);
+            }
+        } else {
+            sBuilder.setSmallIcon(R.drawable.ic_stat_z100_pct_charged);
+        }
+
+        // Because the ID remains unchanged, the existing notification is updated.
+        sNotificationManager.notify(Config.NOTIFICATION_BATTERY_STATUS, sBuilder.build());
     }
 }
