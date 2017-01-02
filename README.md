@@ -95,3 +95,7 @@ GreenHub was originally inspired by and has used data definitions from:
 
 - [https://github.com/carat-project/carat-android](https://github.com/carat-project/carat-android) - Copyright (c) 2011-2016, AMP Lab and University
 of Helsinki All rights reserved.
+
+It uses battery percentage icons from the project:
+
+- [https://github.com/thuetz/Energize](https://github.com/thuetz/Energize).
