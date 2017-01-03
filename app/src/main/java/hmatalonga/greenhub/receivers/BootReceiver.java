@@ -21,6 +21,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import hmatalonga.greenhub.util.Notifier;
+import hmatalonga.greenhub.util.SettingsUtils;
 
 import static hmatalonga.greenhub.util.LogUtils.LOGI;
 import static hmatalonga.greenhub.util.LogUtils.makeLogTag;
@@ -40,7 +41,7 @@ public class BootReceiver extends BroadcastReceiver {
      */
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED)) {
+        if (SettingsUtils.isTosAccepted(context)) {
             LOGI(TAG, "Launching notification");
             Notifier.startStatusBar(context);
         }

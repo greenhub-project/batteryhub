@@ -26,6 +26,7 @@ import android.location.LocationManager;
 import android.os.BatteryManager;
 import android.os.Bundle;
 import android.support.v4.content.WakefulBroadcastReceiver;
+import android.widget.Toast;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -35,6 +36,7 @@ import hmatalonga.greenhub.Config;
 import hmatalonga.greenhub.events.BatteryLevelEvent;
 import hmatalonga.greenhub.models.LocationInfo;
 import hmatalonga.greenhub.models.data.LocationProvider;
+import hmatalonga.greenhub.util.Notifier;
 
 import static hmatalonga.greenhub.util.LogUtils.LOGI;
 import static hmatalonga.greenhub.util.LogUtils.makeLogTag;
@@ -105,8 +107,6 @@ public class DataEstimator extends WakefulBroadcastReceiver implements LocationL
             service.fillIn(intent, 0);
             service.putExtra("distance", distance);
 
-            // If this broadcasts fires very often move the event post inside the service
-            // with constraint batteryLevelChanged
             EventBus.getDefault().post(new BatteryLevelEvent(level));
 
             startWakefulService(context, service);
@@ -165,7 +165,7 @@ public class DataEstimator extends WakefulBroadcastReceiver implements LocationL
     }
 
     // Getters & Setters
-    public void getCurrentStatus(final Context context, boolean callService) {
+    public void getCurrentStatus(final Context context) {
         IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
         Intent batteryStatus = context.registerReceiver(null, ifilter);
         assert batteryStatus != null;
@@ -179,25 +179,6 @@ public class DataEstimator extends WakefulBroadcastReceiver implements LocationL
         technology = batteryStatus.getExtras().getString(BatteryManager.EXTRA_TECHNOLOGY);
         temperature = (float) (batteryStatus.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, 0) / 10);
         voltage = (float) (batteryStatus.getIntExtra(BatteryManager.EXTRA_VOLTAGE, 0) / 1000);
-
-        /* On some phones, scale is always 0. */
-        if (scale == 0)
-            scale = 100;
-        if (level > 0) {
-            Inspector.setCurrentBatteryLevel(level, scale);
-
-            requestLocationUpdates();
-
-            // Update last known location...
-            if (lastKnownLocation == null)
-                lastKnownLocation = LocationInfo.getLastKnownLocation(context);
-
-            if (callService) {
-                Intent service = new Intent(context, DataEstimatorService.class);
-                service.putExtra("distance", distance);
-                startWakefulService(context, service);
-            }
-        }
     }
 
     public String getHealthStatus() {

@@ -16,15 +16,18 @@
 
 package hmatalonga.greenhub.util;
 
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v4.app.NotificationCompat;
 
 import hmatalonga.greenhub.Config;
 import hmatalonga.greenhub.R;
+import hmatalonga.greenhub.managers.sampling.DataEstimator;
 import hmatalonga.greenhub.managers.sampling.Inspector;
 import hmatalonga.greenhub.models.Battery;
 import hmatalonga.greenhub.ui.MainActivity;
@@ -33,7 +36,6 @@ import hmatalonga.greenhub.ui.MainActivity;
  * Notifier
  */
 public class Notifier {
-
     private static boolean isStatusBarShown = false;
 
     private static NotificationCompat.Builder sBuilder = null;
@@ -42,8 +44,12 @@ public class Notifier {
     public static void startStatusBar(final Context context) {
         if (isStatusBarShown) return;
 
+        // At this moment Inspector still doesn't have a current level assigned
+        DataEstimator estimator = new DataEstimator();
+        estimator.getCurrentStatus(context);
+
         int now = Battery.getBatteryCurrentNow(context);
-        int level = (int) Inspector.getCurrentBatteryLevel() * 100;
+        int level = estimator.getLevel();
         String title = "Now: " + now + " mA";
         String text = "GreenHub is running";
 
@@ -96,7 +102,7 @@ public class Notifier {
         }
 
         int now = Battery.getBatteryCurrentNow(context);
-        int level = (int) Inspector.getCurrentBatteryLevel() * 100;
+        int level = (int) (Inspector.getCurrentBatteryLevel() * 100);
         String title = "Now: " + now + " mA";
         String text = "GreenHub is running";
 
@@ -117,5 +123,25 @@ public class Notifier {
 
         // Because the ID remains unchanged, the existing notification is updated.
         sNotificationManager.notify(Config.NOTIFICATION_BATTERY_STATUS, sBuilder.build());
+    }
+
+    public static void batteryFullAlert(final Context context) {
+        if (sNotificationManager == null) {
+            sNotificationManager =
+                    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        }
+
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
+                .setSmallIcon(R.drawable.ic_information_white_24dp)
+                .setContentTitle("Battery is full")
+                .setContentText("Remove your phone from the charger")
+                .setAutoCancel(true)
+                .setOngoing(false)
+                .setLights(Color.GREEN, 500, 2000)
+                .setDefaults(Notification.DEFAULT_VIBRATE)
+                .setPriority(NotificationCompat.PRIORITY_LOW);
+
+        // Because the ID remains unchanged, the existing notification is updated.
+        sNotificationManager.notify(Config.NOTIFICATION_BATTERY_FULL, mBuilder.build());
     }
 }

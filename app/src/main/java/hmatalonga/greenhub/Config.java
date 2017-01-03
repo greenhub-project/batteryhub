@@ -56,7 +56,7 @@ public final class Config {
     public static final boolean DEBUG = true;
     public static final boolean PRODUCTION = false;
 
-    public static final String STATUS_URL = "https://hmatalonga.github.io/";
+    public static final String SERVER_STATUS_URL = "https://hmatalonga.github.io/";
     public static final String SERVER_URL_DEFAULT = "none";
 
     // Report Freshness timeout. Default: 15 minutes
@@ -84,8 +84,10 @@ public final class Config {
     public static final int SAMPLE_MAX_BATCHES = 50;
     public static final int REFRESH_CURRENT_INTERVAL = 5000;
     public static final int REFRESH_STATUS_BAR_INTERVAL = REFRESH_CURRENT_INTERVAL * 6;
+    public static final int REFRESH_STATUS_ERROR = REFRESH_CURRENT_INTERVAL * 2;
 
     public static final String STATUS_IDLE = "Idle";
 
     public static final int NOTIFICATION_BATTERY_STATUS = 1001;
+    public static final int NOTIFICATION_BATTERY_FULL = 1002;
 }

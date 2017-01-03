@@ -18,11 +18,10 @@ package hmatalonga.greenhub.ui;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.PreferenceActivity;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
@@ -30,17 +29,19 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import org.greenrobot.eventbus.EventBus;
+
 import hmatalonga.greenhub.Config;
 import hmatalonga.greenhub.GreenHubApp;
 import hmatalonga.greenhub.R;
+import hmatalonga.greenhub.events.StatusEvent;
 import hmatalonga.greenhub.managers.sampling.DataEstimator;
 import hmatalonga.greenhub.managers.storage.GreenHubDb;
-import hmatalonga.greenhub.tasks.RegisterDeviceTask;
+import hmatalonga.greenhub.network.CommunicationManager;
 import hmatalonga.greenhub.tasks.ServerStatusTask;
 import hmatalonga.greenhub.ui.adapters.TabAdapter;
 import hmatalonga.greenhub.ui.layouts.MainTabLayout;
 import hmatalonga.greenhub.util.NetworkWatcher;
-import hmatalonga.greenhub.util.Notifier;
 import hmatalonga.greenhub.util.SettingsUtils;
 
 import static hmatalonga.greenhub.util.LogUtils.LOGI;
@@ -53,8 +54,6 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
     private GreenHubApp mApp;
 
     private ViewPager mViewPager;
-
-    private Handler mHandler;
 
     public GreenHubDb database;
 
@@ -95,9 +94,9 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
     @Override
     public boolean onMenuItemClick(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_settings:
-                startActivity(new Intent(this, SettingsActivity.class));
-                return true;
+//            case R.id.action_settings:
+//                startActivity(new Intent(this, SettingsActivity.class));
+//                return true;
             case R.id.action_summary:
                 startActivity(new Intent(Intent.ACTION_POWER_USAGE_SUMMARY));
                 return true;
@@ -106,11 +105,20 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
         return false;
     }
 
+    public DataEstimator getEstimator() {
+        return mApp.estimator;
+    }
+
     private void loadComponents() {
         final Context context = getApplicationContext();
 
         database = new GreenHubDb();
         mApp = (GreenHubApp) getApplication();
+
+        // Check if Service needs to start, in case it is coming from WelcomeActivity
+        if (SettingsUtils.isTosAccepted(context)) {
+            mApp.startGreenHubService();
+        }
 
         loadViews();
 
@@ -119,18 +127,6 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
 
         // Fetch web server status and update them
         new ServerStatusTask().execute(context);
-
-        // Display Status bar
-        Notifier.startStatusBar(context);
-
-        mHandler = new Handler();
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Notifier.updateStatusBar(context);
-                mHandler.postDelayed(this, Config.REFRESH_STATUS_BAR_INTERVAL);
-            }
-        }, Config.REFRESH_STATUS_BAR_INTERVAL);
     }
 
     private void loadViews() {
@@ -149,7 +145,31 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Upload Samples
+                Context context = getApplicationContext();
+
+                // Check Internet connectivity
+                if (!NetworkWatcher.hasInternet(context, NetworkWatcher.COMMUNICATION_MANAGER)) {
+                    Snackbar.make(view, getString(R.string.alert_no_connectivity), Snackbar.LENGTH_LONG).show();
+                    return;
+                }
+
+                // Check if server url is stored in preferences
+                if (!SettingsUtils.isServerUrlPresent(context)) {
+                    EventBus.getDefault().post(new StatusEvent("It needs to sync with server. Try again later"));
+                    refreshStatus();
+                    return;
+                }
+
+                // Upload samples
+                CommunicationManager manager = new CommunicationManager(context);
+
+                // Check if is already uploading
+                if (!CommunicationManager.isUploading) {
+                    manager.sendSamples();
+                } else {
+                    EventBus.getDefault().post(new StatusEvent("Upload is already running..."));
+                    refreshStatus();
+                }
             }
         });
 
@@ -179,7 +199,13 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabLayout));
     }
 
-    public DataEstimator getEstimator() {
-        return mApp.estimator;
+    private void refreshStatus() {
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                EventBus.getDefault().post(new StatusEvent(Config.STATUS_IDLE));
+            }
+        }, Config.REFRESH_STATUS_ERROR);
     }
 }

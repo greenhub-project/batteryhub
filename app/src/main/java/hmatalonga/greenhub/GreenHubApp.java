@@ -17,10 +17,14 @@
 package hmatalonga.greenhub;
 
 import android.app.Application;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Handler;
 
 import hmatalonga.greenhub.managers.sampling.DataEstimator;
+import hmatalonga.greenhub.util.Notifier;
+import hmatalonga.greenhub.util.SettingsUtils;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 
@@ -37,6 +41,8 @@ public class GreenHubApp extends Application {
     public static boolean isServiceRunning = false;
 
     public DataEstimator estimator;
+
+    private Handler mHandler;
 
     @Override
     public void onCreate() {
@@ -57,16 +63,21 @@ public class GreenHubApp extends Application {
 
         estimator = new DataEstimator();
 
-        LOGI(TAG, "isServiceRunning => " + String.valueOf(isServiceRunning));
-
-        LOGI(TAG, "startGreenHubService() called");
-
-        startGreenHubService();
+        if (SettingsUtils.isTosAccepted(getApplicationContext())) {
+            LOGI(TAG, "startGreenHubService() called");
+            startGreenHubService();
+        }
     }
 
     public void startGreenHubService() {
         if (!isServiceRunning) {
             LOGI(TAG, "GreenHubService starting...");
+
+            final Context context = getApplicationContext();
+
+            // Display Status bar
+            Notifier.startStatusBar(context);
+
             new Thread() {
                 private IntentFilter intentFilter;
 
@@ -87,6 +98,15 @@ public class GreenHubApp extends Application {
                     isServiceRunning = true;
                 }
             }.start();
+
+            mHandler = new Handler();
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Notifier.updateStatusBar(context);
+                    mHandler.postDelayed(this, Config.REFRESH_STATUS_BAR_INTERVAL);
+                }
+            }, Config.REFRESH_STATUS_BAR_INTERVAL);
         } else {
             LOGI(TAG, "GreenHubService is already running...");
         }

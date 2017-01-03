@@ -17,26 +17,26 @@
 package hmatalonga.greenhub.network;
 
 import android.content.Context;
-import android.util.Log;
-
-
-import com.google.gson.Gson;
+import android.os.Handler;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.SortedMap;
-import java.util.SortedSet;
-import java.util.TreeSet;
-
+import hmatalonga.greenhub.Config;
 import hmatalonga.greenhub.events.StatusEvent;
 import hmatalonga.greenhub.managers.storage.GreenHubDb;
 import hmatalonga.greenhub.models.data.Sample;
-import hmatalonga.greenhub.util.GreenHubHelper;
+import hmatalonga.greenhub.network.services.GreenHubAPIService;
 import hmatalonga.greenhub.util.NetworkWatcher;
+import hmatalonga.greenhub.util.SettingsUtils;
+import io.realm.RealmResults;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
+import static hmatalonga.greenhub.util.LogUtils.LOGI;
+import static hmatalonga.greenhub.util.LogUtils.makeLogTag;
 
 /**
  * Send collected data to the server and receives responses.
@@ -44,99 +44,106 @@ import hmatalonga.greenhub.util.NetworkWatcher;
  * Created by hugo on 25-03-2016.
  */
 public class CommunicationManager {
-    private static final String TAG = "CommunicationManager";
 
-    private static Map<String, String> sParams = new HashMap<>();
+    private static final String TAG = makeLogTag(CommunicationManager.class);
 
-    private GreenHubHelper mApp;
-    private Gson mGson;
+    public static boolean isUploading = false;
+
     private Context mContext;
-    private SortedMap<Long, Sample> map;
-    private GreenHubDb database;
-    private ArrayList<Sample> samples;
-    private int sTimeout = 5000; // 5s default for socket timeout
-    private int done;
-    private long samplesCount;
 
-    public CommunicationManager(GreenHubHelper app) {
-        this.mApp = app;
-        this.mContext = null;
-        this.mGson = new Gson();
-        database = new GreenHubDb();
-    }
+    private GreenHubAPIService mService;
 
-    public CommunicationManager(GreenHubHelper app, int timeout) {
-        this.mApp = app;
-        this.mContext = null;
-        this.mGson = new Gson();
-        this.sTimeout = timeout;
-        database = new GreenHubDb();
+    private GreenHubDb mDatabase;
+
+    private RealmResults<Sample> mCollection;
+
+    public CommunicationManager(final Context context) {
+        mContext = context;
+        mDatabase = new GreenHubDb();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(SettingsUtils.fetchServerUrl(context))
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        mService = retrofit.create(GreenHubAPIService.class);
     }
 
     public void sendSamples() {
         boolean connected = NetworkWatcher.hasInternet(mContext, NetworkWatcher.COMMUNICATION_MANAGER);
 
-        if (!connected) {
-            // HomeFragment.setStatus("Not connected");
+        mCollection = mDatabase.allSamples();
+
+        if (mCollection.isEmpty()) {
+            EventBus.getDefault().post(new StatusEvent("No samples to send..."));
+            isUploading = false;
             return;
         }
-        samplesCount = database.count(Sample.class);
-        done = 0;
 
-        // HomeFragment.setStatus("Samples sent " + done + "/" + samplesCount);
-
-        // map = database.queryOldestSamples(samplesCount); // Config.COMMS_MAX_UPLOAD_BATCH
-
-        if (map.size() > 0)
-            uploadSamples(null);
-        else {
-            Log.w(TAG, "No samples to send.");
-            EventBus.getDefault().post(new StatusEvent("No samples to send."));
+        if (connected) {
+            EventBus.getDefault().post(new StatusEvent("Uploading samples..."));
+            isUploading = true;
+            uploadSample(mCollection.first());
         }
+
     }
-
-    private void uploadSamples(Collection<Sample> collection) {
-        samples = new ArrayList<>();
-        samples.addAll(collection);
-
-        try {
-            uploadSample(samples.get(done));
-        } catch (Throwable th) {
-            Log.e(TAG, "Error refreshing main reports.", th);
-        }
-    }
-
 
     /**
      * Uploads a single Sample object, sending a HTTP request to the server
-     * @param sample object to upload
+     * @param sample object to sendSamples
      * @return if uploaded successfully returns true, otherwise returns false
      */
     private void uploadSample(final Sample sample) {
+        LOGI(TAG, "Uploading Sample => " + sample.id);
+        Call<Integer> call = mService.createSample(sample);
+        call.enqueue(new Callback<Integer>() {
+            @Override
+            public void onResponse(Call<Integer> call, Response<Integer> response) {
+                LOGI(TAG, "Sample => " + sample.id + " uploaded successfully!");
+                handleResponse(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<Integer> call, Throwable t) {
+                t.printStackTrace();
+                EventBus.getDefault().post(new StatusEvent("Error uploading samples."));
+                isUploading = false;
+                refreshStatus();
+            }
+        });
     }
 
-    private void handleResponse(String response) {
-        if (response.equals("OK")) {
-            done++;
-
-            // status
-            // HomeFragment.setStatus("Samples sent " + done + "/" + samplesCount);
-
-            if (done == samplesCount) {
-                // status finished
-                SortedSet<Long> uploaded = new TreeSet<>();
-                int i = 0;
-                for (Long s : map.keySet()) {
-                    if (i < done)
-                        uploaded.add(s);
-                    i += 1;
-                }
-                // database.deleteSamples(uploaded);
+    private void handleResponse(int response) {
+        if (response == 1) {
+            if (mCollection.isEmpty()) {
+                EventBus.getDefault().post(new StatusEvent("Upload finished!"));
+                isUploading = false;
+                refreshStatus();
+                return;
             }
-            else
-                uploadSample(samples.get(done));
+
+            LOGI(TAG, "Deleting uploaded sample...");
+
+            // delete uploaded sample and upload next one
+//            if (mCollection.deleteFirstFromRealm()) {
+//                uploadSample(mCollection.first());
+//                return;
+//            }
+
+            EventBus.getDefault().post(new StatusEvent("Not all samples were sent..."));
+        } else {
+            EventBus.getDefault().post(new StatusEvent("Error uploading samples."));
         }
-        else;
-             //HomeFragment.setStatus("Error sending samples. Try again later");
+        isUploading = false;
+        refreshStatus();
+    }
+
+    private void refreshStatus() {
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                EventBus.getDefault().post(new StatusEvent(Config.STATUS_IDLE));
+            }
+        }, Config.REFRESH_STATUS_ERROR);
     }
 }

@@ -18,11 +18,7 @@ package hmatalonga.greenhub.network.handlers;
 
 import android.content.Context;
 
-import org.greenrobot.eventbus.EventBus;
-
-import hmatalonga.greenhub.BuildConfig;
 import hmatalonga.greenhub.Config;
-import hmatalonga.greenhub.events.UpdateAppEvent;
 import hmatalonga.greenhub.models.ServerStatus;
 import hmatalonga.greenhub.network.services.GreenHubStatusService;
 import hmatalonga.greenhub.tasks.RegisterDeviceTask;
@@ -46,7 +42,7 @@ public class ServerStatusHandler {
 
     public ServerStatusHandler() {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Config.STATUS_URL)
+                .baseUrl(Config.SERVER_STATUS_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         mService = retrofit.create(GreenHubStatusService.class);

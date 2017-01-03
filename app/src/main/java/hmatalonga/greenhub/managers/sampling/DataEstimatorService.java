@@ -48,19 +48,18 @@ package hmatalonga.greenhub.managers.sampling;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.os.BatteryManager;
 import android.os.PowerManager;
 
 import org.greenrobot.eventbus.EventBus;
 
 import hmatalonga.greenhub.Config;
-import hmatalonga.greenhub.events.BatteryLevelEvent;
 import hmatalonga.greenhub.events.StatusEvent;
 import hmatalonga.greenhub.managers.storage.GreenHubDb;
 import hmatalonga.greenhub.models.data.BatteryUsage;
 import hmatalonga.greenhub.models.data.Sample;
+import hmatalonga.greenhub.network.CommunicationManager;
 import hmatalonga.greenhub.util.Notifier;
+import hmatalonga.greenhub.util.SettingsUtils;
 
 import static hmatalonga.greenhub.util.LogUtils.LOGI;
 import static hmatalonga.greenhub.util.LogUtils.makeLogTag;
@@ -100,8 +99,8 @@ public class DataEstimatorService extends IntentService {
 
         wakeLock.acquire();
 
-        Context context = getApplicationContext();
         String action = null;
+        Context context = getApplicationContext();
 
         if (intent != null) {
             action = intent.getStringExtra("OriginalAction");
@@ -161,7 +160,9 @@ public class DataEstimatorService extends IntentService {
                 getSample(context, intent, lastSample, database);
                 LOGI(TAG, "Getting new usage details");
                 getBatteryUsage(context, intent, database, false);
-                // Notifier.toOpenApp(context);
+                if (Inspector.getCurrentBatteryLevel() == 1) {
+                    Notifier.batteryFullAlert(context);
+                }
             }
 
 			/**
@@ -187,11 +188,25 @@ public class DataEstimatorService extends IntentService {
                 EventBus.getDefault().post(new StatusEvent("Getting new sample..."));
                 getSample(context, intent, lastSample, database);
                 getBatteryUsage(context, intent, database, false);
-                Notifier.updateStatusBar(context);
+                if (Inspector.getCurrentBatteryLevel() == 1) {
+                    Notifier.batteryFullAlert(context);
+                }
             } else {
                 if (Config.DEBUG) {
                     LOGI(TAG, "No battery percentage change. BatteryLevel => " + Inspector.getCurrentBatteryLevel());
                 }
+            }
+            
+            // Check if server url is stored in preferences
+            if (!SettingsUtils.isServerUrlPresent(context)) {
+                database.close();
+                return;
+            }
+
+            // Check if is necessary to sendSamples samples >= 50
+            if (database.count(Sample.class) >= 50 && !CommunicationManager.isUploading) {
+                CommunicationManager manager = new CommunicationManager(context);
+                manager.sendSamples();
             }
 
             // Finally close database access
