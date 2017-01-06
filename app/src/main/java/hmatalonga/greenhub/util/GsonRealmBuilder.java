@@ -21,6 +21,10 @@ import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import org.json.JSONObject;
+
+import hmatalonga.greenhub.models.data.Device;
+import hmatalonga.greenhub.models.data.Sample;
 import io.realm.RealmObject;
 
 /**
@@ -30,8 +34,7 @@ public class GsonRealmBuilder {
 
     private static final String TAG = "GsonRealmBuilder";
 
-    private GsonRealmBuilder() {
-    }
+    private GsonRealmBuilder() {}
 
     private static GsonBuilder getBuilder() {
         return new GsonBuilder()

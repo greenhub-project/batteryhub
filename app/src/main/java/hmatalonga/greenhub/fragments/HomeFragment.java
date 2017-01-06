@@ -98,8 +98,6 @@ public class HomeFragment extends Fragment {
 
     private String mActivePower;
 
-    private boolean mRunning;
-
     public static HomeFragment newInstance() {
         return new HomeFragment();
     }
@@ -143,7 +141,6 @@ public class HomeFragment extends Fragment {
         mMax = 0;
         mHandler = new Handler();
         mHandler.postDelayed(runnable, Config.REFRESH_CURRENT_INTERVAL);
-        mRunning = true;
 
         return view;
     }
@@ -190,10 +187,8 @@ public class HomeFragment extends Fragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void updatePowerSource(PowerSourceEvent event) {
         loadPluggedState(event.status);
-        if (mActivePower.equals("unplugged") && !mRunning) {
+        if (mActivePower.equals("unplugged")) {
             resetBatteryCurrent();
-            mHandler.postDelayed(runnable, Config.REFRESH_CURRENT_INTERVAL);
-            mRunning = true;
         }
     }
 
@@ -329,7 +324,7 @@ public class HomeFragment extends Fragment {
                 mBatteryCurrentMax.setText(value);
                 value = "Full";
                 mBatteryCurrentNow.setText(value);
-                mRunning = false;
+                mHandler.postDelayed(this, Config.REFRESH_CURRENT_INTERVAL);
                 return;
             }
 

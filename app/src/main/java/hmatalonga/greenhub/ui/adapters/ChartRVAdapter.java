@@ -50,22 +50,31 @@ public class ChartRVAdapter extends RecyclerView.Adapter<ChartRVAdapter.Dashboar
 
     private ArrayList<ChartCard> mChartCards;
 
+    private int mInterval;
+
     static class DashboardViewHolder extends RecyclerView.ViewHolder {
 
         CardView cv;
         TextView label;
+        TextView interval;
         LineChart chart;
 
         DashboardViewHolder(View itemView) {
             super(itemView);
             cv = (CardView) itemView.findViewById(R.id.cv);
             label = (TextView) itemView.findViewById(R.id.label);
+            interval = (TextView) itemView.findViewById(R.id.interval);
             chart = (LineChart) itemView.findViewById(R.id.chart);
         }
     }
 
-    public ChartRVAdapter(ArrayList<ChartCard> chartCards) {
+    public ChartRVAdapter(ArrayList<ChartCard> chartCards, int interval) {
         this.mChartCards = chartCards;
+        this.mInterval = interval;
+    }
+
+    public void setInterval(int interval) {
+        mInterval = interval;
     }
 
     @Override
@@ -89,6 +98,13 @@ public class ChartRVAdapter extends RecyclerView.Adapter<ChartRVAdapter.Dashboar
         holder.chart.setData(loadData(mChartCards.get(position)));
         holder.chart.invalidate();
         holder.label.setText(mChartCards.get(position).label);
+        if (mInterval == DateUtils.INTERVAL_24H) {
+            holder.interval.setText("Last 24h");
+        } else if (mInterval == DateUtils.INTERVAL_3DAYS) {
+            holder.interval.setText("Last 3 days");
+        } else if (mInterval == DateUtils.INTERVAL_5DAYS) {
+            holder.interval.setText("Last 5 days");
+        }
     }
 
     @Override
@@ -126,7 +142,7 @@ public class ChartRVAdapter extends RecyclerView.Adapter<ChartRVAdapter.Dashboar
         IAxisValueFormatter formatterX = new IAxisValueFormatter() {
             @Override
             public String getFormattedValue(float value, AxisBase axis) {
-                return DateUtils.ConvertMilliSecondsToFormattedDate((long) value);
+                return DateUtils.convertMilliSecondsToFormattedDate((long) value);
             }
         };
 
@@ -163,6 +179,7 @@ public class ChartRVAdapter extends RecyclerView.Adapter<ChartRVAdapter.Dashboar
 
         holder.chart.getLegend().setEnabled(false);
         holder.chart.getDescription().setEnabled(false);
+        holder.chart.setNoDataText("Loading Data...");
 
         IMarker marker = new ChartMarkerView(
                 holder.itemView.getContext(), R.layout.item_marker, card.type
@@ -170,6 +187,6 @@ public class ChartRVAdapter extends RecyclerView.Adapter<ChartRVAdapter.Dashboar
 
         holder.chart.setMarker(marker);
 
-        holder.chart.animateY(3000, Easing.EasingOption.EaseInBack);
+        holder.chart.animateY(600, Easing.EasingOption.Linear);
     }
 }

@@ -196,15 +196,16 @@ public class DataEstimatorService extends IntentService {
                     LOGI(TAG, "No battery percentage change. BatteryLevel => " + Inspector.getCurrentBatteryLevel());
                 }
             }
-            
+
             // Check if server url is stored in preferences
             if (!SettingsUtils.isServerUrlPresent(context)) {
                 database.close();
                 return;
             }
 
-            // Check if is necessary to sendSamples samples >= 50
-            if (database.count(Sample.class) >= 50 && !CommunicationManager.isUploading) {
+            // Check if is necessary to sendSamples samples >= SAMPLE_MAX_BATCH
+            if (database.count(Sample.class) >= Config.SAMPLE_MAX_BATCH &&
+                    !CommunicationManager.isUploading) {
                 CommunicationManager manager = new CommunicationManager(context);
                 manager.sendSamples();
             }

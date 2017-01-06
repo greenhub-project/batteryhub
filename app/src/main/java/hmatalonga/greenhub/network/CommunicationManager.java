@@ -19,6 +19,9 @@ package hmatalonga.greenhub.network;
 import android.content.Context;
 import android.os.Handler;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+
 import org.greenrobot.eventbus.EventBus;
 
 import hmatalonga.greenhub.Config;
@@ -26,6 +29,7 @@ import hmatalonga.greenhub.events.StatusEvent;
 import hmatalonga.greenhub.managers.storage.GreenHubDb;
 import hmatalonga.greenhub.models.data.Sample;
 import hmatalonga.greenhub.network.services.GreenHubAPIService;
+import hmatalonga.greenhub.util.GsonRealmBuilder;
 import hmatalonga.greenhub.util.NetworkWatcher;
 import hmatalonga.greenhub.util.SettingsUtils;
 import io.realm.RealmResults;
@@ -47,7 +51,11 @@ public class CommunicationManager {
 
     private static final String TAG = makeLogTag(CommunicationManager.class);
 
+    private static final int RESPONSE_OKAY = 1;
+    private static final int RESPONSE_ERROR = 0;
+
     public static boolean isUploading = false;
+    public static boolean isQueued = false;
 
     private Context mContext;
 
@@ -60,10 +68,11 @@ public class CommunicationManager {
     public CommunicationManager(final Context context) {
         mContext = context;
         mDatabase = new GreenHubDb();
+        Gson gson = GsonRealmBuilder.get();
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(SettingsUtils.fetchServerUrl(context))
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
         mService = retrofit.create(GreenHubAPIService.class);
     }
@@ -94,18 +103,24 @@ public class CommunicationManager {
      */
     private void uploadSample(final Sample sample) {
         LOGI(TAG, "Uploading Sample => " + sample.id);
-        Call<Integer> call = mService.createSample(sample);
+        final int id = sample.id;
+        Call<Integer> call = mService.createSample(prepareSample(sample));
         call.enqueue(new Callback<Integer>() {
             @Override
             public void onResponse(Call<Integer> call, Response<Integer> response) {
-                LOGI(TAG, "Sample => " + sample.id + " uploaded successfully!");
+                if (response == null) {
+                    EventBus.getDefault().post(new StatusEvent("Server response has failed..."));
+                    return;
+                }
+
+                LOGI(TAG, "Sample => " + id + " uploaded successfully!");
                 handleResponse(response.body());
             }
 
             @Override
             public void onFailure(Call<Integer> call, Throwable t) {
                 t.printStackTrace();
-                EventBus.getDefault().post(new StatusEvent("Error uploading samples."));
+                EventBus.getDefault().post(new StatusEvent("Server is not responding..."));
                 isUploading = false;
                 refreshStatus();
             }
@@ -113,7 +128,7 @@ public class CommunicationManager {
     }
 
     private void handleResponse(int response) {
-        if (response == 1) {
+        if (response == RESPONSE_OKAY) {
             if (mCollection.isEmpty()) {
                 EventBus.getDefault().post(new StatusEvent("Upload finished!"));
                 isUploading = false;
@@ -130,11 +145,24 @@ public class CommunicationManager {
 //            }
 
             EventBus.getDefault().post(new StatusEvent("Not all samples were sent..."));
-        } else {
-            EventBus.getDefault().post(new StatusEvent("Error uploading samples."));
+        } else if (response == RESPONSE_ERROR){
+            EventBus.getDefault().post(new StatusEvent("Server error uploading samples."));
         }
         isUploading = false;
         refreshStatus();
+    }
+
+    private JsonObject prepareSample(final Sample sample) {
+        /**
+         * This is a manual approach, not ideal.
+         * In the future create a gson builder with proper type adapters.
+         */
+        JsonObject object = new JsonObject();
+        object.addProperty("uuId", sample.uuId);
+        object.addProperty("timestamp", sample.timestamp);
+        object.addProperty("batteryState", sample.batteryState);
+        object.addProperty("batteryLevel", sample.batteryState);
+        return object;
     }
 
     private void refreshStatus() {

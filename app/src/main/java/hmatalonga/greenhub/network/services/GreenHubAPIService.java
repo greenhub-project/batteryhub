@@ -16,8 +16,9 @@
 
 package hmatalonga.greenhub.network.services;
 
+import com.google.gson.JsonObject;
+
 import hmatalonga.greenhub.models.data.Device;
-import hmatalonga.greenhub.models.data.Sample;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
@@ -30,5 +31,5 @@ public interface GreenHubAPIService {
     Call<Integer> createDevice(@Body Device device);
 
     @POST("api/sample")
-    Call<Integer> createSample(@Body Sample sample);
+    Call<Integer> createSample(@Body JsonObject sample);
 }

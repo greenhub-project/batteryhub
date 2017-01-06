@@ -37,6 +37,7 @@ import hmatalonga.greenhub.models.data.BatteryUsage;
 import hmatalonga.greenhub.models.ui.ChartCard;
 import hmatalonga.greenhub.ui.MainActivity;
 import hmatalonga.greenhub.ui.adapters.ChartRVAdapter;
+import hmatalonga.greenhub.util.DateUtils;
 import io.realm.RealmResults;
 
 import static hmatalonga.greenhub.util.LogUtils.makeLogTag;
@@ -47,12 +48,6 @@ import static hmatalonga.greenhub.util.LogUtils.makeLogTag;
 public class StatisticsFragment extends Fragment {
 
     private static final String TAG = makeLogTag(StatisticsFragment.class);
-
-    private static final int INTERVAL_ALL = 1;
-
-    private static final int INTERVAL_24H = 2;
-
-    private static final int INTERVAL_5DAYS = 3;
 
     private MainActivity mActivity;
 
@@ -89,17 +84,20 @@ public class StatisticsFragment extends Fragment {
                     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                         switch (item.getItemId()) {
                             case R.id.action_24h:
+                                loadData(DateUtils.INTERVAL_24H);
+                                return true;
+                            case R.id.action_3days:
+                                loadData(DateUtils.INTERVAL_3DAYS);
                                 return true;
                             case R.id.action_5days:
-                                return true;
-                            case R.id.action_everything:
+                                loadData(DateUtils.INTERVAL_5DAYS);
                                 return true;
                         }
                         return false;
                     }
                 });
 
-        loadData(INTERVAL_ALL);
+        loadData(DateUtils.INTERVAL_24H);
 
         return view;
     }
@@ -109,17 +107,35 @@ public class StatisticsFragment extends Fragment {
      */
     private void loadData(int interval) {
         RealmResults<BatteryUsage> results;
+        long now = System.currentTimeMillis();
         ChartCard card;
+
         mChartCards = new ArrayList<>();
 
-        if (interval == INTERVAL_ALL) {
-            results = mActivity.database.allUsages();
-        } else if (interval == INTERVAL_24H) {
-            results = mActivity.database.betweenUsages(null, null);
-        } else if (interval == INTERVAL_5DAYS) {
-            results = mActivity.database.betweenUsages(null, null);
+        if (mActivity.database.isClosed()) {
+            mActivity.database.getDefaultInstance();
+        }
+
+        if (interval == DateUtils.INTERVAL_24H) {
+            results = mActivity.database.betweenUsages(
+                    DateUtils.getMilliSecondsInterval(DateUtils.INTERVAL_24H),
+                    now
+            );
+        } else if (interval == DateUtils.INTERVAL_3DAYS) {
+            results = mActivity.database.betweenUsages(
+                    DateUtils.getMilliSecondsInterval(DateUtils.INTERVAL_3DAYS),
+                    now
+            );
+        } else if (interval == DateUtils.INTERVAL_5DAYS) {
+            results = mActivity.database.betweenUsages(
+                    DateUtils.getMilliSecondsInterval(DateUtils.INTERVAL_5DAYS),
+                    now
+            );
         } else {
-            results = mActivity.database.allUsages();
+            results = mActivity.database.betweenUsages(
+                    DateUtils.getMilliSecondsInterval(DateUtils.INTERVAL_24H),
+                    now
+            );
         }
 
         // Battery Level
@@ -155,14 +171,15 @@ public class StatisticsFragment extends Fragment {
         }
         mChartCards.add(card);
 
-        setAdapter();
+        setAdapter(interval);
     }
 
-    private void setAdapter(){
+    private void setAdapter(int interval) {
         if (mAdapter == null) {
-            mAdapter = new ChartRVAdapter(mChartCards);
+            mAdapter = new ChartRVAdapter(mChartCards, interval);
             mRecyclerView.setAdapter(mAdapter);
         } else {
+            mAdapter.setInterval(interval);
             mAdapter.swap(mChartCards);
         }
         mRecyclerView.invalidate();

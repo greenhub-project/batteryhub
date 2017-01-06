@@ -28,16 +28,16 @@
         app:showAsAction="ifRoom"/>
 
     <item
-        android:id="@+id/action_5days"
+        android:id="@+id/action_3days"
         android:orderInCategory="200"
-        android:title="@string/action_5days"
+        android:title="@string/action_3days"
         android:icon="@drawable/ic_calendar_white_24dp"
         app:showAsAction="ifRoom"/>
 
     <item
-        android:id="@+id/action_everything"
+        android:id="@+id/action_5days"
         android:orderInCategory="300"
-        android:title="@string/action_everything"
+        android:title="@string/action_5days"
         android:icon="@drawable/ic_star_white_24dp"
         app:showAsAction="ifRoom"/>
 </menu>

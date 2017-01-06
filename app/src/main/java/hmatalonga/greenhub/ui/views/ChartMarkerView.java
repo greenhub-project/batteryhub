@@ -26,6 +26,7 @@ import com.github.mikephil.charting.utils.MPPointF;
 
 import hmatalonga.greenhub.R;
 import hmatalonga.greenhub.ui.adapters.ChartRVAdapter;
+import hmatalonga.greenhub.util.DateUtils;
 import hmatalonga.greenhub.util.StringHelper;
 
 /**

@@ -59,6 +59,10 @@ public class GreenHubDb {
         mRealm.close();
     }
 
+    public boolean isClosed() {
+        return mRealm.isClosed();
+    }
+
     public long count(Class className) {
         long size = -1;
         if (className.equals(Sample.class)) {
@@ -123,7 +127,7 @@ public class GreenHubDb {
         return mRealm.where(BatteryUsage.class).findAll();
     }
 
-    public RealmResults<BatteryUsage> betweenUsages(Date from, Date to) {
+    public RealmResults<BatteryUsage> betweenUsages(long from, long to) {
         return mRealm.where(BatteryUsage.class).between("timestamp", from, to).findAll();
     }
 }

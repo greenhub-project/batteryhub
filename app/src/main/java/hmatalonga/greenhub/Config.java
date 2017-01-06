@@ -81,7 +81,7 @@ public final class Config {
 
     public static final boolean EXTRA_SCREEN_ACTIONS = false;
 
-    public static final int SAMPLE_MAX_BATCHES = 50;
+    public static final int SAMPLE_MAX_BATCH = 10;
     public static final int REFRESH_CURRENT_INTERVAL = 5000;
     public static final int REFRESH_STATUS_BAR_INTERVAL = REFRESH_CURRENT_INTERVAL * 6;
     public static final int REFRESH_STATUS_ERROR = REFRESH_CURRENT_INTERVAL * 2;

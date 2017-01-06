@@ -138,7 +138,7 @@ public class Notifier {
                 .setAutoCancel(true)
                 .setOngoing(false)
                 .setLights(Color.GREEN, 500, 2000)
-                .setDefaults(Notification.DEFAULT_VIBRATE)
+                .setVibrate(new long[] {0, 400, 1000})
                 .setPriority(NotificationCompat.PRIORITY_LOW);
 
         // Because the ID remains unchanged, the existing notification is updated.

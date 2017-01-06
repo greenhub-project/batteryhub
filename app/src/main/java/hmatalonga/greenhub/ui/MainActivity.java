@@ -76,6 +76,7 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
 
     @Override
     protected void onStop() {
+        LOGI(TAG, "database close onStop");
         database.close();
         super.onStop();
     }

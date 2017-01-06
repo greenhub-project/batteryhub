@@ -27,12 +27,33 @@ public class DateUtils {
 
     private static final String TAG = "DateUtils";
 
+    public static final int INTERVAL_24H = 1;
+
+    public static final int INTERVAL_3DAYS = 2;
+
+    public static final int INTERVAL_5DAYS = 3;
+
     private static String dateFormat = "dd-MM HH:mm";
+
     private static SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat, Locale.UK);
 
-    public static String ConvertMilliSecondsToFormattedDate(Long milliSeconds){
+    public static String convertMilliSecondsToFormattedDate(Long milliSeconds){
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(milliSeconds);
         return simpleDateFormat.format(calendar.getTime());
+    }
+
+    public static long getMilliSecondsInterval(int interval) {
+        long now = System.currentTimeMillis();
+
+        if (interval == INTERVAL_24H) {
+            return now - (1000 * 60 * 60 * 24);
+        } else if (interval == INTERVAL_3DAYS) {
+            return now - (1000 * 60 * 60 * 24 * 3);
+        } else if (interval == INTERVAL_5DAYS) {
+            return now - (1000 * 60 * 60 * 24 * 5);
+        }
+
+        return now;
     }
 }
