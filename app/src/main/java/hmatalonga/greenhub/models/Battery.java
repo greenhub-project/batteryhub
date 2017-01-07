@@ -52,10 +52,10 @@ public class Battery {
                         context.getSystemService(Context.BATTERY_SERVICE);
                 now = manager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW);
                 if (now == 0) {
-                    now = getBatteryCurrentNowLegacy(context);
+                    now = getBatteryCurrentNowLegacy();
                 }
             } else {
-                now = getBatteryCurrentNowLegacy(context);
+                now = getBatteryCurrentNowLegacy();
             }
 
             isSupported = isSupported || (now != 0);
@@ -75,10 +75,10 @@ public class Battery {
                         context.getSystemService(Context.BATTERY_SERVICE);
                 now = manager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW);
                 if (now == 0) {
-                    now = getBatteryCurrentNowLegacy(context);
+                    now = getBatteryCurrentNowLegacy();
                 }
             } else {
-                now = getBatteryCurrentNowLegacy(context);
+                now = getBatteryCurrentNowLegacy();
             }
 
             isSupported = isSupported || (now != 0);
@@ -114,7 +114,8 @@ public class Battery {
             Method getAveragePower = powerProfile.getMethod("getAveragePower", String.class);
             getAveragePower.setAccessible(true);
             // TODO: java.lang.ClassCastException: java.lang.Double cannot be cast to java.lang.Integer
-            return ((int) getAveragePower.invoke(mPowerProfile, "battery.capacity"));
+            String value = getAveragePower.invoke(mPowerProfile, "battery.capacity").toString();
+            return ((int) Double.parseDouble(value));
         } catch (Throwable th) {
             th.printStackTrace();
         }
@@ -151,7 +152,7 @@ public class Battery {
                     context.getSystemService(Context.BATTERY_SERVICE);
             value = manager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW);
         } else {
-           value = getBatteryCurrentNowLegacy(context);
+           value = getBatteryCurrentNowLegacy();
         }
 
         return (value != Integer.MIN_VALUE) ? value / 1000 : -1;
@@ -169,12 +170,11 @@ public class Battery {
         return (value != Long.MIN_VALUE) ? value : -1;
     }
 
-    private static int getBatteryCurrentNowLegacy(final Context context) {
+    private static int getBatteryCurrentNowLegacy() {
         int value = -1;
-        String file = SettingsUtils.fetchBatteryNowSource(context);
 
         try {
-            RandomAccessFile reader = new RandomAccessFile(file, "r");
+            RandomAccessFile reader = new RandomAccessFile(Config.BATTERY_SOURCE_DEFAULT, "r");
             String average = reader.readLine();
             value = Integer.parseInt(average);
             reader.close();

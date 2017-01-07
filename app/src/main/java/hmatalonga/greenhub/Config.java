@@ -58,6 +58,7 @@ public final class Config {
 
     public static final String SERVER_STATUS_URL = "https://hmatalonga.github.io/";
     public static final String SERVER_URL_DEFAULT = "none";
+    public static final String SERVER_URL_DEVELOPMENT = "http://192.168.1.105/";
 
     // Report Freshness timeout. Default: 15 minutes
     public static final long FRESHNESS_TIMEOUT = AlarmManager.INTERVAL_FIFTEEN_MINUTES;

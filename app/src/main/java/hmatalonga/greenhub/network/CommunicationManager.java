@@ -25,6 +25,7 @@ import com.google.gson.JsonObject;
 
 import org.greenrobot.eventbus.EventBus;
 
+import hmatalonga.greenhub.BuildConfig;
 import hmatalonga.greenhub.Config;
 import hmatalonga.greenhub.events.StatusEvent;
 import hmatalonga.greenhub.managers.storage.GreenHubDb;
@@ -82,9 +83,14 @@ public class CommunicationManager {
         mContext = context;
         mDatabase = new GreenHubDb();
         mOnBackground = background;
+        String url = SettingsUtils.fetchServerUrl(context);
+
+        if (BuildConfig.DEBUG) {
+            url = Config.SERVER_URL_DEVELOPMENT;
+        }
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(SettingsUtils.fetchServerUrl(context))
+                .baseUrl(url)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         mService = retrofit.create(GreenHubAPIService.class);

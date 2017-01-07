@@ -49,6 +49,7 @@ public class ServerStatusHandler {
     }
 
     public void callGetStatus(final Context context) {
+        LOGI(TAG, "callGetStatus()");
         Call<ServerStatus> call = mService.getStatus();
         call.enqueue(new Callback<ServerStatus>() {
             @Override

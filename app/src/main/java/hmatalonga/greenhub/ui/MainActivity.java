@@ -37,6 +37,7 @@ import hmatalonga.greenhub.R;
 import hmatalonga.greenhub.events.StatusEvent;
 import hmatalonga.greenhub.managers.sampling.DataEstimator;
 import hmatalonga.greenhub.managers.storage.GreenHubDb;
+import hmatalonga.greenhub.models.Battery;
 import hmatalonga.greenhub.network.CommunicationManager;
 import hmatalonga.greenhub.tasks.ServerStatusTask;
 import hmatalonga.greenhub.ui.adapters.TabAdapter;
@@ -76,7 +77,6 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
 
     @Override
     protected void onStop() {
-        LOGI(TAG, "database close onStop");
         database.close();
         super.onStop();
     }
@@ -119,15 +119,15 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
         // Check if Service needs to start, in case it is coming from WelcomeActivity
         if (SettingsUtils.isTosAccepted(context)) {
             mApp.startGreenHubService();
+
+            // if there is no Internet connection skip tasks
+            if (!NetworkWatcher.hasInternet(context, NetworkWatcher.BACKGROUND_TASKS)) return;
+
+            // Fetch web server status and update them
+            new ServerStatusTask().execute(context);
         }
 
         loadViews();
-
-        // if there is no Internet connection skip tasks
-        if (!NetworkWatcher.hasInternet(context, NetworkWatcher.BACKGROUND_TASKS)) return;
-
-        // Fetch web server status and update them
-        new ServerStatusTask().execute(context);
     }
 
     private void loadViews() {

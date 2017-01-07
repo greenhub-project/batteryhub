@@ -17,11 +17,14 @@
 package hmatalonga.greenhub.network.handlers;
 
 import android.content.Context;
+import android.os.Build;
 
 import com.google.gson.Gson;
 
 import org.greenrobot.eventbus.EventBus;
 
+import hmatalonga.greenhub.BuildConfig;
+import hmatalonga.greenhub.Config;
 import hmatalonga.greenhub.events.StatusEvent;
 import hmatalonga.greenhub.models.Specifications;
 import hmatalonga.greenhub.models.data.Device;
@@ -34,6 +37,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import static hmatalonga.greenhub.util.LogUtils.LOGI;
 import static hmatalonga.greenhub.util.LogUtils.makeLogTag;
 
 /**
@@ -51,9 +55,14 @@ public class RegisterDeviceHandler {
     public RegisterDeviceHandler(final Context context) {
         mContext = context;
         Gson gson = GsonRealmBuilder.get();
+        String url = SettingsUtils.fetchServerUrl(context);
+
+        if (BuildConfig.DEBUG) {
+            url = Config.SERVER_URL_DEVELOPMENT;
+        }
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(SettingsUtils.fetchServerUrl(context))
+                .baseUrl(url)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
         mService = retrofit.create(GreenHubAPIService.class);
@@ -77,16 +86,27 @@ public class RegisterDeviceHandler {
     }
 
     private void callRegistration(Device device) {
+        LOGI(TAG, "callRegistration()");
         Call<Integer> call = mService.createDevice(device);
         call.enqueue(new Callback<Integer>() {
             @Override
             public void onResponse(Call<Integer> call, Response<Integer> response) {
-                SettingsUtils.markDeviceAccepted(mContext, true);
+                if (response == null || response.body() == null) {
+                    if (response == null) {
+                        LOGI(TAG, "response is null");
+                    } else {
+                        LOGI(TAG, "response body is null");
+                    }
+                    SettingsUtils.markDeviceAccepted(mContext, false);
+                    EventBus.getDefault().post(new StatusEvent("Device registration failed!"));
+                    return;
+                }
                 if (response.body() > 0) {
                     EventBus.getDefault().post(new StatusEvent("Device registered successfully!"));
                 } else if (response.body() == 0){
                     EventBus.getDefault().post(new StatusEvent("Device is already registered"));
                 }
+                SettingsUtils.markDeviceAccepted(mContext, true);
             }
 
             @Override

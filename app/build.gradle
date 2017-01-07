@@ -3,22 +3,22 @@ apply plugin: 'realm-android'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "${build_tools_version}"
+    buildToolsVersion '25.0.0'
+    signingConfigs {
+        base {
+            keyAlias 'GreenHubKey'
+            keyPassword 'greenhub'
+            storeFile file('/home/hugo/Apps/greenhub-android/app/greenhub-key.jks')
+            storePassword 'greenhub'
+        }
+    }
     defaultConfig {
         applicationId "hmatalonga.greenhub"
         minSdkVersion 16
         targetSdkVersion 25
-        version "${version_code}"
-        versionName "${version_name}"
+        versionCode 3
+        versionName "v1.0-alpha.3"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-    }
-    signingConfigs {
-        base {
-            keyAlias "${key_keyAlias}"
-            keyPassword "${key_keyPassword}"
-            storeFile file("${key_storefile}")
-            storePassword "${key_storePassword}"
-        }
     }
     buildTypes {
         debug {
@@ -31,6 +31,7 @@ android {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.base
+            zipAlignEnabled true
         }
     }
     testOptions {
@@ -38,6 +39,8 @@ android {
     }
     lintOptions {
         abortOnError false
+    }
+    productFlavors {
     }
 }
 
@@ -51,12 +54,10 @@ dependencies {
     // Dependencies for unit tests which reside in the "tests" src folder.
     testCompile 'junit:junit:4.12'
     testCompile 'org.mockito:mockito-core:1.10.19'
-
     // LeakCanary memory leaks library for testing purposes (not used at the moment)
     // debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5'
     // releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
     // testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
-
     // Android support libraries.
     compile "com.android.support:appcompat-v7:${android_support_lib_version}"
     compile "com.android.support:design:${android_support_lib_version}"
@@ -64,17 +65,17 @@ dependencies {
     compile "com.android.support:support-v13:${android_support_lib_version}"
     compile "com.android.support:cardview-v7:${android_support_lib_version}"
     compile "com.android.support:recyclerview-v7:${android_support_lib_version}"
-
     // JSON utility library.
     compile 'com.google.code.gson:gson:2.6.2'
-
     // Retrofit library for networking operations
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
     compile 'com.squareup.retrofit2:converter-gson:2.1.0'
-
     // greenrobot for event communications
     compile 'org.greenrobot:eventbus:3.0.0'
-
     // MPAndroidChart library for drawing charts
     compile 'com.github.PhilJay:MPAndroidChart:v3.0.1'
+    // Firebase crash
+    compile 'com.google.firebase:firebase-crash:10.0.1'
 }
+
+apply plugin: 'com.google.gms.google-services'

@@ -19,27 +19,27 @@
 -keepattributes Signature
 # Retain declared checked exceptions for use by a Proxy instance.
 -keepattributes Exceptions
+-keepattributes *Annotation*
 
+# Retrofit
 -dontwarn java.lang.invoke.*
 -dontwarn okio.**
-
 -dontwarn retrofit2.**
 -keep class retrofit2.** { *; }
-
 -keepclasseswithmembers class * {
     @retrofit2.http.* <methods>;
 }
-
 -keepclasseswithmembers interface * {
     @retrofit2.* <methods>;
 }
 
--keepattributes *Annotation*
+# GreenRobot
 -keepclassmembers class ** {
     @org.greenrobot.eventbus.Subscribe <methods>;
 }
 -keep enum org.greenrobot.eventbus.ThreadMode { *; }
 
+# Models
 -keep class hmatalonga.greenhub.models.** { *; }
 -keep class hmatalonga.greenhub.Config { *; }
 
