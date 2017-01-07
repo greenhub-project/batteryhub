@@ -81,8 +81,8 @@ public class RegisterDeviceHandler {
         call.enqueue(new Callback<Integer>() {
             @Override
             public void onResponse(Call<Integer> call, Response<Integer> response) {
+                SettingsUtils.markDeviceAccepted(mContext, true);
                 if (response.body() > 0) {
-                    SettingsUtils.markDeviceAccepted(mContext, true);
                     EventBus.getDefault().post(new StatusEvent("Device registered successfully!"));
                 } else if (response.body() == 0){
                     EventBus.getDefault().post(new StatusEvent("Device is already registered"));

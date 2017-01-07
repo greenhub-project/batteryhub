@@ -20,15 +20,28 @@
 # Retain declared checked exceptions for use by a Proxy instance.
 -keepattributes Exceptions
 
--keepattributes Annotation
--keep class okhttp3.** { *; }
--keep interface okhttp3.** { *; }
--dontwarn okhttp3.**
+-dontwarn java.lang.invoke.*
 -dontwarn okio.**
+
+-dontwarn retrofit2.**
+-keep class retrofit2.** { *; }
 
 -keepclasseswithmembers class * {
     @retrofit2.http.* <methods>;
 }
+
+-keepclasseswithmembers interface * {
+    @retrofit2.* <methods>;
+}
+
+-keepattributes *Annotation*
+-keepclassmembers class ** {
+    @org.greenrobot.eventbus.Subscribe <methods>;
+}
+-keep enum org.greenrobot.eventbus.ThreadMode { *; }
+
+-keep class hmatalonga.greenhub.models.** { *; }
+-keep class hmatalonga.greenhub.Config { *; }
 
 # If your project uses WebView with JS, uncomment the following
 # and specify the fully qualified class name to the JavaScript interface
