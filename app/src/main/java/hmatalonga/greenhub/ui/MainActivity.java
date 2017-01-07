@@ -151,18 +151,19 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
                 // Check Internet connectivity
                 if (!NetworkWatcher.hasInternet(context, NetworkWatcher.COMMUNICATION_MANAGER)) {
                     Snackbar.make(view, getString(R.string.alert_no_connectivity), Snackbar.LENGTH_LONG).show();
+                    CommunicationManager.isQueued = true;
                     return;
                 }
 
-                // Check if server url is stored in preferences
-                if (!SettingsUtils.isServerUrlPresent(context)) {
+                // Check if server url is stored in preferences and device is registered
+                if (!SettingsUtils.isServerUrlPresent(context) || !SettingsUtils.isDeviceRegistered(context)) {
                     EventBus.getDefault().post(new StatusEvent("It needs to sync with server. Try again later"));
                     refreshStatus();
                     return;
                 }
 
                 // Upload samples
-                CommunicationManager manager = new CommunicationManager(context);
+                CommunicationManager manager = new CommunicationManager(context, false);
 
                 // Check if is already uploading
                 if (!CommunicationManager.isUploading) {

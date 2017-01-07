@@ -16,19 +16,12 @@
 
 package hmatalonga.greenhub.managers.storage;
 
-import java.util.Date;
-
-import hmatalonga.greenhub.models.data.BatteryDetails;
 import hmatalonga.greenhub.models.data.BatterySession;
 import hmatalonga.greenhub.models.data.BatteryUsage;
-import hmatalonga.greenhub.models.data.NetworkDetails;
 import hmatalonga.greenhub.models.data.Sample;
 import io.realm.Realm;
-import io.realm.RealmQuery;
 import io.realm.RealmResults;
 import io.realm.exceptions.RealmMigrationNeededException;
-
-import static hmatalonga.greenhub.util.LogUtils.LOGI;
 
 /**
  *
@@ -129,5 +122,15 @@ public class GreenHubDb {
 
     public RealmResults<BatteryUsage> betweenUsages(long from, long to) {
         return mRealm.where(BatteryUsage.class).between("timestamp", from, to).findAll();
+    }
+
+    public RealmResults<Sample> deleteSampleFromQuery(final RealmResults<Sample> results) {
+        mRealm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                results.deleteFirstFromRealm();
+            }
+        });
+        return results;
     }
 }

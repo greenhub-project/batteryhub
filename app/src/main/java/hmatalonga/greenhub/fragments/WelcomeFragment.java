@@ -28,6 +28,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import hmatalonga.greenhub.models.Battery;
 import hmatalonga.greenhub.ui.MainActivity;
 import hmatalonga.greenhub.ui.WelcomeActivity;
 

@@ -47,6 +47,14 @@ public class SettingsUtils {
      * Boolean indicating whether to send installed packages with the samples.
      */
     public static final String PREF_SEND_INSTALLED_PACKAGES = "pref_send_installed";
+    /**
+     * Boolean indicating whether the device supports current now feature.
+     */
+    public static final String PREF_BATTERY_NOW_SUPPORTED = "pref_battery_now";
+    /**
+     * String containing Battery current now source file.
+     */
+    public static final String PREF_BATTERY_SOURCE = "pref_battery_source";
 
     /**
      * Return true if user has accepted the
@@ -93,7 +101,7 @@ public class SettingsUtils {
     }
 
     /**
-     * Save {@code url whether} of the web server.
+     * Save {@code url} of the web server.
      *
      * @param context Context to be used to edit the {@link android.content.SharedPreferences}.
      * @param url New value that will be set.
@@ -126,6 +134,32 @@ public class SettingsUtils {
     public static boolean isInstalledPackagesIncluded(final Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         return sp.getBoolean(PREF_SEND_INSTALLED_PACKAGES, false);
+    }
+
+    public static void markBatteryNowSupported(final Context context, boolean newValue) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        sp.edit().putBoolean(PREF_BATTERY_NOW_SUPPORTED, newValue).apply();
+    }
+
+    public static boolean isBatteryNowSupported(final Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getBoolean(PREF_BATTERY_NOW_SUPPORTED, false);
+    }
+
+    /**
+     * Save {@code source} of battery now value.
+     *
+     * @param context Context to be used to edit the {@link android.content.SharedPreferences}.
+     * @param source New value that will be set.
+     */
+    public static void saveBatteryNowSource(final Context context, String source) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        sp.edit().putString(PREF_BATTERY_SOURCE, source).apply();
+    }
+
+    public static String fetchBatteryNowSource(final Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getString(PREF_BATTERY_SOURCE, Config.BATTERY_SOURCE_DEFAULT);
     }
 
     /**

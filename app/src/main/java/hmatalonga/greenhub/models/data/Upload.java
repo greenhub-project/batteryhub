@@ -14,21 +14,18 @@
  * limitations under the License.
  */
 
-package hmatalonga.greenhub.network.services;
+package hmatalonga.greenhub.models.data;
 
-import hmatalonga.greenhub.models.data.Device;
-import hmatalonga.greenhub.models.data.Upload;
-import retrofit2.Call;
-import retrofit2.http.Body;
-import retrofit2.http.POST;
+import com.google.gson.JsonObject;
 
 /**
- * GreenHub API Interface.
+ * Upload.
  */
-public interface GreenHubAPIService {
-    @POST("api/device")
-    Call<Integer> createDevice(@Body Device device);
+public class Upload {
 
-    @POST("api/sample")
-    Call<Integer> createSample(@Body Upload upload);
+    public final JsonObject sample;
+
+    public Upload(final JsonObject sample) {
+        this.sample = sample;
+    }
 }

@@ -156,7 +156,7 @@ public class StatisticsFragment extends Fragment {
                 ColorTemplate.rgb("#E81332")
         );
         for (BatteryUsage usage : results) {
-            card.entries.add(new Entry((float) usage.timestamp, (float) usage.details.batteryTemperature));
+            card.entries.add(new Entry((float) usage.timestamp, (float) usage.details.temperature));
         }
         mChartCards.add(card);
 
@@ -167,7 +167,7 @@ public class StatisticsFragment extends Fragment {
                 ColorTemplate.rgb("#FF15AC")
         );
         for (BatteryUsage usage : results) {
-            card.entries.add(new Entry((float) usage.timestamp, (float) usage.details.batteryVoltage));
+            card.entries.add(new Entry((float) usage.timestamp, (float) usage.details.voltage));
         }
         mChartCards.add(card);
 

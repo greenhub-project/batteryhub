@@ -61,13 +61,10 @@ import android.util.Log;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -233,6 +230,7 @@ public final class Inspector {
 
             ProcessInfo item = new ProcessInfo();
             item.appPermissions = new RealmList<>();
+            item.appSignatures = new RealmList<>();
 
             PackageInfo packageInfo = Package.getPackageInfo(context, pName);
 
@@ -473,6 +471,9 @@ public final class Inspector {
         // Add NetworkDetails substruct to Sample
         newSample.networkDetails = networkDetails;
 
+        // For now calling info is not included so is null the object
+        newSample.callInfo = null;
+
 		/* Calling Information */
         // List<String> callInfo;
         // callInfo=SamplingLibrary.getCallInfo(context);
@@ -573,26 +574,26 @@ public final class Inspector {
         // temperature value
         // (returned by BatteryManager) is not Centigrade, it should be divided
         // by 10)
-        batteryDetails.batteryTemperature =
+        batteryDetails.temperature =
                 ((float) intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, 0)) / 10;
         // otherInfo.setBatteryTemperature(temperature);
 
         // current battery voltage in VOLTS (the unit of the returned value by
         // BatteryManager is millivolts)
-        batteryDetails.batteryVoltage =
+        batteryDetails.voltage =
                 ((float) intent.getIntExtra(BatteryManager.EXTRA_VOLTAGE, 0)) / 1000;
         // otherInfo.setBatteryVoltage(voltage);
 
-        batteryDetails.batteryCharger = batteryCharger;
-        batteryDetails.batteryHealth = batteryHealth;
-        batteryDetails.batteryTechnology = batteryTechnology;
+        batteryDetails.charger = batteryCharger;
+        batteryDetails.health = batteryHealth;
+        batteryDetails.technology = batteryTechnology;
 
         // Battery other values with API level limitations
-        batteryDetails.batteryCapacity = Battery.getBatteryCapacity(context);
-        batteryDetails.batteryChargeCounter = Battery.getBatteryChargeCounter(context);
-        batteryDetails.batteryCurrentAverage = Battery.getBatteryCurrentAverage(context);
-        batteryDetails.batteryCurrentNow = Battery.getBatteryCurrentNow(context);
-        batteryDetails.batteryEnergyCounter = Battery.getBatteryEnergyCounter(context);
+        batteryDetails.capacity = Battery.getBatteryCapacity(context);
+        batteryDetails.chargeCounter = Battery.getBatteryChargeCounter(context);
+        batteryDetails.currentAverage = Battery.getBatteryCurrentAverage(context);
+        batteryDetails.currentNow = Battery.getBatteryCurrentNow(context);
+        batteryDetails.energyCounter = Battery.getBatteryEnergyCounter(context);
 
         newSample.batteryDetails = batteryDetails;
         newSample.batteryLevel = sCurrentBatteryLevel;
@@ -625,6 +626,8 @@ public final class Inspector {
         // System settings
         settings.bluetoothEnabled = Bluetooth.isEnabled();
         settings.locationEnabled = Gps.isEnabled(context);
+        settings.powersaverEnabled = SettingsInfo.isPowerSaveEnabled(context);
+        settings.flashlightEnabled = false;
         settings.nfcEnabled = SettingsInfo.isNfcEnabled(context);
         settings.developerMode = SettingsInfo.isDeveloperModeOn(context);
         settings.unknownSources = SettingsInfo.allowUnknownSources(context);
@@ -710,21 +713,21 @@ public final class Inspector {
                 break;
         }
 
-        details.batteryTemperature = ((float) intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, 0)) / 10;
+        details.temperature = ((float) intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, 0)) / 10;
 
         // current battery voltage in VOLTS (the unit of the returned value by BatteryManager is millivolts)
-        details.batteryVoltage = ((float) intent.getIntExtra(BatteryManager.EXTRA_VOLTAGE, 0)) / 1000;
+        details.voltage = ((float) intent.getIntExtra(BatteryManager.EXTRA_VOLTAGE, 0)) / 1000;
 
-        details.batteryCharger = batteryCharger;
-        details.batteryHealth = batteryHealth;
-        details.batteryTechnology = batteryTechnology;
+        details.charger = batteryCharger;
+        details.health = batteryHealth;
+        details.technology = batteryTechnology;
 
         // Battery other values with API level limitations
-        details.batteryCapacity = Battery.getBatteryCapacity(context);
-        details.batteryChargeCounter = Battery.getBatteryChargeCounter(context);
-        details.batteryCurrentAverage = Battery.getBatteryCurrentAverage(context);
-        details.batteryCurrentNow = Battery.getBatteryCurrentNow(context);
-        details.batteryEnergyCounter = Battery.getBatteryEnergyCounter(context);
+        details.capacity = Battery.getBatteryCapacity(context);
+        details.chargeCounter = Battery.getBatteryChargeCounter(context);
+        details.currentAverage = Battery.getBatteryCurrentAverage(context);
+        details.currentNow = Battery.getBatteryCurrentNow(context);
+        details.energyCounter = Battery.getBatteryEnergyCounter(context);
 
         usage.level = (float) sCurrentBatteryLevel;
         usage.state = batteryStatus;

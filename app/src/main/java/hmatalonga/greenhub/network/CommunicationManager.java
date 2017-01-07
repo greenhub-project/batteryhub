@@ -20,6 +20,7 @@ import android.content.Context;
 import android.os.Handler;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import org.greenrobot.eventbus.EventBus;
@@ -27,7 +28,13 @@ import org.greenrobot.eventbus.EventBus;
 import hmatalonga.greenhub.Config;
 import hmatalonga.greenhub.events.StatusEvent;
 import hmatalonga.greenhub.managers.storage.GreenHubDb;
+import hmatalonga.greenhub.models.data.AppPermission;
+import hmatalonga.greenhub.models.data.AppSignature;
+import hmatalonga.greenhub.models.data.Feature;
+import hmatalonga.greenhub.models.data.LocationProvider;
+import hmatalonga.greenhub.models.data.ProcessInfo;
 import hmatalonga.greenhub.models.data.Sample;
+import hmatalonga.greenhub.models.data.Upload;
 import hmatalonga.greenhub.network.services.GreenHubAPIService;
 import hmatalonga.greenhub.util.GsonRealmBuilder;
 import hmatalonga.greenhub.util.NetworkWatcher;
@@ -52,10 +59,14 @@ public class CommunicationManager {
     private static final String TAG = makeLogTag(CommunicationManager.class);
 
     private static final int RESPONSE_OKAY = 1;
+
     private static final int RESPONSE_ERROR = 0;
 
     public static boolean isUploading = false;
+
     public static boolean isQueued = false;
+
+    public static int uploadAttempts = 0;
 
     private Context mContext;
 
@@ -65,33 +76,39 @@ public class CommunicationManager {
 
     private RealmResults<Sample> mCollection;
 
-    public CommunicationManager(final Context context) {
+    private boolean mOnBackground;
+
+    public CommunicationManager(final Context context, boolean background) {
         mContext = context;
         mDatabase = new GreenHubDb();
-        Gson gson = GsonRealmBuilder.get();
+        mOnBackground = background;
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(SettingsUtils.fetchServerUrl(context))
-                .addConverterFactory(GsonConverterFactory.create(gson))
+                .addConverterFactory(GsonConverterFactory.create())
                 .build();
         mService = retrofit.create(GreenHubAPIService.class);
     }
 
     public void sendSamples() {
-        boolean connected = NetworkWatcher.hasInternet(mContext, NetworkWatcher.COMMUNICATION_MANAGER);
+        boolean isConnected = NetworkWatcher.hasInternet(mContext, NetworkWatcher.COMMUNICATION_MANAGER);
 
         mCollection = mDatabase.allSamples();
 
         if (mCollection.isEmpty()) {
             EventBus.getDefault().post(new StatusEvent("No samples to send..."));
             isUploading = false;
+            refreshStatus();
             return;
         }
 
-        if (connected) {
+        if (isConnected) {
             EventBus.getDefault().post(new StatusEvent("Uploading samples..."));
             isUploading = true;
             uploadSample(mCollection.first());
+        } else {
+            // Schedule upload next time connectivity changes
+            CommunicationManager.isQueued = true;
         }
 
     }
@@ -103,8 +120,11 @@ public class CommunicationManager {
      */
     private void uploadSample(final Sample sample) {
         LOGI(TAG, "Uploading Sample => " + sample.id);
+
         final int id = sample.id;
-        Call<Integer> call = mService.createSample(prepareSample(sample));
+        final Upload upload = new Upload(bundleSample(sample));
+
+        Call<Integer> call = mService.createSample(upload);
         call.enqueue(new Callback<Integer>() {
             @Override
             public void onResponse(Call<Integer> call, Response<Integer> response) {
@@ -114,13 +134,22 @@ public class CommunicationManager {
                 }
 
                 LOGI(TAG, "Sample => " + id + " uploaded successfully!");
-                handleResponse(response.body());
+
+                if (response.body() != null) {
+                    handleResponse(response.body());
+                } else {
+                    handleResponse(RESPONSE_ERROR);
+                }
             }
 
             @Override
             public void onFailure(Call<Integer> call, Throwable t) {
                 t.printStackTrace();
                 EventBus.getDefault().post(new StatusEvent("Server is not responding..."));
+                // If was called from service count uploadAttempts attempts
+                if (mOnBackground) {
+                    uploadAttempts++;
+                }
                 isUploading = false;
                 refreshStatus();
             }
@@ -129,40 +158,204 @@ public class CommunicationManager {
 
     private void handleResponse(int response) {
         if (response == RESPONSE_OKAY) {
-            if (mCollection.isEmpty()) {
-                EventBus.getDefault().post(new StatusEvent("Upload finished!"));
-                isUploading = false;
-                refreshStatus();
-                return;
-            }
-
             LOGI(TAG, "Deleting uploaded sample...");
 
             // delete uploaded sample and upload next one
-//            if (mCollection.deleteFirstFromRealm()) {
-//                uploadSample(mCollection.first());
-//                return;
-//            }
+            mCollection = mDatabase.deleteSampleFromQuery(mCollection);
 
-            EventBus.getDefault().post(new StatusEvent("Not all samples were sent..."));
+            if (mCollection.isEmpty()) {
+                EventBus.getDefault().post(new StatusEvent("Upload finished!"));
+            } else {
+                uploadSample(mCollection.first());
+            }
+
         } else if (response == RESPONSE_ERROR){
             EventBus.getDefault().post(new StatusEvent("Server error uploading samples."));
+        }
+
+        // If was called from service reset uploadAttempts counter
+        if (mOnBackground) {
+            uploadAttempts = 0;
         }
         isUploading = false;
         refreshStatus();
     }
 
-    private JsonObject prepareSample(final Sample sample) {
+    private JsonObject bundleSample(final Sample sample) {
         /**
          * This is a manual approach, not ideal.
          * In the future create a gson builder with proper type adapters.
          */
-        JsonObject object = new JsonObject();
-        object.addProperty("uuId", sample.uuId);
-        object.addProperty("timestamp", sample.timestamp);
-        object.addProperty("batteryState", sample.batteryState);
-        object.addProperty("batteryLevel", sample.batteryState);
-        return object;
+        JsonObject root = new JsonObject();
+        JsonObject child, subChild;
+        JsonArray list, subList;
+
+        root.addProperty("uuId", sample.uuId);
+        root.addProperty("timestamp", sample.timestamp);
+        root.addProperty("batteryState", sample.batteryState);
+        root.addProperty("batteryLevel", sample.batteryLevel);
+        root.addProperty("memoryWired", sample.memoryWired);
+        root.addProperty("memoryActive", sample.memoryActive);
+        root.addProperty("memoryInactive", sample.memoryInactive);
+        root.addProperty("memoryFree", sample.memoryFree);
+        root.addProperty("memoryUser", sample.memoryUser);
+        root.addProperty("triggeredBy", sample.triggeredBy);
+        root.addProperty("networkStatus", sample.networkStatus);
+        root.addProperty("distanceTraveled", sample.distanceTraveled);
+        root.addProperty("screenBrightness", sample.screenBrightness);
+
+        // NetworkDetails
+        child = new JsonObject();
+        child.addProperty("networkType", sample.networkDetails.networkType);
+        child.addProperty("mobileNetworkType", sample.networkDetails.mobileNetworkType);
+        child.addProperty("mobileDataStatus", sample.networkDetails.mobileDataStatus);
+        child.addProperty("mobileDataActivity", sample.networkDetails.mobileDataActivity);
+        child.addProperty("roamingEnabled", sample.networkDetails.roamingEnabled);
+        child.addProperty("wifiStatus", sample.networkDetails.wifiStatus);
+        child.addProperty("wifiSignalStrength", sample.networkDetails.wifiSignalStrength);
+        child.addProperty("wifiLinkSpeed", sample.networkDetails.wifiLinkSpeed);
+        child.addProperty("wifiApStatus", sample.networkDetails.wifiApStatus);
+        child.addProperty("networkOperator", sample.networkDetails.networkOperator);
+        child.addProperty("simOperator", sample.networkDetails.simOperator);
+        child.addProperty("mcc", sample.networkDetails.mcc);
+        child.addProperty("mnc", sample.networkDetails.mnc);
+
+        // NetworkDetails->NetworkStatistics
+        if (sample.networkDetails.networkStatistics != null) {
+            subChild = new JsonObject();
+            subChild.addProperty("wifiReceived", sample.networkDetails.networkStatistics.wifiReceived);
+            subChild.addProperty("wifiSent", sample.networkDetails.networkStatistics.wifiSent);
+            subChild.addProperty("mobileReceived", sample.networkDetails.networkStatistics.mobileReceived);
+            subChild.addProperty("mobileSent", sample.networkDetails.networkStatistics.mobileSent);
+            child.add("networkStatistics", subChild);
+        }
+
+        root.add("networkDetails", child);
+
+        // Battery Details
+        child = new JsonObject();
+        child.addProperty("charger", sample.batteryDetails.charger);
+        child.addProperty("health", sample.batteryDetails.health);
+        child.addProperty("voltage", sample.batteryDetails.voltage);
+        child.addProperty("temperature", sample.batteryDetails.temperature);
+        child.addProperty("technology", sample.batteryDetails.technology);
+        child.addProperty("capacity", sample.batteryDetails.capacity);
+        child.addProperty("chargeCounter", sample.batteryDetails.chargeCounter);
+        child.addProperty("currentAverage", sample.batteryDetails.currentAverage);
+        child.addProperty("currentNow", sample.batteryDetails.currentNow);
+        child.addProperty("energyCounter", sample.batteryDetails.energyCounter);
+        root.add("batteryDetails", child);
+
+        // CpuStatus
+        child = new JsonObject();
+        child.addProperty("cpuUsage", sample.cpuStatus.cpuUsage);
+        child.addProperty("upTime", sample.cpuStatus.upTime);
+        child.addProperty("sleepTime", sample.cpuStatus.sleepTime);
+        root.add("cpuStatus", child);
+
+        root.addProperty("screenOn", sample.screenOn);
+        root.addProperty("timeZone", sample.timeZone);
+
+        // Settings
+        child = new JsonObject();
+        child.addProperty("bluetoothEnabled", sample.settings.bluetoothEnabled);
+        child.addProperty("locationEnabled", sample.settings.locationEnabled);
+        child.addProperty("powersaverEnabled", sample.settings.powersaverEnabled);
+        child.addProperty("flashlightEnabled", sample.settings.flashlightEnabled);
+        child.addProperty("nfcEnabled", sample.settings.nfcEnabled);
+        child.addProperty("unknownSources", sample.settings.unknownSources);
+        child.addProperty("developerMode", sample.settings.developerMode);
+        root.add("settings", child);
+
+        // StorageDetails
+        child = new JsonObject();
+        child.addProperty("free", sample.storageDetails.free);
+        child.addProperty("total", sample.storageDetails.total);
+        child.addProperty("freeExternal", sample.storageDetails.freeExternal);
+        child.addProperty("totalExternal", sample.storageDetails.totalExternal);
+        child.addProperty("freeSystem", sample.storageDetails.freeSystem);
+        child.addProperty("totalSystem", sample.storageDetails.totalSystem);
+        child.addProperty("freeSecondary", sample.storageDetails.freeSecondary);
+        child.addProperty("totalSecondary", sample.storageDetails.totalSecondary);
+        root.add("storageDetails", child);
+
+        root.addProperty("countryCode", sample.countryCode);
+
+        // LocationProviders
+        if (sample.locationProviders != null && !sample.locationProviders.isEmpty()) {
+            list = new JsonArray();
+            for (LocationProvider el : sample.locationProviders) {
+                child = new JsonObject();
+                child.addProperty("provider", el.provider);
+                list.add(child);
+            }
+            root.add("locationProviders", list);
+        }
+
+        // Features
+        if (sample.features != null && !sample.features.isEmpty()) {
+            list = new JsonArray();
+            for (Feature el : sample.features) {
+                child = new JsonObject();
+                child.addProperty("key", el.key);
+                child.addProperty("value", el.value);
+                list.add(child);
+            }
+            root.add("features", list);
+        }
+
+        // ProcessInfos
+        if (sample.processInfos != null && !sample.processInfos.isEmpty()) {
+            list = new JsonArray();
+            for (ProcessInfo el : sample.processInfos) {
+                child = new JsonObject();
+                child.addProperty("processId", el.processId);
+                child.addProperty("name", el.name);
+                child.addProperty(
+                        "applicationLabel",
+                        el.applicationLabel == null ? "" : el.applicationLabel
+                );
+                child.addProperty("isSystemApp", el.isSystemApp);
+                child.addProperty("importance", el.importance);
+                child.addProperty(
+                        "versionName",
+                        el.versionName == null ? "" : el.versionName
+                );
+                child.addProperty("versionCode", el.versionCode);
+                child.addProperty(
+                        "installationPkg",
+                        el.installationPkg == null ? "" : el.installationPkg
+                );
+
+                // AppPermissions
+                if (el.appPermissions != null && !el.appPermissions.isEmpty()) {
+                    subList = new JsonArray();
+                    for (AppPermission x : el.appPermissions) {
+                        subChild = new JsonObject();
+                        subChild.addProperty("permission", x.permission);
+                        subList.add(subChild);
+                    }
+                    child.add("appPermissions", subList);
+                }
+
+                // AppSignatures
+                if (el.appSignatures != null && !el.appSignatures.isEmpty()) {
+                    subList = new JsonArray();
+                    for (AppSignature x : el.appSignatures) {
+                        subChild = new JsonObject();
+                        subChild.addProperty("signature", x.signature);
+                        subList.add(subChild);
+                    }
+                    child.add("appSignatures", subList);
+                }
+
+                // Add current process to array list
+                list.add(child);
+            }
+            root.add("processInfos", list);
+        }
+
+        return root;
     }
 
     private void refreshStatus() {

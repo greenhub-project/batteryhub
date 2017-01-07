@@ -54,7 +54,15 @@ public class ServerStatusHandler {
             @Override
             public void onResponse(Call<ServerStatus> call, Response<ServerStatus> response) {
                 LOGI(TAG, "Server Status: { server: " + response.body().server + ", version: " + response.body().version + " }");
+
+                // Server url has changed so it is necessary to register device again
+                if (!SettingsUtils.fetchServerUrl(context).equals(response.body().server)) {
+                    SettingsUtils.markDeviceAccepted(context, false);
+                }
+
+                // Save new server url
                 SettingsUtils.saveServerUrl(context, response.body().server);
+
                 // Register device on the web server
                 if (!SettingsUtils.isDeviceRegistered(context)) {
                     new RegisterDeviceTask().execute(context);

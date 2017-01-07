@@ -81,6 +81,10 @@ public final class Config {
 
     public static final boolean EXTRA_SCREEN_ACTIONS = false;
 
+    public static final String BATTERY_SOURCE_DEFAULT = "/sys/class/power_supply/battery/current_now";
+    public static final String BATTERY_SOURCE_ALTERNATIVE = "/sys/devices/platform/battery/power_supply/battery/BatteryAverageCurrent";
+
+    public static final int UPLOAD_MAX_TRIES = 3;
     public static final int SAMPLE_MAX_BATCH = 10;
     public static final int REFRESH_CURRENT_INTERVAL = 5000;
     public static final int REFRESH_STATUS_BAR_INTERVAL = REFRESH_CURRENT_INTERVAL * 6;

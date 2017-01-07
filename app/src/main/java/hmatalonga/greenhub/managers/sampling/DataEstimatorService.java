@@ -197,8 +197,17 @@ public class DataEstimatorService extends IntentService {
                 }
             }
 
-            // Check if server url is stored in preferences
-            if (!SettingsUtils.isServerUrlPresent(context)) {
+            /**
+             * Check upload constraints:
+             * - Server url present
+             * - Max uploadAttempts
+             * - Not registered
+             * - Not batteryChanged
+             */
+            if (!SettingsUtils.isServerUrlPresent(context) ||
+                    CommunicationManager.uploadAttempts >= Config.UPLOAD_MAX_TRIES ||
+                    !SettingsUtils.isDeviceRegistered(context) ||
+                    !batteryLevelChanged) {
                 database.close();
                 return;
             }
@@ -206,7 +215,7 @@ public class DataEstimatorService extends IntentService {
             // Check if is necessary to sendSamples samples >= SAMPLE_MAX_BATCH
             if (database.count(Sample.class) >= Config.SAMPLE_MAX_BATCH &&
                     !CommunicationManager.isUploading) {
-                CommunicationManager manager = new CommunicationManager(context);
+                CommunicationManager manager = new CommunicationManager(context, true);
                 manager.sendSamples();
             }
 

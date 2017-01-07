@@ -24,34 +24,34 @@ import io.realm.RealmObject;
 public class BatteryDetails extends RealmObject {
 
     // Currently ac, usb, or unplugged
-    public String batteryCharger;
+    public String charger;
 
     // Currently Unknown, Unspecified failure, Dead, Cold, Overheat, Over voltage or Good
-    public String batteryHealth;
+    public String health;
 
     // Voltage in Volts
-    public double batteryVoltage;
+    public double voltage;
 
     // Temperature in Celsius
-    public double batteryTemperature;
+    public double temperature;
 
     // Battery technology
-    public String batteryTechnology;
+    public String technology;
 
     // Capacity in mAh
-    public int batteryCapacity;
+    public int capacity;
 
     // Battery capacity in microAmpere-hours
-    public int batteryChargeCounter;
+    public int chargeCounter;
 
     // Average battery current in microAmperes
-    public int batteryCurrentAverage;
+    public int currentAverage;
 
     // Instantaneous battery current in microAmperes
-    public int batteryCurrentNow;
+    public int currentNow;
 
     // Battery remaining energy in nanoWatt-hours
-    public long batteryEnergyCounter;
+    public long energyCounter;
 
     // age factor ...
 }

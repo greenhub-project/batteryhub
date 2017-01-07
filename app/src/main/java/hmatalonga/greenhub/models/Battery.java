@@ -26,6 +26,9 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.lang.reflect.Method;
 
+import hmatalonga.greenhub.Config;
+import hmatalonga.greenhub.util.SettingsUtils;
+
 import static hmatalonga.greenhub.util.LogUtils.LOGI;
 import static hmatalonga.greenhub.util.LogUtils.makeLogTag;
 
@@ -35,6 +38,54 @@ import static hmatalonga.greenhub.util.LogUtils.makeLogTag;
 public class Battery {
 
     private static final String TAG = makeLogTag(Battery.class);
+
+    public static void setupBatteryConfig(final Context context) {
+        int now;
+        boolean isSupported = false;
+
+        // Try default
+        for (int i = 0; i < 3; i++) {
+            SettingsUtils.saveServerUrl(context, Config.BATTERY_SOURCE_DEFAULT);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                BatteryManager manager = (BatteryManager)
+                        context.getSystemService(Context.BATTERY_SERVICE);
+                now = manager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW);
+                if (now == 0) {
+                    now = getBatteryCurrentNowLegacy(context);
+                }
+            } else {
+                now = getBatteryCurrentNowLegacy(context);
+            }
+
+            isSupported = isSupported || (now != 0);
+        }
+
+        if (isSupported) {
+            SettingsUtils.markBatteryNowSupported(context, true);
+            return;
+        }
+
+        // Try alternative
+        for (int i = 0; i < 3; i++) {
+            SettingsUtils.saveServerUrl(context, Config.BATTERY_SOURCE_ALTERNATIVE);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                BatteryManager manager = (BatteryManager)
+                        context.getSystemService(Context.BATTERY_SERVICE);
+                now = manager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW);
+                if (now == 0) {
+                    now = getBatteryCurrentNowLegacy(context);
+                }
+            } else {
+                now = getBatteryCurrentNowLegacy(context);
+            }
+
+            isSupported = isSupported || (now != 0);
+        }
+
+        SettingsUtils.markBatteryNowSupported(context, isSupported);
+    }
 
     public static double getBatteryVoltage(final Context context) {
         Intent receiver =
@@ -95,14 +146,12 @@ public class Battery {
     public static int getBatteryCurrentNow(final Context context) {
         int value;
 
-        // TODO: Check if value = 0 then device doesn't support this...
-
-        if (Build.VERSION.SDK_INT >= 21) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             BatteryManager manager = (BatteryManager)
                     context.getSystemService(Context.BATTERY_SERVICE);
             value = manager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW);
         } else {
-           value = getBatteryCurrentNowLegacy();
+           value = getBatteryCurrentNowLegacy(context);
         }
 
         return (value != Integer.MIN_VALUE) ? value / 1000 : -1;
@@ -120,11 +169,12 @@ public class Battery {
         return (value != Long.MIN_VALUE) ? value : -1;
     }
 
-    public static int getBatteryCurrentNowLegacy() {
+    private static int getBatteryCurrentNowLegacy(final Context context) {
         int value = -1;
+        String file = SettingsUtils.fetchBatteryNowSource(context);
 
         try {
-            RandomAccessFile reader = new RandomAccessFile("/sys/class/power_supply/battery/current_now", "r");
+            RandomAccessFile reader = new RandomAccessFile(file, "r");
             String average = reader.readLine();
             value = Integer.parseInt(average);
             reader.close();
