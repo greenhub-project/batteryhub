@@ -59,6 +59,9 @@ import android.os.BatteryManager;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import com.jaredrummler.android.processes.AndroidProcesses;
+import com.jaredrummler.android.processes.models.AndroidAppProcess;
+
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;

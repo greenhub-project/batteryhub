@@ -166,7 +166,7 @@ public class Notifier {
         }
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
-                .setSmallIcon(R.drawable.ic_information_white_24dp)
+                .setSmallIcon(R.drawable.ic_alert_circle_white_24dp)
                 .setContentTitle("Battery is low")
                 .setContentText("Please connect your phone to a power source")
                 .setAutoCancel(true)

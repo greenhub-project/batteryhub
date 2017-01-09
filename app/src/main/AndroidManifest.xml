@@ -38,6 +38,7 @@
     <!-- Required for gps and location providers -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <!-- Required to get running apps -->
     <!--<uses-permission android:name="android.permission.READ_CALL_LOG" />-->
 
     <!-- Not used permissions for now -->

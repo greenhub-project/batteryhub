@@ -91,9 +91,12 @@ public final class Config {
     public static final int REFRESH_STATUS_BAR_INTERVAL = REFRESH_CURRENT_INTERVAL * 6;
     public static final int REFRESH_STATUS_ERROR = REFRESH_CURRENT_INTERVAL * 2;
 
+    public static final double BATTERY_LOW_LEVEL = 0.2;
+
     public static final String STATUS_IDLE = "Idle";
 
     public static final int PERMISSION_READ_PHONE_STATE = 1;
+    public static final int PERMISSION_PACKAGE_USAGE_STATS = 2;
 
     public static final int NOTIFICATION_BATTERY_STATUS = 1001;
     public static final int NOTIFICATION_BATTERY_FULL = 1002;

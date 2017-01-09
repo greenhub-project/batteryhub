@@ -36,6 +36,14 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <include layout="@layout/storage_card_view"/>
+
+        </LinearLayout>
+
     </LinearLayout>
 
 </ScrollView>

@@ -16,38 +16,79 @@
 
 package hmatalonga.greenhub.ui.adapters;
 
-import android.content.Context;
-import android.content.pm.PackageInfo;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
-import hmatalonga.greenhub.util.GreenHubHelper;
 import hmatalonga.greenhub.R;
-import hmatalonga.greenhub.models.Package;
-import hmatalonga.greenhub.models.data.ProcessInfo;
-import hmatalonga.greenhub.util.AlphabeticalProcessInfoSort;
-import hmatalonga.greenhub.util.StringHelper;
+import hmatalonga.greenhub.models.ui.AppListItem;
 
-/**
- * Process List Adapter.
- */
-public class ProcessInfoAdapter extends BaseAdapter {
+public class ProcessInfoAdapter extends RecyclerView.Adapter<ProcessInfoAdapter.DashboardViewHolder> {
 
-    // Array List containing the running processes info
-    private static ArrayList<ProcessInfo> sSearchArrayList;
+    static class DashboardViewHolder extends RecyclerView.ViewHolder {
 
-    private LayoutInflater mInflater;
+        public ImageView icon;
+        public TextView name;
 
-    private Context mContext = null;
+        DashboardViewHolder(View itemView) {
+            super(itemView);
+            icon = (ImageView) itemView.findViewById(R.id.app_icon);
+            name = (TextView) itemView.findViewById(R.id.app_name);
+        }
+    }
 
-    public ProcessInfoAdapter(Context context, ArrayList<ProcessInfo> results) {
+    private ArrayList<AppListItem> mAppList;
+
+    public ProcessInfoAdapter(ArrayList<AppListItem> items){
+        this.mAppList = items;
+    }
+
+    @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+    }
+
+    @Override
+    public DashboardViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(
+                R.layout.app_list_item_view,
+                viewGroup,
+                false
+        );
+        return new DashboardViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(DashboardViewHolder viewHolder, int i) {
+        viewHolder.icon.setImageDrawable(mAppList.get(i).icon);
+        viewHolder.name.setText(mAppList.get(i).name);
+    }
+
+    @Override
+    public int getItemCount() {
+        return mAppList.size();
+    }
+
+    public void swap(ArrayList<AppListItem> list){
+        if (mAppList != null) {
+            mAppList.clear();
+            mAppList.addAll(list);
+        }
+        else {
+            mAppList = list;
+        }
+        notifyDataSetChanged();
+    }
+}
+
+/*
+
+    public sdahskdj(Context context, ArrayList<ProcessInfo> results) {
         mContext = context;
         sSearchArrayList = results;
         for (ProcessInfo item: sSearchArrayList)
@@ -59,44 +100,28 @@ public class ProcessInfoAdapter extends BaseAdapter {
         mInflater = LayoutInflater.from(context);
     }
 
-    public int getCount() {
-        return sSearchArrayList.size();
-    }
-
-    public Object getItem(int position) {
-        return sSearchArrayList.get(position);
-    }
-
-    public long getItemId(int position) {
-        return position;
-    }
-
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View view, ViewGroup parent) {
         ViewHolder holder;
-        if (convertView == null) {
-            convertView = mInflater.inflate(R.layout.process, parent, false);
+        if (view == null) {
+            view = mInflater.inflate(R.layout.process, parent, false);
             holder = new ViewHolder();
-            holder.appIcon = (ImageView) convertView
-                    .findViewById(R.id.app_icon);
-            holder.txtName = (TextView) convertView
-                    .findViewById(R.id.processName);
-            holder.pkgName = (TextView) convertView
-                    .findViewById(R.id.pkgName);
-            holder.txtBenefit = (TextView) convertView
-                    .findViewById(R.id.processPriority);
+            holder.appIcon = (ImageView) view.findViewById(R.id.app_icon);
+            holder.txtName = (TextView) view.findViewById(R.id.processName);
+            holder.pkgName = (TextView) view.findViewById(R.id.pkgName);
+            holder.txtBenefit = (TextView) view.findViewById(R.id.processPriority);
 
-            convertView.setTag(holder);
+            view.setTag(holder);
         } else {
-            holder = (ViewHolder) convertView.getTag();
+            holder = (ViewHolder) view.getTag();
         }
 
         if (sSearchArrayList == null || position < 0 || position >= sSearchArrayList.size()) {
-            return convertView;
+            return view;
         }
 
         ProcessInfo x = sSearchArrayList.get(position);
 
-        if (x == null) return convertView;
+        if (x == null) return view;
 
         String p = x.name;
         PackageInfo pak = Package.getPackageInfo(mContext, p);
@@ -104,7 +129,7 @@ public class ProcessInfoAdapter extends BaseAdapter {
         if (pak != null) {
             ver = pak.versionName;
             if (ver == null)
-                ver = pak.versionCode+"";
+                ver = pak.versionCode + "";
         }
 
         holder.appIcon.setImageDrawable(GreenHubHelper.iconForApp(mContext, p));
@@ -118,7 +143,7 @@ public class ProcessInfoAdapter extends BaseAdapter {
                 truncate(StringHelper.translatedPriority(mContext, x.importance))
         );
 
-        return convertView;
+        return view;
     }
 
     private static class ViewHolder {
@@ -135,4 +160,4 @@ public class ProcessInfoAdapter extends BaseAdapter {
             return text;
         }
     }
-}
+ */

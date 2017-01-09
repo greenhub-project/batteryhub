@@ -47,7 +47,7 @@ public class GreenHubHelper {
             return context.getPackageManager().getApplicationIcon(appName);
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
-            return ContextCompat.getDrawable(context, R.mipmap.ic_launcher);
+            return ContextCompat.getDrawable(context, android.R.drawable.sym_def_app_icon);
         }
     }
 
@@ -59,15 +59,15 @@ public class GreenHubHelper {
      * @return the human readable application label
      */
     public static String labelForApp(final Context context, String appName) {
-        if (appName == null)
-            return "Unknown";
+        if (appName == null) return "Unknown";
         try {
-            ApplicationInfo i = context.getPackageManager().getApplicationInfo(appName, 0);
-            if (i != null)
-                return context.getPackageManager().getApplicationLabel(i).toString();
-            else
+            ApplicationInfo info = context.getPackageManager().getApplicationInfo(appName, 0);
+            if (info != null) {
+                return context.getPackageManager().getApplicationLabel(info).toString();
+            } else {
                 return appName;
-        } catch (PackageManager.NameNotFoundException e) {
+            }
+        } catch (PackageManager.NameNotFoundException exception) {
             return appName;
         }
     }

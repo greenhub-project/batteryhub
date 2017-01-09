@@ -6,7 +6,7 @@
             android:shape="ring"
             android:useLevel="false"
             android:thicknessRatio="40.0">
-            <solid android:color="#ddddc0" />
+            <solid android:color="@color/light_gray" />
         </shape>
     </item>
     <item android:id="@android:id/progress">
@@ -25,7 +25,7 @@
                     android:toDegrees="360"
                     android:pivotX="50%"
                     android:pivotY="50%" />
-                <solid android:color="@color/colorAccent" />
+                <solid android:color="@color/color_accent" />
             </shape>
         </rotate>
     </item>

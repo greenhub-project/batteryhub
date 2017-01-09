@@ -50,7 +50,7 @@
                 android:id="@+id/androidVersionIcon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_library_plus_black_18dp" />
+                android:src="@drawable/ic_android_black_18dp" />
 
             <TextView
                 android:id="@+id/androidVersionLabel"
@@ -85,7 +85,7 @@
                 android:id="@+id/androidModelIcon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_library_plus_black_18dp" />
+                android:src="@drawable/ic_cellphone_android_black_18dp" />
 
             <TextView
                 android:id="@+id/androidModelLabel"
@@ -120,7 +120,7 @@
                 android:id="@+id/androidImeiIcon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_library_plus_black_18dp" />
+                android:src="@drawable/ic_tag_black_18dp" />
 
             <TextView
                 android:id="@+id/androidImeiLabel"
@@ -155,7 +155,7 @@
                 android:id="@+id/androidRootIcon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_library_plus_black_18dp" />
+                android:src="@drawable/ic_sunglasses_black_18dp" />
 
             <TextView
                 android:id="@+id/androidRootLabel"

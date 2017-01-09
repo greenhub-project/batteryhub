@@ -18,7 +18,7 @@
             android:progress="50"
             android:max="100"
             android:secondaryProgress="100"
-            android:progressDrawable="@drawable/circular"
+            android:progressDrawable="@drawable/progressbar_circular"
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true" />

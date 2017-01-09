@@ -18,11 +18,13 @@ package hmatalonga.greenhub.fragments;
 
 import android.app.Fragment;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -38,7 +40,11 @@ import hmatalonga.greenhub.models.Memory;
 import hmatalonga.greenhub.models.Network;
 import hmatalonga.greenhub.models.Phone;
 import hmatalonga.greenhub.models.Specifications;
+import hmatalonga.greenhub.models.Storage;
 import hmatalonga.greenhub.models.Wifi;
+import hmatalonga.greenhub.models.data.StorageDetails;
+import hmatalonga.greenhub.ui.ProcessListActivity;
+import hmatalonga.greenhub.ui.SettingsActivity;
 
 import static hmatalonga.greenhub.util.LogUtils.makeLogTag;
 
@@ -55,8 +61,16 @@ public class DeviceFragment extends Fragment {
     private Handler mHandler;
 
     private ProgressBar mMemoryBar;
+
     private TextView mMemoryUsed;
+
     private TextView mMemoryFree;
+
+    private ProgressBar mStorageBar;
+
+    private TextView mStorageUsed;
+
+    private TextView mStorageFree;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -123,9 +137,20 @@ public class DeviceFragment extends Fragment {
 
         // Memory
         mMemoryBar = (ProgressBar) view.findViewById(R.id.memoryBar);
-        mMemoryBar.setIndeterminate(false);
         mMemoryUsed = (TextView) view.findViewById(R.id.memoryUsed);
         mMemoryFree = (TextView) view.findViewById(R.id.memoryFree);
+        Button btViewMore = (Button) view.findViewById(R.id.buttonViewMore);
+        btViewMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(view.getContext(), ProcessListActivity.class));
+            }
+        });
+
+        // Storage
+        mStorageBar = (ProgressBar) view.findViewById(R.id.storageBar);
+        mStorageUsed = (TextView) view.findViewById(R.id.storageUsed);
+        mStorageFree = (TextView) view.findViewById(R.id.storageFree);
 
         mHandler.post(runnable);
     }
@@ -224,6 +249,7 @@ public class DeviceFragment extends Fragment {
         public void run() {
             // 1 total, 2 active
             int[] memory = Memory.readMemoryInfo();
+            StorageDetails storageDetails = Storage.getStorageDetails();
             String value;
 
             mMemoryBar.setMax(memory[1]);
@@ -235,19 +261,16 @@ public class DeviceFragment extends Fragment {
             value = memory[2] / 1024 + " MB";
             mMemoryFree.setText(value);
 
+            mStorageBar.setMax(storageDetails.total);
+            mStorageBar.setProgress(storageDetails.total - storageDetails.free);
+
+            value = (storageDetails.total - storageDetails.free) + " MB";
+            mStorageUsed.setText(value);
+
+            value = storageDetails.free + " MB";
+            mStorageFree.setText(value);
+
             mHandler.postDelayed(this, Config.REFRESH_CURRENT_INTERVAL);
         }
     };
-
-    /**
-     * Cleans local variables preventing memory leaks.
-     */
-    private void clear() {
-        mParentView = null;
-        mContext = null;
-        mHandler = null;
-        mMemoryBar = null;
-        mMemoryFree = null;
-        mMemoryUsed = null;
-    }
 }

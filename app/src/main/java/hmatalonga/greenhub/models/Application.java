@@ -69,7 +69,8 @@ public class Application {
                 ProcessInfo item = new ProcessInfo();
                 item.importance = pi.foreground ? "Foreground app" : "Service";
                 item.processId = pi.pid;
-                // item.setApplicationLabel(pi.service.flattenToString());
+                // Debug this field
+                item.applicationLabel = pi.service.flattenToString();
                 item.name = pi.process;
 
                 processInfoList.add(item);

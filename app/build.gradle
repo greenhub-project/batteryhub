@@ -16,8 +16,8 @@ android {
         applicationId "hmatalonga.greenhub"
         minSdkVersion 16
         targetSdkVersion 25
-        versionCode 4
-        versionName "v1.0-alpha.4"
+        versionCode 5
+        versionName 'v1.0-alpha.5'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.base
     }
@@ -40,6 +40,8 @@ android {
     }
     lintOptions {
         abortOnError false
+    }
+    productFlavors {
     }
 }
 
@@ -73,6 +75,8 @@ dependencies {
     compile 'org.greenrobot:eventbus:3.0.0'
     // MPAndroidChart library for drawing charts
     compile 'com.github.PhilJay:MPAndroidChart:v3.0.1'
+    // Android Processes library
+    compile 'com.jaredrummler:android-processes:1.0.9'
     // Firebase crash
     compile 'com.google.firebase:firebase-crash:10.0.1'
 }

@@ -37,7 +37,7 @@
     <string name="title_activity_splash">SplashActivity</string>
 
     <string name="title_activity_settings">Settings</string>
-    <string name="title_activity_process">Process List</string>
+    <string name="title_activity_process">Running Apps</string>
     <string name="title_fragment_home">GreenHub</string>
     <string name="title_fragment_device">My Device</string>
     <string name="title_fragment_stats">Statistics</string>
@@ -86,7 +86,7 @@
     <string name="pref_description_mobile_data">Allows the upload of samples using the cellular data of the phone.</string>
 
     <string name="pref_title_version">App Version</string>
-    <string name="pref_description_version">v1.0-alpha.4</string>
+    <string name="pref_description_version">v1.0-alpha.5</string>
 
     <string name="pref_title_help">Help</string>
     <string name="pref_description_help">Se o botão de envio de dados não responder, por favor

@@ -51,7 +51,7 @@
                 android:id="@+id/wifiIcon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_library_plus_black_18dp" />
+                android:src="@drawable/ic_wifi_black_18dp" />
 
             <TextView
                 android:id="@+id/wifiLabel"
@@ -154,7 +154,7 @@
                 android:id="@+id/bluetoothIcon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_library_plus_black_18dp" />
+                android:src="@drawable/ic_bluetooth_black_18dp" />
 
             <TextView
                 android:id="@+id/bluetoothLabel"
@@ -213,7 +213,7 @@
                 android:id="@+id/mobileDataIcon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_library_plus_black_18dp" />
+                android:src="@drawable/ic_swap_vertical_black_18dp" />
 
             <TextView
                 android:id="@+id/mobileDataLabel"

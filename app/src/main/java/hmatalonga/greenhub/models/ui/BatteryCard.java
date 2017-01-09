@@ -17,6 +17,7 @@
 package hmatalonga.greenhub.models.ui;
 
 import android.graphics.Color;
+import android.support.annotation.DrawableRes;
 
 /**
  * Device Resource Card class model.
@@ -29,14 +30,14 @@ public class BatteryCard {
     public String value;
     public int indicator;
 
-    public BatteryCard(int icon, String title, String value) {
+    public BatteryCard(@DrawableRes int icon, String title, String value) {
         this.icon = icon;
         this.label = title;
         this.value = value;
         this.indicator = Color.GREEN;
     }
 
-    public BatteryCard(int icon, String title, String value, int indicator) {
+    public BatteryCard(@DrawableRes int icon, String title, String value, int indicator) {
         this.icon = icon;
         this.label = title;
         this.value = value;

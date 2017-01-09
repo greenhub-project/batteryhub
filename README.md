@@ -8,9 +8,9 @@ GreenHub is a fork of the Carat Project.
 
 Learn more at [hmatalonga.github.io/greenhub](https://hmatalonga.github.io/greenhub).
 
-The Android app is available [here](https://github.com/hmatalonga/greenhub/releases/download/v1.0-alpha.2/greenhub-v1.0-alpha.2.apk).
+The Android app is available [here](https://github.com/hmatalonga/greenhub/releases/download/v1.0-alpha.5/greenhub-v1.0-alpha.5.apk).
 
-**Disclamer:** The project is still under heavy development, at the moment is in alpha stage. Currently no data is being uploaded since the web server is not online yet.
+**Disclamer:** The project is still under heavy development, at the moment is in alpha testing phase. If you would like to participate join [here](https://play.google.com/apps/testing/hmatalonga.greenhub).
 
 ## Build Instructions
 
@@ -86,7 +86,7 @@ GreenHub has adopted a code of conduct that we expect project participants to ad
 Please read the [full text](CODE_OF_CONDUCT.md) so that you can understand what actions will and will not be tolerated.
 
 ## License
-Copyright (c) 2016 Hugo Matalonga & João Paulo Fernandes.
+Copyright (c) 2017 Hugo Matalonga & João Paulo Fernandes.
 
 The code is available under the [Apache 2.0 License](https://opensource.org/licenses/Apache-2.0) unless otherwise stated in the file or by a dependency's license file.
 

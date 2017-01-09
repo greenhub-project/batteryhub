@@ -190,7 +190,7 @@ public class DataEstimatorService extends IntentService {
                 getBatteryUsage(context, intent, database, false);
                 if (Inspector.getCurrentBatteryLevel() == 1) {
                     Notifier.batteryFullAlert(context);
-                } else if (Inspector.getCurrentBatteryLevel() == 0.2) {
+                } else if (Inspector.getCurrentBatteryLevel() == Config.BATTERY_LOW_LEVEL) {
                     Notifier.batteryLowAlert(context);
                 }
             } else {

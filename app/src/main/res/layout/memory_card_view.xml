@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  ~ Copyright (c) 2016 Hugo Matalonga & João Paulo Fernandes
+  ~ Copyright (c) 2017 Hugo Matalonga & João Paulo Fernandes
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -42,23 +42,30 @@
 
         <!-- RAM -->
         <RelativeLayout
+            android:id="@+id/details_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:animateLayoutChanges="true"
-            android:padding="@dimen/padding_normal">
+            android:paddingTop="@dimen/padding_normal"
+            android:paddingLeft="@dimen/padding_normal"
+            android:paddingRight="@dimen/padding_normal">
 
             <ImageView
-                android:id="@+id/wifiIcon"
+                android:id="@+id/memoryIcon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_library_plus_black_18dp" />
+                android:src="@drawable/ic_memory_black_18dp" />
 
             <ProgressBar
                 android:id="@+id/memoryBar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:indeterminate="true"
+                android:indeterminate="false"
+                android:progress="50"
+                android:max="100"
+                android:secondaryProgress="100"
                 style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                android:progressDrawable="@drawable/progressbar_horizontal"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:layout_marginLeft="@dimen/list_item_margin"
@@ -107,6 +114,22 @@
                 android:layout_marginTop="@dimen/spacing_micro"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/buttonViewMore"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_micro"
+                android:text="View More"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"/>
 
         </RelativeLayout>
 

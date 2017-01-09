@@ -57,6 +57,8 @@ public class StatisticsFragment extends Fragment {
 
     private ArrayList<ChartCard> mChartCards;
 
+    private int mSelectedInterval;
+
     public static StatisticsFragment newInstance() {
         return new StatisticsFragment();
     }
@@ -84,12 +86,15 @@ public class StatisticsFragment extends Fragment {
                     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                         switch (item.getItemId()) {
                             case R.id.action_24h:
+                                mSelectedInterval = DateUtils.INTERVAL_24H;
                                 loadData(DateUtils.INTERVAL_24H);
                                 return true;
                             case R.id.action_3days:
+                                mSelectedInterval = DateUtils.INTERVAL_3DAYS;
                                 loadData(DateUtils.INTERVAL_3DAYS);
                                 return true;
                             case R.id.action_5days:
+                                mSelectedInterval = DateUtils.INTERVAL_5DAYS;
                                 loadData(DateUtils.INTERVAL_5DAYS);
                                 return true;
                         }
@@ -97,9 +102,15 @@ public class StatisticsFragment extends Fragment {
                     }
                 });
 
-        loadData(DateUtils.INTERVAL_24H);
+        mSelectedInterval = DateUtils.INTERVAL_24H;
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadData(mSelectedInterval);
     }
 
     /**
