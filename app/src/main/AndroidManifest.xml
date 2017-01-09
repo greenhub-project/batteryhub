@@ -18,31 +18,34 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="hmatalonga.greenhub">
 
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <!-- Required to start service on boot -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <!-- For sending Samples and crash reports. -->
     <uses-permission android:name="android.permission.INTERNET" />
     <!-- For Sampling network stuff -->
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <!-- Required on some phones to check wifi signal strength. Should not be required. -->
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <!-- Required for IMEI / MEID for user differentiation. -->
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
-    <!-- Required for WiFi settings on some phones. -->
-    <uses-permission android:name="android.permission.BROADCAST_STICKY" />
-    <!-- Required for programmatic killing of apps -->
-    <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
     <!-- Required for notifications -->
     <uses-permission android:name="android.permission.VIBRATE"/>
 
+    <!-- The remaining permissions need to be accepted on run-time for Android devices >= 6.0 -->
+
+    <!-- Required for IMEI / MEID for user differentiation. -->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <!-- Required for gps and location providers -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <!--<uses-permission android:name="android.permission.READ_CALL_LOG" />-->
+
+    <!-- Not used permissions for now -->
     <!--<uses-permission android:name="android.permission.BATTERY_STATS"/>-->
+    <!-- Required for WiFi settings on some phones. -->
+    <!--<uses-permission android:name="android.permission.BROADCAST_STICKY" />-->
+    <!-- Required on some phones to check wifi signal strength. Should not be required. -->
+    <!--<uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />-->
 
     <application
         android:name=".GreenHubApp"

@@ -93,6 +93,9 @@ public final class Config {
 
     public static final String STATUS_IDLE = "Idle";
 
+    public static final int PERMISSION_READ_PHONE_STATE = 1;
+
     public static final int NOTIFICATION_BATTERY_STATUS = 1001;
     public static final int NOTIFICATION_BATTERY_FULL = 1002;
+    public static final int NOTIFICATION_BATTERY_LOW = 1003;
 }

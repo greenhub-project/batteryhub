@@ -98,6 +98,7 @@ public class DeviceFragment extends Fragment {
     private void loadComponents(final View view) {
         StringBuilder model = new StringBuilder();
         TextView textView;
+        String value;
 
         // Create model device string
         model.append(Specifications.getBrand());
@@ -108,7 +109,8 @@ public class DeviceFragment extends Fragment {
         textView = (TextView) view.findViewById(R.id.androidVersion);
         textView.setText(Specifications.getOsVersion());
         textView = (TextView) view.findViewById(R.id.androidImei);
-        textView.setText(Phone.getDeviceId(mContext));
+        value = Phone.getDeviceId(mContext);
+        textView.setText(value == null ? "not available" : value);
         textView = (TextView) view.findViewById(R.id.androidModel);
         textView.setText(model);
         textView = (TextView) view.findViewById(R.id.androidRoot);

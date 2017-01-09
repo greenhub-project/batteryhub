@@ -19,11 +19,12 @@ package hmatalonga.greenhub.network;
 import android.content.Context;
 import android.os.Handler;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import org.greenrobot.eventbus.EventBus;
+
+import java.util.Iterator;
 
 import hmatalonga.greenhub.BuildConfig;
 import hmatalonga.greenhub.Config;
@@ -37,10 +38,10 @@ import hmatalonga.greenhub.models.data.ProcessInfo;
 import hmatalonga.greenhub.models.data.Sample;
 import hmatalonga.greenhub.models.data.Upload;
 import hmatalonga.greenhub.network.services.GreenHubAPIService;
-import hmatalonga.greenhub.util.GsonRealmBuilder;
+import hmatalonga.greenhub.tasks.DeleteSampleTask;
 import hmatalonga.greenhub.util.NetworkWatcher;
 import hmatalonga.greenhub.util.SettingsUtils;
-import io.realm.RealmResults;
+import io.realm.Realm;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -73,15 +74,14 @@ public class CommunicationManager {
 
     private GreenHubAPIService mService;
 
-    private GreenHubDb mDatabase;
-
-    private RealmResults<Sample> mCollection;
+    private Iterator<Integer> mCollection;
 
     private boolean mOnBackground;
 
+    private int mLastId;
+
     public CommunicationManager(final Context context, boolean background) {
         mContext = context;
-        mDatabase = new GreenHubDb();
         mOnBackground = background;
         String url = SettingsUtils.fetchServerUrl(context);
 
@@ -99,36 +99,43 @@ public class CommunicationManager {
     public void sendSamples() {
         boolean isConnected = NetworkWatcher.hasInternet(mContext, NetworkWatcher.COMMUNICATION_MANAGER);
 
-        mCollection = mDatabase.allSamples();
+        if (!isConnected) {
+            // Schedule upload next time connectivity changes
+            EventBus.getDefault().post(new StatusEvent("No Internet connectivity."));
+            isUploading = false;
+            isQueued = true;
+            return;
+        }
 
-        if (mCollection.isEmpty()) {
+        GreenHubDb database = new GreenHubDb();
+        long count = database.count(Sample.class);
+        mCollection = database.allSamplesIds();
+        database.close();
+
+        if (!mCollection.hasNext()) {
             EventBus.getDefault().post(new StatusEvent("No samples to send..."));
             isUploading = false;
             refreshStatus();
             return;
         }
 
-        if (isConnected) {
-            EventBus.getDefault().post(new StatusEvent("Uploading samples..."));
-            isUploading = true;
-            uploadSample(mCollection.first());
-        } else {
-            // Schedule upload next time connectivity changes
-            CommunicationManager.isQueued = true;
-        }
-
+        EventBus.getDefault().post(new StatusEvent("Uploading " + count + " samples"));
+        isUploading = true;
+        uploadSample(mCollection.next());
     }
 
     /**
      * Uploads a single Sample object, sending a HTTP request to the server
-     * @param sample object to sendSamples
-     * @return if uploaded successfully returns true, otherwise returns false
+     *
+     * @param id Id of sample to upload
      */
-    private void uploadSample(final Sample sample) {
-        LOGI(TAG, "Uploading Sample => " + sample.id);
+    private void uploadSample(final int id) {
+        LOGI(TAG, "Uploading Sample => " + id);
 
-        final int id = sample.id;
+        Realm realm = Realm.getDefaultInstance();
+        final Sample sample = realm.where(Sample.class).equalTo("id", id).findFirst();
         final Upload upload = new Upload(bundleSample(sample));
+        realm.close();
 
         Call<Integer> call = mService.createSample(upload);
         call.enqueue(new Callback<Integer>() {
@@ -138,13 +145,10 @@ public class CommunicationManager {
                     EventBus.getDefault().post(new StatusEvent("Server response has failed..."));
                     return;
                 }
-
-                LOGI(TAG, "Sample => " + id + " uploaded successfully!");
-
                 if (response.body() != null) {
-                    handleResponse(response.body());
+                    handleResponse(response.body(), id);
                 } else {
-                    handleResponse(RESPONSE_ERROR);
+                    handleResponse(RESPONSE_ERROR, -1);
                 }
             }
 
@@ -162,29 +166,28 @@ public class CommunicationManager {
         });
     }
 
-    private void handleResponse(int response) {
+    private void handleResponse(int response, int id) {
         if (response == RESPONSE_OKAY) {
-            LOGI(TAG, "Deleting uploaded sample...");
-
+            LOGI(TAG, "Sample => " + id + " uploaded successfully! Deleting uploaded sample...");
             // delete uploaded sample and upload next one
-            mCollection = mDatabase.deleteSampleFromQuery(mCollection);
+            new DeleteSampleTask().execute(id);
 
-            if (mCollection.isEmpty()) {
+            if (!mCollection.hasNext()) {
                 EventBus.getDefault().post(new StatusEvent("Upload finished!"));
+                // If was called from service reset uploadAttempts counter
+                if (mOnBackground) {
+                    uploadAttempts = 0;
+                }
+                isUploading = false;
+                refreshStatus();
             } else {
-                uploadSample(mCollection.first());
+                uploadSample(mCollection.next());
             }
-
         } else if (response == RESPONSE_ERROR){
-            EventBus.getDefault().post(new StatusEvent("Server error uploading samples."));
+            EventBus.getDefault().post(new StatusEvent("Server error uploading a sample"));
+            isUploading = false;
+            refreshStatus();
         }
-
-        // If was called from service reset uploadAttempts counter
-        if (mOnBackground) {
-            uploadAttempts = 0;
-        }
-        isUploading = false;
-        refreshStatus();
     }
 
     private JsonObject bundleSample(final Sample sample) {
@@ -192,6 +195,9 @@ public class CommunicationManager {
          * This is a manual approach, not ideal.
          * In the future create a gson builder with proper type adapters.
          */
+
+        if (sample == null) return null;
+
         JsonObject root = new JsonObject();
         JsonObject child, subChild;
         JsonArray list, subList;

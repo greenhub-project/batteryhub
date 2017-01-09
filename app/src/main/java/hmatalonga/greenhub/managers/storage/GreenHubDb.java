@@ -16,6 +16,9 @@
 
 package hmatalonga.greenhub.managers.storage;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import hmatalonga.greenhub.models.data.BatterySession;
 import hmatalonga.greenhub.models.data.BatteryUsage;
 import hmatalonga.greenhub.models.data.Sample;
@@ -114,6 +117,17 @@ public class GreenHubDb {
 
     public RealmResults<Sample> allSamples() {
         return mRealm.where(Sample.class).findAll();
+    }
+
+    public Iterator<Integer> allSamplesIds() {
+        ArrayList<Integer> list = new ArrayList<>();
+        RealmResults<Sample> samples = mRealm.where(Sample.class).findAll();
+        if (!samples.isEmpty()) {
+            for (Sample sample : samples) {
+                list.add(sample.id);
+            }
+        }
+        return list.iterator();
     }
 
     public RealmResults<BatteryUsage> allUsages() {

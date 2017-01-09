@@ -223,9 +223,15 @@ public class HomeFragment extends Fragment {
                 );
 
                 // Technology
-                color = estimator.getTechnology().equals("Li-ion") ? Color.GRAY : Color.GREEN;
+                if (estimator.getTechnology() == null) {
+                    color = Color.GRAY;
+                    value = "Not available";
+                } else {
+                    color = estimator.getTechnology().equals("Li-ion") ? Color.GRAY : Color.GREEN;
+                    value = estimator.getTechnology();
+                }
                 mBatteryCards.add(
-                        new BatteryCard(R.drawable.ic_wrench_black_18dp, "Technology", estimator.getTechnology(), color)
+                        new BatteryCard(R.drawable.ic_wrench_black_18dp, "Technology", value, color)
                 );
             }
         });

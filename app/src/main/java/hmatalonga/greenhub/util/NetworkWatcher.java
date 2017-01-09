@@ -23,27 +23,19 @@ import android.net.NetworkInfo;
 import java.net.InetAddress;
 
 /**
- * Verifies connection to the Internet
+ * Verifies connection to the Internet.
+ *
  * Created by hugo on 06-03-2016.
  */
 public class NetworkWatcher {
+
     private static final String TAG = "NetworkWatcher";
 
     public static final int BACKGROUND_TASKS = 1;
 
     public static final int COMMUNICATION_MANAGER = 2;
 
-    private static boolean mobileDataAllowed = false;
-
     public NetworkWatcher() {}
-
-    public static boolean isMobileDataAllowed() {
-        return mobileDataAllowed;
-    }
-
-    public static void setMobileDataAllowed(boolean mobileDataAllowed) {
-        NetworkWatcher.mobileDataAllowed = mobileDataAllowed;
-    }
 
     /**
      * Checks for Internet connection.
@@ -63,7 +55,7 @@ public class NetworkWatcher {
                 if (mode == BACKGROUND_TASKS) {
                     return activeNetwork.isConnected();
                 } else if (mode == COMMUNICATION_MANAGER) {
-                    return isMobileDataAllowed() && activeNetwork.isConnected();
+                    return SettingsUtils.isMobileDataAllowed(context) && activeNetwork.isConnected();
                 }
             }
         }

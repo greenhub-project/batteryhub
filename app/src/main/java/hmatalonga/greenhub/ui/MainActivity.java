@@ -16,13 +16,19 @@
 
 package hmatalonga.greenhub.ui;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -48,7 +54,7 @@ import hmatalonga.greenhub.util.SettingsUtils;
 import static hmatalonga.greenhub.util.LogUtils.LOGI;
 import static hmatalonga.greenhub.util.LogUtils.makeLogTag;
 
-public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClickListener {
+public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClickListener, ActivityCompat.OnRequestPermissionsResultCallback {
 
     private static final String TAG = makeLogTag(MainActivity.class);
 
@@ -95,15 +101,41 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
     @Override
     public boolean onMenuItemClick(MenuItem item) {
         switch (item.getItemId()) {
-//            case R.id.action_settings:
-//                startActivity(new Intent(this, SettingsActivity.class));
-//                return true;
+            case R.id.action_settings:
+                startActivity(new Intent(this, SettingsActivity.class));
+                return true;
             case R.id.action_summary:
                 startActivity(new Intent(Intent.ACTION_POWER_USAGE_SUMMARY));
                 return true;
         }
 
         return false;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String permissions[],
+                                           @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case Config.PERMISSION_READ_PHONE_STATE: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
     }
 
     public DataEstimator getEstimator() {
@@ -120,13 +152,14 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
         if (SettingsUtils.isTosAccepted(context)) {
             mApp.startGreenHubService();
 
-            // if there is no Internet connection skip tasks
-            if (!NetworkWatcher.hasInternet(context, NetworkWatcher.BACKGROUND_TASKS)) return;
-
-            // Fetch web server status and update them
-            new ServerStatusTask().execute(context);
+            // if there is Internet connection run tasks
+            if (NetworkWatcher.hasInternet(context, NetworkWatcher.BACKGROUND_TASKS)) {
+                // Fetch web server status and update them
+                new ServerStatusTask().execute(context);
+            }
         }
 
+        // Load app views
         loadViews();
     }
 
@@ -199,6 +232,17 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
         });
 
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabLayout));
+
+        // If device has Android version < 6.0 don't request permissions
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) return;
+
+        /**
+         * Ask for necessary permissions on run-time
+         * Permissions with a protection level above Normal need to be requested
+         */
+        setupPermission(Manifest.permission.READ_PHONE_STATE, Config.PERMISSION_READ_PHONE_STATE);
+        setupPermission(Manifest.permission.ACCESS_COARSE_LOCATION, Config.PERMISSION_READ_PHONE_STATE);
+        setupPermission(Manifest.permission.ACCESS_FINE_LOCATION, Config.PERMISSION_READ_PHONE_STATE);
     }
 
     private void refreshStatus() {
@@ -209,5 +253,18 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
                 EventBus.getDefault().post(new StatusEvent(Config.STATUS_IDLE));
             }
         }, Config.REFRESH_STATUS_ERROR);
+    }
+
+    private void setupPermission(String permission, int code) {
+        if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
+            // No explanation needed, we can request the permission.
+            ActivityCompat.requestPermissions(this,
+                    new String[]{permission},
+                    code);
+
+            // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+            // app-defined int constant. The callback method gets the
+            // result of the request.
+        }
     }
 }

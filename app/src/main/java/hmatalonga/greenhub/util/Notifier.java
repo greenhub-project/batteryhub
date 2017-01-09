@@ -23,6 +23,7 @@ import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 
 import hmatalonga.greenhub.Config;
@@ -39,6 +40,7 @@ public class Notifier {
     private static boolean isStatusBarShown = false;
 
     private static NotificationCompat.Builder sBuilder = null;
+
     private static NotificationManager sNotificationManager = null;
 
     public static void startStatusBar(final Context context) {
@@ -59,6 +61,10 @@ public class Notifier {
                         .setAutoCancel(false)
                         .setOngoing(true)
                         .setPriority(NotificationCompat.PRIORITY_LOW);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            sBuilder.setVisibility(Notification.VISIBILITY_PUBLIC);
+        }
 
         if (level < 100) {
             sBuilder.setSmallIcon(R.drawable.ic_stat_00_pct_charged + level);
@@ -110,7 +116,11 @@ public class Notifier {
                 .setContentText(text)
                 .setAutoCancel(false)
                 .setOngoing(true)
-                .setPriority(NotificationCompat.PRIORITY_LOW);
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            sBuilder.setVisibility(Notification.VISIBILITY_PUBLIC);
+        }
 
         if (level < 100) {
             sBuilder.setSmallIcon(R.drawable.ic_stat_00_pct_charged + level);
@@ -139,9 +149,37 @@ public class Notifier {
                 .setOngoing(false)
                 .setLights(Color.GREEN, 500, 2000)
                 .setVibrate(new long[] {0, 400, 1000})
-                .setPriority(NotificationCompat.PRIORITY_LOW);
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mBuilder.setVisibility(Notification.VISIBILITY_PUBLIC);
+        }
 
         // Because the ID remains unchanged, the existing notification is updated.
         sNotificationManager.notify(Config.NOTIFICATION_BATTERY_FULL, mBuilder.build());
+    }
+
+    public static void batteryLowAlert(final Context context) {
+        if (sNotificationManager == null) {
+            sNotificationManager =
+                    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        }
+
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
+                .setSmallIcon(R.drawable.ic_information_white_24dp)
+                .setContentTitle("Battery is low")
+                .setContentText("Please connect your phone to a power source")
+                .setAutoCancel(true)
+                .setOngoing(false)
+                .setLights(Color.RED, 500, 2000)
+                .setVibrate(new long[] {0, 400, 1000})
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mBuilder.setVisibility(Notification.VISIBILITY_PUBLIC);
+        }
+
+        // Because the ID remains unchanged, the existing notification is updated.
+        sNotificationManager.notify(Config.NOTIFICATION_BATTERY_LOW, mBuilder.build());
     }
 }

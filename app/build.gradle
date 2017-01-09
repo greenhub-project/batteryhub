@@ -8,7 +8,7 @@ android {
         base {
             keyAlias 'GreenHubKey'
             keyPassword 'greenhub'
-            storeFile file('/home/hugo/Apps/greenhub-android/app/greenhub-key.jks')
+            storeFile file('greenhub-key.jks')
             storePassword 'greenhub'
         }
     }
@@ -16,9 +16,10 @@ android {
         applicationId "hmatalonga.greenhub"
         minSdkVersion 16
         targetSdkVersion 25
-        versionCode 3
-        versionName "v1.0-alpha.3"
+        versionCode 4
+        versionName "v1.0-alpha.4"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        signingConfig signingConfigs.base
     }
     buildTypes {
         debug {
@@ -39,8 +40,6 @@ android {
     }
     lintOptions {
         abortOnError false
-    }
-    productFlavors {
     }
 }
 

@@ -18,6 +18,7 @@ package hmatalonga.greenhub.models;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 
@@ -43,8 +44,11 @@ import static hmatalonga.greenhub.util.LogUtils.makeLogTag;
 public class Specifications {
 
     private static final String TAG = makeLogTag(Specifications.class);
+
     private static final String PREF_UNIQUE_ID = "PREF_UNIQUE_ID";
+
     private static final String TYPE_UNKNOWN = "unknown";
+
     private static final int UUID_LENGTH = 16;
 
     /**
@@ -92,63 +96,6 @@ public class Specifications {
     }
 
     /**
-     * Generate a time-based, random identifier.
-     *
-     * @param c
-     *            the app's Context
-     * @return a time-based, random identifier.
-     */
-    public static String getTimeBasedUuid(Context c, boolean includeTimestamp) { //
-        String aID = getAndroidId(c);
-        String wifiMac = Wifi.getMacAddress(c);
-        String devid = Phone.getDeviceId(c);
-        String concat = "";
-        if (aID != null)
-            concat = aID;
-        else
-            concat = "0000000000000000";
-        if (wifiMac != null)
-            concat += wifiMac;
-        else
-            concat += "00:00:00:00:00:00";
-
-        // IMEI is 15 characters, decimal, while MEID is 14 characters, hex. Add
-        // a space if length is less than 15:
-        if (devid != null) {
-            concat += devid;
-            if (devid.length() < 15)
-                concat += " ";
-        } else
-            concat += "000000000000000";
-        if (includeTimestamp) {
-            long timestamp = System.currentTimeMillis();
-            concat += timestamp;
-        }
-
-        // Log.d(STAG,
-        // "AID="+aID+" wifiMac="+wifiMac+" devid="+devid+" rawUUID=" +concat );
-        try {
-            MessageDigest md = MessageDigest.getInstance("SHA-512");
-            md.update(concat.getBytes());
-            byte[] mdbytes = md.digest();
-            StringBuilder hexString = new StringBuilder();
-            for (int i = 0; i < mdbytes.length; i++) {
-                String hx = Integer.toHexString(0xFF & mdbytes[i]);
-                if (hx.equals("0"))
-                    hexString.append("00");
-                else
-                    hexString.append(hx);
-            }
-            String uuid = hexString.toString().substring(0, UUID_LENGTH);
-            // FlurryAgent.logEvent("ANDROID_ID=" + aID +" UUID=" + uuid);
-            return uuid;
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-            return aID;
-        }
-    }
-
-    /**
      * Returns the brand for which the device is customized, e.g. Verizon.
      *
      * @return the brand for which the device is customized, e.g. Verizon.
@@ -165,7 +112,8 @@ public class Specifications {
     public static String getBuildSerial() {
         // TODO: Review this approach
         // return android.os.Build.Serial;
-        return System.getProperty("ro.serial", TYPE_UNKNOWN);
+        // return System.getProperty("ro.serial", TYPE_UNKNOWN);
+        return Build.SERIAL;
     }
 
     /**

@@ -16,6 +16,7 @@
 
 package hmatalonga.greenhub.models;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.Cursor;
@@ -30,9 +31,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import hmatalonga.greenhub.models.data.CallMonth;
+import hmatalonga.greenhub.util.PermissionsUtils;
 
 import static hmatalonga.greenhub.util.LogUtils.LOGW;
 
@@ -51,7 +54,7 @@ public class Phone {
     // Phone type constants
     public static String PHONE_TYPE_CDMA = "cdma";
     public static String PHONE_TYPE_GSM = "gsm";
-    // public static String PHONE_TYPE_SIP="sip";
+    public static String PHONE_TYPE_SIP = "sip";
     public static String PHONE_TYPE_NONE = "none";
 
     /* Get call status */
@@ -70,11 +73,14 @@ public class Phone {
     }
 
     @SuppressLint("HardwareIds")
-    public static String getDeviceId(Context context) {
-        TelephonyManager manager =
-                (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+    public static String getDeviceId(final Context context) {
+        if (PermissionsUtils.checkPermission(context, Manifest.permission.READ_PHONE_STATE)) {
+            TelephonyManager manager =
+                    (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
 
-        return (manager == null) ? null : manager.getDeviceId();
+            return (manager == null) ? null : manager.getDeviceId();
+        }
+        return null;
     }
 
     /* Get Phone Type */
@@ -96,11 +102,11 @@ public class Phone {
      * Return a long[3] with incoming call time, outgoing call time, and
      * non-call time in seconds since boot.
      *
-     * @param context
-     *            from onReceive or Activity
+     * @param context from onReceive or Activity
      * @return a long[3] with incoming call time, outgoing call time, and
-     *         non-call time in seconds since boot.
+     * non-call time in seconds since boot.
      */
+    /*
     public static long[] getCalltimesSinceBoot(Context context) {
 
         long[] result = new long[3];
@@ -115,13 +121,14 @@ public class Phone {
         long now = System.currentTimeMillis();
         long bootTime = now - uptime;
 
-        String[] queries = new String[] {
+        String[] queries = new String[]{
                 android.provider.CallLog.Calls.TYPE,
                 android.provider.CallLog.Calls.DATE,
                 android.provider.CallLog.Calls.DURATION
         };
 
         try {
+            // It requires permission READ_CALL_LOG
             Cursor cursor = context.getContentResolver().query(
                     android.provider.CallLog.Calls.CONTENT_URI, queries,
                     android.provider.CallLog.Calls.DATE + " > " + bootTime, null,
@@ -163,7 +170,7 @@ public class Phone {
         return result;
     }
 
-    /* Get a monthly call duration record */
+    // Get a monthly call duration record
     // TODO: Refactor!!
     public static Map<String, CallMonth> getMonthCallDur(Context context) {
 
@@ -176,16 +183,17 @@ public class Phone {
         Date callDate;
         String tmpTime = null;
         String time;
-        SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM");
+        SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM", Locale.UK);
         CallMonth curMonth = null;
 
-        String[] queryFields = new String[] {
+        String[] queryFields = new String[]{
                 android.provider.CallLog.Calls.TYPE,
                 android.provider.CallLog.Calls.DATE,
                 android.provider.CallLog.Calls.DURATION
         };
 
         try {
+            // It requires permission READ_CALL_LOG
             Cursor cursor = context.getContentResolver().query(
                     android.provider.CallLog.Calls.CONTENT_URI, queryFields,
                     null, null, android.provider.CallLog.Calls.DATE + " DESC"
@@ -240,25 +248,27 @@ public class Phone {
     public static CallMonth getCallMonthinfo(Context context, String time) {
         return getMonthCallDur(context).get(time);
     }
+    */
 
     /**
      * Returns numeric mobile country code.
+     *
      * @param context Application context
      * @return 3-digit country code
      */
-    public static String getMcc(Context context){
+    public static String getMcc(Context context) {
         TelephonyManager telephonyManager = (TelephonyManager)
                 context.getSystemService(Context.TELEPHONY_SERVICE);
         String networkOperator = telephonyManager.getNetworkOperator();
-        if(networkOperator != null && networkOperator.length() >= 5) {
+        if (networkOperator != null && networkOperator.length() >= 5) {
             return networkOperator.substring(0, 3);
         }
         String operatorProperty = "gsm.operator.numeric";
-        if(telephonyManager.getPhoneType() != TelephonyManager.PHONE_TYPE_CDMA) {
+        if (telephonyManager.getPhoneType() != TelephonyManager.PHONE_TYPE_CDMA) {
             operatorProperty = "ro.cdma.home.operator.numeric"; // CDMA
         }
         networkOperator = Specifications.getStringFromSystemProperty(context, operatorProperty);
-        if(networkOperator != null && networkOperator.length() >= 5){
+        if (networkOperator != null && networkOperator.length() >= 5) {
             return networkOperator.substring(0, 3);
         }
         return "Unknown";
@@ -266,21 +276,22 @@ public class Phone {
 
     /**
      * Returns numeric mobile network code.
+     *
      * @param context Application context
      * @return 2-3 digit network code
      */
-    public static String getMnc(final Context context){
+    public static String getMnc(final Context context) {
         TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
         String networkOperator = telephonyManager.getNetworkOperator();
-        if(networkOperator != null && networkOperator.length() >= 5) {
+        if (networkOperator != null && networkOperator.length() >= 5) {
             return networkOperator.substring(3);
         }
         String operatorProperty = "gsm.operator.numeric";
-        if(telephonyManager.getPhoneType() != TelephonyManager.PHONE_TYPE_CDMA) {
+        if (telephonyManager.getPhoneType() != TelephonyManager.PHONE_TYPE_CDMA) {
             operatorProperty = "ro.cdma.home.operator.numeric"; // CDMA
         }
         networkOperator = Specifications.getStringFromSystemProperty(context, operatorProperty);
-        if(networkOperator != null && networkOperator.length() >= 5){
+        if (networkOperator != null && networkOperator.length() >= 5) {
             return networkOperator.substring(3);
         }
         return "Unknown";
@@ -294,17 +305,17 @@ public class Phone {
      * @param context Application context
      * @return Network operator name, aka. carrier
      */
-    public static String getNetworkOperator(Context context){
+    public static String getNetworkOperator(Context context) {
         TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
         String operator;
 
         operator = getNetworkOperators(context);
-        if(operator != null && operator.length() != 0) return operator;
+        if (operator != null && operator.length() != 0) return operator;
         operator = telephonyManager.getNetworkOperatorName();
-        if(operator != null && operator.length() != 0) return operator;
+        if (operator != null && operator.length() != 0) return operator;
         // CDMA support
         operator = Specifications.getStringFromSystemProperty(context, "ro.cdma.home.operator.alpha");
-        if(operator != null && operator.length() != 0) return operator;
+        if (operator != null && operator.length() != 0) return operator;
 
         return "unknown";
     }
@@ -312,25 +323,31 @@ public class Phone {
     /**
      * Retrieves network operator names from subscription manager.
      * NOTE: Requires SDK level 22 or above
+     *
      * @param context
      * @return
      */
-    private static String getNetworkOperators(Context context){
+    private static String getNetworkOperators(Context context) {
         String operator = "";
-        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1){
+
+        if (!PermissionsUtils.checkPermission(context, Manifest.permission.READ_PHONE_STATE)) {
+            return operator;
+        }
+
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
             SubscriptionManager subscriptionManager = SubscriptionManager.from(context);
-            if(subscriptionManager != null){
+            if (subscriptionManager != null) {
                 List<SubscriptionInfo> subscriptions = subscriptionManager.getActiveSubscriptionInfoList();
-                if(subscriptions != null){
-                    for(SubscriptionInfo info : subscriptions){
+                if (subscriptions != null) {
+                    for (SubscriptionInfo info : subscriptions) {
                         CharSequence carrierName = info.getCarrierName();
-                        if(carrierName != null && carrierName.length() > 0){
+                        if (carrierName != null && carrierName.length() > 0) {
                             operator += carrierName + ";";
                         }
                     }
                     // Remove last delimiter
-                    if(operator.length() >= 1){
-                        operator = operator.substring(0, operator.length()-1);
+                    if (operator.length() >= 1) {
+                        operator = operator.substring(0, operator.length() - 1);
                     }
                 }
             }
@@ -341,12 +358,13 @@ public class Phone {
     /**
      * Undocumented call to look up a two-letter country code with an mcc.
      * WARNING: Uses reflection, data might not always be available.
+     *
      * @param context Application context
-     * @param mcc Numeric country code
+     * @param mcc     Numeric country code
      * @return Country code
      * @throws Exception
      */
-    static String getCountryCodeForMcc(Context context, int mcc) throws Exception{
+    static String getCountryCodeForMcc(Context context, int mcc) throws Exception {
         Class<?> mccTable = Class.forName("com.android.internal.telephony.MccTable");
         Method countryCodeForMcc = mccTable.getMethod("countryCodeForMcc", int.class);
         countryCodeForMcc.setAccessible(true);

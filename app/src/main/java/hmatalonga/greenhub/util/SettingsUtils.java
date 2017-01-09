@@ -55,6 +55,10 @@ public class SettingsUtils {
      * String containing Battery current now source file.
      */
     public static final String PREF_BATTERY_SOURCE = "pref_battery_source";
+    /**
+     * Boolean indicating whether to allow uploads using mobile data.
+     */
+    public static final String PREF_MOBILE_DATA = "pref_mobile_data";
 
     /**
      * Return true if user has accepted the
@@ -160,6 +164,28 @@ public class SettingsUtils {
     public static String fetchBatteryNowSource(final Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         return sp.getString(PREF_BATTERY_SOURCE, Config.BATTERY_SOURCE_DEFAULT);
+    }
+
+    /**
+     * Mark {@code newValue whether} allows the use of mobile data for uploading samples.
+     *
+     * @param context Context to be used to edit the {@link android.content.SharedPreferences}.
+     * @param newValue New value that will be set.
+     */
+    public static void markMobileDataAllowed(final Context context, boolean newValue) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        sp.edit().putBoolean(PREF_MOBILE_DATA, newValue).apply();
+    }
+
+    /**
+     * Return true if mobile data is allowed to upload samples,
+     * false if it is not.
+     *
+     * @param context Context to be used to lookup the {@link android.content.SharedPreferences}.
+     */
+    public static boolean isMobileDataAllowed(final Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getBoolean(PREF_MOBILE_DATA, false);
     }
 
     /**

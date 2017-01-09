@@ -16,8 +16,12 @@
 
 package hmatalonga.greenhub.models;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Build;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
@@ -26,6 +30,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 import hmatalonga.greenhub.Config;
+import hmatalonga.greenhub.util.PermissionsUtils;
 
 import static hmatalonga.greenhub.util.LogUtils.LOGD;
 
@@ -65,20 +70,26 @@ public class SimCard {
      * @param context Application context
      * @return SIM operator name/names with ";" as a delimiter for many.
      */
-    private static String getSIMOperators(Context context){
+    private static String getSIMOperators(final Context context) {
+
         String operators = "";
-        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1){
+
+        if (!PermissionsUtils.checkPermission(context, Manifest.permission.READ_PHONE_STATE)) {
+            return operators;
+        }
+
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
             List<SubscriptionInfo> subscriptions = SubscriptionManager.from(context).getActiveSubscriptionInfoList();
-            if(subscriptions != null && subscriptions.size() > 0){
+            if (subscriptions != null && subscriptions.size() > 0) {
                 for(SubscriptionInfo info : subscriptions){
                     int subId = info.getSubscriptionId();
                     String operator = getSimOperatorNameForSubscription(context, subId);
-                    if(operator != null && operator.length() > 0){
+                    if (operator != null && operator.length() > 0) {
                         operators += operator + ";";
                     }
                 }
                 // Remove last delimiter
-                if(operators.length() > 1){
+                if (operators.length() > 1) {
                     operators = operators.substring(0, operators.length()-1);
                 }
             }

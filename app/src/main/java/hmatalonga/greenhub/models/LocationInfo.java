@@ -58,7 +58,7 @@ public class LocationInfo {
         return distance;
     }
 
-    public static Location getLastKnownLocation(Context context) {
+    private static Location getLastKnownLocation(Context context) {
         String provider = getBestProvider(context);
         // FIXME: Some buggy device is giving GPS to us, even though we cannot
         // use it.

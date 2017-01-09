@@ -16,6 +16,7 @@
 
 package hmatalonga.greenhub.ui;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
@@ -26,7 +27,12 @@ import android.support.v7.widget.Toolbar;
 import hmatalonga.greenhub.R;
 import hmatalonga.greenhub.util.SettingsUtils;
 
+import static hmatalonga.greenhub.util.LogUtils.LOGI;
+import static hmatalonga.greenhub.util.LogUtils.makeLogTag;
+
 public class SettingsActivity extends BaseActivity {
+
+    private static final String TAG = makeLogTag(SettingsActivity.class);
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -63,6 +69,12 @@ public class SettingsActivity extends BaseActivity {
 
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+            switch (key) {
+                case SettingsUtils.PREF_MOBILE_DATA:
+                    Context context = getActivity().getApplicationContext();
+                    LOGI(TAG, "Mobile data is now => " + SettingsUtils.isMobileDataAllowed(context));
+                    break;
+            }
         }
     }
 }

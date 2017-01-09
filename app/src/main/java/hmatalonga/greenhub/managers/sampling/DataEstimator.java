@@ -46,11 +46,11 @@ import static hmatalonga.greenhub.util.LogUtils.makeLogTag;
  *
  * Created by hugo on 09-04-2016.
  */
-public class DataEstimator extends WakefulBroadcastReceiver implements LocationListener {
+public class DataEstimator extends WakefulBroadcastReceiver {
 
     private static final String TAG = makeLogTag(DataEstimator.class);
 
-    private Location lastKnownLocation = null;
+    // private Location lastKnownLocation = null;
     private double distance = 0.0;
     private long lastNotify;
 
@@ -95,12 +95,13 @@ public class DataEstimator extends WakefulBroadcastReceiver implements LocationL
         if (level > 0) {
             Inspector.setCurrentBatteryLevel(level, scale);
 
-            requestLocationUpdates();
+            // Location updates disabled for now
+            // requestLocationUpdates();
 
             // Update last known location...
-            if (lastKnownLocation == null) {
-                lastKnownLocation = LocationInfo.getLastKnownLocation(context);
-            }
+            // if (lastKnownLocation == null) {
+            //    lastKnownLocation = LocationInfo.getLastKnownLocation(context);
+            // }
 
             Intent service = new Intent(context, DataEstimatorService.class);
             service.putExtra("OriginalAction", intent.getAction());
@@ -113,6 +114,8 @@ public class DataEstimator extends WakefulBroadcastReceiver implements LocationL
         }
     }
 
+    /**
+     *  For now disable LocationListener features
     @Override
     public void onLocationChanged(Location location) {
         if (lastKnownLocation != null && location != null) {
@@ -136,12 +139,6 @@ public class DataEstimator extends WakefulBroadcastReceiver implements LocationL
         requestLocationUpdates();
     }
 
-    public static Intent getBatteryChangedIntent(final Context context) {
-        return context.registerReceiver(
-                null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED)
-        );
-    }
-
     private void requestLocationUpdates() {
         try {
             LocationManager manager = (LocationManager)
@@ -162,6 +159,14 @@ public class DataEstimator extends WakefulBroadcastReceiver implements LocationL
         catch (SecurityException e) {
             e.printStackTrace();
         }
+    }
+
+     */
+
+    public static Intent getBatteryChangedIntent(final Context context) {
+        return context.registerReceiver(
+                null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED)
+        );
     }
 
     // Getters & Setters
