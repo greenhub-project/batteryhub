@@ -39,8 +39,9 @@
 }
 -keep enum org.greenrobot.eventbus.ThreadMode { *; }
 
-# Models
+# Models and Events
 -keep class hmatalonga.greenhub.models.** { *; }
+-keep class hmatalonga.greenhub.events.** { *; }
 -keep class hmatalonga.greenhub.Config { *; }
 
 # If your project uses WebView with JS, uncomment the following

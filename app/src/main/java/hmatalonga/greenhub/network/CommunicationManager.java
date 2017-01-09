@@ -78,8 +78,6 @@ public class CommunicationManager {
 
     private boolean mOnBackground;
 
-    private int mLastId;
-
     public CommunicationManager(final Context context, boolean background) {
         mContext = context;
         mOnBackground = background;

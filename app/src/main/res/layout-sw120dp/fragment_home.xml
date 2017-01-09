@@ -116,9 +116,9 @@
         <include layout="@layout/power_source_view"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:layout_above="@+id/status"
+            android:layout_below="@+id/rv"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="24dp" />
+            android:layout_marginTop="16dp" />
 
     </RelativeLayout>
 
