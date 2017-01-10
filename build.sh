@@ -22,9 +22,9 @@ fi
 # Build
 if [ ! $TRAVIS_PULL_REQUEST ]; then
   # For a merged commit, build all configurations.
-  GRADLE_OPTS=./gradlew clean build check
+  ./gradlew clean build check
 else
   # On a pull request, just build debug which is much faster and catches
   # obvious errors.
-  GRADLE_OPTS=./gradlew clean assembleDebug check
+  ./gradlew clean assembleDebug check
 fi
