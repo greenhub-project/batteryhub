@@ -97,14 +97,14 @@ public class Cpu {
     /**
      * Real time in seconds since last boot
      */
-    public static double getUptime() {
+    public static long getUptime() {
         return TimeUnit.MILLISECONDS.toSeconds(SystemClock.elapsedRealtime());
     }
 
     /**
      * CPU sleep time in seconds
      */
-    public static double getSleepTime() {
+    public static long getSleepTime() {
         long sleep = SystemClock.elapsedRealtime() - SystemClock.uptimeMillis();
         return (sleep < 0) ? 0 : TimeUnit.MILLISECONDS.toSeconds(sleep);
     }
