@@ -19,29 +19,19 @@ function drawChart() {
 
   data.addRows([
     ['repo-docs', 'Repository documentation', 'docs',
-      new Date(2016, 9, 1), null, daysToMilliseconds(30), 60, null],
-    ['workflow', 'Workflow', 'task',
-      new Date(2016, 9, 1), null, daysToMilliseconds(14), 100, null],
-    ['travisCI', 'Continuous integration', 'tool',
-      new Date(2016, 9, 1), null, daysToMilliseconds(7), 100, null],
-    ['docker', 'Docker containerization', 'tool',
-      null, null, daysToMilliseconds(7), 100, 'travisCI'],
+      new Date(2017, 0, 1), null, daysToMilliseconds(30), 60, null],
     ['tests', 'Tests Implementation', 'testing',
-      new Date(2016, 9, 15), null, daysToMilliseconds(30), 90, null],
-    ['code-guidelines', 'Change project guidelines', 'docs',
-      new Date(2016, 9, 15), null, daysToMilliseconds(14), 80, null],
-    ['retrofit', 'Migrate HTTP library', 'development',
-      null, null, daysToMilliseconds(7), 0, 'code-guidelines'],
+      new Date(2017, 0, 1), null, daysToMilliseconds(30), 50, null],
     ['alpha', 'Alpha stage', 'alpha',
-      new Date(2016, 10, 5), null, daysToMilliseconds(14), 20, null],
+      new Date(2017, 0, 1), null, daysToMilliseconds(14), 65, null],
     ['beta', 'Beta stage', 'beta',
-      new Date(2016, 10, 19), null, daysToMilliseconds(30), 0, 'alpha'],
+      new Date(2017, 0, 15), null, daysToMilliseconds(21), 0, 'alpha'],
     ['release-stable', 'Stable release', 'release',
-      new Date(2016, 11, 19), null, daysToMilliseconds(7), 0, 'beta']
+      new Date(2017, 1, 5), null, daysToMilliseconds(7), 0, 'beta']
   ]);
 
   var options = {
-    height: 500
+    height: 260
   };
 
   var chart = new google.visualization.Gantt(document.getElementById('chart_roadmap'));
