@@ -17,13 +17,45 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory
+        android:title="@string/pref_header_sampling"
+        android:key="sampling_header">
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="pref_sampling_screen"
+            android:title="@string/pref_title_sampling_screen"
+            android:summary="@string/pref_description_sampling_screen"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
         android:title="@string/pref_header_upload"
         android:key="upload_header">
 
         <SwitchPreference
             android:defaultValue="false"
             android:key="pref_mobile_data"
-            android:title="@string/pref_title_mobile_data" />
+            android:title="@string/pref_title_mobile_data"/>
+
+        <ListPreference
+            android:key="pref_upload_rate"
+            android:title="@string/pref_title_rate"
+            android:entries="@array/rate_titles"
+            android:entryValues="@array/rate_values"
+            android:defaultValue="20"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/pref_header_notifications"
+        android:key="notifications_header">
+
+        <ListPreference
+            android:key="pref_notifications_priority"
+            android:title="@string/pref_title_priority"
+            android:entries="@array/priority_titles"
+            android:entryValues="@array/priority_values"
+            android:defaultValue="0"/>
 
     </PreferenceCategory>
 
@@ -35,6 +67,14 @@
             android:title="@string/pref_title_version"
             android:summary="@string/pref_description_version"
             android:selectable="false" />
+
+        <Preference
+            android:title="@string/pref_title_privacy">
+
+            <intent android:action="android.intent.action.VIEW"
+                android:data="https://hmatalonga.github.io/greenhub/privacy.html" />
+
+        </Preference>
 
     </PreferenceCategory>
 

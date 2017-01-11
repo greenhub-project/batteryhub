@@ -103,6 +103,12 @@ public class StringHelper {
         return defaultFormat.format(number);
     }
 
+    public static String formatNumber(double number) {
+        NumberFormat defaultFormat = NumberFormat.getNumberInstance();
+        defaultFormat.setMaximumFractionDigits(2);
+        return defaultFormat.format(number);
+    }
+
     public static String[] trimArray(String[] array) {
         for (int i = 0; i < array.length; i++) {
             array[i] = array[i].trim();

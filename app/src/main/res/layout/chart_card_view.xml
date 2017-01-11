@@ -60,6 +60,43 @@
             android:layout_height="250dp"
             android:layout_marginTop="@dimen/spacing_normal"/>
 
+        <include layout="@layout/item_divider"/>
+
+        <RelativeLayout
+            android:id="@+id/extra_details"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:padding="@dimen/padding_normal">
+
+            <TextView
+                android:id="@+id/minValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:text="Min: "
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/avgValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="Average: "
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/maxValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:text="Max: "
+                android:textSize="12sp" />
+
+        </RelativeLayout>
+
     </LinearLayout>
 
 </android.support.v7.widget.CardView>

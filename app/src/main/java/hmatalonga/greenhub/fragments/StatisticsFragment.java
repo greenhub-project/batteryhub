@@ -120,6 +120,7 @@ public class StatisticsFragment extends Fragment {
         RealmResults<BatteryUsage> results;
         long now = System.currentTimeMillis();
         ChartCard card;
+        double min, avg, max;
 
         mChartCards = new ArrayList<>();
 
@@ -161,6 +162,9 @@ public class StatisticsFragment extends Fragment {
         mChartCards.add(card);
 
         // Battery Temperature
+        min = Double.MAX_VALUE;
+        avg = 0;
+        max = Double.MIN_VALUE;
         card = new ChartCard(
                 ChartRVAdapter.BATTERY_TEMPERATURE,
                 "Battery Temperature (ºC)",
@@ -168,10 +172,22 @@ public class StatisticsFragment extends Fragment {
         );
         for (BatteryUsage usage : results) {
             card.entries.add(new Entry((float) usage.timestamp, (float) usage.details.temperature));
+            if (usage.details.temperature < min) {
+                min = usage.details.temperature;
+            }
+            if (usage.details.temperature > max) {
+                max = usage.details.temperature;
+            }
+            avg += usage.details.temperature;
         }
+        avg /= results.size();
+        card.extras = new double[] {min, avg, max};
         mChartCards.add(card);
 
         // Battery Voltage
+        min = Double.MAX_VALUE;
+        avg = 0;
+        max = Double.MIN_VALUE;;
         card = new ChartCard(
                 ChartRVAdapter.BATTERY_VOLTAGE,
                 "Battery Voltage (V)",
@@ -179,7 +195,16 @@ public class StatisticsFragment extends Fragment {
         );
         for (BatteryUsage usage : results) {
             card.entries.add(new Entry((float) usage.timestamp, (float) usage.details.voltage));
+            if (usage.details.voltage < min) {
+                min = usage.details.voltage;
+            }
+            if (usage.details.voltage > max) {
+                max = usage.details.voltage;
+            }
+            avg += usage.details.voltage;
         }
+        avg /= results.size();
+        card.extras = new double[] {min, avg, max};
         mChartCards.add(card);
 
         setAdapter(interval);

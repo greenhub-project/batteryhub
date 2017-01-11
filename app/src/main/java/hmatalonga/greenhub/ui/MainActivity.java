@@ -43,7 +43,6 @@ import hmatalonga.greenhub.R;
 import hmatalonga.greenhub.events.StatusEvent;
 import hmatalonga.greenhub.managers.sampling.DataEstimator;
 import hmatalonga.greenhub.managers.storage.GreenHubDb;
-import hmatalonga.greenhub.models.Battery;
 import hmatalonga.greenhub.network.CommunicationManager;
 import hmatalonga.greenhub.tasks.ServerStatusTask;
 import hmatalonga.greenhub.ui.adapters.TabAdapter;
@@ -119,20 +118,12 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
         switch (requestCode) {
             case Config.PERMISSION_READ_PHONE_STATE: {
                 // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    // permission was granted, yay! Do the
-                    // contacts-related task you need to do.
-
-                } else {
-
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
-                }
+                setupPermission(Manifest.permission.ACCESS_COARSE_LOCATION, Config.PERMISSION_ACCESS_COARSE_LOCATION);
                 return;
             }
-
+            case Config.PERMISSION_ACCESS_COARSE_LOCATION: {
+                setupPermission(Manifest.permission.ACCESS_FINE_LOCATION, Config.PERMISSION_ACCESS_FINE_LOCATION);
+            }
             // other 'case' lines to check for other
             // permissions this app might request
         }
@@ -167,11 +158,11 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
         mViewPager.setOffscreenPageLimit(TabAdapter.NUM_TABS - 1);
 
-        final TabAdapter mTabAdapter = new TabAdapter(getFragmentManager());
-        mViewPager.setAdapter(mTabAdapter);
+        final TabAdapter tabAdapter = new TabAdapter(getFragmentManager());
+        mViewPager.setAdapter(tabAdapter);
 
-        MainTabLayout mTabLayout = (MainTabLayout) findViewById(R.id.tab_layout);
-        mTabLayout.createTabs();
+        MainTabLayout tabLayout = (MainTabLayout) findViewById(R.id.tab_layout);
+        tabLayout.createTabs();
 
         final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fabSendSample);
         if (fab == null) return;
@@ -208,7 +199,7 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
             }
         });
 
-        mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 mViewPager.setCurrentItem(tab.getPosition());
@@ -231,7 +222,7 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
             }
         });
 
-        mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabLayout));
+        mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
 
         // If device has Android version < 6.0 don't request permissions
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) return;
@@ -241,8 +232,6 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
          * Permissions with a protection level above Normal need to be requested
          */
         setupPermission(Manifest.permission.READ_PHONE_STATE, Config.PERMISSION_READ_PHONE_STATE);
-        setupPermission(Manifest.permission.ACCESS_COARSE_LOCATION, Config.PERMISSION_READ_PHONE_STATE);
-        setupPermission(Manifest.permission.ACCESS_FINE_LOCATION, Config.PERMISSION_READ_PHONE_STATE);
     }
 
     private void refreshStatus() {

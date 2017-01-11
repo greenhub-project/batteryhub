@@ -111,7 +111,7 @@ import static hmatalonga.greenhub.util.LogUtils.makeLogTag;
  */
 public final class Inspector {
 
-    private static final String TAG = makeLogTag("Inspector");
+    private static final String TAG = makeLogTag(Inspector.class);
 
     private static final String INSTALLED = "installed:";
 
@@ -122,9 +122,9 @@ public final class Inspector {
     // Disabled or turned off applications will be scheduled for reporting using this prefix
     private static final String DISABLED = "disabled:";
 
-    private static double sLastBatteryLevel;
+    private static double sLastBatteryLevel = 0;
 
-    private static double sCurrentBatteryLevel;
+    private static double sCurrentBatteryLevel = 0;
 
     // we might not be able to read the current battery level at the first run
     // of GreenHub.
@@ -134,8 +134,7 @@ public final class Inspector {
     /**
      * Library class, prevent instantiation
      */
-    private Inspector() {
-    }
+    private Inspector() {}
 
     public static double readLastBatteryLevel() {
         return sLastBatteryLevel;

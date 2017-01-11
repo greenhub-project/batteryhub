@@ -32,11 +32,13 @@ public class ChartCard {
     public String label;
     public int color;
     public List<Entry> entries;
+    public double[] extras;
 
     public ChartCard(int type, String label, int color) {
         this.type = type;
         this.label = label;
         this.color = color;
         this.entries = new ArrayList<>();
+        this.extras = null;
     }
 }

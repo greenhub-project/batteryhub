@@ -21,6 +21,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.animation.Easing;
@@ -58,6 +59,10 @@ public class ChartRVAdapter extends RecyclerView.Adapter<ChartRVAdapter.Dashboar
         TextView label;
         TextView interval;
         LineChart chart;
+        RelativeLayout extras;
+        TextView min;
+        TextView avg;
+        TextView max;
 
         DashboardViewHolder(View itemView) {
             super(itemView);
@@ -65,6 +70,10 @@ public class ChartRVAdapter extends RecyclerView.Adapter<ChartRVAdapter.Dashboar
             label = (TextView) itemView.findViewById(R.id.label);
             interval = (TextView) itemView.findViewById(R.id.interval);
             chart = (LineChart) itemView.findViewById(R.id.chart);
+            extras = (RelativeLayout) itemView.findViewById(R.id.extra_details);
+            min = (TextView) itemView.findViewById(R.id.minValue);
+            avg = (TextView) itemView.findViewById(R.id.avgValue);
+            max = (TextView) itemView.findViewById(R.id.maxValue);
         }
     }
 
@@ -94,10 +103,31 @@ public class ChartRVAdapter extends RecyclerView.Adapter<ChartRVAdapter.Dashboar
 
     @Override
     public void onBindViewHolder(DashboardViewHolder holder, int position) {
-        setup(holder, mChartCards.get(position));
-        holder.chart.setData(loadData(mChartCards.get(position)));
+        ChartCard card = mChartCards.get(position);
+        setup(holder, card);
+        holder.chart.setData(loadData(card));
         holder.chart.invalidate();
-        holder.label.setText(mChartCards.get(position).label);
+        holder.label.setText(card.label);
+        if (card.extras != null) {
+            String value;
+            if (card.type == BATTERY_TEMPERATURE) {
+                value = "Min: " + StringHelper.formatNumber(card.extras[0]) + " ºC";
+                holder.min.setText(value);
+                value = "Average: " + StringHelper.formatNumber(card.extras[1]) + " ºC";
+                holder.avg.setText(value);
+                value = "Max: " + StringHelper.formatNumber(card.extras[2]) + " ºC";
+                holder.max.setText(value);
+            } else if (card.type == BATTERY_VOLTAGE) {
+                value = "Min: " + StringHelper.formatNumber(card.extras[0]) + " V";
+                holder.min.setText(value);
+                value = "Average: " + StringHelper.formatNumber(card.extras[1]) + " V";
+                holder.avg.setText(value);
+                value = "Max: " + StringHelper.formatNumber(card.extras[2]) + " V";
+                holder.max.setText(value);
+            }
+            holder.extras.setVisibility(View.VISIBLE);
+        }
+
         if (mInterval == DateUtils.INTERVAL_24H) {
             holder.interval.setText("Last 24h");
         } else if (mInterval == DateUtils.INTERVAL_3DAYS) {

@@ -47,23 +47,25 @@ public class GreenHubApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-//        if (LeakCanary.isInAnalyzerProcess(this)) {
-//            // This process is dedicated to LeakCanary for heap analysis.
-//            // You should not init your app in this process.
-//            return;
-//        }
-//        LeakCanary.install(this);
 
         // Database init
         Realm.init(this);
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
         Realm.setDefaultConfiguration(realmConfiguration);
 
-        LOGI(TAG, "onCreate() called");
-
         estimator = new DataEstimator();
 
         if (SettingsUtils.isTosAccepted(getApplicationContext())) {
+            LOGI(TAG, "Notifier Status Bar called");
+            mHandler = new Handler();
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Notifier.updateStatusBar(getApplicationContext());
+                    mHandler.postDelayed(this, Config.REFRESH_STATUS_BAR_INTERVAL);
+                }
+            }, Config.REFRESH_STATUS_BAR_INTERVAL);
+
             LOGI(TAG, "startGreenHubService() called");
             startGreenHubService();
         }
@@ -87,8 +89,7 @@ public class GreenHubApp extends Application {
 
                     registerReceiver(estimator, intentFilter);
 
-                    // TODO: Add this config option to settings so user decides what to do
-                    if (Config.EXTRA_SCREEN_ACTIONS) {
+                    if (SettingsUtils.isSamplingScreenOn(context)) {
                         intentFilter.addAction(Intent.ACTION_SCREEN_ON);
                         registerReceiver(estimator, intentFilter);
                         intentFilter.addAction(Intent.ACTION_SCREEN_OFF);
@@ -98,15 +99,6 @@ public class GreenHubApp extends Application {
                     isServiceRunning = true;
                 }
             }.start();
-
-            mHandler = new Handler();
-            mHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    Notifier.updateStatusBar(context);
-                    mHandler.postDelayed(this, Config.REFRESH_STATUS_BAR_INTERVAL);
-                }
-            }, Config.REFRESH_STATUS_BAR_INTERVAL);
         } else {
             LOGI(TAG, "GreenHubService is already running...");
         }

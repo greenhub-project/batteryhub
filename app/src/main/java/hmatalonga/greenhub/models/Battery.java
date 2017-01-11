@@ -39,54 +39,6 @@ public class Battery {
 
     private static final String TAG = makeLogTag(Battery.class);
 
-    public static void setupBatteryConfig(final Context context) {
-        int now;
-        boolean isSupported = false;
-
-        // Try default
-        for (int i = 0; i < 3; i++) {
-            SettingsUtils.saveServerUrl(context, Config.BATTERY_SOURCE_DEFAULT);
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                BatteryManager manager = (BatteryManager)
-                        context.getSystemService(Context.BATTERY_SERVICE);
-                now = manager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW);
-                if (now == 0) {
-                    now = getBatteryCurrentNowLegacy();
-                }
-            } else {
-                now = getBatteryCurrentNowLegacy();
-            }
-
-            isSupported = isSupported || (now != 0);
-        }
-
-        if (isSupported) {
-            SettingsUtils.markBatteryNowSupported(context, true);
-            return;
-        }
-
-        // Try alternative
-        for (int i = 0; i < 3; i++) {
-            SettingsUtils.saveServerUrl(context, Config.BATTERY_SOURCE_ALTERNATIVE);
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                BatteryManager manager = (BatteryManager)
-                        context.getSystemService(Context.BATTERY_SERVICE);
-                now = manager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW);
-                if (now == 0) {
-                    now = getBatteryCurrentNowLegacy();
-                }
-            } else {
-                now = getBatteryCurrentNowLegacy();
-            }
-
-            isSupported = isSupported || (now != 0);
-        }
-
-        SettingsUtils.markBatteryNowSupported(context, isSupported);
-    }
-
     public static double getBatteryVoltage(final Context context) {
         Intent receiver =
                 context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));

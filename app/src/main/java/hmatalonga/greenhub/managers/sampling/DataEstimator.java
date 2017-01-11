@@ -87,6 +87,13 @@ public class DataEstimator extends WakefulBroadcastReceiver {
             catch (RuntimeException e) {
                 e.printStackTrace();
             }
+
+            // Notify for temperature alerts...
+            if (temperature > 45) {
+                Notifier.batteryHighTemperature(context);
+            } else if (temperature <= 45 && temperature > 35) {
+                Notifier.batteryWarningTemperature(context);
+            }
         }
 
         // On some phones, scale is always 0.

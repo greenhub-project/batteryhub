@@ -48,17 +48,23 @@ public class SettingsUtils {
      */
     public static final String PREF_SEND_INSTALLED_PACKAGES = "pref_send_installed";
     /**
-     * Boolean indicating whether the device supports current now feature.
+     * Boolean indicating whether to save data on screen on/off broadcasts.
      */
-    public static final String PREF_BATTERY_NOW_SUPPORTED = "pref_battery_now";
-    /**
-     * String containing Battery current now source file.
-     */
-    public static final String PREF_BATTERY_SOURCE = "pref_battery_source";
+    public static final String PREF_SAMPLING_SCREEN = "pref_sampling_screen";
     /**
      * Boolean indicating whether to allow uploads using mobile data.
      */
     public static final String PREF_MOBILE_DATA = "pref_mobile_data";
+    /**
+     * Integer indicating which upload interval rate to use.
+     */
+    public static final String PREF_UPLOAD_RATE = "pref_upload_rate";
+    public static final String PREF_UPLOAD_RATE_VALUE = "pref_upload_rate_value";
+    /**
+     * Integer indicating which upload interval rate to use.
+     */
+    public static final String PREF_NOTIFICATIONS_PRIORITY = "pref_notifications_priority";
+    public static final String PREF_NOTIFICATIONS_PRIORITY_VALUE = "pref_notifications_priority_value";
 
     /**
      * Return true if user has accepted the
@@ -140,41 +146,14 @@ public class SettingsUtils {
         return sp.getBoolean(PREF_SEND_INSTALLED_PACKAGES, false);
     }
 
-    public static void markBatteryNowSupported(final Context context, boolean newValue) {
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        sp.edit().putBoolean(PREF_BATTERY_NOW_SUPPORTED, newValue).apply();
-    }
-
-    public static boolean isBatteryNowSupported(final Context context) {
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        return sp.getBoolean(PREF_BATTERY_NOW_SUPPORTED, false);
-    }
-
     /**
-     * Save {@code source} of battery now value.
+     * Return true if saving data for screen on/off is allowed, false if it is not.
      *
-     * @param context Context to be used to edit the {@link android.content.SharedPreferences}.
-     * @param source New value that will be set.
+     * @param context Context to be used to lookup the {@link android.content.SharedPreferences}.
      */
-    public static void saveBatteryNowSource(final Context context, String source) {
+    public static boolean isSamplingScreenOn(final Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        sp.edit().putString(PREF_BATTERY_SOURCE, source).apply();
-    }
-
-    public static String fetchBatteryNowSource(final Context context) {
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        return sp.getString(PREF_BATTERY_SOURCE, Config.BATTERY_SOURCE_DEFAULT);
-    }
-
-    /**
-     * Mark {@code newValue whether} allows the use of mobile data for uploading samples.
-     *
-     * @param context Context to be used to edit the {@link android.content.SharedPreferences}.
-     * @param newValue New value that will be set.
-     */
-    public static void markMobileDataAllowed(final Context context, boolean newValue) {
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        sp.edit().putBoolean(PREF_MOBILE_DATA, newValue).apply();
+        return sp.getBoolean(PREF_SAMPLING_SCREEN, false);
     }
 
     /**
@@ -186,6 +165,21 @@ public class SettingsUtils {
     public static boolean isMobileDataAllowed(final Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         return sp.getBoolean(PREF_MOBILE_DATA, false);
+    }
+
+    public static int fetchUploadRate(final Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return Integer.parseInt(
+                sp.getString(PREF_UPLOAD_RATE, Config.UPLOAD_DEFAULT_RATE)
+        );
+    }
+
+
+    public static int fetchNotificationsPriority(final Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return Integer.parseInt(
+                sp.getString(PREF_NOTIFICATIONS_PRIORITY, Config.NOTIFICATION_DEFAULT_PRIORITY)
+        );
     }
 
     /**

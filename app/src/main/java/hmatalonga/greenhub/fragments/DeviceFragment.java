@@ -122,11 +122,11 @@ public class DeviceFragment extends Fragment {
         // Device
         textView = (TextView) view.findViewById(R.id.androidVersion);
         textView.setText(Specifications.getOsVersion());
+        textView = (TextView) view.findViewById(R.id.androidModel);
+        textView.setText(model);
         textView = (TextView) view.findViewById(R.id.androidImei);
         value = Phone.getDeviceId(mContext);
         textView.setText(value == null ? "not available" : value);
-        textView = (TextView) view.findViewById(R.id.androidModel);
-        textView.setText(model);
         textView = (TextView) view.findViewById(R.id.androidRoot);
         textView.setText(Specifications.isRooted() ? "Yes" : "No");
 
@@ -270,7 +270,7 @@ public class DeviceFragment extends Fragment {
             value = storageDetails.free + " MB";
             mStorageFree.setText(value);
 
-            mHandler.postDelayed(this, Config.REFRESH_CURRENT_INTERVAL);
+            mHandler.postDelayed(this, Config.REFRESH_MEMORY_INTERVAL);
         }
     };
 }

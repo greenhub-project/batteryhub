@@ -60,7 +60,7 @@ public class Notifier {
                         .setContentText(text)
                         .setAutoCancel(false)
                         .setOngoing(true)
-                        .setPriority(NotificationCompat.PRIORITY_LOW);
+                        .setPriority(SettingsUtils.fetchNotificationsPriority(context));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             sBuilder.setVisibility(Notification.VISIBILITY_PUBLIC);
@@ -68,9 +68,6 @@ public class Notifier {
 
         if (level < 100) {
             sBuilder.setSmallIcon(R.drawable.ic_stat_00_pct_charged + level);
-            if (level <= 15) {
-                sBuilder.setPriority(NotificationCompat.PRIORITY_HIGH);
-            }
         } else {
             sBuilder.setSmallIcon(R.drawable.ic_stat_z100_pct_charged);
         }
@@ -116,7 +113,7 @@ public class Notifier {
                 .setContentText(text)
                 .setAutoCancel(false)
                 .setOngoing(true)
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+                .setPriority(SettingsUtils.fetchNotificationsPriority(context));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             sBuilder.setVisibility(Notification.VISIBILITY_PUBLIC);
@@ -124,9 +121,6 @@ public class Notifier {
 
         if (level < 100) {
             sBuilder.setSmallIcon(R.drawable.ic_stat_00_pct_charged + level);
-            if (level <= 15) {
-                sBuilder.setPriority(NotificationCompat.PRIORITY_HIGH);
-            }
         } else {
             sBuilder.setSmallIcon(R.drawable.ic_stat_z100_pct_charged);
         }
@@ -149,7 +143,7 @@ public class Notifier {
                 .setOngoing(false)
                 .setLights(Color.GREEN, 500, 2000)
                 .setVibrate(new long[] {0, 400, 1000})
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+                .setPriority(SettingsUtils.fetchNotificationsPriority(context));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mBuilder.setVisibility(Notification.VISIBILITY_PUBLIC);
@@ -168,12 +162,12 @@ public class Notifier {
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
                 .setSmallIcon(R.drawable.ic_alert_circle_white_24dp)
                 .setContentTitle("Battery is low")
-                .setContentText("Please connect your phone to a power source")
+                .setContentText("Connect your phone to a power source")
                 .setAutoCancel(true)
                 .setOngoing(false)
                 .setLights(Color.RED, 500, 2000)
                 .setVibrate(new long[] {0, 400, 1000})
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+                .setPriority(SettingsUtils.fetchNotificationsPriority(context));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mBuilder.setVisibility(Notification.VISIBILITY_PUBLIC);
@@ -181,5 +175,57 @@ public class Notifier {
 
         // Because the ID remains unchanged, the existing notification is updated.
         sNotificationManager.notify(Config.NOTIFICATION_BATTERY_LOW, mBuilder.build());
+    }
+
+    public static void batteryWarningTemperature(final Context context) {
+        if (sNotificationManager == null) {
+            sNotificationManager =
+                    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        }
+
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
+                .setSmallIcon(R.drawable.ic_alert_circle_white_24dp)
+                .setContentTitle("Battery warning")
+                .setContentText("Temperature is getting warm")
+                .setAutoCancel(true)
+                .setOngoing(false)
+                .setLights(Color.YELLOW, 500, 2000)
+                .setVibrate(new long[] {0, 400, 1000})
+                .setPriority(SettingsUtils.fetchNotificationsPriority(context));
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mBuilder.setVisibility(Notification.VISIBILITY_PUBLIC);
+        }
+
+        // Because the ID remains unchanged, the existing notification is updated.
+        Notification notification = mBuilder.build();
+        notification.flags |= Notification.FLAG_ONLY_ALERT_ONCE;
+        sNotificationManager.notify(Config.NOTIFICATION_TEMPERATURE_WARNING, notification);
+    }
+
+    public static void batteryHighTemperature(final Context context) {
+        if (sNotificationManager == null) {
+            sNotificationManager =
+                    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        }
+
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
+                .setSmallIcon(R.drawable.ic_alert_circle_white_24dp)
+                .setContentTitle("Battery temperature is hot!")
+                .setContentText("Cool-down your phone for a while")
+                .setAutoCancel(true)
+                .setOngoing(false)
+                .setLights(Color.RED, 500, 2000)
+                .setVibrate(new long[] {0, 800, 1500})
+                .setPriority(SettingsUtils.fetchNotificationsPriority(context));
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mBuilder.setVisibility(Notification.VISIBILITY_PUBLIC);
+        }
+
+        // Because the ID remains unchanged, the existing notification is updated.
+        Notification notification = mBuilder.build();
+        notification.flags |= Notification.FLAG_ONLY_ALERT_ONCE;
+        sNotificationManager.notify(Config.NOTIFICATION_TEMPERATURE_HIGH, notification);
     }
 }

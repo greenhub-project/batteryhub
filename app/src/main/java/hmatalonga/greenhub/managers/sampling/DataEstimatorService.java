@@ -48,6 +48,7 @@ package hmatalonga.greenhub.managers.sampling;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
+import android.os.BatteryManager;
 import android.os.PowerManager;
 
 import org.greenrobot.eventbus.EventBus;
@@ -145,24 +146,9 @@ public class DataEstimatorService extends IntentService {
                 return;
             }
 
-            // Set last Sample
+            // Set last sample, if exists extract the last battery level
             if (lastSample != null) {
                 Inspector.setLastBatteryLevel(lastSample.batteryLevel);
-            }
-
-            // If last battery level = 0 then it is the first sample in the current instance
-            if (Inspector.getLastBatteryLevel() == 0) {
-                LOGI(TAG, "Getting a new sample. BatteryLevel => " + Inspector.getCurrentBatteryLevel());
-                // before taking the first sample in a batch, first record the battery level
-                Inspector.setLastBatteryLevel(Inspector.getCurrentBatteryLevel());
-                // take a sample and store it in the database
-                EventBus.getDefault().post(new StatusEvent("Getting new sample..."));
-                getSample(context, intent, lastSample, database);
-                LOGI(TAG, "Getting new usage details");
-                getBatteryUsage(context, intent, database, false);
-                if (Inspector.getCurrentBatteryLevel() == 1) {
-                    Notifier.batteryFullAlert(context);
-                }
             }
 
 			/**
@@ -186,12 +172,25 @@ public class DataEstimatorService extends IntentService {
 
                 // take a sample and store it in the database
                 EventBus.getDefault().post(new StatusEvent("Getting new sample..."));
+
                 getSample(context, intent, lastSample, database);
                 getBatteryUsage(context, intent, database, false);
-                if (Inspector.getCurrentBatteryLevel() == 1) {
+
+                boolean isPlugged = 0 != intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, 0);
+
+                if (Inspector.getCurrentBatteryLevel() == 1 && isPlugged) {
                     Notifier.batteryFullAlert(context);
                 } else if (Inspector.getCurrentBatteryLevel() == Config.BATTERY_LOW_LEVEL) {
                     Notifier.batteryLowAlert(context);
+                }
+
+                Notifier.updateStatusBar(context);
+
+                // If last battery level = 0 then it is the first sample in the current instance
+                if (Inspector.getLastBatteryLevel() == 0) {
+                    LOGI(TAG, "Last Battery Level = 0. Updating to BatteryLevel => " + Inspector.getCurrentBatteryLevel());
+                    // before taking the first sample in a batch, first record the battery level
+                    Inspector.setLastBatteryLevel(Inspector.getCurrentBatteryLevel());
                 }
             } else {
                 if (Config.DEBUG) {
@@ -214,8 +213,8 @@ public class DataEstimatorService extends IntentService {
                 return;
             }
 
-            // Check if is necessary to sendSamples samples >= SAMPLE_MAX_BATCH
-            if (database.count(Sample.class) >= Config.SAMPLE_MAX_BATCH &&
+            // Check if is necessary to sendSamples samples >= pref_upload_rate
+            if (database.count(Sample.class) >= SettingsUtils.fetchUploadRate(context) &&
                     !CommunicationManager.isUploading) {
                 CommunicationManager manager = new CommunicationManager(context, true);
                 manager.sendSamples();

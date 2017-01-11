@@ -16,14 +16,17 @@
 
 package hmatalonga.greenhub.ui;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.ListPreference;
+import android.preference.Preference;
 import android.preference.PreferenceFragment;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 
+import hmatalonga.greenhub.GreenHubApp;
 import hmatalonga.greenhub.R;
 import hmatalonga.greenhub.util.SettingsUtils;
 
@@ -57,6 +60,9 @@ public class SettingsActivity extends BaseActivity {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.preferences);
 
+            bindPreferenceSummaryToValue(findPreference(SettingsUtils.PREF_UPLOAD_RATE));
+            bindPreferenceSummaryToValue(findPreference(SettingsUtils.PREF_NOTIFICATIONS_PRIORITY));
+
             SettingsUtils.registerOnSharedPreferenceChangeListener(getActivity(), this);
         }
 
@@ -69,10 +75,38 @@ public class SettingsActivity extends BaseActivity {
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
             switch (key) {
-                case SettingsUtils.PREF_MOBILE_DATA:
-                    Context context = getActivity().getApplicationContext();
-                    LOGI(TAG, "Mobile data is now => " + SettingsUtils.isMobileDataAllowed(context));
+                case SettingsUtils.PREF_SAMPLING_SCREEN:
+                    GreenHubApp app = (GreenHubApp) getActivity().getApplication();
+                    // Restart GreenHub Service with new settings
+                    LOGI(TAG, "Restarting GreenHub Service because of preference changes");
+                    app.stopGreenHubService();
+                    app.startGreenHubService();
                     break;
+                case SettingsUtils.PREF_UPLOAD_RATE:
+                    bindPreferenceSummaryToValue(findPreference(SettingsUtils.PREF_UPLOAD_RATE));
+                    break;
+                case SettingsUtils.PREF_NOTIFICATIONS_PRIORITY:
+                    bindPreferenceSummaryToValue(findPreference(SettingsUtils.PREF_NOTIFICATIONS_PRIORITY));
+                    break;
+            }
+        }
+
+        private void bindPreferenceSummaryToValue(Preference preference) {
+            String stringValue = PreferenceManager
+                    .getDefaultSharedPreferences(preference.getContext())
+                    .getString(preference.getKey(), "");
+
+            if (preference instanceof ListPreference) {
+                // For list preferences, look up the correct display value in
+                // the preference's 'entries' list.
+                ListPreference listPreference = (ListPreference) preference;
+                int index = listPreference.findIndexOfValue(stringValue);
+
+                // Set the summary to reflect the new value.
+                preference.setSummary(
+                        index >= 0
+                                ? listPreference.getEntries()[index]
+                                : null);
             }
         }
     }

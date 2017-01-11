@@ -41,8 +41,7 @@
         <fragment android:name="hmatalonga.greenhub.ui.SettingsActivity$SettingsFragment"
             android:id="@+id/settings_fragment"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/spacing_normal"/>
+            android:layout_height="match_parent"/>
 
     </RelativeLayout>
 

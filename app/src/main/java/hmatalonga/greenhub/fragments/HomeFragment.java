@@ -48,6 +48,7 @@ import hmatalonga.greenhub.models.Battery;
 import hmatalonga.greenhub.models.ui.BatteryCard;
 import hmatalonga.greenhub.ui.MainActivity;
 import hmatalonga.greenhub.ui.adapters.BatteryRVAdapter;
+import hmatalonga.greenhub.util.Notifier;
 
 import static hmatalonga.greenhub.util.LogUtils.makeLogTag;
 
@@ -202,12 +203,18 @@ public class HomeFragment extends Fragment {
             public void run() {
                 mBatteryCards = new ArrayList<>();
                 String value;
-                int color;
+                int color = Color.GREEN;
 
                 // Temperature
-                value = String.valueOf(estimator.getTemperature() + " ºC");
+                float temperature = estimator.getTemperature();
+                value = String.valueOf(temperature + " ºC");
+                if (temperature > 45) {
+                    color = Color.RED;
+                } else if (temperature <= 45 && temperature > 35) {
+                    color = Color.YELLOW;
+                }
                 mBatteryCards.add(
-                        new BatteryCard(R.drawable.ic_thermometer_black_18dp, "Temperature", value)
+                        new BatteryCard(R.drawable.ic_thermometer_black_18dp, "Temperature", value, color)
                 );
 
                 // Voltage

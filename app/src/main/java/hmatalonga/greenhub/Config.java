@@ -60,14 +60,6 @@ public final class Config {
     public static final String SERVER_URL_DEFAULT = "none";
     public static final String SERVER_URL_DEVELOPMENT = "http://192.168.1.105/";
 
-    // Report Freshness timeout. Default: 15 minutes
-    public static final long FRESHNESS_TIMEOUT = AlarmManager.INTERVAL_FIFTEEN_MINUTES;
-
-    public static final String PREFERENCE_FIRST_RUN = "greenhub.first.run";
-    static final String REGISTERED_UUID = "greenhub.registered.uuid";
-    public static final String REGISTERED_OS = "greenhub.registered.os";
-    public static final String REGISTERED_MODEL = "greenhub.registered.model";
-
     // Alarm event for sampling when battery has not changed for
     // SAMPLE_INTERVAL_MS. Currently not used.
     public static final String ACTION_GREENHUB_SAMPLE = "hmatalonga.greenhub.ACTION_SAMPLE";
@@ -80,14 +72,14 @@ public final class Config {
     public static final String IMPORTANCE_INSTALLED = "installed";
     public static final String IMPORTANCE_REPLACED = "replaced";
 
-    public static final boolean EXTRA_SCREEN_ACTIONS = false;
-
     public static final String BATTERY_SOURCE_DEFAULT = "/sys/class/power_supply/battery/current_now";
     public static final String BATTERY_SOURCE_ALTERNATIVE = "/sys/devices/platform/battery/power_supply/battery/BatteryAverageCurrent";
 
     public static final int UPLOAD_MAX_TRIES = 3;
-    public static final int SAMPLE_MAX_BATCH = 10;
+    public static final String UPLOAD_DEFAULT_RATE = "20";
+
     public static final int REFRESH_CURRENT_INTERVAL = 5000;
+    public static final int REFRESH_MEMORY_INTERVAL = 10000;
     public static final int REFRESH_STATUS_BAR_INTERVAL = REFRESH_CURRENT_INTERVAL * 4;
     public static final int REFRESH_STATUS_ERROR = REFRESH_CURRENT_INTERVAL * 2;
 
@@ -96,9 +88,13 @@ public final class Config {
     public static final String STATUS_IDLE = "Idle";
 
     public static final int PERMISSION_READ_PHONE_STATE = 1;
-    public static final int PERMISSION_PACKAGE_USAGE_STATS = 2;
+    public static final int PERMISSION_ACCESS_COARSE_LOCATION = 2;
+    public static final int PERMISSION_ACCESS_FINE_LOCATION = 3;
 
+    public static final String NOTIFICATION_DEFAULT_PRIORITY = "0";
     public static final int NOTIFICATION_BATTERY_STATUS = 1001;
     public static final int NOTIFICATION_BATTERY_FULL = 1002;
     public static final int NOTIFICATION_BATTERY_LOW = 1003;
+    public static final int NOTIFICATION_TEMPERATURE_WARNING = 1004;
+    public static final int NOTIFICATION_TEMPERATURE_HIGH = 1005;
 }
