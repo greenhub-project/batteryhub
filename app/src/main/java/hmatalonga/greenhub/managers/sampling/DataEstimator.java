@@ -37,7 +37,9 @@ import hmatalonga.greenhub.events.BatteryLevelEvent;
 import hmatalonga.greenhub.models.LocationInfo;
 import hmatalonga.greenhub.models.data.LocationProvider;
 import hmatalonga.greenhub.util.Notifier;
+import hmatalonga.greenhub.util.SettingsUtils;
 
+import static hmatalonga.greenhub.util.LogUtils.LOGE;
 import static hmatalonga.greenhub.util.LogUtils.LOGI;
 import static hmatalonga.greenhub.util.LogUtils.makeLogTag;
 
@@ -50,7 +52,6 @@ public class DataEstimator extends WakefulBroadcastReceiver {
 
     private static final String TAG = makeLogTag(DataEstimator.class);
 
-    // private Location lastKnownLocation = null;
     private double distance = 0.0;
     private long lastNotify;
 
@@ -64,11 +65,17 @@ public class DataEstimator extends WakefulBroadcastReceiver {
     private float temperature;
     private float voltage;
 
-    private Context mContext;
-
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (mContext == null) mContext = context;
+        if (context == null) {
+            LOGE(TAG, "Error, context is null");
+            return;
+        }
+
+        if (intent == null) {
+            LOGE(TAG, "Data Estimator error, received intent is null");
+            return;
+        }
 
         LOGI(TAG, "onReceive action => " + intent.getAction());
 
@@ -88,11 +95,17 @@ public class DataEstimator extends WakefulBroadcastReceiver {
                 e.printStackTrace();
             }
 
-            // Notify for temperature alerts...
-            if (temperature > 45) {
-                Notifier.batteryHighTemperature(context);
-            } else if (temperature <= 45 && temperature > 35) {
-                Notifier.batteryWarningTemperature(context);
+            if (SettingsUtils.isBatteryAlertsOn(context)) {
+                // Notify for temperature alerts...
+                if (temperature > 45) {
+                    Notifier.batteryHighTemperature(context);
+                } else if (temperature <= 45 && temperature > 35) {
+                    Notifier.batteryWarningTemperature(context);
+                }
+            }
+
+            if (SettingsUtils.isPowerIndicatorShown(context)) {
+                Notifier.updateStatusBar(context);
             }
         }
 
@@ -120,55 +133,6 @@ public class DataEstimator extends WakefulBroadcastReceiver {
             startWakefulService(context, service);
         }
     }
-
-    /**
-     *  For now disable LocationListener features
-    @Override
-    public void onLocationChanged(Location location) {
-        if (lastKnownLocation != null && location != null) {
-            distance = lastKnownLocation.distanceTo(location);
-        }
-        lastKnownLocation = location;
-    }
-
-    @Override
-    public void onProviderDisabled(String provider) {
-        requestLocationUpdates();
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-        requestLocationUpdates();
-    }
-
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-        requestLocationUpdates();
-    }
-
-    private void requestLocationUpdates() {
-        try {
-            LocationManager manager = (LocationManager)
-                    mContext.getSystemService(Context.LOCATION_SERVICE);
-            manager.removeUpdates(this);
-            List<LocationProvider> providers = LocationInfo.getEnabledLocationProviders(mContext);
-            if (providers != null) {
-                for (LocationProvider locationProvider : providers) {
-                    manager.requestLocationUpdates(
-                            locationProvider.provider,
-                            Config.FRESHNESS_TIMEOUT,
-                            0,
-                            this
-                    );
-                }
-            }
-        }
-        catch (SecurityException e) {
-            e.printStackTrace();
-        }
-    }
-
-     */
 
     public static Intent getBatteryChangedIntent(final Context context) {
         return context.registerReceiver(

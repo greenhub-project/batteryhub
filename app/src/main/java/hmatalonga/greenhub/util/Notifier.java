@@ -37,6 +37,7 @@ import hmatalonga.greenhub.ui.MainActivity;
  * Notifier
  */
 public class Notifier {
+
     private static boolean isStatusBarShown = false;
 
     private static NotificationCompat.Builder sBuilder = null;
@@ -127,6 +128,11 @@ public class Notifier {
 
         // Because the ID remains unchanged, the existing notification is updated.
         sNotificationManager.notify(Config.NOTIFICATION_BATTERY_STATUS, sBuilder.build());
+    }
+
+    public static void closeStatusBar() {
+        sNotificationManager.cancel(Config.NOTIFICATION_BATTERY_STATUS);
+        isStatusBarShown = false;
     }
 
     public static void batteryFullAlert(final Context context) {

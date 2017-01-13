@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Hugo Matalonga & João Paulo Fernandes
+ * Copyright (c) 2017 Hugo Matalonga & João Paulo Fernandes
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 package hmatalonga.greenhub.ui;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.ListPreference;
@@ -26,8 +27,15 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 
+import hmatalonga.greenhub.BuildConfig;
 import hmatalonga.greenhub.GreenHubApp;
 import hmatalonga.greenhub.R;
+import hmatalonga.greenhub.models.SettingsInfo;
+import hmatalonga.greenhub.models.Specifications;
+import hmatalonga.greenhub.tasks.DeleteSessionsTask;
+import hmatalonga.greenhub.tasks.DeleteUsagesTask;
+import hmatalonga.greenhub.util.LogUtils;
+import hmatalonga.greenhub.util.Notifier;
 import hmatalonga.greenhub.util.SettingsUtils;
 
 import static hmatalonga.greenhub.util.LogUtils.LOGI;
@@ -52,14 +60,16 @@ public class SettingsActivity extends BaseActivity {
     }
 
     public static class SettingsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
-        public SettingsFragment() {
-        }
+        public SettingsFragment() {}
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.preferences);
 
+            findPreference(SettingsUtils.PREF_APP_VERSION).setSummary(BuildConfig.VERSION_NAME);
+
+            bindPreferenceSummaryToValue(findPreference(SettingsUtils.PREF_DATA_HISTORY));
             bindPreferenceSummaryToValue(findPreference(SettingsUtils.PREF_UPLOAD_RATE));
             bindPreferenceSummaryToValue(findPreference(SettingsUtils.PREF_NOTIFICATIONS_PRIORITY));
 
@@ -74,6 +84,8 @@ public class SettingsActivity extends BaseActivity {
 
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+            final Context context = getActivity().getApplicationContext();
+
             switch (key) {
                 case SettingsUtils.PREF_SAMPLING_SCREEN:
                     GreenHubApp app = (GreenHubApp) getActivity().getApplication();
@@ -82,8 +94,22 @@ public class SettingsActivity extends BaseActivity {
                     app.stopGreenHubService();
                     app.startGreenHubService();
                     break;
+                case SettingsUtils.PREF_DATA_HISTORY:
+                    bindPreferenceSummaryToValue(findPreference(SettingsUtils.PREF_DATA_HISTORY));
+                    // Delete old data history
+                    final int interval = SettingsUtils.fetchDataHistoryInterval(context);
+                    new DeleteUsagesTask().execute(interval);
+                    new DeleteSessionsTask().execute(interval);
+                    break;
                 case SettingsUtils.PREF_UPLOAD_RATE:
                     bindPreferenceSummaryToValue(findPreference(SettingsUtils.PREF_UPLOAD_RATE));
+                    break;
+                case SettingsUtils.PREF_POWER_INDICATOR:
+                    if (SettingsUtils.isPowerIndicatorShown(context)) {
+                        Notifier.startStatusBar(context);
+                    } else {
+                        Notifier.closeStatusBar();
+                    }
                     break;
                 case SettingsUtils.PREF_NOTIFICATIONS_PRIORITY:
                     bindPreferenceSummaryToValue(findPreference(SettingsUtils.PREF_NOTIFICATIONS_PRIORITY));

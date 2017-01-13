@@ -114,20 +114,22 @@ public class StatisticsFragment extends Fragment {
     }
 
     /**
-     * Creates an array to feed data to the recyclerView
+     * Queries the data from database.
+     *
+     * @param interval Time interval for fetching the data.
      */
-    private void loadData(int interval) {
-        RealmResults<BatteryUsage> results;
+    private void loadData(final int interval) {
         long now = System.currentTimeMillis();
-        ChartCard card;
-        double min, avg, max;
+        RealmResults<BatteryUsage> results;
 
         mChartCards = new ArrayList<>();
 
+        // Make sure database instance is opened
         if (mActivity.database.isClosed()) {
             mActivity.database.getDefaultInstance();
         }
 
+        // Query results according to selected time interval
         if (interval == DateUtils.INTERVAL_24H) {
             results = mActivity.database.betweenUsages(
                     DateUtils.getMilliSecondsInterval(DateUtils.INTERVAL_24H),
@@ -150,26 +152,48 @@ public class StatisticsFragment extends Fragment {
             );
         }
 
+        fillData(results);
+
+        setAdapter(mSelectedInterval);
+    }
+
+    /**
+     * Fills in the data queried from the database.
+     *
+     * @param results Collection of results fetched from the database.
+     */
+    private void fillData(@NonNull RealmResults<BatteryUsage> results) {
+        ChartCard card;
+        double min = 0;
+        double avg = 0;
+        double max = 0;
+
         // Battery Level
         card = new ChartCard(
                 ChartRVAdapter.BATTERY_LEVEL,
                 "Battery Level (%)",
                 ColorTemplate.rgb("#E84813")
         );
+
         for (BatteryUsage usage : results) {
             card.entries.add(new Entry((float) usage.timestamp, usage.level));
         }
+
         mChartCards.add(card);
 
         // Battery Temperature
-        min = Double.MAX_VALUE;
-        avg = 0;
-        max = Double.MIN_VALUE;
+        if (!results.isEmpty()) {
+            min = Double.MAX_VALUE;
+            avg = 0;
+            max = Double.MIN_VALUE;
+        }
+
         card = new ChartCard(
                 ChartRVAdapter.BATTERY_TEMPERATURE,
                 "Battery Temperature (ºC)",
                 ColorTemplate.rgb("#E81332")
         );
+
         for (BatteryUsage usage : results) {
             card.entries.add(new Entry((float) usage.timestamp, (float) usage.details.temperature));
             if (usage.details.temperature < min) {
@@ -180,19 +204,24 @@ public class StatisticsFragment extends Fragment {
             }
             avg += usage.details.temperature;
         }
+
         avg /= results.size();
         card.extras = new double[] {min, avg, max};
         mChartCards.add(card);
 
         // Battery Voltage
-        min = Double.MAX_VALUE;
-        avg = 0;
-        max = Double.MIN_VALUE;;
+        if (!results.isEmpty()) {
+            min = Double.MAX_VALUE;
+            avg = 0;
+            max = Double.MIN_VALUE;
+        }
+
         card = new ChartCard(
                 ChartRVAdapter.BATTERY_VOLTAGE,
                 "Battery Voltage (V)",
                 ColorTemplate.rgb("#FF15AC")
         );
+
         for (BatteryUsage usage : results) {
             card.entries.add(new Entry((float) usage.timestamp, (float) usage.details.voltage));
             if (usage.details.voltage < min) {
@@ -203,14 +232,19 @@ public class StatisticsFragment extends Fragment {
             }
             avg += usage.details.voltage;
         }
+
         avg /= results.size();
         card.extras = new double[] {min, avg, max};
         mChartCards.add(card);
-
-        setAdapter(interval);
     }
 
-    private void setAdapter(int interval) {
+    /**
+     * Sets the adapter of the recycler view,
+     * filtering the time interval of the charts.
+     *
+     * @param interval Time interval to filter charts results.
+     */
+    private void setAdapter(final int interval) {
         if (mAdapter == null) {
             mAdapter = new ChartRVAdapter(mChartCards, interval);
             mRecyclerView.setAdapter(mAdapter);

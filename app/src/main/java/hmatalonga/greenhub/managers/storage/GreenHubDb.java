@@ -26,12 +26,15 @@ import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.exceptions.RealmMigrationNeededException;
 
+import static hmatalonga.greenhub.util.LogUtils.makeLogTag;
+
 /**
+ * GreenHub database provider.
  *
  * Created by hugo on 16-04-2016.
  */
 public class GreenHubDb {
-    private static final String TAG = "GreenHubDb";
+    private static final String TAG = makeLogTag(GreenHubDb.class);
 
     private Realm mRealm;
 
@@ -41,7 +44,6 @@ public class GreenHubDb {
         } catch (RealmMigrationNeededException e) {
             // handle migration exception io.realm.exceptions.RealmMigrationNeededException
             e.printStackTrace();
-            System.exit(1);
         }
     }
 
@@ -69,10 +71,6 @@ public class GreenHubDb {
             size = mRealm.where(BatterySession.class).count();
         }
         return size;
-    }
-
-    public Sample firstSample() {
-        return mRealm.where(Sample.class).findFirst();
     }
 
     public Sample lastSample() {
@@ -115,10 +113,6 @@ public class GreenHubDb {
         mRealm.commitTransaction();
     }
 
-    public RealmResults<Sample> allSamples() {
-        return mRealm.where(Sample.class).findAll();
-    }
-
     public Iterator<Integer> allSamplesIds() {
         ArrayList<Integer> list = new ArrayList<>();
         RealmResults<Sample> samples = mRealm.where(Sample.class).findAll();
@@ -130,21 +124,7 @@ public class GreenHubDb {
         return list.iterator();
     }
 
-    public RealmResults<BatteryUsage> allUsages() {
-        return mRealm.where(BatteryUsage.class).findAll();
-    }
-
     public RealmResults<BatteryUsage> betweenUsages(long from, long to) {
         return mRealm.where(BatteryUsage.class).between("timestamp", from, to).findAll();
-    }
-
-    public RealmResults<Sample> deleteSampleFromQuery(final RealmResults<Sample> results) {
-        mRealm.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                results.deleteFirstFromRealm();
-            }
-        });
-        return results;
     }
 }

@@ -65,7 +65,6 @@ public class Battery {
             Object mPowerProfile = powerProfile.getConstructor(Context.class).newInstance(context);
             Method getAveragePower = powerProfile.getMethod("getAveragePower", String.class);
             getAveragePower.setAccessible(true);
-            // TODO: java.lang.ClassCastException: java.lang.Double cannot be cast to java.lang.Integer
             String value = getAveragePower.invoke(mPowerProfile, "battery.capacity").toString();
             return ((int) Double.parseDouble(value));
         } catch (Throwable th) {
@@ -73,6 +72,29 @@ public class Battery {
         }
 
         return -1;
+    }
+
+    public static void getActualBatteryCapacity(final Context context) {
+        Object mPowerProfile_ = null;
+
+        final String POWER_PROFILE_CLASS = "com.android.internal.os.PowerProfile";
+
+        try {
+            mPowerProfile_ = Class.forName(POWER_PROFILE_CLASS)
+                    .getConstructor(Context.class).newInstance(context);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+            double batteryCapacity = (Double) Class
+                    .forName(POWER_PROFILE_CLASS)
+                    .getMethod("getAveragePower", java.lang.String.class)
+                    .invoke(mPowerProfile_, "battery.capacity");
+            LOGI(TAG, batteryCapacity + " mah");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static int getBatteryChargeCounter(final Context context) {

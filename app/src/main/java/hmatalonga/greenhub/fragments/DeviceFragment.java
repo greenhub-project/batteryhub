@@ -44,7 +44,6 @@ import hmatalonga.greenhub.models.Storage;
 import hmatalonga.greenhub.models.Wifi;
 import hmatalonga.greenhub.models.data.StorageDetails;
 import hmatalonga.greenhub.ui.ProcessListActivity;
-import hmatalonga.greenhub.ui.SettingsActivity;
 
 import static hmatalonga.greenhub.util.LogUtils.makeLogTag;
 
@@ -56,6 +55,7 @@ public class DeviceFragment extends Fragment {
     private static final String TAG = makeLogTag("DeviceFragment");
 
     private Context mContext = null;
+
     private View mParentView = null;
 
     private Handler mHandler;

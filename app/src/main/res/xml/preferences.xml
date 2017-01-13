@@ -26,6 +26,13 @@
             android:title="@string/pref_title_sampling_screen"
             android:summary="@string/pref_description_sampling_screen"/>
 
+        <ListPreference
+            android:key="pref_data_history"
+            android:title="@string/pref_title_data_history"
+            android:entries="@array/history_titles"
+            android:entryValues="@array/history_values"
+            android:defaultValue="4"/>
+
     </PreferenceCategory>
 
     <PreferenceCategory
@@ -37,9 +44,15 @@
             android:key="pref_mobile_data"
             android:title="@string/pref_title_mobile_data"/>
 
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="pref_auto_upload"
+            android:title="@string/pref_title_auto_upload"/>
+
         <ListPreference
             android:key="pref_upload_rate"
             android:title="@string/pref_title_rate"
+            android:dependency="pref_auto_upload"
             android:entries="@array/rate_titles"
             android:entryValues="@array/rate_values"
             android:defaultValue="20"/>
@@ -49,6 +62,17 @@
     <PreferenceCategory
         android:title="@string/pref_header_notifications"
         android:key="notifications_header">
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="pref_power_indicator"
+            android:title="@string/pref_title_power_indicator"/>
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="pref_battery_alerts"
+            android:title="@string/pref_title_battery_alerts"
+            android:summary="@string/pref_description_battery_alerts"/>
 
         <ListPreference
             android:key="pref_notifications_priority"
@@ -64,8 +88,8 @@
         android:key="about_header">
 
         <Preference
+            android:key="pref_app_version"
             android:title="@string/pref_title_version"
-            android:summary="@string/pref_description_version"
             android:selectable="false" />
 
         <Preference

@@ -35,18 +35,25 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.jaredrummler.android.processes.AndroidProcesses;
+
 import org.greenrobot.eventbus.EventBus;
 
+import hmatalonga.greenhub.BuildConfig;
 import hmatalonga.greenhub.Config;
 import hmatalonga.greenhub.GreenHubApp;
 import hmatalonga.greenhub.R;
 import hmatalonga.greenhub.events.StatusEvent;
 import hmatalonga.greenhub.managers.sampling.DataEstimator;
 import hmatalonga.greenhub.managers.storage.GreenHubDb;
+import hmatalonga.greenhub.models.Application;
+import hmatalonga.greenhub.models.Battery;
 import hmatalonga.greenhub.network.CommunicationManager;
+import hmatalonga.greenhub.tasks.RegisterDeviceTask;
 import hmatalonga.greenhub.tasks.ServerStatusTask;
 import hmatalonga.greenhub.ui.adapters.TabAdapter;
 import hmatalonga.greenhub.ui.layouts.MainTabLayout;
+import hmatalonga.greenhub.util.LogUtils;
 import hmatalonga.greenhub.util.NetworkWatcher;
 import hmatalonga.greenhub.util.SettingsUtils;
 
@@ -181,6 +188,8 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
 
                 // Check if server url is stored in preferences and device is registered
                 if (!SettingsUtils.isServerUrlPresent(context) || !SettingsUtils.isDeviceRegistered(context)) {
+                    // Fetch web server status and update them
+                    new ServerStatusTask().execute(context);
                     EventBus.getDefault().post(new StatusEvent("It needs to sync with server. Try again later"));
                     refreshStatus();
                     return;

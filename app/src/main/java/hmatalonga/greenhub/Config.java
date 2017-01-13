@@ -75,6 +75,8 @@ public final class Config {
     public static final String BATTERY_SOURCE_DEFAULT = "/sys/class/power_supply/battery/current_now";
     public static final String BATTERY_SOURCE_ALTERNATIVE = "/sys/devices/platform/battery/power_supply/battery/BatteryAverageCurrent";
 
+    public static final String DATA_HISTORY_DEFAULT = "4";
+
     public static final int UPLOAD_MAX_TRIES = 3;
     public static final String UPLOAD_DEFAULT_RATE = "20";
 

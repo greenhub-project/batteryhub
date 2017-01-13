@@ -19,7 +19,10 @@ package hmatalonga.greenhub.receivers;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 
+import hmatalonga.greenhub.GreenHubApp;
+import hmatalonga.greenhub.managers.sampling.DataEstimator;
 import hmatalonga.greenhub.util.Notifier;
 import hmatalonga.greenhub.util.SettingsUtils;
 
@@ -41,8 +44,9 @@ public class BootReceiver extends BroadcastReceiver {
      */
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (SettingsUtils.isTosAccepted(context)) {
-            LOGI(TAG, "Launching notification");
+        LOGI(TAG, "BOOT_COMPLETED onReceive()");
+        if (SettingsUtils.isTosAccepted(context) && SettingsUtils.isPowerIndicatorShown(context)) {
+            // Display Status bar
             Notifier.startStatusBar(context);
         }
     }

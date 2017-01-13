@@ -48,7 +48,6 @@ import hmatalonga.greenhub.models.Battery;
 import hmatalonga.greenhub.models.ui.BatteryCard;
 import hmatalonga.greenhub.ui.MainActivity;
 import hmatalonga.greenhub.ui.adapters.BatteryRVAdapter;
-import hmatalonga.greenhub.util.Notifier;
 
 import static hmatalonga.greenhub.util.LogUtils.makeLogTag;
 

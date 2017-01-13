@@ -178,13 +178,13 @@ public class DataEstimatorService extends IntentService {
 
                 boolean isPlugged = 0 != intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, 0);
 
-                if (Inspector.getCurrentBatteryLevel() == 1 && isPlugged) {
-                    Notifier.batteryFullAlert(context);
-                } else if (Inspector.getCurrentBatteryLevel() == Config.BATTERY_LOW_LEVEL) {
-                    Notifier.batteryLowAlert(context);
+                if (SettingsUtils.isBatteryAlertsOn(context)) {
+                    if (Inspector.getCurrentBatteryLevel() == 1 && isPlugged) {
+                        Notifier.batteryFullAlert(context);
+                    } else if (Inspector.getCurrentBatteryLevel() == Config.BATTERY_LOW_LEVEL) {
+                        Notifier.batteryLowAlert(context);
+                    }
                 }
-
-                Notifier.updateStatusBar(context);
 
                 // If last battery level = 0 then it is the first sample in the current instance
                 if (Inspector.getLastBatteryLevel() == 0) {
@@ -200,13 +200,15 @@ public class DataEstimatorService extends IntentService {
 
             /**
              * Check upload constraints:
+             * - Automatic uploads allowed
              * - Server url present
              * - Max uploadAttempts
              * - Not registered
              * - Not batteryChanged
              */
-            if (!SettingsUtils.isServerUrlPresent(context) ||
-                    CommunicationManager.uploadAttempts >= Config.UPLOAD_MAX_TRIES ||
+            if (CommunicationManager.uploadAttempts >= Config.UPLOAD_MAX_TRIES ||
+                    !SettingsUtils.isAutomaticUploadingAllowed(context) ||
+                    !SettingsUtils.isServerUrlPresent(context) ||
                     !SettingsUtils.isDeviceRegistered(context) ||
                     !batteryLevelChanged) {
                 database.close();

@@ -52,19 +52,37 @@ public class SettingsUtils {
      */
     public static final String PREF_SAMPLING_SCREEN = "pref_sampling_screen";
     /**
+     * Integer indicating which data history days range to keep.
+     */
+    public static final String PREF_DATA_HISTORY = "pref_data_history";
+    /**
      * Boolean indicating whether to allow uploads using mobile data.
      */
     public static final String PREF_MOBILE_DATA = "pref_mobile_data";
     /**
+     * Boolean indicating whether to allow uploads using mobile data.
+     */
+    public static final String PREF_AUTO_UPLOAD = "pref_auto_upload";
+    /**
      * Integer indicating which upload interval rate to use.
      */
     public static final String PREF_UPLOAD_RATE = "pref_upload_rate";
-    public static final String PREF_UPLOAD_RATE_VALUE = "pref_upload_rate_value";
     /**
      * Integer indicating which upload interval rate to use.
      */
     public static final String PREF_NOTIFICATIONS_PRIORITY = "pref_notifications_priority";
-    public static final String PREF_NOTIFICATIONS_PRIORITY_VALUE = "pref_notifications_priority_value";
+    /**
+     * Boolean indicating whether to display the power indicator.
+     */
+    public static final String PREF_POWER_INDICATOR = "pref_power_indicator";
+    /**
+     * Boolean indicating whether to display battery alerts.
+     */
+    public static final String PREF_BATTERY_ALERTS = "pref_battery_alerts";
+    /**
+     * String indicating the app version.
+     */
+    public static final String PREF_APP_VERSION = "pref_app_version";
 
     /**
      * Return true if user has accepted the
@@ -156,6 +174,13 @@ public class SettingsUtils {
         return sp.getBoolean(PREF_SAMPLING_SCREEN, false);
     }
 
+    public static int fetchDataHistoryInterval(final Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return Integer.parseInt(
+                sp.getString(PREF_DATA_HISTORY, Config.DATA_HISTORY_DEFAULT)
+        );
+    }
+
     /**
      * Return true if mobile data is allowed to upload samples,
      * false if it is not.
@@ -165,6 +190,17 @@ public class SettingsUtils {
     public static boolean isMobileDataAllowed(final Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         return sp.getBoolean(PREF_MOBILE_DATA, false);
+    }
+
+    /**
+     * Return true if automatic uploading is allowed,
+     * false if it is not.
+     *
+     * @param context Context to be used to lookup the {@link android.content.SharedPreferences}.
+     */
+    public static boolean isAutomaticUploadingAllowed(final Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getBoolean(PREF_AUTO_UPLOAD, true);
     }
 
     public static int fetchUploadRate(final Context context) {
@@ -180,6 +216,26 @@ public class SettingsUtils {
         return Integer.parseInt(
                 sp.getString(PREF_NOTIFICATIONS_PRIORITY, Config.NOTIFICATION_DEFAULT_PRIORITY)
         );
+    }
+
+    /**
+     * Return true if power indicator is to be shown, false if it is hidden.
+     *
+     * @param context Context to be used to lookup the {@link android.content.SharedPreferences}.
+     */
+    public static boolean isPowerIndicatorShown(final Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getBoolean(PREF_POWER_INDICATOR, true);
+    }
+
+    /**
+     * Return true if power indicator is to be shown, false if it is hidden.
+     *
+     * @param context Context to be used to lookup the {@link android.content.SharedPreferences}.
+     */
+    public static boolean isBatteryAlertsOn(final Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getBoolean(PREF_BATTERY_ALERTS, true);
     }
 
     /**

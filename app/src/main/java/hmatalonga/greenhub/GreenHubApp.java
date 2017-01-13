@@ -23,6 +23,11 @@ import android.content.IntentFilter;
 import android.os.Handler;
 
 import hmatalonga.greenhub.managers.sampling.DataEstimator;
+import hmatalonga.greenhub.tasks.DeleteSessionsTask;
+import hmatalonga.greenhub.tasks.DeleteUsagesTask;
+import hmatalonga.greenhub.tasks.ServerStatusTask;
+import hmatalonga.greenhub.util.LogUtils;
+import hmatalonga.greenhub.util.NetworkWatcher;
 import hmatalonga.greenhub.util.Notifier;
 import hmatalonga.greenhub.util.SettingsUtils;
 import io.realm.Realm;
@@ -32,7 +37,7 @@ import static hmatalonga.greenhub.util.LogUtils.LOGI;
 import static hmatalonga.greenhub.util.LogUtils.makeLogTag;
 
 /**
- * GreenHubApp
+ * GreenHubApp Application class.
  */
 public class GreenHubApp extends Application {
 
@@ -48,26 +53,43 @@ public class GreenHubApp extends Application {
     public void onCreate() {
         super.onCreate();
 
+        if (BuildConfig.DEBUG) {
+            LogUtils.LOGGING_ENABLED = true;
+        }
+
+        LOGI(TAG, "onCreate() called");
+
         // Database init
         Realm.init(this);
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
         Realm.setDefaultConfiguration(realmConfiguration);
 
+        LOGI(TAG, "Estimator new instance");
         estimator = new DataEstimator();
 
-        if (SettingsUtils.isTosAccepted(getApplicationContext())) {
-            LOGI(TAG, "Notifier Status Bar called");
-            mHandler = new Handler();
-            mHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    Notifier.updateStatusBar(getApplicationContext());
-                    mHandler.postDelayed(this, Config.REFRESH_STATUS_BAR_INTERVAL);
-                }
-            }, Config.REFRESH_STATUS_BAR_INTERVAL);
+        Context context = getApplicationContext();
 
+        if (SettingsUtils.isTosAccepted(context)) {
+            // Start GreenHub Service
             LOGI(TAG, "startGreenHubService() called");
             startGreenHubService();
+
+            // Delete old data history
+            final int interval = SettingsUtils.fetchDataHistoryInterval(context);
+            new DeleteUsagesTask().execute(interval);
+            new DeleteSessionsTask().execute(interval);
+
+            if (SettingsUtils.isPowerIndicatorShown(context)) {
+                LOGI(TAG, "Notifier Status Bar called");
+                mHandler = new Handler();
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Notifier.updateStatusBar(getApplicationContext());
+                        mHandler.postDelayed(this, Config.REFRESH_STATUS_BAR_INTERVAL);
+                    }
+                }, Config.REFRESH_STATUS_BAR_INTERVAL);
+            }
         }
     }
 
@@ -76,9 +98,11 @@ public class GreenHubApp extends Application {
             LOGI(TAG, "GreenHubService starting...");
 
             final Context context = getApplicationContext();
+            isServiceRunning = true;
 
-            // Display Status bar
-            Notifier.startStatusBar(context);
+            if (SettingsUtils.isPowerIndicatorShown(context)) {
+                Notifier.startStatusBar(context);
+            }
 
             new Thread() {
                 private IntentFilter intentFilter;
@@ -95,8 +119,6 @@ public class GreenHubApp extends Application {
                         intentFilter.addAction(Intent.ACTION_SCREEN_OFF);
                         registerReceiver(estimator, intentFilter);
                     }
-
-                    isServiceRunning = true;
                 }
             }.start();
         } else {

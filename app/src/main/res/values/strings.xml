@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright (c) 2016 Hugo Matalonga & João Paulo Fernandes
+  ~ Copyright (c) 2017 Hugo Matalonga & João Paulo Fernandes
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -15,11 +15,9 @@
   -->
 
 <resources>
-
     <string name="app_name">GreenHub</string>
 
     <string name="accept">Accept</string>
-
     <string name="decline">Decline</string>
 
     <!-- Short text welcoming the user to the application -->
@@ -87,15 +85,28 @@
     <string name="pref_title_sampling_screen">Track screen events</string>
     <string name="pref_description_sampling_screen">Save data on screen on/off</string>
 
+    <string name="pref_title_data_history">Data history</string>
+
+    <string name="pref_title_auto_upload">Automatic uploads</string>
+
     <string name="pref_title_mobile_data">Use mobile data</string>
     <string name="pref_description_mobile_data">Upload with cellular data</string>
 
     <string name="pref_title_rate">Uploading rate</string>
 
+    <string name="pref_title_power_indicator">Power indicator</string>
+
+    <string name="pref_title_battery_alerts">Battery alerts</string>
+    <string name="pref_description_battery_alerts">Show charging and temperature alerts</string>
+
     <string name="pref_title_priority">Priority</string>
 
     <string name="pref_title_version">App Version</string>
-    <string name="pref_description_version">v1.0-alpha.6</string>
+
+    <string name="pref_title_device_id">GreenHub ID</string>
+
+    <string name="pref_title_rating">Rate this app</string>
+
     <string name="pref_title_privacy">Privacy Policy</string>
 
     <string name="pref_title_help">Help</string>
