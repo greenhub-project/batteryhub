@@ -64,20 +64,22 @@ h3 {
     }
 
     .info {
-      margin-top: 50px;
+      margin: 40px auto 70px;
 
-      a {
-        font-weight: 700;
+      .google-play > img {
+        width: auto;
+        height: 100px;
       }
     }
-  }
-}
 
-.roadmap {
-  margin: 20px 0;
-  text-align: center;
-
-  p {
-    font-size: 1.2em;
+    .alpha {
+      padding: 15px 45px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-weight: bold;
+      border: 1px solid white;
+      border-radius: 300px;
+    }
   }
 }

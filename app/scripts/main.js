@@ -7,7 +7,7 @@ function daysToMilliseconds(days) {
 
 function drawChart() {
 
-  var data = new google.visualization.DataTable();
+  const data = new google.visualization.DataTable();
   data.addColumn('string', 'Task ID');
   data.addColumn('string', 'Task Name');
   data.addColumn('string', 'Resource');
@@ -19,22 +19,20 @@ function drawChart() {
 
   data.addRows([
     ['repo-docs', 'Repository documentation', 'docs',
-      new Date(2017, 0, 1), null, daysToMilliseconds(30), 60, null],
+      new Date(2017, 0, 1), null, daysToMilliseconds(45), 40, null],
     ['tests', 'Tests Implementation', 'testing',
-      new Date(2017, 0, 1), null, daysToMilliseconds(30), 50, null],
+      new Date(2017, 0, 1), null, daysToMilliseconds(30), 55, null],
     ['alpha', 'Alpha stage', 'alpha',
-      new Date(2017, 0, 1), null, daysToMilliseconds(14), 65, null],
+      new Date(2017, 0, 1), null, daysToMilliseconds(19), 80, null],
     ['beta', 'Beta stage', 'beta',
-      new Date(2017, 0, 15), null, daysToMilliseconds(21), 0, 'alpha'],
+      new Date(2017, 0, 20), null, daysToMilliseconds(21), 0, 'alpha'],
     ['release-stable', 'Stable release', 'release',
-      new Date(2017, 1, 5), null, daysToMilliseconds(7), 0, 'beta']
+      new Date(2017, 1, 10), null, daysToMilliseconds(7), 0, 'beta']
   ]);
 
-  var options = {
+  const chart = new google.visualization.Gantt(document.getElementById('chart_roadmap'));
+
+  chart.draw(data, {
     height: 260
-  };
-
-  var chart = new google.visualization.Gantt(document.getElementById('chart_roadmap'));
-
-  chart.draw(data, options);
+  });
 }
