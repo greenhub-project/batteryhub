@@ -74,7 +74,7 @@
         </div>
         <div class="row">
           <div class="col-md-4">
-            <div class="device-container center-block">
+            <div id="greenhub-home" class="device-container center-block">
               <img class="img-responsive" src="images/home-screenshot.png" alt="GreenHub">
             </div>
           </div>
@@ -122,7 +122,7 @@
       <div class="container">
         <div class="row">
           <div class="col-md-6">
-            <div class="device-container center-block">
+            <div id="greenhub-details" class="device-container center-block">
               <img class="img-responsive" src="images/extra-screenshot-cropped.png" alt="GreenHub">
             </div>
           </div>
@@ -180,8 +180,12 @@
       ga('create','UA-49971884-1');ga('send','pageview');
     </script>
 
-    <!-- build:js scripts/vendor.js -->
-    <script src="/bower_components/smoothscroll/dist/smoothscroll.js"></script>
+    <!-- build:js scripts/waypoints.js -->
+    <script src="/bower_components/waypoints/lib/noframework.waypoints.min.js"></script>
+    <!-- endbuild -->
+
+    <!-- build:js scripts/welcome.js -->
+    <script src="scripts/welcome.js"></script>
     <!-- endbuild -->
 
   </body>

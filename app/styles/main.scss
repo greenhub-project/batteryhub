@@ -116,6 +116,10 @@ section {
   }
 }
 
+.delayed {
+  animation-delay: .5s;
+}
+
 .section-heading {
   margin-bottom: 100px;
 
@@ -137,6 +141,8 @@ section {
 .features {
   .device-container {
     max-width: none;
+
+    opacity: 0;
   }
 
   .feature-item {
@@ -144,6 +150,8 @@ section {
     margin-bottom: 100px;
 
     text-align: center;
+
+    opacity: 0;
 
     h3 {
       font-size: 30px;
@@ -163,16 +171,19 @@ section {
 .details {
   padding: 100px 0 0;
 
-  background: linear-gradient(to bottom, $light-purple, $purple);
   color: white;
+  background: linear-gradient(to bottom, $light-purple, $purple);
 
   .device-container {
     max-width: 500px;
+
+    opacity: 0;
   }
 
   h2 {
-    font-size: 50px;
     margin-top: 100px;
+
+    font-size: 50px;
   }
 }
 

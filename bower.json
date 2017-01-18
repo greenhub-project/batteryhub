@@ -6,7 +6,8 @@
     "modernizr": "~2.8.1",
     "font-awesome": "~4.7.0",
     "smoothscroll": "^0.3.4",
-    "animate.css": "^3.5.2"
+    "animate.css": "^3.5.2",
+    "waypoints": "^4.0.1"
   },
   "overrides": {
     "bootstrap-sass": {
