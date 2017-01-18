@@ -6,7 +6,7 @@ $icon-font-path: '../fonts/';
 // endbower
 
 @import 'variables';
-@import 'https://fonts.googleapis.com/css?family=Lato|Montserrat|Open+Sans';
+@import 'https://fonts.googleapis.com/css?family=Lato|Montserrat|Muli';
 
 .browserupgrade {
   margin: 0.2em 0;
@@ -16,7 +16,7 @@ $icon-font-path: '../fonts/';
 }
 
 body {
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Muli', sans-serif;
 }
 
 h1,

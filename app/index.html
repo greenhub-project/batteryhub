@@ -12,6 +12,7 @@
 
     <!-- build:css styles/vendor.css -->
     <!-- bower:css -->
+    <link rel="stylesheet" href="/bower_components/animate.css/animate.min.css">
     <!-- endbower -->
     <!-- endbuild -->
 
@@ -51,10 +52,123 @@
               <p>
                 <span class="alpha">Now in alpha testing!</span>
               </p>
+              <a id="scroll-down" href="#features" class="center-block">
+                <i class="fa fa-arrow-down" aria-hidden="true"></i>
+              </a>
+            </div>
           </div>
         </div>
       </div>
     </div>
+
+    <section id="features" class="features">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12 text-center">
+            <div class="section-heading">
+              <h2>Battery monitor and much more</h2>
+              <p class="text-muted">Discover all the details about your device's power consumption</p>
+              <hr>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="device-container center-block">
+              <img class="img-responsive" src="images/home-screenshot.png" alt="GreenHub">
+            </div>
+          </div>
+          <div class="col-md-8">
+            <div class="container-fluid">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="feature-item">
+                    <i class="fa fa-battery-three-quarters" aria-hidden="true"></i>
+                    <h3>Power consumption</h3>
+                    <p class="text-muted">Find out how your battery's device is behaving</p>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="feature-item">
+                    <i class="fa fa-bell-o" aria-hidden="true"></i>
+                    <h3>Battery alerts</h3>
+                    <p class="text-muted">Get real-time notifications about the battery level, temperature and charging</p>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="feature-item">
+                    <i class="fa fa-cube" aria-hidden="true"></i>
+                    <h3>API</h3>
+                    <p class="text-muted">Get more information from the community and compare the data <span class="label label-warning">Coming soon</span></p>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="feature-item">
+                    <i class="fa fa-unlock-alt" aria-hidden="true"></i>
+                    <h3>Open source</h3>
+                    <p class="text-muted">The source code is available on GitHub</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="details" class="details">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="device-container center-block">
+              <img class="img-responsive" src="images/extra-screenshot-cropped.png" alt="GreenHub">
+            </div>
+          </div>
+          <div class="col-md-6">
+            <h2>More features</h2>
+            <p>GreenHub helps you keep track of your device info, providing details on the wifi, bluetooth, memory, storage, etc.</p>
+            <p>Easily visualize the data history of your battery levels, with interactive charts!</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="extra" class="extra">
+      <div class="extra-content">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-12">
+              <h2>Start saving energy today.</h2>
+              <p>
+                Discover how can you save energy of your battery's device. Track the data history of your device.
+                GreenHub collects generic data of the device's usage, later it uploads the data to the cloud.
+                Don't worry no private information is collected.
+              </p>
+              <p>
+                The data is used to make research aiming to improve energy consumption on mobile devices.
+                It is available for everybody via API.
+              </p>
+              <p>
+                Why we make the data open? Very much like the app, a collaborative approach seems the most benefitial and transparent method for the community.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div class="container">
+        <p class="pull-left">2017 GreenHub</p>
+        <ul class="list-inline pull-right">
+          <li>
+              <a href="./privacy.html">Privacy Policy</a>
+          </li>
+        </ul>
+        </div>
+    </footer>
 
     <!-- Google Analytics -->
     <script>
@@ -65,6 +179,10 @@
       r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
       ga('create','UA-49971884-1');ga('send','pageview');
     </script>
+
+    <!-- build:js scripts/vendor.js -->
+    <script src="/bower_components/smoothscroll/dist/smoothscroll.js"></script>
+    <!-- endbuild -->
 
   </body>
 </html>
