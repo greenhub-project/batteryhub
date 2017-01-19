@@ -1,0 +1,323 @@
+<!doctype html>
+<html class="no-js" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Wiki | GreenHub</title>
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <!-- Place favicon.ico in the root directory -->
+    <link rel="shortcut icon" href="./favicon.ico">
+    <link rel="stylesheet" href="styles/static.css">
+    <script src="scripts/vendor/modernizr.js"></script>
+</head>
+
+<body>
+    <!--[if lt IE 10]>
+      <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-4">
+                <h1 class="logo-title"><span>Green</span>Hub</h1>
+            </div>
+            <div class="col-sm-8">
+                <nav><a href="./">Home</a> <a href="./api.html">API</a> <a href="https://github.com/hmatalonga/greenhub">GitHub</a> <a href="./roadmap.html">Roadmap</a><a href="./about.html">About</a></nav>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="header about"><i class="fa fa-tree fa-5x" aria-hidden="true"></i>
+                    <p><strong>Wiki</strong>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <p class="lead">The GreenHub project provides this wiki to help the users understand how the app works</p>
+                <p>The GreenHub app has four tabs you can navigate. Although their main purpose is to inform the user about some interesting device readings, they also show a part of the information we collect to our data servers.</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+            	<h4>1. The home tab</h4>
+            	<p>The first tab you are going to see when openning the app is the home tab, shown in picture 1.</p>
+            	<figure class="figure">
+                	<img src="./images/wiki/greenhub-home.png" class="img-responsive" width="306" height="590"/>
+                	<figcaption class="figure-caption">Picture 1</figcaption>
+            	</figure>
+            	<p></p>
+            	<p>The markings are explained below.</p>
+            	<ul style="list-style:none; padding-left:0px;">
+            		<li>
+            			<p>1. The Home tab.</br>It is where we are right now</p>
+            		</li>
+            		<li>
+            			<p>2. The device tab.</br>Shows information about the device</p>
+            		</li>
+            		<li>
+            			<p>3. The statistics tab.</br>Shows battery usage information over time</p>
+            		</li>
+            		<li>
+            			<p>4. The information tab.</br>Contains a brief description of the app</p>
+            		</li>
+
+            		<li>
+            			<p>5. The battery charge level.</br>It is updated whenever the battery level changes. The battery charge level is also shown on the status bar, shown circled in 14 on the picture.</p>
+            		</li>
+            		<li>
+            			<p>6. The battery electric current readings.</br>Whenever you plug or unplug the charger on your device, the minimum and maximum current readings are reset. These values are updated on a interval of 5 seconds.</p>
+            		</li>
+
+            		<li>
+            			<p>7 to 10. The battery temperature, voltage, health and technology.</br>These readings are updated whenever a battery change event occurs or, if it is enabled in the settings, whenever the screen goes off and on. The red, green and grey icons displayed at the right side of each of these informations tells when those values are in a good range or not.</p>
+            		</li>
+
+            		<li>
+            			<p>7. Temperature</br>For the temperature, the icon on the right is going to be green for values below or equal to 35 degrees celsius, yellow for any value between 35 and 45, and red for temperatures above that. The GreenHub app also notifies the user when the temperature is at the yellow or red range, vibrating your smartphone and asking to wait for it to cool down for a while when it is on the red range.</p>
+            		</li>
+
+            		<li>
+            			<p>8. Voltage</br>The battery current voltage, the right icon is always green</p>
+            		</li>
+
+            		<li>
+            			<p>9. Health</br>The battery health, the right icon is green for when it is evaluated as good by the Android system. It could be grey for when the battery is overheated, dead or when it has an over voltage</p>
+            		</li>
+
+            		<li>
+            			<p>10. The battery technology</br>The technology is grey for Li-ion and green for anything different from that.</p>
+            		</li>
+
+            		<li>
+            			<p>11. Charging status</br>The bar shown in 11 tells if your device is unplugged, charging through AC, USB or Wireless, respectively.</p>
+            		</li>
+
+            		<li>
+            			<p>12. Upload status</br>The app changes this text according to what it is trying to do at the moment. It could tell you that you don't have internet connection or the number of samples being sent, for example.</p>
+            		</li>
+
+            		<li>
+            			<p>13. Upload button</br>This button is used to upload samples of information from your device to our data server. Whenever you click that button, the result is shown in the text displayed in 12. By default, GreenHub App tries to send samples after every 20 samples. It keeps the samples in your device until it gets a chance to send them, when this happens they are deleted from your device.</p>
+            		</li>
+
+            		<li>
+            			<p>14. The battery charge level on the status bar.</br>The same as in 5, having the possiblity of being one unit behind due to different updating mechanism.</p>
+            		</li>
+            	</ul>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+            	<h4>2. The device tab</h4>
+            	<p>This is the second tab from left to right, shown in picture 2, 3 and 4.</p>
+            </div>
+        </div>
+        <div class="row">
+        	<div class="col-lg-4">
+        		<figure class="figure">
+                	<img src="./images/wiki/device1.png" class="img-responsive" width="306" height="590"/>
+                	<figcaption class="figure-caption">Picture 2</figcaption>
+            	</figure>
+        	</div>
+        	<div class="col-lg-4">
+        		<figure class="figure">
+                	<img src="./images/wiki/device2.png" class="img-responsive" width="306" height="590"/>
+                	<figcaption class="figure-caption">Picture 3</figcaption>
+            	</figure>
+        	</div>
+        	<div class="col-lg-4">
+        		<figure class="figure">
+                	<img src="./images/wiki/device3.png" class="img-responsive" width="306" height="590"/>
+                	<figcaption class="figure-caption">Picture 4</figcaption>
+            	</figure>
+        	</div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+            	<p></p>
+            	<p>The markings are explained below.</p>
+            	<ul style="list-style:none; padding-left:0px;">
+            		<li>
+            			<p>1. The device section.</br>It shows the Android version of your device, the device model, its international mobile equipment identity and whether it is rooted or not.</p>
+            		</li>
+            		<li>
+            			<p>2. The network section.</br>This area gives you a summary of your network status. Note that things like your internal IP address, MAC, IMEI or network SSID are <b>NOT</b> sent to our data servers.</p>
+            		</li>
+            		<li>
+            			<p>3 and 4. The memory and storage sections.</br>This area exposes informations about the memory and storage usage. The text <b>VIEW MORE</b> is a button that leads to a window that shows a list of the current running processes on the device.</p>
+            		</li>
+            		
+            	</ul>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12">
+            	<h4>3. The statistics tab</h4>
+            	<p>This is the third tab from left to right, shown in picture 5, 6 and 7.</p>
+            </div>
+        </div>
+        <div class="row">
+        	<div class="col-lg-4">
+        		<figure class="figure">
+                	<img src="./images/wiki/statistics1.png" class="img-responsive" width="306" height="590"/>
+                	<figcaption class="figure-caption">Picture 5</figcaption>
+            	</figure>
+        	</div>
+        	<div class="col-lg-4">
+        		<figure class="figure">
+                	<img src="./images/wiki/statistics2.png" class="img-responsive" width="306" height="590"/>
+                	<figcaption class="figure-caption">Picture 6</figcaption>
+            	</figure>
+        	</div>
+        	<div class="col-lg-4">
+        		<figure class="figure">
+                	<img src="./images/wiki/statistics3.png" class="img-responsive" width="306" height="590"/>
+                	<figcaption class="figure-caption">Picture 7</figcaption>
+            	</figure>
+        	</div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+            	<p></p>
+            	<p>This tab shows the evolution of three measurements over time: the battery level, the battery temperature and the battery voltage. Right below the screen, by clicking on the watch, the callendar or the star, the user can change the interval of the data shown. The data stored to show these graphics are not permanent, they have a lifetime that can be configured in the settings menu that will be explained later.</p>
+            	
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12">
+            	<h4>4. The information tab</h4>
+            	<p>This is the fourth tab from left to right, shown in picture 8</p>
+            </div>
+        </div>
+        <div class="row">
+        	<div class="col-lg-12">
+        		<figure class="figure">
+                	<img src="./images/wiki/info.png" class="img-responsive" width="306" height="590"/>
+                	<figcaption class="figure-caption">Picture 8</figcaption>
+            	</figure>
+        	</div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+            	<p></p>
+            	<p>This tab is currently just an informative tab.</p>
+            	
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12">
+            	<h4>5. The menu</h4>
+            	<p>In the upper right corner of the app, we have the menu, shown in picture 9</p>
+            </div>
+        </div>
+        <div class="row">
+        	<div class="col-lg-12">
+        		<figure class="figure">
+                	<img src="./images/wiki/menu.png" class="img-responsive" width="306" height="590"/>
+                	<figcaption class="figure-caption">Picture 9</figcaption>
+            	</figure>
+        	</div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+            	<p></p>
+            	<p>In the menu there are currently two buttons. The summary button, shown in 1, leads you to your system's battery usage summary. The settings button, in 2, leads you to the app's preferences settings.</p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12">
+            	<h4>6. The settings screen</h4>
+            	<p>This is the second option from up to down in the menu, shown in pictures 10 and 11. In the settings screen you are able to adjust the behavior of the app, such as rate at which samples are sent and the notifications you want to see.</p>
+            </div>
+        </div>
+        <div class="row">
+        	<div class="col-lg-6">
+        		<figure class="figure">
+                	<img src="./images/wiki/settings1.png" class="img-responsive" width="306" height="590"/>
+                	<figcaption class="figure-caption">Picture 10</figcaption>
+            	</figure>
+        	</div>
+        	<div class="col-lg-6">
+        		<figure class="figure">
+                	<img src="./images/wiki/settings2.png" class="img-responsive" width="306" height="590"/>
+                	<figcaption class="figure-caption">Picture 11</figcaption>
+            	</figure>
+        	</div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+            	<p></p>
+            	<p>The markings below are related to picture 10.</p>
+
+            	<ul style="list-style:none; padding-left:0px;">
+            		<li>
+            			<p>1. Track screen events.</br>Here you can adjust whether the app is going to record battery usage data when the screen goes on or off.</p>
+            		</li>
+            		<li>
+            			<p>2. Data history</br>Here you can adjust how long will usage and battery session data will last on the device. These data are used to show the graphics in the statistics tab.</p>
+            		</li>
+            		<li>
+            			<p>3. Mobile data.</br>Here you can adjust if you want the application to send samples when using your mobile internet</p>
+            		</li>
+            		<li>
+            			<p>4. Automatic uploads.</br>As obvious from the name, you can set automatic updates to on or off</p>
+            		</li>
+            		<li>
+            			<p>5. Uploading rate.</br>Here you can change at which rate will uploads occur. At normal rate, samples are sent to the server after the collection of 20 samples. At low rate, samples are sent after accumulating 50 samples and at high rate only 10 samples are accumulated before being sent.</p>
+            		</li>
+            	</ul>
+
+            	<p>The markings below are related to picture 11.</p>
+
+            	<ul style="list-style:none; padding-left:0px;">
+            		<li>
+            			<p>1. Power indicator.</br>The power indicator lets you choose if you want the battery level to be shown on the status bar, as in picture 1, marking 14.</p>
+            		</li>
+            		<li>
+            			<p>2. Battery alerts.</br>The battery alerts can be disabled or enabled.</p>
+            		</li>
+            		<li>
+            			<p>3. Priority.</br>Here you can change the app's notifications priority.</p>
+            		</li>
+            	</ul>
+            	
+            </div>
+        </div>
+
+        <footer>
+            <div class="row">
+                <div class="col-lg-12">
+                    <hr>
+                    <p class="text-muted"><small>Made with love in Portugal. Photo by <a href="https://unsplash.com/@carminu">Carmine De Fazio</a>. <span class="legal pull-right"><!-- <a href="./eula.html">EULA</a> --> <a href="./privacy.html">Privacy Policy</a></span></small>
+                    </p>
+                </div>
+            </div>
+        </footer>
+    </div>
+    <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
+    <script>
+        (function(b, o, i, l, e, r) {
+            b.GoogleAnalyticsObject = l;
+            b[l] || (b[l] =
+                function() {
+                    (b[l].q = b[l].q || []).push(arguments)
+                });
+            b[l].l = +new Date;
+            e = o.createElement(i);
+            r = o.getElementsByTagName(i)[0];
+            e.src = 'https://www.google-analytics.com/analytics.js';
+            r.parentNode.insertBefore(e, r)
+        }(window, document, 'script', 'ga'));
+        ga('create', 'UA-49971884-1');
+        ga('send', 'pageview');
+    </script>
+</body>
+
+</html>
