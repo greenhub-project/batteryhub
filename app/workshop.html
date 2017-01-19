@@ -10,8 +10,14 @@
     <!-- Place favicon.ico in the root directory -->
     <link rel="shortcut icon" href="./favicon.ico">
 
-    <!-- build:css styles/static.css -->
-    <link rel="stylesheet" href="styles/static.css">
+    <!-- build:css styles/vendor.css -->
+    <!-- bower:css -->
+    <link rel="stylesheet" href="/bower_components/animate.css/animate.min.css">
+    <!-- endbower -->
+    <!-- endbuild -->
+
+    <!-- build:css styles/workshop.css -->
+    <link rel="stylesheet" href="styles/workshop.css">
     <!-- endbuild -->
 
     <!-- build:js scripts/vendor/modernizr.js -->
@@ -23,22 +29,245 @@
       <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
 
-    <div class="container">
-      <section id="s1" class="slide">
-        <div class="row">
-          <div class="col-md-12">
-            Hello 1
+    <div id="page-counter">1</div>
+
+    <section id="s1" class="slide">
+      <div class="container-fluid">
+        <div class="row-fluid">
+          <div class="col-lg-12">
+            <div class="cover-container animated fadeInUp delayed">
+              <h1>GreenHub</h1>
+              <h2>A collaborative approach to power consumption analysis of mobile devices</h2>
+              <h2 class="author">Hugo Matalonga</h2>
+              <h3 class="date">20th January 2017, University of Beira Interior</h3>
+            </div>
           </div>
         </div>
-      </section>
-      <section id="s2" class="slide">
-        <div class="row">
-          <div class="col-md-12">
-            Hello 2
+      </div>
+    </section>
+
+    <section id="s2" class="slide">
+      <div class="container-fluid">
+        <div class="row-fluid">
+          <div class="col-lg-12">
+            <h1>GreenHub is...</h1>
+            <h2 class="hint">A <span class="underlined">platform</span>, a mobile app, a collaborative initiave...</h2>
+            <h2 class="hint">To the <span class="underlined">power consumption</span> analysis of <span class="underlined">mobile devices</span>.</h2>
           </div>
         </div>
-      </section>
-    </div>
+      </div>
+    </section>
+
+    <section id="s3" class="slide">
+      <div class="container-fluid">
+        <div class="row-fluid">
+          <div class="col-lg-12">
+            <h1>Why?</h1>
+            <h2 class="hint">Our goal is to build an <span class="underlined">open repository</span> of data, collected through the mobile app.</h2>
+            <h2 class="hint">
+              So that everyone can use the <span class="underlined">data for research</span> promoting collaboration between the <span class="underlined">community</span>.
+            </h2>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="s4" class="slide">
+      <div class="container-fluid">
+        <div class="row-fluid">
+          <div class="col-lg-12">
+            <img id="img-workflow" class="img-responsive" src="images/workflow.png" alt="Overview" />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="s5" class="slide">
+      <!-- Empty -->
+    </section>
+
+    <section id="s6" class="slide">
+      <div class="container-fluid">
+        <div class="row-fluid">
+          <div class="col-md-4">
+            <div id="greenhub-home" class="device-container center-block">
+              <img class="img-responsive" src="images/home-screenshot.png" alt="GreenHub">
+            </div>
+          </div>
+          <div class="col-md-8">
+            <div class="features-container center-block">
+              <h1 class="heading">Home screen</h1>
+              <span><i class="fa fa-check" aria-hidden="true"></i> Real-time power consumption</span>
+              <span><i class="fa fa-check" aria-hidden="true"></i> Battery temperature</span>
+              <span><i class="fa fa-check" aria-hidden="true"></i> Battery voltage</span>
+              <span><i class="fa fa-check" aria-hidden="true"></i> Battery health</span>
+              <span><i class="fa fa-check" aria-hidden="true"></i> Battery technology</span>
+              <span><i class="fa fa-check" aria-hidden="true"></i> Power connection indicator</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="s7" class="slide">
+      <div class="container-fluid">
+        <div class="row-fluid">
+          <div class="col-md-4">
+            <div id="greenhub-device" class="device-container center-block">
+              <img class="img-responsive" src="images/device-screenshot.png" alt="GreenHub">
+            </div>
+          </div>
+          <div class="col-md-8">
+            <div class="features-container center-block">
+              <h1 class="heading">My Device screen</h1>
+              <span><i class="fa fa-check" aria-hidden="true"></i> Device specifications</span>
+              <span><i class="fa fa-check" aria-hidden="true"></i> Network details</span>
+              <span><i class="fa fa-check" aria-hidden="true"></i> Memory details</span>
+              <span><i class="fa fa-check" aria-hidden="true"></i> Running Apps</span>
+              <span><i class="fa fa-check" aria-hidden="true"></i> Storage details</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="s8" class="slide">
+      <div class="container-fluid">
+        <div class="row-fluid">
+          <div class="col-md-4">
+            <div id="greenhub-statistics" class="device-container center-block">
+              <img class="img-responsive" src="images/statistics-screenshot.png" alt="GreenHub">
+            </div>
+          </div>
+          <div class="col-md-8">
+            <div class="features-container center-block">
+              <h1 class="heading">Statistics screen</h1>
+              <span><i class="fa fa-check" aria-hidden="true"></i> Interactive charts</span>
+              <span><i class="fa fa-check" aria-hidden="true"></i> Max, average and min details</span>
+              <span><i class="fa fa-check" aria-hidden="true"></i> 24h, 3 and 5 days intervals</span>
+              <span><i class="fa fa-check" aria-hidden="true"></i> Battery level</span>
+              <span><i class="fa fa-check" aria-hidden="true"></i> Battery temperature</span>
+              <span><i class="fa fa-check" aria-hidden="true"></i> Battery voltage</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="s9" class="slide">
+      <div class="container-fluid">
+        <div class="row-fluid">
+          <div class="col-md-4">
+            <div id="greenhub-settings" class="device-container center-block">
+              <img class="img-responsive" src="images/settings-screenshot.png" alt="GreenHub">
+            </div>
+          </div>
+          <div class="col-md-8">
+            <div class="features-container center-block">
+              <h1 class="heading">Settings screen</h1>
+              <span><i class="fa fa-check" aria-hidden="true"></i> Extra tracking events</span>
+              <span><i class="fa fa-check" aria-hidden="true"></i> Data history management</span>
+              <span><i class="fa fa-check" aria-hidden="true"></i> Automatic uploads</span>
+              <span><i class="fa fa-check" aria-hidden="true"></i> Uploading rates</span>
+              <span><i class="fa fa-check" aria-hidden="true"></i> Customizable alerts</span>
+              <span><i class="fa fa-check" aria-hidden="true"></i> Notifications priority</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="s10" class="slide">
+      <div class="container-fluid">
+        <div class="row-fluid">
+          <div class="col-md-4">
+            <div id="greenhub-more" class="device-container center-block">
+              <img class="img-responsive" src="images/splash-screenshot.png" alt="GreenHub">
+            </div>
+          </div>
+          <div class="col-md-8">
+            <div class="features-container center-block">
+              <h1 class="heading">More features</h1>
+              <span><i class="fa fa-check" aria-hidden="true"></i> Power indicator</span>
+              <span><i class="fa fa-check" aria-hidden="true"></i> Charging alerts</span>
+              <span><i class="fa fa-check" aria-hidden="true"></i> Temperature alerts</span>
+              <span><i class="fa fa-check" aria-hidden="true"></i> Power alerts</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="s11" class="slide">
+      <div class="container-fluid">
+        <div class="row-fluid">
+          <div class="col-lg-12">
+            <h1>Alpha testing</h1>
+            <span class="timeline">
+              Started on <span class="underlined">7th January</span>...
+            </span>
+            <span class="today">until <span class="underlined">today</span>.</span>
+            <span class="more">
+              Here are some <span class="underlined">cool numbers</span>...
+            </span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="s12" class="slide">
+      <div class="container-fluid">
+        <div class="row-fluid">
+          <div class="col-lg-12">
+            <h1>Devices #44</h1>
+            <canvas id="chart-devices"></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="s13" class="slide">
+      <div class="container-fluid">
+        <div class="row-fluid">
+          <div class="col-lg-12">
+            <h1>Samples #8100</h1>
+            <canvas id="chart-samples"></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="s14" class="slide">
+      <div class="container-fluid">
+        <div class="row-fluid">
+          <div class="col-lg-12">
+            <h1>Beta testing</h1>
+            <span class="timeline">
+              Starting on <span class="underlined">20th January</span>!
+            </span>
+            <span class="today"><span class="underlined">New features</span> coming...</span>
+            <span class="more">
+              We invite you to participate. Check it <a class="underlined-link" href="https://play.google.com/apps/testing/hmatalonga.greenhub">here</a>.
+            </span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="s15" class="slide">
+      <div class="container-fluid">
+        <div class="row-fluid">
+          <div class="col-lg-12">
+            <h1>Thank you!</h1>
+            <h2>Feel free to ask me anything.</h2>
+            <h2>Drop me a line</h2>
+            <a class="underlined" href="mailto:hmatalonga@gmail.com">hmatalonga@gmail.com</a>
+            <h2>Find more about GreenHub</h2>
+            <a class="underlined" href="https://hmatalonga.github.io/greenhub">https://hmatalonga.github.io/greenhub</a>
+          </div>
+        </div>
+      </div>
+    </section>
 
     <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
     <script>
@@ -52,6 +281,14 @@
 
     <!-- build:js scripts/smoothscroll.js -->
     <script src="/bower_components/smoothscroll/dist/smoothscroll.js"></script>
+    <!-- endbuild -->
+
+    <!-- build:js scripts/waypoints.js -->
+    <script src="/bower_components/waypoints/lib/noframework.waypoints.min.js"></script>
+    <!-- endbuild -->
+
+    <!-- build:js scripts/chart.js -->
+    <script src="/bower_components/chart.js/dist/Chart.min.js"></script>
     <!-- endbuild -->
 
     <!-- build:js scripts/workshop.js -->

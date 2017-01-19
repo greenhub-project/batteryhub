@@ -7,7 +7,8 @@
     "font-awesome": "~4.7.0",
     "smoothscroll": "^0.3.4",
     "animate.css": "^3.5.2",
-    "waypoints": "^4.0.1"
+    "waypoints": "^4.0.1",
+    "chart.js": "^2.4.0"
   },
   "overrides": {
     "bootstrap-sass": {

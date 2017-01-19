@@ -1,0 +1,364 @@
+$icon-font-path: '../fonts/';
+
+// bower:scss
+@import "bower_components/bootstrap-sass/assets/stylesheets/_bootstrap.scss";
+@import "bower_components/font-awesome/scss/font-awesome.scss";
+// endbower
+
+@import 'variables';
+@import 'https://fonts.googleapis.com/css?family=Lato:900|Muli';
+
+.browserupgrade {
+  margin: 0.2em 0;
+  padding: 0.2em 0;
+
+  color: #000;
+  background: #ccc;
+}
+
+body {
+  font-family: 'Muli', sans-serif;
+}
+
+h1,
+h2,
+h3 {
+  font-family: 'Lato', sans-serif;
+}
+
+#page-counter {
+  position: fixed;
+  right: 1vmin;
+  bottom: 1vmin;
+
+  padding: 10px 20px;
+
+  color: white;
+  background-color: $gray;
+
+  font-size: 3vmin;
+}
+
+.slide {
+  min-height: 100vh;
+  padding: 5vmin;
+}
+
+.container-flex {
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+}
+
+.delayed {
+  animation-delay: .5s;
+}
+
+#s1 {
+  color: white;
+  background: linear-gradient(rgba(90,0,93,.7),rgba(90,0,93,.7)),
+  url(../images/backdrop-api.jpg) no-repeat scroll 50% / cover transparent;
+
+  .cover-container {
+    opacity: 0;
+  }
+
+  h1 {
+    margin-bottom: 70px;
+
+    font-size: 16vmin;
+    font-weight: 900;
+  }
+
+  h2 {
+    margin-bottom: 50px;
+
+    font-size: 10vmin;
+    font-weight: 900;
+  }
+
+  .author {
+    font-size: 8vmin;
+  }
+
+  .date {
+    margin-top: 100px;
+
+    font-size: 4vmin;
+  }
+}
+
+#s2 {
+  color: white;
+  background: linear-gradient(rgba(0,0,0,.45),rgba(0,0,0,.45)),
+  url(../images/backdrop-roadmap.jpg) no-repeat scroll 50% / cover transparent;
+
+  h1 {
+    font-size: 10vmin;
+    font-weight: 900;
+  }
+
+  h2 {
+    font-size: 8vmin;
+    font-weight: 900;
+  }
+
+  .hint {
+    margin: 5vmin 10vmin 0;
+  }
+
+  .underlined {
+    border-bottom: 5px solid $green;
+  }
+}
+
+#s3 {
+  color: white;
+  background: linear-gradient(rgba(0,0,0,.45),rgba(0,0,0,.45)),
+  url(../images/backdrop-about.jpg) no-repeat scroll 50% / cover transparent;
+
+  h1 {
+    font-size: 10vmin;
+    font-weight: 900;
+  }
+
+  h2 {
+    font-size: 8vmin;
+    font-weight: 900;
+  }
+
+  .hint {
+    margin: 5vmin 10vmin 0;
+  }
+
+  .underlined {
+    border-bottom: 5px solid $light-purple;
+  }
+}
+
+#s4 {
+  display: flex;
+
+  width: 100%;
+  height: 100%;
+
+  align-items: center;
+  justify-content: center;
+
+  img {
+    width: auto;
+    height: 90vmin;
+
+    opacity: 0;
+  }
+}
+
+#s5 {
+  background: url(../images/preview-fullscreen.png) no-repeat scroll 50% / cover transparent;
+}
+
+#s6,
+#s7,
+#s8,
+#s9,
+#s10 {
+  color: white;
+  background: linear-gradient(to bottom, $light-purple, $purple);
+
+  .device-container {
+    max-width: none;
+  }
+
+  .features-container {
+    padding: 0 2vmin;
+
+    .heading {
+      margin-bottom: 6vmin;
+      margin-left: 8vmin;
+    }
+  }
+
+  h1 {
+    font-size: 9vmin;
+    font-weight: 900;
+  }
+
+  span {
+    font-size: 6vmin;
+    font-weight: 900;
+    display: block;
+  }
+
+  i {
+    margin-right: 5px;
+
+    background: $green;
+    -webkit-background-clip: text;
+
+    -webkit-text-fill-color: transparent;
+  }
+
+  .hint {
+    margin: 5vmin 10vmin 0;
+  }
+
+  .underlined {
+    border-bottom: 5px solid $green;
+  }
+}
+
+#s11 {
+  color: white;
+  background: linear-gradient(rgba(0,0,0,.45),rgba(0,0,0,.45)),
+  url(../images/backdrop-privacy.jpg) no-repeat scroll 50% / cover transparent;
+
+  h1 {
+    font-size: 10vmin;
+    font-weight: 900;
+  }
+
+  h2 {
+    font-size: 8vmin;
+    font-weight: 900;
+  }
+
+  .timeline {
+    display: block;
+    font-size: 6vmin;
+    font-weight: 900;
+    margin: 5vmin 15vmin 0;
+  }
+
+  .today {
+    display: block;
+    font-size: 10vmin;
+    font-weight: 900;
+    margin: 5vmin 40vmin 0;
+  }
+
+  .more {
+    display: block;
+    font-size: 6vmin;
+    font-weight: 900;
+    position: absolute;
+    margin: 30vmin 15vmin 0;
+  }
+
+  .underlined {
+    border-bottom: 5px solid $green;
+  }
+}
+
+#s12,
+#s13 {
+  h1 {
+    font-size: 10vmin;
+    font-weight: 900;
+  }
+
+  h2 {
+    font-size: 8vmin;
+    font-weight: 900;
+  }
+
+  canvas {
+    padding: 0 2vmin 5vmin;
+  }
+}
+
+#s14 {
+  color: white;
+  background: linear-gradient(rgba(0,0,0,.45),rgba(0,0,0,.45)),
+  url(../images/backdrop-eula.jpg) no-repeat scroll 50% / cover transparent;
+
+  h1 {
+    font-size: 10vmin;
+    font-weight: 900;
+  }
+
+  h2 {
+    font-size: 8vmin;
+    font-weight: 900;
+  }
+
+  a {
+    color: white;
+  }
+
+  .timeline {
+    display: block;
+    font-size: 6vmin;
+    font-weight: 900;
+    margin: 5vmin 15vmin 0;
+  }
+
+  .today {
+    display: block;
+    font-size: 7vmin;
+    font-weight: 900;
+    margin: 5vmin 40vmin 0;
+  }
+
+  .more {
+    display: block;
+    font-size: 6vmin;
+    font-weight: 900;
+    position: absolute;
+    margin: 30vmin 15vmin 0;
+  }
+
+  .underlined {
+    border-bottom: 5px solid $light-purple;
+  }
+
+  .underlined-link {
+    transition: background .2s cubic-bezier(.33,.66,.66,1);
+    border-bottom: 3px solid $light-purple;
+    box-shadow: inset 0 -4px 0 $light-purple;
+  }
+
+  .underlined-link:hover {
+    background: $light-purple;
+    text-decoration: none;
+  }
+}
+
+#s15 {
+  color: white;
+  background: linear-gradient(rgba(90,0,93,.7),rgba(90,0,93,.7)),
+  url(../images/backdrop-api.jpg) no-repeat scroll 50% / cover transparent;
+
+  .cover-container {
+    opacity: 0;
+  }
+
+  h1 {
+    margin-bottom: 70px;
+
+    font-size: 14vmin;
+    font-weight: 900;
+  }
+
+  h2 {
+    margin-top: 50px;
+    font-size: 8vmin;
+    font-weight: 900;
+  }
+
+  a {
+    color: white;
+    font-size: 6vmin;
+  }
+
+  .underlined {
+    transition: background .2s cubic-bezier(.33,.66,.66,1);
+    border-bottom: 3px solid $green;
+    box-shadow: inset 0 -4px 0 $green;
+  }
+
+  .underlined:hover {
+    background: $green;
+    text-decoration: none;
+  }
+}
