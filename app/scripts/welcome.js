@@ -9,6 +9,10 @@ function animateMany(className, animation='fadeInUp') {
   );
 }
 
+document.getElementById('scroll-down').onclick = function() {
+  document.querySelector('#features').scrollIntoView({ behavior: 'smooth' });
+}
+
 new Waypoint({
     element: document.getElementById('features'),
     handler: function() {

@@ -27,7 +27,7 @@ function stopWheel(e) {
 }
 
 function doScrolling(e) {
-  if([32, 37, 38, 39, 40].indexOf(e.keyCode) > -1) {
+  if([32, 33, 34, 35, 36, 37, 38, 39, 40].indexOf(e.keyCode) > -1) {
     e.preventDefault();
   }
   if (e.keyCode === 40) {
@@ -37,7 +37,7 @@ function doScrolling(e) {
     if (currentSlide === 1) return;
     currentSlide -= 1;
   }
-  pager.textContent = currentSlide;
+  pager.textContent = (currentSlide < 10) ? '0' + currentSlide : currentSlide;
   document.querySelector('#s' + currentSlide).scrollIntoView({ behavior: 'smooth' });
 }
 
@@ -103,5 +103,46 @@ new Waypoint({
     element: document.getElementById('s4'),
     handler: function() {
       animate('img-workflow');
-    }
+    },
+    offset: '10%'
+});
+
+new Waypoint({
+    element: document.getElementById('s6'),
+    handler: function() {
+      animate('greenhub-home');
+    },
+    offset: '10%'
+});
+
+new Waypoint({
+    element: document.getElementById('s7'),
+    handler: function() {
+      animate('greenhub-device');
+    },
+    offset: '10%'
+});
+
+new Waypoint({
+    element: document.getElementById('s8'),
+    handler: function() {
+      animate('greenhub-statistics');
+    },
+    offset: '10%'
+});
+
+new Waypoint({
+    element: document.getElementById('s9'),
+    handler: function() {
+      animate('greenhub-settings');
+    },
+    offset: '10%'
+});
+
+new Waypoint({
+    element: document.getElementById('s10'),
+    handler: function() {
+      animate('greenhub-more');
+    },
+    offset: '10%'
 });

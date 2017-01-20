@@ -168,6 +168,7 @@ h3 {
 
   .device-container {
     max-width: none;
+    opacity: 0;
   }
 
   .features-container {
@@ -360,5 +361,19 @@ h3 {
   .underlined:hover {
     background: $green;
     text-decoration: none;
+  }
+}
+
+@media (max-height: 768px) {
+  #s1 {
+    .date {
+      margin-top: 50px;
+    }
+  }
+
+  #s14 {
+    .today {
+      font-size: 6.8vmin;
+    }
   }
 }
