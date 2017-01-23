@@ -23,7 +23,7 @@ function drawChart() {
     ['tests', 'Tests Implementation', 'testing',
       new Date(2017, 0, 1), null, daysToMilliseconds(30), 55, null],
     ['alpha', 'Alpha stage', 'alpha',
-      new Date(2017, 0, 7), null, daysToMilliseconds(13), 75, null],
+      new Date(2017, 0, 7), null, daysToMilliseconds(13), 100, null],
     ['beta', 'Beta stage', 'beta',
       new Date(2017, 0, 20), null, daysToMilliseconds(21), 0, 'alpha'],
     ['release-stable', 'Stable release', 'release',
