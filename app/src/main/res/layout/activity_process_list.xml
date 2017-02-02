@@ -5,7 +5,7 @@
     android:fitsSystemWindows="true"
     android:orientation="vertical"
     android:id="@+id/activity_container"
-    tools:context="hmatalonga.greenhub.ui.MainActivity">
+    tools:context=".ui.ProcessListActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"

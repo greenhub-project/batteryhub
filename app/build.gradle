@@ -13,16 +13,17 @@ android {
         }
     }
     defaultConfig {
-        applicationId "hmatalonga.greenhub"
+        applicationId "com.hmatalonga.greenhub"
         minSdkVersion 16
         targetSdkVersion 25
-        versionCode 7
-        versionName 'v1.0-alpha.7'
+        versionCode 8
+        versionName 'v1.0-alpha.8'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.base
     }
     buildTypes {
         debug {
+            applicationIdSuffix '.debug'
             debuggable true
             minifyEnabled false
             signingConfig signingConfigs.base

@@ -24,7 +24,7 @@
     android:fitsSystemWindows="true"
     android:orientation="vertical"
     android:id="@+id/activity_container"
-    tools:context="hmatalonga.greenhub.ui.MainActivity">
+    tools:context=".ui.MainActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -33,7 +33,7 @@
 
         <include layout="@layout/toolbar_actionbar"/>
 
-        <hmatalonga.greenhub.ui.layouts.MainTabLayout
+        <com.hmatalonga.greenhub.ui.layouts.MainTabLayout
             android:id="@+id/tab_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

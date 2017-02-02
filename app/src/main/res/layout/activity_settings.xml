@@ -22,7 +22,7 @@
     android:fitsSystemWindows="true"
     android:orientation="vertical"
     android:id="@+id/activity_container"
-    tools:context="hmatalonga.greenhub.ui.SettingsActivity">
+    tools:context=".ui.SettingsActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -38,7 +38,7 @@
         android:layout_gravity="top"
         android:layout_marginTop="?actionBarSize">
 
-        <fragment android:name="hmatalonga.greenhub.ui.SettingsActivity$SettingsFragment"
+        <fragment android:name="com.hmatalonga.greenhub.ui.SettingsActivity$SettingsFragment"
             android:id="@+id/settings_fragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>

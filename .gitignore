@@ -48,4 +48,5 @@ greenhub-build
 greenhub-docker-build
 battery_class.txt
 gradlelog.txt
-/app/google-services.json
+app/src/release/google-services.json
+app/src/debug/google-services.json
