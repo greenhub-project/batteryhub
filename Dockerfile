@@ -24,7 +24,7 @@ RUN echo y | android update sdk --no-ui --all --filter extra-android-support | g
 RUN echo y | android update sdk --no-ui --all --filter android-25 | grep 'package installed'
 
 # build tools
-RUN echo y | android update sdk --no-ui --all --filter build-tools-25.0.0 | grep 'package installed'
+RUN echo y | android update sdk --no-ui --all --filter build-tools-25.0.2 | grep 'package installed'
 
 # For the moment an Android image for emulator is not necessary
 # RUN echo y | android update sdk --no-ui --all --filter sys-img-armeabi-v7a-android-25 | grep 'package installed'
