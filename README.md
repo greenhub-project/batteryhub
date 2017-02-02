@@ -8,7 +8,7 @@ GreenHub is a fork of the Carat Project.
 
 Learn more at [hmatalonga.github.io/greenhub](https://hmatalonga.github.io/greenhub).
 
-**Disclamer:** The project is still under heavy development, at the moment is in alpha testing phase. If you would like to participate join [here](https://play.google.com/apps/testing/hmatalonga.greenhub).
+**Disclamer:** The project is still under heavy development, at the moment is in beta testing phase. If you would like to participate join [here](https://play.google.com/apps/testing/hmatalonga.greenhub).
 
 ## Build Instructions
 
