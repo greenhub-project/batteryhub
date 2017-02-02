@@ -47,6 +47,8 @@ public class GreenHubApp extends Application {
 
     private Handler mHandler;
 
+    private Runnable mUpdater;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -78,15 +80,7 @@ public class GreenHubApp extends Application {
             new DeleteSessionsTask().execute(interval);
 
             if (SettingsUtils.isPowerIndicatorShown(context)) {
-                LOGI(TAG, "Notifier Status Bar called");
-                mHandler = new Handler();
-                mHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        Notifier.updateStatusBar(getApplicationContext());
-                        mHandler.postDelayed(this, Config.REFRESH_STATUS_BAR_INTERVAL);
-                    }
-                }, Config.REFRESH_STATUS_BAR_INTERVAL);
+                startStatusBarUpdater();
             }
         }
     }
@@ -97,10 +91,6 @@ public class GreenHubApp extends Application {
 
             final Context context = getApplicationContext();
             isServiceRunning = true;
-
-            if (SettingsUtils.isPowerIndicatorShown(context)) {
-                Notifier.startStatusBar(context);
-            }
 
             new Thread() {
                 private IntentFilter intentFilter;
@@ -129,5 +119,24 @@ public class GreenHubApp extends Application {
             unregisterReceiver(estimator);
             isServiceRunning = false;
         }
+    }
+
+    public void startStatusBarUpdater() {
+        mHandler = new Handler();
+        if (mUpdater == null) {
+            mUpdater = new Runnable() {
+                @Override
+                public void run() {
+                    Notifier.updateStatusBar(getApplicationContext());
+                    mHandler.postDelayed(this, Config.REFRESH_STATUS_BAR_INTERVAL);
+                }
+            };
+        }
+        mHandler.postDelayed(mUpdater, Config.STARTUP_CURRENT_INTERVAL);
+    }
+
+    public void stopStatusBarUpdater() {
+        if (mHandler == null) return;
+        mHandler.removeCallbacks(mUpdater);
     }
 }

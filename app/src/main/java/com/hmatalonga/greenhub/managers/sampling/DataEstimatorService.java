@@ -59,6 +59,7 @@ import com.hmatalonga.greenhub.managers.storage.GreenHubDb;
 import com.hmatalonga.greenhub.models.data.BatteryUsage;
 import com.hmatalonga.greenhub.models.data.Sample;
 import com.hmatalonga.greenhub.network.CommunicationManager;
+import com.hmatalonga.greenhub.tasks.ServerStatusTask;
 import com.hmatalonga.greenhub.util.Notifier;
 import com.hmatalonga.greenhub.util.SettingsUtils;
 
@@ -214,6 +215,9 @@ public class DataEstimatorService extends IntentService {
                 database.close();
                 return;
             }
+
+            // Update server status
+            new ServerStatusTask().execute(context);
 
             // Check if is necessary to sendSamples samples >= pref_upload_rate
             if (database.count(Sample.class) >= SettingsUtils.fetchUploadRate(context) &&

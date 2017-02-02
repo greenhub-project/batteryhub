@@ -60,9 +60,9 @@ public final class Config {
 
     // Alarm event for sampling when battery has not changed for
     // SAMPLE_INTERVAL_MS. Currently not used.
-    public static final String ACTION_GREENHUB_SAMPLE = "hmatalonga.greenhub.ACTION_SAMPLE";
+    public static final String ACTION_GREENHUB_SAMPLE = "com.hmatalonga.greenhub.ACTION_SAMPLE";
 
-    public static final String GREENHUB_PACKAGE = "hmatalonga.greenhub";
+    public static final String GREENHUB_PACKAGE = "com.hmatalonga.greenhub";
 
     public static final String IMPORTANCE_NOT_RUNNING = "Not Running";
     public static final String IMPORTANCE_UNINSTALLED = "uninstalled";
@@ -78,6 +78,7 @@ public final class Config {
     public static final int UPLOAD_MAX_TRIES = 3;
     public static final String UPLOAD_DEFAULT_RATE = "20";
 
+    public static final int STARTUP_CURRENT_INTERVAL = 2000;
     public static final int REFRESH_CURRENT_INTERVAL = 5000;
     public static final int REFRESH_MEMORY_INTERVAL = 10000;
     public static final int REFRESH_STATUS_BAR_INTERVAL = REFRESH_CURRENT_INTERVAL * 4;

@@ -82,10 +82,10 @@ public class SettingsActivity extends BaseActivity {
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
             final Context context = getActivity().getApplicationContext();
+            final GreenHubApp app = (GreenHubApp) getActivity().getApplication();
 
             switch (key) {
                 case SettingsUtils.PREF_SAMPLING_SCREEN:
-                    GreenHubApp app = (GreenHubApp) getActivity().getApplication();
                     // Restart GreenHub Service with new settings
                     LOGI(TAG, "Restarting GreenHub Service because of preference changes");
                     app.stopGreenHubService();
@@ -104,8 +104,10 @@ public class SettingsActivity extends BaseActivity {
                 case SettingsUtils.PREF_POWER_INDICATOR:
                     if (SettingsUtils.isPowerIndicatorShown(context)) {
                         Notifier.startStatusBar(context);
+                        app.startStatusBarUpdater();
                     } else {
                         Notifier.closeStatusBar();
+                        app.stopStatusBarUpdater();
                     }
                     break;
                 case SettingsUtils.PREF_NOTIFICATIONS_PRIORITY:

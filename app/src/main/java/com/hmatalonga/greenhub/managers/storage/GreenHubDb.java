@@ -125,6 +125,6 @@ public class GreenHubDb {
     }
 
     public RealmResults<BatteryUsage> betweenUsages(long from, long to) {
-        return mRealm.where(BatteryUsage.class).between("timestamp", from, to).findAll();
+        return mRealm.where(BatteryUsage.class).between("timestamp", from, to).findAllSorted("timestamp");
     }
 }
