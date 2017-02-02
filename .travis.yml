@@ -29,12 +29,11 @@ cache:
 
 before_install:
   - chmod +x gradlew
-  - chmod +x build.sh
   # TODO: Remove the following line when Travis' platform-tools are updated to v24+
   - echo yes | android update sdk -a --filter platform-tools --no-ui --force
 
 script:
-  - ./build.sh
+  - ./gradlew clean assembleDebug
 
 #before_script:
 #  - echo no | android create avd --force -n test -t android-25 --abi armeabi-v7a

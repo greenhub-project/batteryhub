@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "128137014022",
+    "firebase_url": "https://greenhub-d03cf.firebaseio.com",
+    "project_id": "greenhub-d03cf",
+    "storage_bucket": "greenhub-d03cf.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:128137014022:android:d55b3e9e20d867d8",
+        "android_client_info": {
+          "package_name": "com.hmatalonga.greenhub.debug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "128137014022-34dhulkknfkn63k67eekn12evl8i718h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD4AeBk4LiwcbkJgfEFoX0j02uVCWjWkLg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
