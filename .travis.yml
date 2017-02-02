@@ -9,7 +9,7 @@ android:
     - extra-android-support
     - platform-tools
     - tools
-    - build-tools-25.0.0
+    - build-tools-25.0.2
     - android-25
     - addon-google_apis-google-24
     # if you need to run emulator(s) during your tests
@@ -30,7 +30,7 @@ cache:
 before_install:
   - chmod +x gradlew
   # TODO: Remove the following line when Travis' platform-tools are updated to v24+
-  - echo yes | android update sdk -a --filter platform-tools --no-ui --force
+  # - echo yes | android update sdk -a --filter platform-tools --no-ui --force
 
 script:
   - ./gradlew clean assembleDebug
