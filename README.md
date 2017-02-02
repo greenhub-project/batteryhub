@@ -2,13 +2,11 @@
 
 [![Build Status](https://travis-ci.org/hmatalonga/greenhub.svg?branch=master)](https://travis-ci.org/hmatalonga/greenhub)
 
-GreenHub is a collaborative approach to power consumption analysis of mobile devices.
+GreenHub is a collaborative approach to power consumption analysis of Android devices.
 
 GreenHub is a fork of the Carat Project.
 
 Learn more at [hmatalonga.github.io/greenhub](https://hmatalonga.github.io/greenhub).
-
-The Android app is available [here](https://github.com/hmatalonga/greenhub/releases/download/v1.0-alpha.5/greenhub-v1.0-alpha.5.apk).
 
 **Disclamer:** The project is still under heavy development, at the moment is in alpha testing phase. If you would like to participate join [here](https://play.google.com/apps/testing/hmatalonga.greenhub).
 
