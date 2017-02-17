@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/padding_normal">
+
+        <ProgressBar
+            android:id="@+id/batteryProgressbar"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:indeterminate="false"
+            android:progress="50"
+            android:max="100"
+            android:secondaryProgress="100"
+            android:progressDrawable="@drawable/progressbar_circular"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/batteryCurrentValue"
+            android:textSize="28sp"
+            android:text="50"
+            android:layout_marginLeft="38dp"
+            android:layout_marginStart="38dp"
+            android:layout_marginBottom="42dp"
+            android:layout_alignBottom="@+id/batteryProgressbar"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Right now"
+            android:textSize="12sp"
+            android:id="@+id/batteryLabel"
+            android:layout_above="@+id/batteryCurrentValue"
+            android:layout_toRightOf="@+id/batteryProgressbar"
+            android:layout_toEndOf="@+id/batteryProgressbar" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Measuring"
+            android:textSize="24sp"
+            android:id="@+id/batteryCurrentNow"
+            android:layout_alignBaseline="@+id/batteryPercentageSign"
+            android:layout_alignBottom="@+id/batteryPercentageSign"
+            android:layout_toRightOf="@+id/batteryProgressbar"
+            android:layout_toEndOf="@+id/batteryProgressbar" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:id="@+id/batteryCurrentMin"
+            android:layout_below="@+id/batteryCurrentNow"
+            android:layout_toRightOf="@+id/batteryProgressbar"
+            android:layout_toEndOf="@+id/batteryProgressbar"
+            android:layout_marginTop="13dp"
+            android:text="min: --" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="max: --"
+            android:textSize="14sp"
+            android:id="@+id/batteryCurrentMax"
+            android:layout_marginRight="12dp"
+            android:layout_marginEnd="12dp"
+            android:layout_alignBaseline="@+id/batteryCurrentMin"
+            android:layout_alignBottom="@+id/batteryCurrentMin"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="%"
+            android:textSize="14sp"
+            android:id="@+id/batteryPercentageSign"
+            android:layout_alignBaseline="@+id/batteryCurrentValue"
+            android:layout_alignBottom="@+id/batteryCurrentValue"
+            android:layout_toRightOf="@+id/batteryCurrentValue"
+            android:layout_toEndOf="@+id/batteryCurrentValue" />
+
+        <android.support.v7.widget.RecyclerView
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:id="@+id/rv"
+            android:layout_below="@+id/batteryProgressbar"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true">
+        </android.support.v7.widget.RecyclerView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Idle"
+            android:id="@+id/status"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <include layout="@layout/power_source_view"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_below="@+id/rv"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="24dp" />
+
+    </RelativeLayout>
+
+</android.support.design.widget.CoordinatorLayout>

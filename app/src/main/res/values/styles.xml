@@ -1,0 +1,79 @@
+<!--
+  ~ Copyright (c) 2016 Hugo Matalonga & João Paulo Fernandes
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<resources>
+
+    <!-- Disable RTL support on older devices -->
+    <!-- Prevents crash on certain devices to namespace conflict -->
+    <style name="FrameworkRoot.Theme" parent="Theme.AppCompat.Light.NoActionBar" />
+    <style name="FrameworkRoot.Widget" parent="Theme.AppCompat.NoActionBar" />
+
+    <!-- Immediate parent theme to specify base values for custom attributes -->
+    <style name="Theme" parent="FrameworkRoot.Theme" />
+
+    <style name="Theme.GreenHub.Base" parent="Theme">
+        <item name="colorPrimary">@color/theme_primary_light</item>
+        <item name="colorPrimaryDark">@color/theme_primary_dark</item>
+        <item name="colorAccent">@color/theme_primary</item>
+
+        <item name="android:textColorLink">@color/flat_button_text</item>
+
+        <item name="windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
+    <style name="Theme.GreenHub" parent="Theme.GreenHub.Base" />
+
+    <style name="Theme.GreenHub.Welcome" parent="Theme.GreenHub">
+        <item name="android:windowBackground">@color/white</item>
+    </style>
+
+    <style name="Theme.GreenHub.Splash" parent="Theme.GreenHub">
+        <item name="android:windowBackground">@drawable/splash_screen</item>
+    </style>
+
+    <style name="Theme.GreenHub.Main" parent="Theme.GreenHub" />
+
+    <style name="AppTheme" parent="Theme.GreenHub" />
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
+
+    <style name="GreenHubBaseTheme" parent="Theme.GreenHub"/>
+
+    <style name="TextAppearance.Body1" parent="TextAppearance.AppCompat.Body1">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">?android:textColorSecondary</item>
+    </style>
+
+    <style name="WelcomeTitle">
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Title</item>
+        <item name="android:textColor">@color/flat_button_text</item>
+        <item name="android:textSize">@dimen/welcome_title_size</item>
+    </style>
+
+    <style name="Body1Text">
+        <item name="android:textAppearance">@style/TextAppearance.Body1</item>
+        <item name="android:lineSpacingMultiplier">@dimen/body_1_spacing</item>
+    </style>
+
+</resources>

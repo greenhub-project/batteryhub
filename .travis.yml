@@ -1,0 +1,41 @@
+language: android
+jdk: oraclejdk8
+
+android:
+  components:
+    - extra-google-m2repository
+    - extra-google-google_play_services
+    - extra-android-m2repository
+    - extra-android-support
+    - platform-tools
+    - tools
+    - build-tools-25.0.2
+    - android-25
+    - addon-google_apis-google-24
+    # if you need to run emulator(s) during your tests
+    # - sys-img-armeabi-v7a-android-25
+  licenses:
+      - 'android-sdk-preview-license-52d11cd2'
+      - 'android-sdk-license-.+'
+      - 'google-gdk-license-.+'
+
+before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+cache:
+  directories:
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
+
+before_install:
+  - openssl aes-256-cbc -K $encrypted_6e9027f4c17b_key -iv $encrypted_6e9027f4c17b_iv -in google-services.json.enc -out app/google-services.json -d
+  - chmod +x gradlew
+
+script:
+  - ./gradlew clean assembleDebug
+
+#before_script:
+#  - echo no | android create avd --force -n test -t android-25 --abi armeabi-v7a
+#  - emulator -avd test -no-audio -no-window &
+#  - android-wait-for-emulator
+#  - adb shell input keyevent 82 &
