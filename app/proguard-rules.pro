@@ -43,6 +43,8 @@
 -keep class com.hmatalonga.greenhub.models.** { *; }
 -keep class com.hmatalonga.greenhub.events.** { *; }
 -keep class com.hmatalonga.greenhub.Config { *; }
+-keep class com.hmatalonga.greenhub.GreenHubApp { *; }
+-keep class com.hmatalonga.greenhub.managers.sampling.DataEstimator { *; }
 
 # If your project uses WebView with JS, uncomment the following
 # and specify the fully qualified class name to the JavaScript interface

@@ -22,6 +22,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.BatteryManager;
 import android.support.v4.content.WakefulBroadcastReceiver;
+import android.widget.Toast;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -93,10 +94,6 @@ public class DataEstimator extends WakefulBroadcastReceiver {
                     Notifier.batteryWarningTemperature(context);
                 }
             }
-
-            if (SettingsUtils.isPowerIndicatorShown(context)) {
-                Notifier.updateStatusBar(context);
-            }
         }
 
         // On some phones, scale is always 0.
@@ -117,6 +114,10 @@ public class DataEstimator extends WakefulBroadcastReceiver {
             service.putExtra("OriginalAction", intent.getAction());
             service.fillIn(intent, 0);
             service.putExtra("distance", distance);
+
+            if (SettingsUtils.isPowerIndicatorShown(context)) {
+                Notifier.updateStatusBar(context);
+            }
 
             EventBus.getDefault().post(new BatteryLevelEvent(level));
 

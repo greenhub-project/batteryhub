@@ -69,10 +69,8 @@ public class ConnectivityReceiver extends BroadcastReceiver {
                 // Reset upload uploadAttempts counter on network state change
                 CommunicationManager.uploadAttempts = 0;
 
-                // Check if Server url is stored
-                if (!SettingsUtils.isServerUrlPresent(context)) {
-                    new ServerStatusTask().execute(context);
-                }
+                // Update Server Status
+                new ServerStatusTask().execute(context);
 
                 if (CommunicationManager.isQueued) {
                     CommunicationManager manager = new CommunicationManager(context, true);

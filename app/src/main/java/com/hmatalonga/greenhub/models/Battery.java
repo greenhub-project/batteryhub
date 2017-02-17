@@ -123,7 +123,7 @@ public class Battery {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             BatteryManager manager = (BatteryManager)
                     context.getSystemService(Context.BATTERY_SERVICE);
-            value = manager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW);
+            value = -manager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW);
         } else {
            value = getBatteryCurrentNowLegacy();
         }
