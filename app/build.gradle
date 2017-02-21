@@ -16,8 +16,8 @@ android {
         applicationId 'com.hmatalonga.greenhub'
         minSdkVersion 16
         targetSdkVersion 25
-        versionCode 8
-        versionName 'v1.0-beta.1'
+        versionCode 10
+        versionName 'v1.0-beta.3'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.base
     }

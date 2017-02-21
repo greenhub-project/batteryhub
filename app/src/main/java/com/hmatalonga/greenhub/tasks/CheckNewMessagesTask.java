@@ -18,6 +18,7 @@ import org.greenrobot.eventbus.EventBus;
 import java.util.List;
 
 import io.realm.Realm;
+import io.realm.exceptions.RealmPrimaryKeyConstraintException;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -63,16 +64,25 @@ public class CheckNewMessagesTask extends AsyncTask<Context, Void, Void> {
                                 el.get("body").getAsString(),
                                 el.get("created_at").getAsString()
                         );
-                        realm.beginTransaction();
-                        realm.copyToRealm(message);
-                        realm.commitTransaction();
+                        if (realm.where(Message.class).equalTo("id", message.id).count() == 0) {
+                            try {
+                                realm.beginTransaction();
+                                realm.copyToRealm(message);
+                                realm.commitTransaction();
+                            } catch (RealmPrimaryKeyConstraintException e) {
+                                e.printStackTrace();
+                            }
+                        }
                     }
 
                     realm.close();
+
                     if (message != null) {
                         SettingsUtils.saveLastMessageId(params[0], message.id);
                     }
-                    Notifier.newMessageAlert(params[0]);
+                    if (SettingsUtils.isMessageAlertsOn(params[0])) {
+                        Notifier.newMessageAlert(params[0]);
+                    }
                 }
             }
 

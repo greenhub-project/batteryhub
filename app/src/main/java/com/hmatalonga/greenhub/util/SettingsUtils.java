@@ -80,6 +80,10 @@ public class SettingsUtils {
      */
     public static final String PREF_BATTERY_ALERTS = "pref_battery_alerts";
     /**
+     * Boolean indicating whether to display battery alerts.
+     */
+    public static final String PREF_MESSAGE_ALERTS = "pref_message_alerts";
+    /**
      * String indicating the app version.
      */
     public static final String PREF_APP_VERSION = "pref_app_version";
@@ -233,13 +237,23 @@ public class SettingsUtils {
     }
 
     /**
-     * Return true if power indicator is to be shown, false if it is hidden.
+     * Return true if battery alerts are to be shown, false if hidden.
      *
      * @param context Context to be used to lookup the {@link android.content.SharedPreferences}.
      */
     public static boolean isBatteryAlertsOn(final Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         return sp.getBoolean(PREF_BATTERY_ALERTS, true);
+    }
+
+    /**
+     * Return true if message alerts are to be shown, false if hidden.
+     *
+     * @param context Context to be used to lookup the {@link android.content.SharedPreferences}.
+     */
+    public static boolean isMessageAlertsOn(final Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getBoolean(PREF_MESSAGE_ALERTS, true);
     }
 
     /**

@@ -35,9 +35,9 @@ public class TabAdapter extends FragmentStatePagerAdapter {
 
     public static final int NUM_TABS = 3;
 
-    private static final int TAB_HOME      = 0;
-    private static final int TAB_MY_DEVICE = 1;
-    private static final int TAB_CHARTS    = 2;
+    public static final int TAB_HOME      = 0;
+    public static final int TAB_MY_DEVICE = 1;
+    public static final int TAB_CHARTS    = 2;
     //private static final int TAB_HISTORY   = 3;
     // private static final int TAB_ABOUT     = 3;
 
@@ -105,7 +105,7 @@ public class TabAdapter extends FragmentStatePagerAdapter {
         }
     }
 
-    public boolean isValidPosition(int position) {
+    private boolean isValidPosition(int position) {
         return (position >= 0 && position < NUM_TABS);
     }
 }

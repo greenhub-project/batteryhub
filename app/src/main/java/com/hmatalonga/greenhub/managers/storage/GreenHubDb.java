@@ -27,6 +27,7 @@ import com.hmatalonga.greenhub.models.data.Message;
 import com.hmatalonga.greenhub.models.data.Sample;
 import io.realm.Realm;
 import io.realm.RealmResults;
+import io.realm.Sort;
 import io.realm.exceptions.RealmMigrationNeededException;
 
 import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
@@ -140,7 +141,7 @@ public class GreenHubDb {
     public RealmResults<Message> allMessages() {
         return mRealm
                 .where(Message.class)
-                .findAllSorted("date");
+                .findAllSorted("id", Sort.DESCENDING);
     }
 
     public void markMessageAsRead(int id) {

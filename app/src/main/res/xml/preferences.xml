@@ -64,7 +64,7 @@
         android:key="notifications_header">
 
         <SwitchPreference
-            android:defaultValue="true"
+            android:defaultValue="false"
             android:key="pref_power_indicator"
             android:title="@string/pref_title_power_indicator"/>
 
@@ -73,6 +73,12 @@
             android:key="pref_battery_alerts"
             android:title="@string/pref_title_battery_alerts"
             android:summary="@string/pref_description_battery_alerts"/>
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="pref_message_alerts"
+            android:title="@string/pref_title_message_alerts"
+            android:summary="@string/pref_description_message_alerts"/>
 
         <ListPreference
             android:key="pref_notifications_priority"

@@ -38,6 +38,7 @@ import android.view.View;
 import com.hmatalonga.greenhub.Config;
 import com.hmatalonga.greenhub.GreenHubApp;
 import com.hmatalonga.greenhub.R;
+import com.hmatalonga.greenhub.events.RefreshChartEvent;
 import com.hmatalonga.greenhub.events.StatusEvent;
 import com.hmatalonga.greenhub.managers.sampling.DataEstimator;
 import com.hmatalonga.greenhub.managers.storage.GreenHubDb;
@@ -216,10 +217,14 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
             public void onTabSelected(TabLayout.Tab tab) {
                 mViewPager.setCurrentItem(tab.getPosition());
                 getActionBarToolbar().setTitle(tab.getContentDescription());
-                if (tab.getPosition() == 0) {
+                if (tab.getPosition() == TabAdapter.TAB_HOME) {
                     fab.show();
                 } else {
                     fab.hide();
+                }
+
+                if (tab.getPosition() == TabAdapter.TAB_CHARTS) {
+                    EventBus.getDefault().post(new RefreshChartEvent());
                 }
             }
 

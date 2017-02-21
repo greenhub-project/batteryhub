@@ -107,6 +107,9 @@
     <string name="pref_title_battery_alerts">Battery alerts</string>
     <string name="pref_description_battery_alerts">Show charging and temperature alerts</string>
 
+    <string name="pref_title_message_alerts">New message alerts</string>
+    <string name="pref_description_message_alerts">Show incoming messages notifications</string>
+
     <string name="pref_title_priority">Priority</string>
 
     <string name="pref_title_version">App Version</string>
