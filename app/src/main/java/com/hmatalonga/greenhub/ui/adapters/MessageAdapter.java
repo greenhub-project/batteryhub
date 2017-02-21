@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.hmatalonga.greenhub.R;
 import com.hmatalonga.greenhub.events.OpenMessageEvent;
 import com.hmatalonga.greenhub.models.data.Message;
+import com.hmatalonga.greenhub.util.StringHelper;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -56,8 +57,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.Dashboar
 
     @Override
     public void onBindViewHolder(final MessageAdapter.DashboardViewHolder viewHolder, int i) {
-        viewHolder.title.setText((mMessages.get(i).title.substring(0, 25) + "..."));
-        viewHolder.body.setText((mMessages.get(i).body.substring(0, 30) + "..."));
+        viewHolder.title.setText(StringHelper.truncate(mMessages.get(i).title, 25));
+        viewHolder.body.setText(StringHelper.truncate(mMessages.get(i).body, 30));
         viewHolder.date.setText(mMessages.get(i).date.substring(0, 10));
 
         if (!mMessages.get(i).read) {

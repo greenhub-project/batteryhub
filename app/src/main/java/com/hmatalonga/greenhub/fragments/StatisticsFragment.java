@@ -26,6 +26,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.utils.ColorTemplate;
@@ -33,11 +34,18 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 import java.util.ArrayList;
 
 import com.hmatalonga.greenhub.R;
+import com.hmatalonga.greenhub.events.BatteryLevelEvent;
+import com.hmatalonga.greenhub.events.RefreshChartEvent;
 import com.hmatalonga.greenhub.models.data.BatteryUsage;
 import com.hmatalonga.greenhub.models.ui.ChartCard;
 import com.hmatalonga.greenhub.ui.MainActivity;
 import com.hmatalonga.greenhub.ui.adapters.ChartRVAdapter;
 import com.hmatalonga.greenhub.util.DateUtils;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import io.realm.RealmResults;
 
 import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
@@ -108,8 +116,25 @@ public class StatisticsFragment extends Fragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        EventBus.getDefault().unregister(this);
+        super.onStop();
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
+        loadData(mSelectedInterval);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void refreshChartsData(RefreshChartEvent event) {
         loadData(mSelectedInterval);
     }
 

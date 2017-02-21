@@ -17,15 +17,9 @@
 package com.hmatalonga.greenhub.events;
 
 /**
- * ChartEvent.
+ * RefreshChartEvent.
  */
-public class ChartEvent {
+public class RefreshChartEvent {
 
-    public final int chart;
-    public final int interval;
-
-    public ChartEvent(int chart, int interval) {
-        this.chart = chart;
-        this.interval = interval;
-    }
+    public RefreshChartEvent() {}
 }

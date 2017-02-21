@@ -27,6 +27,7 @@ import org.greenrobot.eventbus.EventBus;
 
 import com.hmatalonga.greenhub.events.RefreshEvent;
 import com.hmatalonga.greenhub.network.CommunicationManager;
+import com.hmatalonga.greenhub.tasks.CheckNewMessagesTask;
 import com.hmatalonga.greenhub.tasks.ServerStatusTask;
 import com.hmatalonga.greenhub.util.SettingsUtils;
 
@@ -71,6 +72,10 @@ public class ConnectivityReceiver extends BroadcastReceiver {
 
                 // Update Server Status
                 new ServerStatusTask().execute(context);
+
+                if (SettingsUtils.isDeviceRegistered(context)) {
+                    new CheckNewMessagesTask().execute(context);
+                }
 
                 if (CommunicationManager.isQueued) {
                     CommunicationManager manager = new CommunicationManager(context, true);

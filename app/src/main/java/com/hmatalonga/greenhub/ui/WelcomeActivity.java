@@ -38,7 +38,7 @@ import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
 
 /**
  * Terms of Service activity activated via
- * {@link hmatalonga.greenhub.ui.BaseActivity} functionality.
+ * {@link com.hmatalonga.greenhub.ui.BaseActivity} functionality.
  */
 public class WelcomeActivity extends AppCompatActivity implements WelcomeFragment.WelcomeFragmentContainer {
 
