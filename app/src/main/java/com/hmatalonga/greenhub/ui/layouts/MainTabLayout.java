@@ -53,7 +53,7 @@ public class MainTabLayout extends TabLayout {
         addTab(R.drawable.ic_cellphone_android_white_24dp, R.string.title_fragment_device);
         addTab(R.drawable.ic_chart_areaspline_white_24dp, R.string.title_fragment_stats);
         // addTab(R.drawable.ic_history_white_24dp, R.string.title_fragment_history);
-        addTab(R.drawable.ic_information_white_24dp, R.string.title_fragment_about);
+        // addTab(R.drawable.ic_information_white_24dp, R.string.title_fragment_about);
     }
 
     /**

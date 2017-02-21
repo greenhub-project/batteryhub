@@ -588,7 +588,7 @@ public final class Inspector {
         batteryDetails.technology = batteryTechnology;
 
         // Battery other values with API level limitations
-        batteryDetails.capacity = Battery.getBatteryCapacity(context);
+        batteryDetails.capacity = Battery.getActualBatteryCapacity(context);
         batteryDetails.chargeCounter = Battery.getBatteryChargeCounter(context);
         batteryDetails.currentAverage = Battery.getBatteryCurrentAverage(context);
         batteryDetails.currentNow = Battery.getBatteryCurrentNow(context);
@@ -722,7 +722,7 @@ public final class Inspector {
         details.technology = batteryTechnology;
 
         // Battery other values with API level limitations
-        details.capacity = Battery.getBatteryCapacity(context);
+        details.capacity = Battery.getActualBatteryCapacity(context);
         details.chargeCounter = Battery.getBatteryChargeCounter(context);
         details.currentAverage = Battery.getBatteryCurrentAverage(context);
         details.currentNow = Battery.getBatteryCurrentNow(context);

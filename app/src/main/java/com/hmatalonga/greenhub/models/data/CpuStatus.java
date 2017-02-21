@@ -27,8 +27,8 @@ public class CpuStatus extends RealmObject {
     public double cpuUsage;
 
     // Uptime in seconds
-    public double upTime;
+    public long upTime;
 
     // Experimental sleep time
-    public double sleepTime;
+    public long sleepTime;
 }

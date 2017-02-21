@@ -35,20 +35,23 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import org.greenrobot.eventbus.EventBus;
-
 import com.hmatalonga.greenhub.Config;
 import com.hmatalonga.greenhub.GreenHubApp;
 import com.hmatalonga.greenhub.R;
 import com.hmatalonga.greenhub.events.StatusEvent;
 import com.hmatalonga.greenhub.managers.sampling.DataEstimator;
 import com.hmatalonga.greenhub.managers.storage.GreenHubDb;
+import com.hmatalonga.greenhub.models.Specifications;
+import com.hmatalonga.greenhub.models.data.Device;
 import com.hmatalonga.greenhub.network.CommunicationManager;
+import com.hmatalonga.greenhub.tasks.CheckNewMessagesTask;
 import com.hmatalonga.greenhub.tasks.ServerStatusTask;
 import com.hmatalonga.greenhub.ui.adapters.TabAdapter;
 import com.hmatalonga.greenhub.ui.layouts.MainTabLayout;
 import com.hmatalonga.greenhub.util.NetworkWatcher;
 import com.hmatalonga.greenhub.util.SettingsUtils;
+
+import org.greenrobot.eventbus.EventBus;
 
 import static com.hmatalonga.greenhub.util.LogUtils.LOGI;
 import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
@@ -100,11 +103,14 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
     @Override
     public boolean onMenuItemClick(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_settings:
-                startActivity(new Intent(this, SettingsActivity.class));
+            case R.id.action_inbox:
+                startActivity(new Intent(this, InboxActivity.class));
                 return true;
             case R.id.action_summary:
                 startActivity(new Intent(Intent.ACTION_POWER_USAGE_SUMMARY));
+                return true;
+            case R.id.action_settings:
+                startActivity(new Intent(this, SettingsActivity.class));
                 return true;
         }
 
@@ -147,6 +153,10 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
             if (NetworkWatcher.hasInternet(context, NetworkWatcher.BACKGROUND_TASKS)) {
                 // Fetch web server status and update them
                 new ServerStatusTask().execute(context);
+
+                if (SettingsUtils.isDeviceRegistered(context)) {
+                    new CheckNewMessagesTask().execute(context);
+                }
             }
         }
 

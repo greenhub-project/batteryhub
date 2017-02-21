@@ -83,6 +83,10 @@ public class SettingsUtils {
      * String indicating the app version.
      */
     public static final String PREF_APP_VERSION = "pref_app_version";
+    /**
+     * Integer indicating the last message id received.
+     */
+    public static final String PREF_MESSAGE_LAST_ID = "pref_message_last";
 
     /**
      * Return true if user has accepted the
@@ -236,6 +240,27 @@ public class SettingsUtils {
     public static boolean isBatteryAlertsOn(final Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         return sp.getBoolean(PREF_BATTERY_ALERTS, true);
+    }
+
+    /**
+     * Save the message {@code id}.
+     *
+     * @param context Context to be used to edit the {@link android.content.SharedPreferences}.
+     * @param id New value that will be set.
+     */
+    public static void saveLastMessageId(final Context context, int id) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        sp.edit().putInt(PREF_MESSAGE_LAST_ID, id).apply();
+    }
+
+    /**
+     * Fetch the last message {@code id}.
+     *
+     * @param context Context to be used to edit the {@link android.content.SharedPreferences}.
+     */
+    public static int fetchLastMessageId(final Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getInt(PREF_MESSAGE_LAST_ID, Config.STARTER_MESSAGE_ID);
     }
 
     /**

@@ -96,7 +96,7 @@
             android:title="@string/pref_title_privacy">
 
             <intent android:action="android.intent.action.VIEW"
-                android:data="https://hmatalonga.github.io/greenhub/privacy.html" />
+                android:data="http://hmatalonga.com/greenhub/privacy.html" />
 
         </Preference>
 

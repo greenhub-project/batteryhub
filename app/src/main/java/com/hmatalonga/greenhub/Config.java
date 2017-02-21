@@ -54,7 +54,7 @@ public final class Config {
     public static final boolean DEBUG = true;
     public static final boolean PRODUCTION = false;
 
-    public static final String SERVER_STATUS_URL = "https://hmatalonga.github.io/";
+    public static final String SERVER_STATUS_URL = "http://hmatalonga.com/";
     public static final String SERVER_URL_DEFAULT = "none";
     public static final String SERVER_URL_DEVELOPMENT = "http://192.168.1.105/";
 
@@ -78,6 +78,8 @@ public final class Config {
     public static final int UPLOAD_MAX_TRIES = 3;
     public static final String UPLOAD_DEFAULT_RATE = "20";
 
+    public static final int STARTER_MESSAGE_ID = 0;
+
     public static final int STARTUP_CURRENT_INTERVAL = 2000;
     public static final int REFRESH_CURRENT_INTERVAL = 5000;
     public static final int REFRESH_MEMORY_INTERVAL = 10000;
@@ -98,4 +100,5 @@ public final class Config {
     public static final int NOTIFICATION_BATTERY_LOW = 1003;
     public static final int NOTIFICATION_TEMPERATURE_WARNING = 1004;
     public static final int NOTIFICATION_TEMPERATURE_HIGH = 1005;
+    public static final int NOTIFICATION_MESSAGE_NEW = 1006;
 }
