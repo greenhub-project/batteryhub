@@ -31,6 +31,7 @@ import com.hmatalonga.greenhub.R;
 import com.hmatalonga.greenhub.managers.sampling.DataEstimator;
 import com.hmatalonga.greenhub.managers.sampling.Inspector;
 import com.hmatalonga.greenhub.models.Battery;
+import com.hmatalonga.greenhub.ui.InboxActivity;
 import com.hmatalonga.greenhub.ui.MainActivity;
 
 /**
@@ -133,6 +134,51 @@ public class Notifier {
     public static void closeStatusBar() {
         sNotificationManager.cancel(Config.NOTIFICATION_BATTERY_STATUS);
         isStatusBarShown = false;
+    }
+
+    public static void newMessageAlert(final Context context) {
+        if (sNotificationManager == null) {
+            sNotificationManager =
+                    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        }
+
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
+                .setSmallIcon(R.drawable.ic_email_white_24dp)
+                .setContentTitle("You got a new message!")
+                .setContentText("Open your GreenHub inbox to see it.")
+                .setAutoCancel(true)
+                .setOngoing(false)
+                .setLights(Color.GREEN, 500, 2000)
+                .setVibrate(new long[] {0, 800, 1500})
+                .setPriority(SettingsUtils.fetchNotificationsPriority(context));
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mBuilder.setVisibility(Notification.VISIBILITY_PUBLIC);
+        }
+
+        // Creates an explicit intent for an Activity in your app
+        Intent resultIntent = new Intent(context, InboxActivity.class);
+
+        // The stack builder object will contain an artificial back stack for the
+        // started Activity.
+        // This ensures that navigating backward from the Activity leads out of
+        // your application to the Home screen.
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+        // Adds the back stack for the Intent (but not the Intent itself)
+        stackBuilder.addParentStack(InboxActivity.class);
+        // Adds the Intent that starts the Activity to the top of the stack
+        stackBuilder.addNextIntent(resultIntent);
+        PendingIntent resultPendingIntent =
+                stackBuilder.getPendingIntent(
+                        0,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+        mBuilder.setContentIntent(resultPendingIntent);
+
+        // Because the ID remains unchanged, the existing notification is updated.
+        Notification notification = mBuilder.build();
+        notification.flags |= Notification.FLAG_ONLY_ALERT_ONCE;
+        sNotificationManager.notify(Config.NOTIFICATION_MESSAGE_NEW, notification);
     }
 
     public static void batteryFullAlert(final Context context) {

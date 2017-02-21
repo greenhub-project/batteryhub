@@ -16,19 +16,29 @@
 
 package com.hmatalonga.greenhub.network.services;
 
+import com.google.gson.JsonObject;
 import com.hmatalonga.greenhub.models.data.Device;
+import com.hmatalonga.greenhub.models.data.Message;
 import com.hmatalonga.greenhub.models.data.Upload;
+
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Query;
 
 /**
  * GreenHub API Interface.
  */
 public interface GreenHubAPIService {
-    @POST("api/device")
+    @GET("api/mobile/messages")
+    Call<List<JsonObject>> getMessages(@Query("uuid") String uuid, @Query("message") int message);
+
+    @POST("api/mobile/devices")
     Call<Integer> createDevice(@Body Device device);
 
-    @POST("api/sample")
+    @POST("api/mobile/samples")
     Call<Integer> createSample(@Body Upload upload);
 }

@@ -28,6 +28,7 @@ import com.hmatalonga.greenhub.events.StatusEvent;
 import com.hmatalonga.greenhub.models.Specifications;
 import com.hmatalonga.greenhub.models.data.Device;
 import com.hmatalonga.greenhub.network.services.GreenHubAPIService;
+import com.hmatalonga.greenhub.tasks.CheckNewMessagesTask;
 import com.hmatalonga.greenhub.util.GsonRealmBuilder;
 import com.hmatalonga.greenhub.util.SettingsUtils;
 import retrofit2.Call;
@@ -106,6 +107,9 @@ public class RegisterDeviceHandler {
                     EventBus.getDefault().post(new StatusEvent("Device is already registered"));
                 }
                 SettingsUtils.markDeviceAccepted(mContext, true);
+
+                // Check for new messages after successful registration
+                new CheckNewMessagesTask().execute(mContext);
             }
 
             @Override

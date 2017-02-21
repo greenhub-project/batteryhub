@@ -73,8 +73,9 @@ public class Battery {
         return -1;
     }
 
-    public static void getActualBatteryCapacity(final Context context) {
+    public static int getActualBatteryCapacity(final Context context) {
         Object mPowerProfile_ = null;
+        int batteryCapacity = 0;
 
         final String POWER_PROFILE_CLASS = "com.android.internal.os.PowerProfile";
 
@@ -86,7 +87,7 @@ public class Battery {
         }
 
         try {
-            double batteryCapacity = (Double) Class
+            batteryCapacity = (Integer) Class
                     .forName(POWER_PROFILE_CLASS)
                     .getMethod("getAveragePower", java.lang.String.class)
                     .invoke(mPowerProfile_, "battery.capacity");
@@ -94,6 +95,8 @@ public class Battery {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        return batteryCapacity;
     }
 
     public static int getBatteryChargeCounter(final Context context) {
@@ -123,7 +126,7 @@ public class Battery {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             BatteryManager manager = (BatteryManager)
                     context.getSystemService(Context.BATTERY_SERVICE);
-            value = -manager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW);
+            value = manager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW);
         } else {
            value = getBatteryCurrentNowLegacy();
         }

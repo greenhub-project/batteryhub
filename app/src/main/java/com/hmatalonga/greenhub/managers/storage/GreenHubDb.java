@@ -16,11 +16,14 @@
 
 package com.hmatalonga.greenhub.managers.storage;
 
+import android.content.Intent;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 
 import com.hmatalonga.greenhub.models.data.BatterySession;
 import com.hmatalonga.greenhub.models.data.BatteryUsage;
+import com.hmatalonga.greenhub.models.data.Message;
 import com.hmatalonga.greenhub.models.data.Sample;
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -69,6 +72,8 @@ public class GreenHubDb {
             size = mRealm.where(BatteryUsage.class).count();
         } else if (className.equals(BatterySession.class)) {
             size = mRealm.where(BatterySession.class).count();
+        } else if (className.equals(Message.class)) {
+            size = mRealm.where(Message.class).count();
         }
         return size;
     }
@@ -127,7 +132,28 @@ public class GreenHubDb {
     public RealmResults<BatteryUsage> betweenUsages(long from, long to) {
         return mRealm
                 .where(BatteryUsage.class)
+                .equalTo("triggeredBy", Intent.ACTION_BATTERY_CHANGED)
                 .between("timestamp", from, to)
                 .findAllSorted("timestamp");
+    }
+
+    public RealmResults<Message> allMessages() {
+        return mRealm
+                .where(Message.class)
+                .findAllSorted("date");
+    }
+
+    public void markMessageAsRead(int id) {
+        mRealm.beginTransaction();
+        Message message = mRealm.where(Message.class).equalTo("id", id).findFirst();
+        message.read = true;
+        mRealm.commitTransaction();
+    }
+
+    public void deleteMessage(int id) {
+        mRealm.beginTransaction();
+        Message message = mRealm.where(Message.class).equalTo("id", id).findFirst();
+        message.deleteFromRealm();
+        mRealm.commitTransaction();
     }
 }

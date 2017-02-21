@@ -22,7 +22,9 @@ import android.graphics.drawable.Drawable;
  * AppListItem.
  */
 public class AppListItem {
+
     public Drawable icon;
+
     public String name;
 
     public AppListItem(Drawable icon, String name) {
