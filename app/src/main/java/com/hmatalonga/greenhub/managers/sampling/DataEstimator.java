@@ -116,6 +116,7 @@ public class DataEstimator extends WakefulBroadcastReceiver {
             service.putExtra("distance", distance);
 
             if (SettingsUtils.isPowerIndicatorShown(context)) {
+                LOGI(TAG, "Updating notification status bar");
                 Notifier.updateStatusBar(context);
             }
 

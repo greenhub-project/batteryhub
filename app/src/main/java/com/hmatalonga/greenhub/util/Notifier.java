@@ -34,10 +34,14 @@ import com.hmatalonga.greenhub.models.Battery;
 import com.hmatalonga.greenhub.ui.InboxActivity;
 import com.hmatalonga.greenhub.ui.MainActivity;
 
+import static com.hmatalonga.greenhub.util.LogUtils.LOGI;
+
 /**
  * Notifier
  */
 public class Notifier {
+
+    private static final String TAG = LogUtils.makeLogTag(Notifier.class);
 
     private static boolean isStatusBarShown = false;
 
@@ -126,6 +130,8 @@ public class Notifier {
         } else {
             sBuilder.setSmallIcon(R.drawable.ic_stat_z100_pct_charged);
         }
+
+        LOGI(TAG, "Updating value of notification");
 
         // Because the ID remains unchanged, the existing notification is updated.
         sNotificationManager.notify(Config.NOTIFICATION_BATTERY_STATUS, sBuilder.build());

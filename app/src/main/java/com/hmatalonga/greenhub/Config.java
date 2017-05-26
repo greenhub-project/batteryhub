@@ -56,7 +56,7 @@ public final class Config {
 
     public static final String SERVER_STATUS_URL = "http://hmatalonga.com/";
     public static final String SERVER_URL_DEFAULT = "none";
-    public static final String SERVER_URL_DEVELOPMENT = "http://192.168.1.105/";
+    public static final String SERVER_URL_DEVELOPMENT = "http://192.168.1.117:8080";
 
     // Alarm event for sampling when battery has not changed for
     // SAMPLE_INTERVAL_MS. Currently not used.
@@ -70,8 +70,10 @@ public final class Config {
     public static final String IMPORTANCE_INSTALLED = "installed";
     public static final String IMPORTANCE_REPLACED = "replaced";
 
-    public static final String BATTERY_SOURCE_DEFAULT = "/sys/class/power_supply/battery/current_now";
-    public static final String BATTERY_SOURCE_ALTERNATIVE = "/sys/devices/platform/battery/power_supply/battery/BatteryAverageCurrent";
+    public static final String BATTERY_SOURCE_DEFAULT =
+            "/sys/class/power_supply/battery/current_now";
+    public static final String BATTERY_SOURCE_ALTERNATIVE =
+            "/sys/devices/platform/battery/power_supply/battery/BatteryAverageCurrent";
 
     public static final String DATA_HISTORY_DEFAULT = "4";
 
@@ -83,7 +85,7 @@ public final class Config {
     public static final int STARTUP_CURRENT_INTERVAL = 2000;
     public static final int REFRESH_CURRENT_INTERVAL = 5000;
     public static final int REFRESH_MEMORY_INTERVAL = 10000;
-    public static final int REFRESH_STATUS_BAR_INTERVAL = REFRESH_CURRENT_INTERVAL * 4;
+    public static final int REFRESH_STATUS_BAR_INTERVAL = REFRESH_CURRENT_INTERVAL * 6;
     public static final int REFRESH_STATUS_ERROR = REFRESH_CURRENT_INTERVAL * 2;
 
     public static final double BATTERY_LOW_LEVEL = 0.2;
