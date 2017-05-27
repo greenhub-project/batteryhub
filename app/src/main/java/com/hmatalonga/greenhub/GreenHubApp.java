@@ -16,13 +16,17 @@
 
 package com.hmatalonga.greenhub;
 
+import android.app.AlarmManager;
 import android.app.Application;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Handler;
+import android.os.SystemClock;
 
 import com.hmatalonga.greenhub.managers.sampling.DataEstimator;
+import com.hmatalonga.greenhub.receivers.NotificationReceiver;
 import com.hmatalonga.greenhub.tasks.DeleteSessionsTask;
 import com.hmatalonga.greenhub.tasks.DeleteUsagesTask;
 import com.hmatalonga.greenhub.util.LogUtils;
@@ -45,9 +49,9 @@ public class GreenHubApp extends Application {
 
     public DataEstimator estimator;
 
-    private Handler mHandler;
+    private AlarmManager mAlarmManager;
 
-    private Runnable mUpdater;
+    private PendingIntent mNotificationIntent;
 
     @Override
     public void onCreate() {
@@ -122,21 +126,23 @@ public class GreenHubApp extends Application {
     }
 
     public void startStatusBarUpdater() {
-        mHandler = new Handler();
-        if (mUpdater == null) {
-            mUpdater = new Runnable() {
-                @Override
-                public void run() {
-                    Notifier.updateStatusBar(getApplicationContext());
-                    mHandler.postDelayed(this, Config.REFRESH_STATUS_BAR_INTERVAL);
-                }
-            };
+        Intent notificationIntent = new Intent(this, NotificationReceiver.class);
+        mNotificationIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        if (mAlarmManager == null) {
+            mAlarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         }
-        mHandler.postDelayed(mUpdater, Config.STARTUP_CURRENT_INTERVAL);
+        mAlarmManager.setInexactRepeating(
+                AlarmManager.ELAPSED_REALTIME,
+                SystemClock.elapsedRealtime() + Config.REFRESH_STATUS_BAR_INTERVAL,
+                Config.REFRESH_STATUS_BAR_INTERVAL,
+                mNotificationIntent
+        );
+
     }
 
     public void stopStatusBarUpdater() {
-        if (mHandler == null) return;
-        mHandler.removeCallbacks(mUpdater);
+        if (mAlarmManager != null) {
+            mAlarmManager.cancel(mNotificationIntent);
+        }
     }
 }

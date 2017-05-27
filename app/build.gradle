@@ -3,7 +3,7 @@ apply plugin: 'realm-android'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion '25.0.2'
+    buildToolsVersion '25.0.3'
     signingConfigs {
         base {
             keyAlias 'GreenHubKey'
@@ -17,7 +17,7 @@ android {
         minSdkVersion 16
         targetSdkVersion 25
         versionCode 10
-        versionName 'v1.0-beta.3'
+        versionName 'v1.0-RC.1'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.base
     }
@@ -62,7 +62,7 @@ dependencies {
     compile "com.android.support:cardview-v7:${android_support_lib_version}"
     compile "com.android.support:recyclerview-v7:${android_support_lib_version}"
     // JSON utility library.
-    compile 'com.google.code.gson:gson:2.6.2'
+    compile 'com.google.code.gson:gson:2.7'
     // Retrofit library for networking operations
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
     compile 'com.squareup.retrofit2:converter-gson:2.1.0'

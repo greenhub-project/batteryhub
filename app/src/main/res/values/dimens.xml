@@ -50,4 +50,11 @@
     <dimen name="list_item_margin_extra">42dp</dimen>
     <dimen name="list_item_margin">36dp</dimen>
     <dimen name="list_sub_item_margin">24dp</dimen>
+
+    <!-- Process List -->
+    <dimen name="list_item_details_margin">8dp</dimen>
+    <dimen name="two_line_height">72dp</dimen>
+    <dimen name="two_line_dense_height">60dp</dimen>
+    <dimen name="list_item_left_padding">64dp</dimen>
+    <dimen name="image_thumbnail_size">48dp</dimen>
 </resources>

@@ -31,6 +31,7 @@
     <string name="action_inbox">Inbox</string>
     <string name="action_summary">Summary</string>
     <string name="action_settings">Settings</string>
+    <string name="action_rating">Rate This App</string>
     <string name="action_24h">24h</string>
     <string name="action_3days">3 days</string>
     <string name="action_5days">5 days</string>
@@ -83,6 +84,24 @@
     <string name="priorityperceptible">Perceptible App</string>
     <string name="priorityvisible">Visible App</string>
     <string name="prioritysuggestion">Suggestion</string>
+
+    <!-- Strings related to ProcessList -->
+    <string name="action_sort_name">Sort by name</string>
+    <string name="action_sort_memory">Sort by memory usage</string>
+
+    <string name="button_undo">UNDO</string>
+
+    <string name="kill_app_dialog_text">It looks like this app can not be killed by third-party apps.\n\nDo you want to open the app system settings to kill it manually?"</string>
+    <string name="force_close">Force close</string>
+
+    <string name="package_usage_permission_title">App permission</string>
+    <string name="package_usage_permission_text">Looks like you are running Android N or newer. It is necessary to give a special permission so that Lunar Task Killer can work. You will be redirected there.</string>
+    <string name="open_settings">Settings</string>
+
+    <string name="auto_startup">Auto-startup</string>
+    <string name="background_service">Background service</string>
+
+    <string name="header_status_loading">Loading running apps</string>
 
     <!-- Strings related to SettingsInfo -->
     <string name="pref_header_sampling">Sampling</string>

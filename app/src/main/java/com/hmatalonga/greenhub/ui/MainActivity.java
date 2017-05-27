@@ -113,6 +113,8 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
             case R.id.action_settings:
                 startActivity(new Intent(this, SettingsActivity.class));
                 return true;
+            case R.id.action_rating:
+                return true;
         }
 
         return false;

@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:id="@+id/item_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/padding_normal">
+
+        <ImageView
+            android:id="@+id/taskIcon"
+            android:layout_width="@dimen/image_thumbnail_size"
+            android:layout_height="@dimen/image_thumbnail_size"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"/>
+
+        <TextView
+            android:id="@+id/taskName"
+            android:text="Task Name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/list_item_left_padding"
+            android:paddingStart="@dimen/list_item_left_padding"
+            android:paddingEnd="@dimen/list_item_left_padding"
+            android:textSize="16sp"
+            android:textColor="@color/app_primary_text"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <TextView
+            android:id="@+id/taskMemory"
+            android:text="Memory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/list_item_left_padding"
+            android:paddingStart="@dimen/list_item_left_padding"
+            android:paddingEnd="@dimen/list_item_left_padding"
+            android:layout_below="@id/taskName"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+
+        <RelativeLayout
+            android:id="@+id/taskDetailsContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:layout_below="@id/taskMemory"
+            android:layout_marginTop="@dimen/list_item_details_margin"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:paddingLeft="@dimen/list_item_left_padding"
+            android:paddingStart="@dimen/list_item_left_padding"
+            android:paddingEnd="@dimen/list_item_left_padding">
+
+            <TextView
+                android:id="@+id/taskAutoStart"
+                android:text="@string/auto_startup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:textColor="@color/color_accent" />
+
+            <TextView
+                android:id="@+id/taskBackgroundService"
+                android:text="@string/background_service"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/taskAutoStart"
+                android:visibility="gone"
+                android:textColor="@color/color_primary" />
+
+            <TextView
+                android:id="@+id/taskPackage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/list_item_details_margin"
+                android:layout_below="@id/taskBackgroundService"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/taskAppVersion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/taskPackage"
+                android:textSize="12sp" />
+
+        </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/taskShowDetails"
+            android:src="@drawable/ic_chevron_down_grey600_18dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginRight="@dimen/list_item_left_padding"
+            android:layout_marginEnd="@dimen/list_item_left_padding"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"/>
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:checked="true"
+            android:id="@+id/checkBox" />
+
+        <Button
+            android:id="@+id/undo_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/button_undo"
+            android:textColor="@android:color/white"
+            android:layout_gravity="end|top"
+            style="@style/Base.Widget.AppCompat.Button.Borderless"
+            android:textAppearance="@style/TextAppearance.AppCompat.Button" />
+
+    </RelativeLayout>
+
+    <include layout="@layout/item_divider" />
+
+</LinearLayout>

@@ -1,14 +1,14 @@
-# GreenHub
+# GreenHub Android App
 
 [![Build Status](https://travis-ci.org/hmatalonga/greenhub.svg?branch=master)](https://travis-ci.org/hmatalonga/greenhub)
 
 GreenHub is a collaborative approach to power consumption analysis of Android devices.
 
-GreenHub is a fork of the Carat Project.
+The GreenHub mobile app is a fork of the Carat Project.
 
-Learn more at [hmatalonga.github.io/greenhub](https://hmatalonga.github.io/greenhub).
+Learn more at [hmatalonga.com/greenhub](http://hmatalonga.com/greenhub).
 
-**Disclamer:** The project is still under heavy development, at the moment is in beta testing phase. If you would like to participate join [here](https://play.google.com/apps/testing/hmatalonga.greenhub).
+**Disclamer:** The project is still under development, the beta testing is now over. At the moment there is available a release candidate version.
 
 ## Build Instructions
 
@@ -74,7 +74,7 @@ If you think you have found a bug or have a feature request, refer to the [issue
 Before opening a new issue, be sure to search existing ones to avoid duplicates. Please try to include steps to reproduce the problem.
 
 ### Known issues
-- The Android app can't communicate with the web server using mobile data Internet connection;
+- Some Android devices don't support instant consumption with BatteryManager API. Legacy support is being developed;
 
 ## Contributing
 Please read through our [contributing guidelines](CONTRIBUTING.md). Included are directions for opening issues, coding standards and development process.

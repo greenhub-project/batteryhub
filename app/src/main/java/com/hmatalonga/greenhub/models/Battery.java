@@ -131,7 +131,7 @@ public class Battery {
            value = getBatteryCurrentNowLegacy();
         }
 
-        return (value != Integer.MIN_VALUE) ? value / 1000 : -1;
+        return (value != Integer.MIN_VALUE) ? -value / 1000 : -1;
     }
 
     public static long getBatteryEnergyCounter(final Context context) {

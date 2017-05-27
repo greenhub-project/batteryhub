@@ -30,6 +30,7 @@
     <uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
     <!-- Required for notifications -->
     <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
 
     <!-- The remaining permissions need to be accepted on run-time for Android devices >= 6.0 -->
 
@@ -87,7 +88,7 @@
         </activity>
 
         <activity
-            android:name=".ui.ProcessListActivity"
+            android:name=".ui.TaskListActivity"
             android:label="@string/title_activity_process"
             android:parentActivityName=".ui.MainActivity">
             <!-- Parent activity meta-data to support 4.0 and lower -->
@@ -142,6 +143,8 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>
         </receiver>
+
+        <receiver android:name=".receivers.NotificationReceiver"/>
     </application>
 
 </manifest>

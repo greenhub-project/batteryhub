@@ -28,10 +28,6 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-
 import com.hmatalonga.greenhub.Config;
 import com.hmatalonga.greenhub.R;
 import com.hmatalonga.greenhub.events.RefreshEvent;
@@ -43,7 +39,11 @@ import com.hmatalonga.greenhub.models.Specifications;
 import com.hmatalonga.greenhub.models.Storage;
 import com.hmatalonga.greenhub.models.Wifi;
 import com.hmatalonga.greenhub.models.data.StorageDetails;
-import com.hmatalonga.greenhub.ui.ProcessListActivity;
+import com.hmatalonga.greenhub.ui.TaskListActivity;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
 
@@ -143,7 +143,7 @@ public class DeviceFragment extends Fragment {
         btViewMore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(view.getContext(), ProcessListActivity.class));
+                startActivity(new Intent(view.getContext(), TaskListActivity.class));
             }
         });
 

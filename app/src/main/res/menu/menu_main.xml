@@ -36,4 +36,10 @@
         android:orderInCategory="300"
         android:title="@string/action_settings"
         app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/action_rating"
+        android:orderInCategory="400"
+        android:title="@string/action_rating"
+        app:showAsAction="never"/>
 </menu>

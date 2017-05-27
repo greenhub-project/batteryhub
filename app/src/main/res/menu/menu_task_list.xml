@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_sort_name"
+        android:orderInCategory="100"
+        android:title="@string/action_sort_name"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_sort_memory"
+        android:orderInCategory="110"
+        android:title="@string/action_sort_memory"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="120"
+        android:title="@string/action_settings"
+        app:showAsAction="never" />
+</menu>
