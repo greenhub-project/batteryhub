@@ -5,7 +5,7 @@ MAINTAINER Hugo Matalonga <hmatalonga@gmail.com>
 # Docker Android image for development environment
 
 ENV ANDROID_HOME /opt/android-sdk-linux
-ENV ANDROID_SDK_URL https://dl.google.com/android/repository/tools_r25.2.3-linux.zip
+ENV ANDROID_SDK_URL https://dl.google.com/android/repository/sdk-tools-linux-3859397.zip
 
 RUN dpkg --add-architecture i386
 RUN apt-get update -qq
@@ -24,7 +24,7 @@ RUN echo y | android update sdk --no-ui --all --filter extra-android-support | g
 RUN echo y | android update sdk --no-ui --all --filter android-25 | grep 'package installed'
 
 # build tools
-RUN echo y | android update sdk --no-ui --all --filter build-tools-25.0.2 | grep 'package installed'
+RUN echo y | android update sdk --no-ui --all --filter build-tools-25.0.3 | grep 'package installed'
 
 # For the moment an Android image for emulator is not necessary
 # RUN echo y | android update sdk --no-ui --all --filter sys-img-armeabi-v7a-android-25 | grep 'package installed'

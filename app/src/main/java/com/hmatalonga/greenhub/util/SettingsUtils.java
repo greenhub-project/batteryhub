@@ -22,6 +22,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.hmatalonga.greenhub.Config;
+import com.hmatalonga.greenhub.ui.TaskListActivity;
 import com.hmatalonga.greenhub.ui.WelcomeActivity;
 
 /**
@@ -91,6 +92,10 @@ public class SettingsUtils {
      * Integer indicating the last message id received.
      */
     public static final String PREF_MESSAGE_LAST_ID = "pref_message_last";
+    /**
+     * Boolean indicating whether to hide system apps or not.
+     */
+    public static final String PREF_HIDE_SYSTEM_APPS = "pref_system_apps";
 
     /**
      * Return true if user has accepted the
@@ -233,7 +238,7 @@ public class SettingsUtils {
      */
     public static boolean isPowerIndicatorShown(final Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        return sp.getBoolean(PREF_POWER_INDICATOR, true);
+        return sp.getBoolean(PREF_POWER_INDICATOR, false);
     }
 
     /**
@@ -275,6 +280,27 @@ public class SettingsUtils {
     public static int fetchLastMessageId(final Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         return sp.getInt(PREF_MESSAGE_LAST_ID, Config.STARTER_MESSAGE_ID);
+    }
+
+    /**
+     * Return true if system apps are hidden
+     * {@link TaskListActivity Setting}, false if they aren't (yet).
+     *
+     * @param context Context to be used to lookup the {@link android.content.SharedPreferences}.
+     */
+    public static boolean isSystemAppsHidden(final Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getBoolean(PREF_HIDE_SYSTEM_APPS, true);
+    }
+    /**
+     * Mark {@code newValue whether} system apps to be hidden from list.
+     *
+     * @param context Context to be used to edit the {@link android.content.SharedPreferences}.
+     * @param newValue New value that will be set.
+     */
+    public static void markSystemAppsHidden(final Context context, boolean newValue) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        sp.edit().putBoolean(PREF_HIDE_SYSTEM_APPS, newValue).apply();
     }
 
     /**

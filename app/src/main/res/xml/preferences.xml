@@ -64,7 +64,7 @@
         android:key="notifications_header">
 
         <SwitchPreference
-            android:defaultValue="true"
+            android:defaultValue="false"
             android:key="pref_power_indicator"
             android:title="@string/pref_title_power_indicator"/>
 

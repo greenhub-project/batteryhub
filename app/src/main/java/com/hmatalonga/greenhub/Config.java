@@ -103,4 +103,9 @@ public final class Config {
     public static final int NOTIFICATION_TEMPERATURE_WARNING = 1004;
     public static final int NOTIFICATION_TEMPERATURE_HIGH = 1005;
     public static final int NOTIFICATION_MESSAGE_NEW = 1006;
+
+    public static final int PENDING_REMOVAL_TIMEOUT = 1500; // 1.5s
+    public static final int KILL_APP_TIMEOUT = 15000; // 15s
+    public static final int SORT_BY_MEMORY = 1;
+    public static final int SORT_BY_NAME = 2;
 }

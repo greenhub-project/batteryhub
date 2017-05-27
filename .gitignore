@@ -50,3 +50,4 @@ battery_class.txt
 gradlelog.txt
 app/src/release/google-services.json
 app/src/debug/google-services.json
+app/pepk.jar

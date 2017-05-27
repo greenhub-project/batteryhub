@@ -132,7 +132,7 @@ public class GreenHubApp extends Application {
             mAlarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         }
         mAlarmManager.setInexactRepeating(
-                AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                AlarmManager.ELAPSED_REALTIME,
                 SystemClock.elapsedRealtime() + Config.REFRESH_STATUS_BAR_INTERVAL,
                 Config.REFRESH_STATUS_BAR_INTERVAL,
                 mNotificationIntent
