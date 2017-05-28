@@ -36,6 +36,9 @@ public class Sample extends RealmObject {
     @Index
     public long timestamp;
 
+    // Mobile app version of sample
+    public int version;
+
     // State of the battery. ie. charging, discharging, etc.
     public String batteryState;
 

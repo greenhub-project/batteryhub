@@ -57,15 +57,17 @@ public class ServerStatusHandler {
                 LOGI(TAG, "Server Status: { server: " + response.body().server + ", version: " + response.body().version + " }");
 
                 // Server url has changed so it is necessary to register device again
-                if (!SettingsUtils.fetchServerUrl(context).equals(response.body().server)) {
+                if (! SettingsUtils.fetchServerUrl(context).equals(response.body().server)) {
                     SettingsUtils.markDeviceAccepted(context, false);
                 }
 
                 // Save new server url
                 SettingsUtils.saveServerUrl(context, response.body().server);
+                // Save most recent app version
+                SettingsUtils.saveAppVersion(context, response.body().version);
 
                 // Register device on the web server
-                if (!SettingsUtils.isDeviceRegistered(context)) {
+                if (! SettingsUtils.isDeviceRegistered(context)) {
                     new RegisterDeviceTask().execute(context);
                 }
             }

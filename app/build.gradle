@@ -8,7 +8,7 @@ android {
         base {
             keyAlias 'GreenHubKey'
             keyPassword 'greenhub'
-            storeFile file('greenhub-key.jks')
+            storeFile file('greenhub-key-debug.jks')
             storePassword 'greenhub'
         }
     }

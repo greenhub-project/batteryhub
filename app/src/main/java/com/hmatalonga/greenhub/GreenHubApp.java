@@ -32,8 +32,13 @@ import com.hmatalonga.greenhub.tasks.DeleteUsagesTask;
 import com.hmatalonga.greenhub.util.LogUtils;
 import com.hmatalonga.greenhub.util.Notifier;
 import com.hmatalonga.greenhub.util.SettingsUtils;
+
+import io.realm.DynamicRealm;
+import io.realm.FieldAttribute;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
+import io.realm.RealmMigration;
+import io.realm.RealmSchema;
 
 import static com.hmatalonga.greenhub.util.LogUtils.LOGI;
 import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
@@ -65,7 +70,10 @@ public class GreenHubApp extends Application {
 
         // Database init
         Realm.init(this);
-        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder()
+                .schemaVersion(Config.DATABASE_VERSION)
+                .migration(buildMigration())
+                .build();
         Realm.setDefaultConfiguration(realmConfiguration);
 
         LOGI(TAG, "Estimator new instance");
@@ -144,5 +152,25 @@ public class GreenHubApp extends Application {
         if (mAlarmManager != null) {
             mAlarmManager.cancel(mNotificationIntent);
         }
+    }
+
+    private RealmMigration buildMigration() {
+        return new RealmMigration() {
+            @Override
+            public void migrate(DynamicRealm realm, long oldVersion, long newVersion) {
+
+                // DynamicRealm exposes an editable schema
+                RealmSchema schema = realm.getSchema();
+
+                // Migrate to version 1: Add a new field.
+                // public Sample extends RealmObject {
+                //     public int version;
+                // }
+                if (oldVersion == 1) {
+                    schema.get("Sample")
+                            .addField("version", int.class);
+                }
+            }
+        };
     }
 }
