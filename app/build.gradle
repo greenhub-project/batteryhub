@@ -1,15 +1,27 @@
 apply plugin: 'com.android.application'
 apply plugin: 'realm-android'
 
+def keystorePropertiesFile = rootProject.file("keystore.properties")
+// Initialize a new Properties() object called keystoreProperties.
+def keystoreProperties = new Properties()
+// Load your keystore.properties file into the keystoreProperties object.
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
 android {
     compileSdkVersion 25
     buildToolsVersion '25.0.3'
     signingConfigs {
-        base {
+        debug {
             keyAlias 'GreenHubKey'
             keyPassword 'greenhub'
-            storeFile file('greenhub-key.jks')
+            storeFile file('greenhub-key-debug.jks')
             storePassword 'greenhub'
+        }
+        release {
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile file(keystoreProperties['storeFile'])
+            storePassword keystoreProperties['storePassword']
         }
     }
     defaultConfig {
@@ -19,20 +31,20 @@ android {
         versionCode 10
         versionName 'v1.0-RC.1'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        signingConfig signingConfigs.base
+        signingConfig signingConfigs.debug
     }
     buildTypes {
         debug {
             applicationIdSuffix '.debug'
             debuggable true
             minifyEnabled false
-            signingConfig signingConfigs.base
+            signingConfig signingConfigs.debug
         }
         release {
             debuggable false
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.base
+            signingConfig signingConfigs.release
             zipAlignEnabled true
         }
     }

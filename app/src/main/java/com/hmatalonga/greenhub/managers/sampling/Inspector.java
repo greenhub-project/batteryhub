@@ -404,6 +404,7 @@ public final class Inspector {
         newSample.triggeredBy = action;
         newSample.timestamp = System.currentTimeMillis();
         newSample.id = String.valueOf(newSample.timestamp).hashCode();
+        newSample.version = SettingsUtils.fetchAppVersion(context);
 
         // Record first data point for CPU usage
         long[] idleAndCpu1 = Cpu.readUsagePoint();

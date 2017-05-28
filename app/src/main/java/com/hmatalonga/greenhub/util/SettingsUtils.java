@@ -21,6 +21,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import com.hmatalonga.greenhub.BuildConfig;
 import com.hmatalonga.greenhub.Config;
 import com.hmatalonga.greenhub.ui.TaskListActivity;
 import com.hmatalonga.greenhub.ui.WelcomeActivity;
@@ -223,7 +224,6 @@ public class SettingsUtils {
         );
     }
 
-
     public static int fetchNotificationsPriority(final Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         return Integer.parseInt(
@@ -301,6 +301,27 @@ public class SettingsUtils {
     public static void markSystemAppsHidden(final Context context, boolean newValue) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         sp.edit().putBoolean(PREF_HIDE_SYSTEM_APPS, newValue).apply();
+    }
+
+    /**
+     * Save the most recent app version {@code version}.
+     *
+     * @param context Context to be used to edit the {@link android.content.SharedPreferences}.
+     * @param version New value that will be set.
+     */
+    public static void saveAppVersion(final Context context, int version) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        sp.edit().putInt(PREF_APP_VERSION, version).apply();
+    }
+
+    /**
+     * Fetch the most recent app version {@code version}.
+     *
+     * @param context Context to be used to edit the {@link android.content.SharedPreferences}.
+     */
+    public static int fetchAppVersion(final Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getInt(PREF_APP_VERSION, BuildConfig.VERSION_CODE);
     }
 
     /**

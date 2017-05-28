@@ -58,6 +58,8 @@ public final class Config {
     public static final String SERVER_URL_DEFAULT = "none";
     public static final String SERVER_URL_DEVELOPMENT = "http://192.168.1.117:8080";
 
+    public static final int DATABASE_VERSION = 2;
+
     // Alarm event for sampling when battery has not changed for
     // SAMPLE_INTERVAL_MS. Currently not used.
     public static final String ACTION_GREENHUB_SAMPLE = "com.hmatalonga.greenhub.ACTION_SAMPLE";

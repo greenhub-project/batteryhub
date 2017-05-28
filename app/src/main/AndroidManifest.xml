@@ -59,8 +59,6 @@
         android:theme="@style/Theme.GreenHub">
 
         <meta-data android:name="AA_DB_NAME" android:value="GreenHub.db" />
-        <meta-data android:name="AA_DB_VERSION" android:value="1" />
-
         <activity
             android:name=".ui.SplashActivity"
             android:theme="@style/Theme.GreenHub.Splash">
