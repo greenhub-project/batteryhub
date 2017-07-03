@@ -1,11 +1,17 @@
 apply plugin: 'com.android.application'
 apply plugin: 'realm-android'
 
-def keystorePropertiesFile = rootProject.file("keystore.properties")
-// Initialize a new Properties() object called keystoreProperties.
-def keystoreProperties = new Properties()
-// Load your keystore.properties file into the keystoreProperties object.
-keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+def localmachine = ! hasProperty('TRAVIS')
+def keystorePropertiesFile = null
+def keystoreProperties = null
+
+if (localmachine) {
+    keystorePropertiesFile = rootProject.file("keystore.properties")
+    // Initialize a new Properties() object called keystoreProperties.
+    keystoreProperties = new Properties()
+    // Load your keystore.properties file into the keystoreProperties object.
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
 
 android {
     compileSdkVersion 25
@@ -14,14 +20,14 @@ android {
         debug {
             keyAlias 'GreenHubKey'
             keyPassword 'greenhub'
-            storeFile file('greenhub-key-debug.jks')
+            storeFile file('greenhub-key.jks')
             storePassword 'greenhub'
         }
         release {
-            keyAlias keystoreProperties['keyAlias']
-            keyPassword keystoreProperties['keyPassword']
-            storeFile file(keystoreProperties['storeFile'])
-            storePassword keystoreProperties['storePassword']
+            keyAlias localmachine ? keystoreProperties['keyAlias'] : ''
+            keyPassword localmachine ? keystoreProperties['keyPassword'] : ''
+            storeFile localmachine ? file(keystoreProperties['storeFile']) : ''
+            storePassword localmachine ? keystoreProperties['storePassword'] : ''
         }
     }
     defaultConfig {

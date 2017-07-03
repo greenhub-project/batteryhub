@@ -64,7 +64,11 @@ public class SettingsActivity extends BaseActivity {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.preferences);
 
-            findPreference(SettingsUtils.PREF_APP_VERSION).setSummary(BuildConfig.VERSION_NAME);
+            String versionName = BuildConfig.DEBUG ?
+                    BuildConfig.VERSION_NAME + " (Debug)" :
+                    BuildConfig.VERSION_NAME;
+
+            findPreference(SettingsUtils.PREF_APP_VERSION).setSummary(versionName);
 
             bindPreferenceSummaryToValue(findPreference(SettingsUtils.PREF_DATA_HISTORY));
             bindPreferenceSummaryToValue(findPreference(SettingsUtils.PREF_UPLOAD_RATE));

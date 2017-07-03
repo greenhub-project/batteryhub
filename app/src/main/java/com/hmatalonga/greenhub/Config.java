@@ -56,7 +56,7 @@ public final class Config {
 
     public static final String SERVER_STATUS_URL = "http://hmatalonga.com/";
     public static final String SERVER_URL_DEFAULT = "none";
-    public static final String SERVER_URL_DEVELOPMENT = "http://192.168.1.117:8080";
+    public static final String SERVER_URL_DEVELOPMENT = "http://192.168.1.105:8080";
 
     public static final int DATABASE_VERSION = 2;
 
