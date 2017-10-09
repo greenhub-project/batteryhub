@@ -16,5 +16,5 @@
   -->
 
 <resources>
-    <string name="eula_legal_text">Your use of this application is governed by:\n\na) GreenHub\'s Privacy Policy (https://goo.gl/dZvxjf).\n\nGreenHub\'s privacy policies may be updated from time to time and without notice.\n\nThis application collects certain information as you use it. GreenHub\'s Privacy Policy explains how GreenHub treats your information and protects your privacy when you use the application. By using the application, you agree to the use of your data in accordance with GreenHub\'s Privacy Policy.</string>
+    <string name="eula_legal_text">Your use of this application is governed by:\n\na) GreenHub\'s Privacy Policy (https://goo.gl/DuQVzE).\n\nGreenHub\'s privacy policies may be updated from time to time and without notice.\n\nThis application collects certain information as you use it. GreenHub\'s Privacy Policy explains how GreenHub treats your information and protects your privacy when you use the application. By using the application, you agree to the use of your data in accordance with GreenHub\'s Privacy Policy.</string>
 </resources>

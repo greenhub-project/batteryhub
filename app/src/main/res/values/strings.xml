@@ -107,6 +107,7 @@
     <string name="pref_header_sampling">Sampling</string>
     <string name="pref_header_upload">Uploads</string>
     <string name="pref_header_notifications">Notifications</string>
+    <string name="pref_header_task_manager">Task Manager</string>
     <string name="pref_header_about">About</string>
 
     <string name="pref_title_sampling_screen">Track screen events</string>
@@ -130,6 +131,8 @@
     <string name="pref_description_message_alerts">Show incoming messages notifications</string>
 
     <string name="pref_title_priority">Priority</string>
+
+    <string name="pref_title_system_apps">Hide system apps</string>
 
     <string name="pref_title_version">App Version</string>
 

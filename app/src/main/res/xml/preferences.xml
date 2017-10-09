@@ -90,6 +90,17 @@
     </PreferenceCategory>
 
     <PreferenceCategory
+        android:title="@string/pref_header_task_manager"
+        android:key="about_header">
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="pref_system_apps"
+            android:title="@string/pref_title_system_apps"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
         android:title="@string/pref_header_about"
         android:key="about_header">
 
@@ -102,7 +113,7 @@
             android:title="@string/pref_title_privacy">
 
             <intent android:action="android.intent.action.VIEW"
-                android:data="http://hmatalonga.com/greenhub/privacy.html" />
+                android:data="http://greenhub.hmatalonga.com/privacy/" />
 
         </Preference>
 
