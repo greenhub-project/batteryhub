@@ -5,13 +5,17 @@ apply plugin: 'io.fabric'
 // Check if is running locally or on Travis CI
 def runningOnLocalMachine = ! hasProperty('TRAVIS')
 
+println "Running on local machine -> $runningOnLocalMachine"
+
 // Initialize a new Properties() object called keystoreProperties.
 def keystoreProperties = new Properties()
 
 // Check if is running locally then load keystore file for release build config
 if (runningOnLocalMachine) {
     // Load your keystore.properties file into the keystoreProperties object.
-    keystoreProperties.load(new FileInputStream(rootProject.file('keystore.properties')))
+    if (rootProject.file('keystore.properties').exists()) {
+        keystoreProperties.load(new FileInputStream(rootProject.file('keystore.properties')))
+    }
 }
 
 android {
