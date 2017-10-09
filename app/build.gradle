@@ -3,7 +3,7 @@ apply plugin: 'realm-android'
 apply plugin: 'io.fabric'
 
 // Check if is running locally or on Travis CI
-def runningOnLocalMachine = ! hasProperty('TRAVIS')
+def runningOnLocalMachine = ! System.env.TRAVIS
 
 println "Running on local machine -> $runningOnLocalMachine"
 
