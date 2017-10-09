@@ -25,6 +25,6 @@ import retrofit2.http.GET;
  */
 
 public interface GreenHubStatusService {
-    @GET("greenhub/status.json")
+    @GET("status.json")
     Call<ServerStatus> getStatus();
 }

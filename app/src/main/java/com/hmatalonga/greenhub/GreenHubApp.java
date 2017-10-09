@@ -22,19 +22,19 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Handler;
 import android.os.SystemClock;
+import android.util.Log;
 
+import com.crashlytics.android.Crashlytics;
 import com.hmatalonga.greenhub.managers.sampling.DataEstimator;
 import com.hmatalonga.greenhub.receivers.NotificationReceiver;
 import com.hmatalonga.greenhub.tasks.DeleteSessionsTask;
 import com.hmatalonga.greenhub.tasks.DeleteUsagesTask;
 import com.hmatalonga.greenhub.util.LogUtils;
-import com.hmatalonga.greenhub.util.Notifier;
 import com.hmatalonga.greenhub.util.SettingsUtils;
 
+import io.fabric.sdk.android.Fabric;
 import io.realm.DynamicRealm;
-import io.realm.FieldAttribute;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmMigration;
@@ -62,11 +62,15 @@ public class GreenHubApp extends Application {
     public void onCreate() {
         super.onCreate();
 
+        // If running debug mode, enable logs
         if (BuildConfig.DEBUG) {
             LogUtils.LOGGING_ENABLED = true;
         }
 
         LOGI(TAG, "onCreate() called");
+
+        // Init crash reports
+        Fabric.with(this, new Crashlytics());
 
         // Database init
         Realm.init(this);
@@ -169,6 +173,14 @@ public class GreenHubApp extends Application {
                 if (oldVersion == 1) {
                     schema.get("Sample")
                             .addField("version", int.class);
+                    oldVersion++;
+                }
+
+                if (oldVersion == 2) {
+                    schema.get("Device")
+                            .removeField("serialNumber");
+                    schema.get("Sample")
+                            .addField("database", int.class);
                 }
             }
         };

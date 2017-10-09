@@ -68,6 +68,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.hmatalonga.greenhub.BuildConfig;
 import com.hmatalonga.greenhub.Config;
 import com.hmatalonga.greenhub.events.StatusEvent;
 import com.hmatalonga.greenhub.models.Application;
@@ -404,7 +405,8 @@ public final class Inspector {
         newSample.triggeredBy = action;
         newSample.timestamp = System.currentTimeMillis();
         newSample.id = String.valueOf(newSample.timestamp).hashCode();
-        newSample.version = SettingsUtils.fetchAppVersion(context);
+        newSample.version = BuildConfig.VERSION_CODE;
+        newSample.database = Config.DATABASE_VERSION;
 
         // Record first data point for CPU usage
         long[] idleAndCpu1 = Cpu.readUsagePoint();

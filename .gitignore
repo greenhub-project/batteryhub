@@ -57,3 +57,4 @@ app/pepk.jar
 app/upload_certificate.pem
 app/greenhub-private-key.keystore
 app/greenhub-upload.jks
+google-services.json.enc

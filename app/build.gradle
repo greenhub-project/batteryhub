@@ -1,36 +1,50 @@
 apply plugin: 'com.android.application'
 apply plugin: 'realm-android'
+apply plugin: 'io.fabric'
 
-def keystorePropertiesFile = rootProject.file("keystore.properties")
+// Check if is running locally or on Travis CI
+def runningOnLocalMachine = ! System.env.TRAVIS
+
+println "Running on local machine -> $runningOnLocalMachine"
+
 // Initialize a new Properties() object called keystoreProperties.
 def keystoreProperties = new Properties()
-// Load your keystore.properties file into the keystoreProperties object.
-keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
+// Check if is running locally then load keystore file for release build config
+if (runningOnLocalMachine) {
+    // Load your keystore.properties file into the keystoreProperties object.
+    if (rootProject.file('keystore.properties').exists()) {
+        keystoreProperties.load(new FileInputStream(rootProject.file('keystore.properties')))
+    }
+}
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion '25.0.3'
+    compileSdkVersion project.compileSdkVersion.toInteger()
+    buildToolsVersion project.buildToolsVersion
     signingConfigs {
         debug {
-            keyAlias 'GreenHubKey'
-            keyPassword 'greenhub'
-            storeFile file('greenhub-key-debug.jks')
-            storePassword 'greenhub'
+            // Explicit debug key for Travis CI automation
+            keyAlias 'GreenHubDebugKey'
+            keyPassword 'greenhub_debug'
+            storeFile file('greenhub-debug.jks')
+            storePassword 'greenhub_debug'
         }
         release {
-            keyAlias keystoreProperties['keyAlias']
-            keyPassword keystoreProperties['keyPassword']
-            storeFile file(keystoreProperties['storeFile'])
-            storePassword keystoreProperties['storePassword']
+            if (runningOnLocalMachine) {
+                keyAlias keystoreProperties['keyAlias']
+                keyPassword keystoreProperties['keyPassword']
+                storeFile file(keystoreProperties['storeFile'])
+                storePassword keystoreProperties['storePassword']
+            }
         }
     }
     defaultConfig {
         applicationId 'com.hmatalonga.greenhub'
-        minSdkVersion 16
-        targetSdkVersion 25
-        versionCode 10
-        versionName 'v1.0-RC.1'
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        minSdkVersion project.minSdkVersion.toInteger()
+        targetSdkVersion project.targetSdkVersion.toInteger()
+        versionCode project.versionCode.toInteger()
+        versionName project.versionName
+        testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
         signingConfig signingConfigs.debug
     }
     buildTypes {
@@ -67,12 +81,12 @@ dependencies {
     testCompile 'junit:junit:4.12'
     testCompile 'org.mockito:mockito-core:1.10.19'
     // Android support libraries.
-    compile "com.android.support:appcompat-v7:${android_support_lib_version}"
-    compile "com.android.support:design:${android_support_lib_version}"
-    compile "com.android.support:support-v4:${android_support_lib_version}"
-    compile "com.android.support:support-v13:${android_support_lib_version}"
-    compile "com.android.support:cardview-v7:${android_support_lib_version}"
-    compile "com.android.support:recyclerview-v7:${android_support_lib_version}"
+    compile "com.android.support:appcompat-v7:${androidSupportLibVersion}"
+    compile "com.android.support:design:${androidSupportLibVersion}"
+    compile "com.android.support:support-v4:${androidSupportLibVersion}"
+    compile "com.android.support:support-v13:${androidSupportLibVersion}"
+    compile "com.android.support:cardview-v7:${androidSupportLibVersion}"
+    compile "com.android.support:recyclerview-v7:${androidSupportLibVersion}"
     // JSON utility library.
     compile 'com.google.code.gson:gson:2.7'
     // Retrofit library for networking operations
@@ -84,8 +98,8 @@ dependencies {
     compile 'com.github.PhilJay:MPAndroidChart:v3.0.1'
     // Android Processes library
     compile 'com.jaredrummler:android-processes:1.0.9'
-    // Firebase crash
-    compile 'com.google.firebase:firebase-crash:10.0.1'
+    // crashlytics
+    compile('com.crashlytics.sdk.android:crashlytics:2.6.8@aar') {
+        transitive = true;
+    }
 }
-
-apply plugin: 'com.google.gms.google-services'

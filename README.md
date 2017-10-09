@@ -1,4 +1,4 @@
-# GreenHub Android App
+# GreenHub BatteryHub
 
 [![Build Status](https://travis-ci.org/hmatalonga/greenhub.svg?branch=master)](https://travis-ci.org/hmatalonga/greenhub)
 
@@ -6,7 +6,7 @@ GreenHub is a collaborative approach to power consumption analysis of Android de
 
 The GreenHub mobile app is a fork of the Carat Project.
 
-Learn more at [hmatalonga.com/greenhub](http://hmatalonga.com/greenhub).
+Learn more at [greenhub.hmatalonga.com](http://greenhub.hmatalonga.com).
 
 **Disclamer:** The project is still under development, the beta testing is now over. At the moment there is available a release candidate version.
 

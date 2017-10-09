@@ -31,7 +31,7 @@
 
         <ImageView
             android:id="@+id/logo"
-            android:src="@drawable/greenhub_logo"
+            android:src="@drawable/batteryhub_tos"
             android:layout_width="@dimen/welcome_image_width"
             android:layout_height="@dimen/welcome_image_height"
             android:layout_gravity="center"/>

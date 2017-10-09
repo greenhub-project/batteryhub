@@ -49,26 +49,33 @@ public class ServerStatusHandler {
     }
 
     public void callGetStatus(final Context context) {
-        LOGI(TAG, "callGetStatus()");
+        if (Config.DEBUG) {
+            LOGI(TAG, "callGetStatus()");
+        }
+
         Call<ServerStatus> call = mService.getStatus();
         call.enqueue(new Callback<ServerStatus>() {
             @Override
             public void onResponse(Call<ServerStatus> call, Response<ServerStatus> response) {
-                LOGI(TAG, "Server Status: { server: " + response.body().server + ", version: " + response.body().version + " }");
+                if (response != null && response.body() != null) {
+                    if (Config.DEBUG) {
+                        LOGI(TAG, "Server Status: { server: " + response.body().server + ", version: " + response.body().version + " }");
+                    }
 
-                // Server url has changed so it is necessary to register device again
-                if (! SettingsUtils.fetchServerUrl(context).equals(response.body().server)) {
-                    SettingsUtils.markDeviceAccepted(context, false);
-                }
+                    // Server url has changed so it is necessary to register device again
+                    if (! SettingsUtils.fetchServerUrl(context).equals(response.body().server)) {
+                        SettingsUtils.markDeviceAccepted(context, false);
+                    }
 
-                // Save new server url
-                SettingsUtils.saveServerUrl(context, response.body().server);
-                // Save most recent app version
-                SettingsUtils.saveAppVersion(context, response.body().version);
+                    // Save new server url
+                    SettingsUtils.saveServerUrl(context, response.body().server);
+                    // Save most recent app version
+                    SettingsUtils.saveAppVersion(context, response.body().version);
 
-                // Register device on the web server
-                if (! SettingsUtils.isDeviceRegistered(context)) {
-                    new RegisterDeviceTask().execute(context);
+                    // Register device on the web server
+                    if (! SettingsUtils.isDeviceRegistered(context)) {
+                        new RegisterDeviceTask().execute(context);
+                    }
                 }
             }
 

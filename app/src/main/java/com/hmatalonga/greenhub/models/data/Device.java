@@ -37,7 +37,5 @@ public class Device extends RealmObject {
 
     public String kernelVersion;
 
-    public String serialNumber;
-
     public int isRoot;
 }
