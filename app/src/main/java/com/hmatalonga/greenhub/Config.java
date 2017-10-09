@@ -54,11 +54,11 @@ public final class Config {
     public static final boolean DEBUG = true;
     public static final boolean PRODUCTION = false;
 
-    public static final String SERVER_STATUS_URL = "http://hmatalonga.com/";
+    public static final String SERVER_STATUS_URL = "http://greenhub.hmatalonga.com/";
     public static final String SERVER_URL_DEFAULT = "none";
     public static final String SERVER_URL_DEVELOPMENT = "http://192.168.1.105:8080";
 
-    public static final int DATABASE_VERSION = 2;
+    public static final int DATABASE_VERSION = 3;
 
     // Alarm event for sampling when battery has not changed for
     // SAMPLE_INTERVAL_MS. Currently not used.
@@ -105,6 +105,7 @@ public final class Config {
     public static final int NOTIFICATION_TEMPERATURE_WARNING = 1004;
     public static final int NOTIFICATION_TEMPERATURE_HIGH = 1005;
     public static final int NOTIFICATION_MESSAGE_NEW = 1006;
+
 
     public static final int PENDING_REMOVAL_TIMEOUT = 1500; // 1.5s
     public static final int KILL_APP_TIMEOUT = 15000; // 15s

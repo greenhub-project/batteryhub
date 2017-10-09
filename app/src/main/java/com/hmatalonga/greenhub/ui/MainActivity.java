@@ -17,9 +17,11 @@
 package com.hmatalonga.greenhub.ui;
 
 import android.Manifest;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -114,6 +116,13 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
                 startActivity(new Intent(this, SettingsActivity.class));
                 return true;
             case R.id.action_rating:
+                try {
+                    startActivity(new Intent(Intent.ACTION_VIEW,
+                            Uri.parse("market://details?id=com.hmatalonga.greenhub")));
+                } catch (ActivityNotFoundException e) {
+                    startActivity(new Intent(Intent.ACTION_VIEW,
+                            Uri.parse("http://play.google.com/store/apps/details?id=com.hmatalonga.greenhub")));
+                }
                 return true;
         }
 

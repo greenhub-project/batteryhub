@@ -36,9 +36,9 @@ public interface GreenHubAPIService {
     @GET("api/mobile/messages")
     Call<List<JsonObject>> getMessages(@Query("uuid") String uuid, @Query("message") int message);
 
-    @POST("api/mobile/devices")
+    @POST("api/mobile/register")
     Call<Integer> createDevice(@Body Device device);
 
-    @POST("api/mobile/samples")
+    @POST("api/mobile/upload")
     Call<Integer> createSample(@Body Upload upload);
 }

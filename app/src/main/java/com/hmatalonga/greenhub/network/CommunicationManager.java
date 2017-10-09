@@ -203,6 +203,7 @@ public class CommunicationManager {
         root.addProperty("uuId", sample.uuId);
         root.addProperty("timestamp", sample.timestamp);
         root.addProperty("version", sample.version);
+        root.addProperty("database", sample.database);
         root.addProperty("batteryState", sample.batteryState);
         root.addProperty("batteryLevel", sample.batteryLevel);
         root.addProperty("memoryWired", sample.memoryWired);

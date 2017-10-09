@@ -59,6 +59,12 @@
         android:theme="@style/Theme.GreenHub">
 
         <meta-data android:name="AA_DB_NAME" android:value="GreenHub.db" />
+
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="6baa9b9338456a3fa0f937613e68af0ff37412c8"
+            />
+
         <activity
             android:name=".ui.SplashActivity"
             android:theme="@style/Theme.GreenHub.Splash">

@@ -77,7 +77,6 @@ public class RegisterDeviceHandler {
         device.product = Specifications.getProductName();
         device.osVersion = Specifications.getOsVersion();
         device.kernelVersion = Specifications.getKernelVersion();
-        device.serialNumber = Specifications.getBuildSerial();
         device.isRoot = Specifications.isRooted() ? 1 : 0;
 
         callRegistration(device);
@@ -116,6 +115,7 @@ public class RegisterDeviceHandler {
             public void onFailure(Call<Integer> call, Throwable t) {
                 SettingsUtils.markDeviceAccepted(mContext, false);
                 EventBus.getDefault().post(new StatusEvent("Device registration failed!"));
+                LOGI(TAG, t.getMessage());
             }
         });
     }

@@ -5,7 +5,7 @@
     </item>
     <item>
         <bitmap
-            android:src="@drawable/splash_launcher"
+            android:src="@drawable/screen"
             android:tileMode="disabled"
             android:gravity="center"/>
     </item>

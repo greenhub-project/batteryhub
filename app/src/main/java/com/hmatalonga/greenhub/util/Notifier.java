@@ -59,7 +59,7 @@ public class Notifier {
         int now = Battery.getBatteryCurrentNow(context);
         int level = estimator.getLevel();
         String title = "Now: " + now + " mA";
-        String text = "GreenHub is running";
+        String text = "BatteryHub is running";
 
         sBuilder = new NotificationCompat.Builder(context)
                         .setContentTitle(title)
@@ -151,7 +151,7 @@ public class Notifier {
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
                 .setSmallIcon(R.drawable.ic_email_white_24dp)
                 .setContentTitle("You got a new message!")
-                .setContentText("Open your GreenHub inbox to see it.")
+                .setContentText("Open your BatteryHub inbox to see it.")
                 .setAutoCancel(true)
                 .setOngoing(false)
                 .setLights(Color.GREEN, 500, 2000)
