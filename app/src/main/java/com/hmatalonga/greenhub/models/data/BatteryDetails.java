@@ -47,7 +47,7 @@ public class BatteryDetails extends RealmObject {
     // Average battery current in microAmperes
     public int currentAverage;
 
-    // Instantaneous battery current in microAmperes
+    // Instantaneous battery current in milliAmperes
     public int currentNow;
 
     // Battery remaining energy in nanoWatt-hours

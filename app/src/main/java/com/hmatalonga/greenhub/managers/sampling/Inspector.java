@@ -59,15 +59,6 @@ import android.os.BatteryManager;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import org.greenrobot.eventbus.EventBus;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import com.hmatalonga.greenhub.BuildConfig;
 import com.hmatalonga.greenhub.Config;
 import com.hmatalonga.greenhub.events.StatusEvent;
@@ -99,6 +90,17 @@ import com.hmatalonga.greenhub.models.data.ProcessInfo;
 import com.hmatalonga.greenhub.models.data.Sample;
 import com.hmatalonga.greenhub.models.data.Settings;
 import com.hmatalonga.greenhub.util.SettingsUtils;
+
+import org.greenrobot.eventbus.EventBus;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import io.realm.RealmList;
 
 import static com.hmatalonga.greenhub.util.LogUtils.LOGI;
@@ -124,6 +126,7 @@ public final class Inspector {
 
     private static double sCurrentBatteryLevel = 0;
 
+
     // we might not be able to read the current battery level at the first run
     // of GreenHub.
     // so it might be zero until we get the non-zero value from the intent
@@ -133,10 +136,6 @@ public final class Inspector {
      * Library class, prevent instantiation
      */
     private Inspector() {}
-
-    public static double readLastBatteryLevel() {
-        return sLastBatteryLevel;
-    }
 
     public static void setLastBatteryLevel(double level) {
         sLastBatteryLevel = level;
@@ -148,10 +147,6 @@ public final class Inspector {
 
     public static double getCurrentBatteryLevel() {
         return sCurrentBatteryLevel;
-    }
-
-    public static void setCurrentBatteryLevel(double level) {
-        sCurrentBatteryLevel = level;
     }
 
     /**

@@ -51,10 +51,9 @@
 
         <ListPreference
             android:key="pref_upload_rate"
-            android:title="@string/pref_title_rate"
-            android:dependency="pref_auto_upload"
-            android:entries="@array/rate_titles"
-            android:entryValues="@array/rate_values"
+            android:title="@string/pref_title_upload_rate"
+            android:entries="@array/upload_rate_titles"
+            android:entryValues="@array/upload_rate_values"
             android:defaultValue="20"/>
 
     </PreferenceCategory>
@@ -73,6 +72,28 @@
             android:key="pref_battery_alerts"
             android:title="@string/pref_title_battery_alerts"
             android:summary="@string/pref_description_battery_alerts"/>
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:dependency="pref_battery_alerts"
+            android:key="pref_charge_alerts"
+            android:title="@string/pref_title_charge_alerts"
+            android:summary="@string/pref_description_charge_alerts"/>
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:dependency="pref_battery_alerts"
+            android:key="pref_temperature_alerts"
+            android:title="@string/pref_title_temperature_alerts"
+            android:summary="@string/pref_description_temperature_alerts"/>
+
+        <ListPreference
+            android:key="pref_temperature_rate"
+            android:dependency="pref_temperature_alerts"
+            android:title="@string/pref_title_temperature_rate"
+            android:entries="@array/temperature_rate_titles"
+            android:entryValues="@array/temperature_rate_values"
+            android:defaultValue="5"/>
 
         <SwitchPreference
             android:defaultValue="true"

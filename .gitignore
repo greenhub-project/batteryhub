@@ -29,13 +29,10 @@ proguard/
 
 # Android Studio .gitignore default file
 *.iml
-.gradle
-/local.properties
 /.idea/workspace.xml
 /.idea/libraries
 /.idea/copyright
 .DS_Store
-/build
 /captures
 
 # Assets folders

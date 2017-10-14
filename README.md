@@ -1,6 +1,6 @@
 # GreenHub BatteryHub
 
-[![Build Status](https://travis-ci.org/hmatalonga/greenhub.svg?branch=master)](https://travis-ci.org/hmatalonga/greenhub)
+[![Build Status](https://travis-ci.org/greenhub-project/batteryhub.svg?branch=master)](https://travis-ci.org/hmatalonga/greenhub)
 
 GreenHub is a collaborative approach to power consumption analysis of Android devices.
 

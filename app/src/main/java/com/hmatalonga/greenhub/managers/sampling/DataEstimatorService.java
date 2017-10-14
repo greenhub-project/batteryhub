@@ -181,7 +181,8 @@ public class DataEstimatorService extends IntentService {
 
                 boolean isPlugged = 0 != intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, 0);
 
-                if (SettingsUtils.isBatteryAlertsOn(context)) {
+                if (SettingsUtils.isBatteryAlertsOn(context) &&
+                        SettingsUtils.isChargeAlertsOn(context)) {
                     if (Inspector.getCurrentBatteryLevel() == 1 && isPlugged) {
                         Notifier.batteryFullAlert(context);
                     } else if (Inspector.getCurrentBatteryLevel() == Config.BATTERY_LOW_LEVEL) {

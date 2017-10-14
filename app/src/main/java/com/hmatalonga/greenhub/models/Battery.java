@@ -27,6 +27,7 @@ import java.io.RandomAccessFile;
 import java.lang.reflect.Method;
 
 import com.hmatalonga.greenhub.Config;
+import com.hmatalonga.greenhub.util.SettingsUtils;
 
 import static com.hmatalonga.greenhub.util.LogUtils.LOGI;
 import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
@@ -144,6 +145,53 @@ public class Battery {
         }
 
         return (value != Long.MIN_VALUE) ? value : -1;
+    }
+
+    /**
+     * Calculate Average Power
+     * Average Power = (Average Voltage * Average Current) / 1e9
+     *
+     * @param context Context of application
+     * @return Average power in integer
+     */
+    public static int getBatteryAveragePower(final Context context) {
+        int voltage;
+        int current = 0;
+
+        Intent receiver =
+                context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+
+        if (receiver == null) return -1;
+
+        voltage = receiver.getIntExtra(BatteryManager.EXTRA_VOLTAGE, 0);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            BatteryManager manager = (BatteryManager)
+                    context.getSystemService(Context.BATTERY_SERVICE);
+            current = manager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_AVERAGE);
+        }
+
+        return (voltage * current) / 1000000000;
+    }
+
+    /**
+     * Calculate Battery Capacity Consumed
+     * Battery Capacity Consumed = (Average Current * Workload Duration) / 1e3
+     *
+     * @param workload Workload duration (in hours)
+     * @param context Context of application
+     * @return Average power in integer
+     */
+    public static double getBatteryCapacityConsumed(final double workload, final Context context) {
+        int current = 0;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            BatteryManager manager = (BatteryManager)
+                    context.getSystemService(Context.BATTERY_SERVICE);
+            current = manager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_AVERAGE);
+        }
+
+        return (current * workload) / 1000;
     }
 
     private static int getBatteryCurrentNowLegacy() {
