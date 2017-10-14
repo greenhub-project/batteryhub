@@ -7,6 +7,8 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.widget.TextView;
 
 import com.hmatalonga.greenhub.R;
 import com.hmatalonga.greenhub.events.OpenMessageEvent;
@@ -26,6 +28,8 @@ public class InboxActivity extends BaseActivity {
 
     private RecyclerView mRecyclerView;
 
+    private TextView mNoMessagesTextView;
+
     private MessageAdapter mAdapter;
 
     private ArrayList<Message> mMessages;
@@ -43,6 +47,7 @@ public class InboxActivity extends BaseActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
+        mNoMessagesTextView = (TextView) findViewById(R.id.no_messages_view);
         mRecyclerView = (RecyclerView) findViewById(R.id.rv);
         mAdapter = null;
 
@@ -117,5 +122,14 @@ public class InboxActivity extends BaseActivity {
             mAdapter.swap(mMessages);
         }
         mRecyclerView.invalidate();
+
+        if (mMessages.isEmpty()) {
+            mRecyclerView.setVisibility(View.GONE);
+            mNoMessagesTextView.setVisibility(View.VISIBLE);
+        }
+        else {
+            mRecyclerView.setVisibility(View.VISIBLE);
+            mNoMessagesTextView.setVisibility(View.GONE);
+        }
     }
 }

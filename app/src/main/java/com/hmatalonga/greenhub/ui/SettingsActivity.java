@@ -72,6 +72,7 @@ public class SettingsActivity extends BaseActivity {
 
             bindPreferenceSummaryToValue(findPreference(SettingsUtils.PREF_DATA_HISTORY));
             bindPreferenceSummaryToValue(findPreference(SettingsUtils.PREF_UPLOAD_RATE));
+            bindPreferenceSummaryToValue(findPreference(SettingsUtils.PREF_TEMPERATURE_RATE));
             bindPreferenceSummaryToValue(findPreference(SettingsUtils.PREF_NOTIFICATIONS_PRIORITY));
 
             SettingsUtils.registerOnSharedPreferenceChangeListener(getActivity(), this);
@@ -113,6 +114,9 @@ public class SettingsActivity extends BaseActivity {
                         Notifier.closeStatusBar();
                         app.stopStatusBarUpdater();
                     }
+                    break;
+                case SettingsUtils.PREF_TEMPERATURE_RATE:
+                    bindPreferenceSummaryToValue(findPreference(SettingsUtils.PREF_TEMPERATURE_RATE));
                     break;
                 case SettingsUtils.PREF_NOTIFICATIONS_PRIORITY:
                     bindPreferenceSummaryToValue(findPreference(SettingsUtils.PREF_NOTIFICATIONS_PRIORITY));

@@ -77,7 +77,7 @@ public class ConnectivityReceiver extends BroadcastReceiver {
                     new CheckNewMessagesTask().execute(context);
                 }
 
-                if (CommunicationManager.isQueued) {
+                if (CommunicationManager.isQueued && SettingsUtils.isServerUrlPresent(context)) {
                     CommunicationManager manager = new CommunicationManager(context, true);
                     manager.sendSamples();
                     CommunicationManager.isQueued = false;

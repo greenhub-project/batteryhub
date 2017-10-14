@@ -21,6 +21,7 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -78,6 +79,15 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
         LOGI(TAG, "onCreate() called");
 
         loadComponents();
+
+        Intent intentFromNotifier = getIntent();
+
+        if (intentFromNotifier != null) {
+            int tab = intentFromNotifier.getIntExtra("tab", -1);
+            if (tab != -1) {
+                mViewPager.setCurrentItem(tab);
+            }
+        }
     }
 
     @Override
@@ -110,7 +120,16 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
                 startActivity(new Intent(this, InboxActivity.class));
                 return true;
             case R.id.action_summary:
-                startActivity(new Intent(Intent.ACTION_POWER_USAGE_SUMMARY));
+                try {
+                    Intent powerSummary = new Intent(Intent.ACTION_POWER_USAGE_SUMMARY);
+                    ResolveInfo resolveInfo = getPackageManager().resolveActivity(powerSummary, 0);
+                    if (resolveInfo != null) {
+                        startActivity(powerSummary);
+                    }
+                    // TODO: else show dialog
+                } catch (ActivityNotFoundException e) {
+                    e.printStackTrace();
+                }
                 return true;
             case R.id.action_settings:
                 startActivity(new Intent(this, SettingsActivity.class));

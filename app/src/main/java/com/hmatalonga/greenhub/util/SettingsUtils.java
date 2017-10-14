@@ -33,6 +33,8 @@ public class SettingsUtils {
 
     private static final String TAG = "SettingsUtils";
 
+    // region Preferences Declarations
+
     /**
      * Boolean indicating whether ToS has been accepted.
      */
@@ -82,6 +84,22 @@ public class SettingsUtils {
      */
     public static final String PREF_BATTERY_ALERTS = "pref_battery_alerts";
     /**
+     * Boolean indicating whether to display battery charging/level alerts.
+     */
+    public static final String PREF_CHARGE_ALERTS = "pref_charge_alerts";
+    /**
+     * Boolean indicating whether to display battery temperature alerts.
+     */
+    public static final String PREF_TEMPERATURE_ALERTS = "pref_temperature_alerts";
+    /**
+     * Integer indicating which temperature interval rate to use.
+     */
+    public static final String PREF_TEMPERATURE_RATE = "pref_temperature_rate";
+    /**
+     * Long integer indicating when was send the last battery temperature alert.
+     */
+    public static final String PREF_LAST_TEMPERATURE_ALERT = "pref_last_temperature_alert";
+    /**
      * Boolean indicating whether to display battery alerts.
      */
     public static final String PREF_MESSAGE_ALERTS = "pref_message_alerts";
@@ -97,6 +115,12 @@ public class SettingsUtils {
      * Boolean indicating whether to hide system apps or not.
      */
     public static final String PREF_HIDE_SYSTEM_APPS = "pref_system_apps";
+    /**
+     * Boolean indicating whether to use the old measurement or not.
+     */
+    public static final String PREF_USE_OLD_MEASUREMENT = "pref_old_measurement";
+
+    // endregion
 
     /**
      * Return true if user has accepted the
@@ -252,6 +276,54 @@ public class SettingsUtils {
     }
 
     /**
+     * Return true if charge related alerts are to be shown, false if hidden.
+     *
+     * @param context Context to be used to lookup the {@link android.content.SharedPreferences}.
+     */
+    public static boolean isChargeAlertsOn(final Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getBoolean(PREF_CHARGE_ALERTS, true);
+    }
+
+    /**
+     * Return true if temperature related alerts are to be shown, false if hidden.
+     *
+     * @param context Context to be used to lookup the {@link android.content.SharedPreferences}.
+     */
+    public static boolean isTemperatureAlertsOn(final Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getBoolean(PREF_TEMPERATURE_ALERTS, true);
+    }
+
+    public static int fetchTemperatureAlertsRate(final Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return Integer.parseInt(
+                sp.getString(PREF_TEMPERATURE_RATE, Config.NOTIFICATION_DEFAULT_TEMPERATURE_RATE)
+        );
+    }
+
+    /**
+     * Save the new last time of battery temperature alert.
+     *
+     * @param context Context to be used to edit the {@link android.content.SharedPreferences}.
+     * @param time New value that will be set.
+     */
+    public static void saveLastTemperatureAlertDate(final Context context, long time) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        sp.edit().putLong(PREF_LAST_TEMPERATURE_ALERT, time).apply();
+    }
+
+    /**
+     * Return the time in millis of the last battery temperature alert
+     *
+     * @param context Context to be used to lookup the {@link android.content.SharedPreferences}.
+     */
+    public static long fetchLastTemperatureAlertDate(final Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getLong(PREF_LAST_TEMPERATURE_ALERT, 0);
+    }
+
+    /**
      * Return true if message alerts are to be shown, false if hidden.
      *
      * @param context Context to be used to lookup the {@link android.content.SharedPreferences}.
@@ -304,6 +376,26 @@ public class SettingsUtils {
     }
 
     /**
+     * Return true if old measurement method is being used, false if it isn't.
+     *
+     * @param context Context to be used to lookup the {@link android.content.SharedPreferences}.
+     */
+    public static boolean isOldMeasurementUsed(final Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getBoolean(PREF_USE_OLD_MEASUREMENT, false);
+    }
+    /**
+     * Mark {@code newValue whether} old measurement method to be used.
+     *
+     * @param context Context to be used to edit the {@link android.content.SharedPreferences}.
+     * @param newValue New value that will be set.
+     */
+    public static void markOldMeasurementUsed(final Context context, boolean newValue) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        sp.edit().putBoolean(PREF_USE_OLD_MEASUREMENT, newValue).apply();
+    }
+
+    /**
      * Save the most recent app version {@code version}.
      *
      * @param context Context to be used to edit the {@link android.content.SharedPreferences}.
@@ -323,6 +415,8 @@ public class SettingsUtils {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         return sp.getInt(PREF_APP_VERSION, BuildConfig.VERSION_CODE);
     }
+
+    // region Listeners
 
     /**
      * Helper method to register a settings_prefs listener. This method does not automatically handle
@@ -350,4 +444,6 @@ public class SettingsUtils {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         sp.unregisterOnSharedPreferenceChangeListener(listener);
     }
+
+    // endregion
 }

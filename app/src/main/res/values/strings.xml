@@ -50,6 +50,8 @@
 
     <string name="alert_no_connectivity">No Internet connectivity.</string>
 
+    <string name="inbox_no_messages">There are no messages at the moment</string>
+
     <string name="dialog_message_title">Delete message</string>
     <string name="dialog_message_text">Are you sure that you want to delete this message permanently?</string>
 
@@ -112,6 +114,8 @@
 
     <string name="pref_title_sampling_screen">Track screen events</string>
     <string name="pref_description_sampling_screen">Save data on screen on/off</string>
+    <string name="pref_title_old_measurement">Use old measurement method</string>
+    <string name="pref_description_old_measurement">Try this, if current now value is 0 all the time</string>
 
     <string name="pref_title_data_history">Data history</string>
 
@@ -120,12 +124,20 @@
     <string name="pref_title_mobile_data">Use mobile data</string>
     <string name="pref_description_mobile_data">Upload with cellular data</string>
 
-    <string name="pref_title_rate">Uploading rate</string>
+    <string name="pref_title_upload_rate">Uploading rate</string>
 
     <string name="pref_title_power_indicator">Power indicator</string>
 
     <string name="pref_title_battery_alerts">Battery alerts</string>
     <string name="pref_description_battery_alerts">Show charging and temperature alerts</string>
+
+    <string name="pref_title_charge_alerts">Charging/Discharging alerts</string>
+    <string name="pref_description_charge_alerts">Show battery charge related alerts</string>
+
+    <string name="pref_title_temperature_alerts">Temperature alerts</string>
+    <string name="pref_description_temperature_alerts">Show battery temperature alerts</string>
+
+    <string name="pref_title_temperature_rate">Temperature alerts rate</string>
 
     <string name="pref_title_message_alerts">New message alerts</string>
     <string name="pref_description_message_alerts">Show incoming messages notifications</string>

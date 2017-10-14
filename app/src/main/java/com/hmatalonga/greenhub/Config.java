@@ -52,7 +52,6 @@ package com.hmatalonga.greenhub;
 public final class Config {
     // Whether to output debug messages.
     public static final boolean DEBUG = true;
-    public static final boolean PRODUCTION = false;
 
     public static final String SERVER_STATUS_URL = "http://greenhub.hmatalonga.com/";
     public static final String SERVER_URL_DEFAULT = "none";
@@ -90,7 +89,11 @@ public final class Config {
     public static final int REFRESH_STATUS_BAR_INTERVAL = REFRESH_CURRENT_INTERVAL * 6;
     public static final int REFRESH_STATUS_ERROR = REFRESH_CURRENT_INTERVAL * 2;
 
+    public static final String NOTIFICATION_DEFAULT_TEMPERATURE_RATE = "5";
     public static final double BATTERY_LOW_LEVEL = 0.2;
+    public static final int BATTERY_TEMPERATURE_MEDIUM = 35;
+    public static final int BATTERY_TEMPERATURE_HIGH = 45;
+
 
     public static final String STATUS_IDLE = "Idle";
 

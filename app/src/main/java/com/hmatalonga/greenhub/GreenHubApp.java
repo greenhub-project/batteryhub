@@ -40,6 +40,7 @@ import io.realm.RealmConfiguration;
 import io.realm.RealmMigration;
 import io.realm.RealmSchema;
 
+import static com.hmatalonga.greenhub.util.LogUtils.LOGE;
 import static com.hmatalonga.greenhub.util.LogUtils.LOGI;
 import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
 
@@ -131,9 +132,14 @@ public class GreenHubApp extends Application {
     }
 
     public void stopGreenHubService() {
-        if (estimator != null) {
-            unregisterReceiver(estimator);
-            isServiceRunning = false;
+        try {
+            if (estimator != null) {
+                unregisterReceiver(estimator);
+                isServiceRunning = false;
+            }
+        } catch (IllegalArgumentException e) {
+            LOGE(TAG, "Estimator receiver is not registered!");
+            e.printStackTrace();
         }
     }
 

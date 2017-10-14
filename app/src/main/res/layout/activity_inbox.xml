@@ -26,7 +26,15 @@
             android:layout_width="match_parent"
             android:id="@+id/rv">
         </android.support.v7.widget.RecyclerView>
-
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/no_messages_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:visibility="gone"
+        android:text="@string/inbox_no_messages" />
+
 
 </android.support.design.widget.CoordinatorLayout>
