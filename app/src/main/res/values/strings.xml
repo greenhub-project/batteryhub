@@ -21,6 +21,9 @@
     <string name="decline">Decline</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="not_available">Not available</string>
 
     <!-- Short text welcoming the user to the application -->
     <string name="welcome_to_greenhub_app">Welcome to the BatteryHub app!</string>
@@ -65,6 +68,12 @@
     <string name="device_summary_cpu_label">CPU</string>
     <string name="device_summary_memory_label">Memory usage</string>
     <string name="device_summary_network_label">Network</string>
+
+    <string name="card_no_value">#####</string>
+
+    <string name="device_card_title">Device</string>
+    <string name="device_card_android">Android</string>
+    <string name="device_card_model">Model</string>
 
     <!-- AboutFragment -->
     <string name="about_general_text">BatteryHub is a research project of the University of Beira

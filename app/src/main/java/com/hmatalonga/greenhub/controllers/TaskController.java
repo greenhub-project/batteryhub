@@ -71,7 +71,8 @@ public class TaskController {
     private List<Task> getRunningTasksStandard() {
         List<Task> tasks = new ArrayList<>();
         List<AndroidAppProcess> list = AndroidProcesses.getRunningAppProcesses();
-        long now = System.currentTimeMillis();
+
+        if (list == null) return tasks;
 
         for (AndroidAppProcess process : list) {
             /** Exclude the app itself from the list */
@@ -79,13 +80,18 @@ public class TaskController {
 
             PackageInfo packageInfo = getPackageInfo(process, 0);
 
+            if (packageInfo == null) continue;
+
             /** Remove system apps if necessary */
             if (isSystemApp(packageInfo) && SettingsUtils.isSystemAppsHidden(mContext)){
                 continue;
             }
 
             /** Remove apps without label */
+            if (packageInfo.applicationInfo == null) continue;
+
             String appLabel = packageInfo.applicationInfo.loadLabel(mPackageManager).toString();
+
             if (appLabel.isEmpty()) continue;
 
             Task task = getTaskByUid(tasks, process.uid);
@@ -105,13 +111,15 @@ public class TaskController {
             }
         }
 
-        // Dirty quick sorting
-        Collections.sort(tasks, new Comparator<Task>() {
-            @Override
-            public int compare(Task t1, Task t2) {
-                return t1.getLabel().compareTo(t2.getLabel());
-            }
-        });
+        if (! tasks.isEmpty()) {
+            // Dirty quick sorting
+            Collections.sort(tasks, new Comparator<Task>() {
+                @Override
+                public int compare(Task t1, Task t2) {
+                    return t1.getLabel().compareTo(t2.getLabel());
+                }
+            });
+        }
 
         return tasks;
     }

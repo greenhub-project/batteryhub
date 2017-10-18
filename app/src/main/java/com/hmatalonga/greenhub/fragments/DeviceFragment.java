@@ -126,9 +126,10 @@ public class DeviceFragment extends Fragment {
         textView.setText(model);
         textView = (TextView) view.findViewById(R.id.androidImei);
         value = Phone.getDeviceId(mContext);
-        textView.setText(value == null ? "not available" : value);
+        textView.setText(value == null ? getString(R.string.not_available) : value);
         textView = (TextView) view.findViewById(R.id.androidRoot);
-        textView.setText(Specifications.isRooted() ? "Yes" : "No");
+        textView.setText(Specifications.isRooted() ?
+                getString(R.string.yes) : getString(R.string.no));
 
         // Network
         updateWifiData(view, Wifi.isEnabled(mContext));
@@ -176,7 +177,7 @@ public class DeviceFragment extends Fragment {
         TextView textView;
 
         textView = (TextView) view.findViewById(R.id.wifi);
-        textView.setText(value ? "Yes" : "No");
+        textView.setText(value ? getString(R.string.yes) : getString(R.string.no));
 
         // Display/Hide Additional Wifi fields
         textView = (TextView) view.findViewById(R.id.ipAddressLabel);
@@ -214,7 +215,7 @@ public class DeviceFragment extends Fragment {
         TextView textView;
 
         textView = (TextView) view.findViewById(R.id.bluetooth);
-        textView.setText(value ? "Yes" : "No");
+        textView.setText(value ? getString(R.string.yes) : getString(R.string.no));
 
         // Bluetooth Address
         textView = (TextView) view.findViewById(R.id.bluetoothAddress);
@@ -231,7 +232,7 @@ public class DeviceFragment extends Fragment {
         TextView textView;
 
         textView = (TextView) view.findViewById(R.id.mobileData);
-        textView.setText(value ? "Yes" : "No");
+        textView.setText(value ? getString(R.string.yes) : getString(R.string.no));
 
         // Bluetooth Address
         textView = (TextView) view.findViewById(R.id.networkType);

@@ -1,0 +1,162 @@
+<!--
+  ~ Copyright (c) 2017 Hugo Matalonga & João Paulo Fernandes
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<resources>
+    <string name="app_name">BatteryHub</string>
+
+    <string name="accept">Aceitar</string>
+    <string name="decline">Rejeitar</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancelar</string>
+
+    <!-- Short text welcoming the user to the application -->
+    <string name="welcome_to_greenhub_app">Bemvindo ao BatteryHub!</string>
+
+    <!-- Medium-length welcome text indicating the subsequent text is important legal information -->
+    <string name="welcome_text">Antes de começar, aqui estão algumas informações importantes sobre como usar esta app. Apenas demorará um minuto!</string>
+
+    <string name="action_inbox">Mensagens</string>
+    <string name="action_summary">Resumo</string>
+    <string name="action_settings">Preferências</string>
+    <string name="action_rating">Avalie esta App</string>
+    <string name="action_24h">24h</string>
+    <string name="action_3days">3 dias</string>
+    <string name="action_5days">5 dias</string>
+
+    <string name="title_activity_splash">SplashActivity</string>
+
+    <string name="title_activity_settings">Preferências</string>
+    <string name="title_activity_process">Processos a correr</string>
+    <string name="title_activity_inbox">Mensagens</string>
+
+    <string name="title_fragment_home">BatteryHub</string>
+    <string name="title_fragment_device">O meu dispositivo</string>
+    <string name="title_fragment_stats">Estatísticas</string>
+    <string name="title_fragment_history">Histórico</string>
+    <string name="title_fragment_about">Sobre</string>
+
+    <string name="alert_no_connectivity">Sem ligação à Internet.</string>
+
+    <string name="inbox_no_messages">Não existem mensagens de momento</string>
+
+    <string name="dialog_message_title">Apagar mensagem</string>
+    <string name="dialog_message_text">Tem a certeza que deseja apagar esta mensagem definitivamente?</string>
+
+    <!-- DeviceFragment -->
+    <string name="device_summary_title">Resumo</string>
+    <string name="device_summary_id_label">BatteryHub ID</string>
+    <string name="device_summary_model_label">Modelo</string>
+    <string name="device_summary_os_label">Versão SO</string>
+    <string name="device_summary_kernel_label">Versão Kernel</string>
+    <string name="device_summary_battery_label">Bateria</string>
+    <string name="device_summary_cpu_label">CPU</string>
+    <string name="device_summary_memory_label">Uso de memória</string>
+    <string name="device_summary_network_label">Rede</string>
+
+    <!-- AboutFragment -->
+    <string name="about_general_text">BatteryHub is a research project of the University of Coimbra.</string>
+    <string name="about_data_text">BatteryHub collects and reports generic usage statistics about
+    your phone that allow it to do its job; this process involves absolutely no personally
+    identifying information.</string>
+
+    <!-- Process List -->
+    <string name="expected">Expected improvement:</string>
+    <string name="killappname">Kill App Name</string>
+    <string name="appname">App Name</string>
+    <string name="priority">Priority:</string>
+    <string name="priorityDefault">Not running</string>
+    <string name="prioritynotrunning">Not running</string>
+    <string name="priorityforeground">Foreground App</string>
+    <string name="prioritybackground">Background App</string>
+    <string name="priorityservice">Service</string>
+    <string name="priorityperceptible">Perceptible App</string>
+    <string name="priorityvisible">Visible App</string>
+    <string name="prioritysuggestion">Suggestion</string>
+
+    <!-- Strings related to ProcessList -->
+    <string name="action_sort_name">Ordenar por nome</string>
+    <string name="action_sort_memory">Ordernar por uso de memória</string>
+
+    <string name="button_undo">DESFAZER</string>
+
+    <string name="kill_app_dialog_text">Parece que este processo não pode ser fechado por apps de terceiros.\n\nDeseja abrir as definições de sistema e forçar a paragem manualmente?</string>
+    <string name="force_close">Forçar paragem</string>
+
+    <string name="package_usage_permission_title">Permissão da App</string>
+    <string name="package_usage_permission_text">Parece que está a correr o Android N or mais recente. É necessário dar uma permissão especial para que o BatteryHub possa trabalhar. Será redireccionado para o menu.</string>
+    <string name="open_settings">Definições</string>
+
+    <string name="auto_startup">Auto-arranque</string>
+    <string name="background_service">Serviço de Background</string>
+
+    <string name="header_status_loading">A carregar apps a correr</string>
+
+    <!-- Strings related to SettingsInfo -->
+    <string name="pref_header_sampling">Amostragem</string>
+    <string name="pref_header_upload">Uploads</string>
+    <string name="pref_header_notifications">Notificações</string>
+    <string name="pref_header_task_manager">Gestor de processos</string>
+    <string name="pref_header_about">Sobre</string>
+
+    <string name="pref_title_sampling_screen">Seguir eventos do ecrã</string>
+    <string name="pref_description_sampling_screen">Guarda informações quando o ecrã liga/desliga</string>
+    <string name="pref_title_old_measurement">Usar antigo método de medição</string>
+    <string name="pref_description_old_measurement">Tente isto, se o valor de agora for sempre 0</string>
+
+    <string name="pref_title_data_history">Histórico de informação</string>
+
+    <string name="pref_title_auto_upload">Uploads automáticos</string>
+
+    <string name="pref_title_mobile_data">Usar dados móveis</string>
+    <string name="pref_description_mobile_data">Fazer upload usando dados móveis</string>
+
+    <string name="pref_title_upload_rate">Frequência de upload</string>
+
+    <string name="pref_title_power_indicator">Indicador de energia</string>
+
+    <string name="pref_title_battery_alerts">Alertas de bateria</string>
+    <string name="pref_description_battery_alerts">Mostra alertas sobre a carga e temperatura</string>
+
+    <string name="pref_title_charge_alerts">Alertas carga/descarga</string>
+    <string name="pref_description_charge_alerts">Mostra alertas relacionados com a carga</string>
+
+    <string name="pref_title_temperature_alerts">Alertas temperatura</string>
+    <string name="pref_description_temperature_alerts">Mostra alertas sobre a temperatura</string>
+
+    <string name="pref_title_temperature_rate">Frequência dos alertas de temperatura</string>
+
+    <string name="pref_title_message_alerts">Alertas novas mensagens</string>
+    <string name="pref_description_message_alerts">Mostra notificações sobre novas mensagens</string>
+
+    <string name="pref_title_priority">Prioridade</string>
+
+    <string name="pref_title_system_apps">Ocultar apps de sistema</string>
+
+    <string name="pref_title_version">Versão da app</string>
+
+    <string name="pref_title_device_id">BatteryHub ID</string>
+
+    <string name="pref_title_rating">Avalie esta App</string>
+
+    <string name="pref_title_privacy">Politíca de Privacidade</string>
+
+    <string name="pref_title_help">Ajuda</string>
+    <string name="pref_description_help">Se o botão de envio de dados não responder, por favor
+        encerre a aplicação e reinicie novamente.</string>
+
+    <!-- Others -->
+    <string name="status_idle">Inativo</string>
+</resources>

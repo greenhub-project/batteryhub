@@ -80,43 +80,48 @@ public class Package {
         List<PackageInfo> packageList = null;
         Map<String, PackageInfo> map;
 
-        if (packages != null && packages.get() != null && packages.get().size() != 0) {
-            if (packages == null) return null;
-            map = packages.get();
-
-            return (map == null || map.size() == 0) ? null : map;
-        }
-
-        map = new HashMap<>();
-        PackageManager manager = context.getPackageManager();
-
-        if (manager == null) return null;
-
         try {
-            if (collectSignatures) {
-                packageList = manager.getInstalledPackages(
-                        PackageManager.GET_SIGNATURES | PackageManager.GET_PERMISSIONS
-                );
-            } else {
-                packageList = manager.getInstalledPackages(0);
+            if (packages != null && packages.get() != null && packages.get().size() != 0) {
+                if (packages == null) return null;
+                map = packages.get();
+
+                return (map == null || map.size() == 0) ? null : map;
             }
-        } catch (Throwable th) {
-            // Forget about it...
-        }
-        if (packageList == null) return null;
 
-        for (PackageInfo info : packageList) {
-            if (info == null ||
-                    info.applicationInfo == null ||
-                    info.applicationInfo.processName == null) {
-                continue;
+            map = new HashMap<>();
+            PackageManager manager = context.getPackageManager();
+
+            if (manager == null) return null;
+
+            try {
+                if (collectSignatures) {
+                    packageList = manager.getInstalledPackages(
+                            PackageManager.GET_SIGNATURES | PackageManager.GET_PERMISSIONS
+                    );
+                } else {
+                    packageList = manager.getInstalledPackages(0);
+                }
+            } catch (Throwable th) {
+                // Forget about it...
             }
-            map.put(info.applicationInfo.processName, info);
+            if (packageList == null) return null;
+
+            for (PackageInfo info : packageList) {
+                if (info == null ||
+                        info.applicationInfo == null ||
+                        info.applicationInfo.processName == null) {
+                    continue;
+                }
+                map.put(info.applicationInfo.processName, info);
+            }
+
+            packages = new WeakReference<>(map);
+
+            return (map.size() == 0) ? null : map;
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+            return null;
         }
-
-        packages = new WeakReference<>(map);
-
-        return (map.size() == 0) ? null : map;
     }
 
     /**

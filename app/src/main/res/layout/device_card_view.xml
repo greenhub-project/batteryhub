@@ -22,8 +22,7 @@
     android:layout_height="wrap_content"
     android:layout_marginBottom="@dimen/spacing_normal"
     app:cardUseCompatPadding="true"
-    android:id="@+id/cv"
-    >
+    android:id="@+id/cv">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -35,7 +34,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="@dimen/padding_normal"
-            android:text="Device"
+            android:text="@string/device_card_title"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             android:textStyle="normal|bold"/>
 
@@ -56,7 +55,7 @@
                 android:id="@+id/androidVersionLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Android"
+                android:text="@string/device_card_android"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
@@ -67,7 +66,7 @@
                 android:id="@+id/androidVersion"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="#####"
+                android:text="@string/card_no_value"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true" />
@@ -91,7 +90,7 @@
                 android:id="@+id/androidModelLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Model"
+                android:text="@string/device_card_model"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
@@ -102,7 +101,7 @@
                 android:id="@+id/androidModel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="#####"
+                android:text="@string/card_no_value"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true" />
