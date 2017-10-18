@@ -2,20 +2,18 @@ apply plugin: 'com.android.application'
 apply plugin: 'realm-android'
 apply plugin: 'io.fabric'
 
-// Check if is running locally or on Travis CI
-def runningOnLocalMachine = ! System.env.TRAVIS
+// Check if can build a release config
+def canBuildRelease = rootProject.file('keystore.properties').exists()
 
-println "Running on local machine -> $runningOnLocalMachine"
+println "Running on Travis -> $System.env.TRAVIS"
 
 // Initialize a new Properties() object called keystoreProperties.
 def keystoreProperties = new Properties()
 
-// Check if is running locally then load keystore file for release build config
-if (runningOnLocalMachine) {
+// Load keystore file for release build config
+if (canBuildRelease) {
     // Load your keystore.properties file into the keystoreProperties object.
-    if (rootProject.file('keystore.properties').exists()) {
-        keystoreProperties.load(new FileInputStream(rootProject.file('keystore.properties')))
-    }
+    keystoreProperties.load(new FileInputStream(rootProject.file('keystore.properties')))
 }
 
 android {
@@ -29,8 +27,8 @@ android {
             storeFile file('greenhub-debug.jks')
             storePassword 'greenhub_debug'
         }
-        release {
-            if (runningOnLocalMachine) {
+        if (canBuildRelease) {
+            release {
                 keyAlias keystoreProperties['keyAlias']
                 keyPassword keystoreProperties['keyPassword']
                 storeFile file(keystoreProperties['storeFile'])
