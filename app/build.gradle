@@ -2,10 +2,10 @@ apply plugin: 'com.android.application'
 apply plugin: 'realm-android'
 apply plugin: 'io.fabric'
 
+apply from: 'checkstyle.gradle'
+
 // Check if can build a release config
 def canBuildRelease = rootProject.file('keystore.properties').exists()
-
-println "Running on Travis -> $System.env.TRAVIS"
 
 // Initialize a new Properties() object called keystoreProperties.
 def keystoreProperties = new Properties()
