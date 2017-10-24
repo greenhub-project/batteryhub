@@ -1,6 +1,7 @@
 # GreenHub BatteryHub
 
 [![Build Status](https://travis-ci.org/greenhub-project/batteryhub.svg?branch=master)](https://travis-ci.org/greenhub-project/batteryhub)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/c87e12f6973248e3bf66f2d34185bdf8)](https://www.codacy.com/app/hmatalonga/batteryhub?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=greenhub-project/batteryhub&amp;utm_campaign=Badge_Grade)
 
 > GreenHub is a collaborative approach to power consumption analysis of Android devices.
 
