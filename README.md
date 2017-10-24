@@ -13,7 +13,9 @@ Learn more at [greenhubproject.org](https://greenhubproject.org).
 ## Build Instructions
 
 ### Gradle
+
 #### Linux and Mac OS:
+
 Make sure `gradlew` is executable, by typing this command:
 ```shell
 $ chmod +x gradlew
@@ -26,6 +28,7 @@ $ ./gradlew check
 ```
 
 #### Windows:
+
 ```shell
 $ gradlew.bat assembleDebug
 $ gradlew.bat check
@@ -33,6 +36,7 @@ $ gradlew.bat check
 
 
 ### Docker
+
 If it is the first time building the Android app with Docker, it is necessary to build a local Docker image before running it. Afterwards just run a container:
 ```shell
 $ docker build -t hmatalonga/greenhub-android . # Only necessary for first build
@@ -65,31 +69,38 @@ docker build -t hmatalonga/greenhub-android . && docker run -it --name greenhub-
 To list all available gradle tasks run `./gradlew tasks`.
 
 #### Need help?
+
 Having problems building GreenHub? Please see the [Troubleshooting guide](https://github.com/greenhub-project/batteryhub/wiki/Troubleshooting).
 
 For more details, please check our [documentation](https://docs.greenhubproject.org).
 
 ## Issues
+
 If you think you have found a bug or have a feature request, refer to the [issues page](https://github.com/greenhub-project/batteryhub/issues), proper labels are provided.
 Before opening a new issue, be sure to search existing ones to avoid duplicates. Please try to include steps to reproduce the problem.
 
 ### Known issues
+
 - Some Android devices don't support current measurement with BatteryManager API. Legacy support is being developed
-- Power Indicator is not working properly see [issue](https://github.com/greenhub-project/batteryhub/issues/40)
+- Power Indicator is not working properly, see [issue](https://github.com/greenhub-project/batteryhub/issues/40)
 
 ## Contributing
+
 Please read through our [contributing guidelines](CONTRIBUTING.md). Included are directions for opening issues, coding standards and development process.
 
 ### Code of Conduct
+
 GreenHub has adopted a code of conduct that we expect project participants to adhere to.
 Please read the [full text](CODE_OF_CONDUCT.md) so that you can understand what actions will and will not be tolerated.
 
 ## License
+
 Copyright (c) 2017 Hugo Matalonga & João Paulo Fernandes.
 
 The code is available under the [Apache 2.0 License](https://opensource.org/licenses/Apache-2.0) unless otherwise stated in the file or by a dependency's license file.
 
 ### Acknowledgments
+
 GreenHub was originally inspired by and has used data definitions from:
 
 - [https://github.com/carat-project/carat-android](https://github.com/carat-project/carat-android) - Copyright (c) 2011-2016, AMP Lab and University
