@@ -1,6 +1,13 @@
-# Contributing
+# How to contribute
 
-// intro
+Want to contribute to BatteryHub? Excellent! We're always happy to have more contributors. Before you start, please take a look at this document. 
+
+The project is under *very active development*. We’re still working out the kinks to make contributing to this project as easy and transparent as possible, but we’re not quite there yet. Hopefully this document makes the process for contributing clear and answers some questions that you may have.
+
+
+### [Code of Conduct](CODE_OF_CONDUCT.md)
+
+The GreenHub project has adopted a Code of Conduct that we expect project participants to adhere to. Please read [the full text](CODE_OF_CONDUCT.md) so that you can understand what actions will and will not be tolerated.
 
 Here's a quick guide to create a pull request for your BatteryHub patch:
 
@@ -10,49 +17,46 @@ Here's a quick guide to create a pull request for your BatteryHub patch:
 
         $ git clone git@github.com:YOUR-GITHUB-USERNAME/batteryhub.git
 
-3. Create a new branch in your git repository (branched from `develop` - see [Notes about branching](#notes-about-branching) below).
+3. Create a new branch in your git repository (branched from `develop` - see [Notes about branching](#branching) below).
 
         $ cd batteryhub/
         $ git checkout develop
         $ git checkout -b issue/123-fix-for-123 # use a better title
 
-4. Setup your build environment (see [build instructions in our README][build-instructions]) and start hacking the project. You must follow our [code style guidelines][style], write good commit messages, comment your code and write automated tests.
+4. Setup your build environment (see [build instructions in our README](README.md#build-instructions)) and start hacking the project. You must follow our [code style guidelines](CODESTYLE.md), write good commit messages, comment your code and write automated tests.
 
-5. When your patch is ready, [submit a pull request][pr]. Add some comments or screen shots to help us.
+5. When your patch is ready, [submit a pull request](https://github.com/greenhub-project/batteryhub/compare/). Add some comments or screen shots to help us.
 
 6. Wait for us to review your pull request. If something is wrong or if we want you to make some changes before the merge, we'll let you know through commit comments or pull request comments.
 
-[build-instructions]: https://github.com/greenhub-project/batteryhub/#build-instructions
-[pr]: https://github.com/greenhub-project/batteryhub/compare/
-[style]: https://github.com/wordpress-mobile/WordPress-Android/blob/develop/CODESTYLE.md
+### Branch Organization
 
-# Versioning
+We will do our best to keep the [`master` branch](https://github.com/greenhub-project/batteryhub/tree/master) in good shape, with tests passing at all times. represents latest version released in the Google Play Store.
 
-* Version `x.y` (2.8 or 4.0 for instance) are major releases. There is no distinction between a 2.9 version or a 3.0 version, we want to avoid naming like 2.142 so the version after `x.9` (2.9) is simply `x+1.0` (3.0). A new major version is released every ~4 weeks.
+- If you send a pull request, please do it against the `master` branch. We maintain stable branches for major versions separately but we don't accept pull requests to them directly. Instead, we cherry-pick non-breaking changes from master to the latest stable major version.
 
-* Version `x.y.z` (2.8.1 or 4.0.2 for instance) are hotfix releases. We release them only when a blocking or major bug is found in the currently released version.
+- `dev` branch represents the cutting edge version. This is probably the one you want to fork from and base your patch on.
 
-# Branching
+- Fix or feature branches. Proposed new features and bug fixes should live in their own branch. Use the following naming convention: `fix-name-of-fix` for fix branches and `feature-name-of-feature` for features.
 
-We use the [git flow branching model][git-flow].
+### Semantic Versioning
 
-* `master` branch represents latest version released in the Google Play Store. HEAD of this branch should be equal to last tagged release.
+BatteryHub follows [semantic versioning](http://semver.org/). We release patch versions for bugfixes, minor versions for new features, and major versions for any breaking changes. When we make breaking changes.
 
-* `develop` branch represents the cutting edge version. This is probably the one you want to fork from and base your patch on. This is the default github branch.
+We release new patch versions every few weeks, minor versions every few months, and major versions are unplanned.
 
-* Version tags. All released versions are tagged and pushed in the repository. For instance if you want to checkout the 2.5.1 version:
+You can read about the changes in the [releases page](https://github.com/greenhub-project/batteryhub/releases).
 
-        $ git checkout 2.5.1
+### Bugs
 
-* Release branches. When a new version is going to be released, we'll branch from `develop` to `release/x.y`. This marks version x.y code freeze. Only blocking or major bug fixes will be merged to these branches. They represent beta and release candidates.
+#### Where to Find Known Issues
 
-* Hotfix branches. When one or several critical issues are found on current released version, we'll branch from `tags/x.y` to `hotfix/x.y.1` (or from `tags/x.y.z` to `hotfix/x.y.z+1` if a hotfix release has already been published)
+We are using [GitHub Issues](https://github.com/greenhub-project/batteryhub/issues) for our public bugs. We keep a close eye on this and try to make it clear when we have an internal fix in progress. Before filing a new task, try to make sure your problem doesn't already exist.
 
-* Fix or feature branches. Proposed new features and bug fixes should live in their own branch. Use the following naming convention: if a github issue exists for this feature/bugfix, the branch will be named `issue/ISSUEID-comment` where ISSUEID is the corresponding github issue id. If a github issue doesn't exist, branch will be named `feature/comment`. These branches will be merged in:
-    * `hotfix/x.y.z` if the change is a fix for a released version,
-    * `release/x.y` if the change is a fix for a beta or release candidate,
-    * `develop` for all other cases.
+### License
 
-Note: `release/x.y` or `hotfix/x.y.z` will be merged back in `master` after a new version is released. A new tag will be created and pushed at the same time.
+By contributing to BatteryHub, you agree that your contributions will be licensed under its Apache 2.0 license.
 
-[git-flow]: http://nvie.com/posts/a-successful-git-branching-model/
+### What Next?
+
+Read the [documentation](https://docs.greenhubproject.org) to learn how the project codebase is organized.
