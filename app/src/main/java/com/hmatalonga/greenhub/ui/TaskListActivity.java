@@ -197,7 +197,7 @@ public class TaskListActivity extends BaseActivity {
                 if (mTaskList.isEmpty()) {
                     Snackbar.make(
                             view,
-                            "No apps running...",
+                            getString(R.string.task_no_apps_running),
                             Snackbar.LENGTH_LONG
                     ).show();
                     return;
@@ -224,10 +224,12 @@ public class TaskListActivity extends BaseActivity {
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     message = (apps > 0) ?
-                            "Killed " + apps + " apps!" : "No apps killed...";
+                            makeMessage(apps) :
+                            getString(R.string.task_no_apps_killed);
                 } else {
                     message = (apps > 0) ?
-                            "Killed " + apps + " apps! Cleared " + memory + " MB" : "No apps killed...";
+                            makeMessage(apps, memory) :
+                            getString(R.string.task_no_apps_killed);
                 }
 
                 Snackbar.make(
@@ -278,6 +280,15 @@ public class TaskListActivity extends BaseActivity {
             });
         }
         mAdapter.notifyDataSetChanged();
+    }
+
+    private String makeMessage(int apps) {
+        return getString(R.string.task_killed) + " " + apps + " apps!";
+    }
+
+    private String makeMessage(int apps, double memory) {
+        return getString(R.string.task_killed) + " " + apps + " apps! " +
+                getString(R.string.task_cleared) + " " + memory + " MB";
     }
 
     private void setupRecyclerView() {
@@ -537,9 +548,10 @@ public class TaskListActivity extends BaseActivity {
         textView = (TextView) findViewById(R.id.usage);
         double memory = getAvailableMemory();
         if (memory > 1000) {
-            text = "Free RAM " + (Math.round(memory / 1024.0 * 100.0) / 100.0) + " GB";
+            text = getString(R.string.task_free_ram) + " " +
+                    (Math.round(memory / 1024.0 * 100.0) / 100.0) + " GB";
         } else {
-            text = "Free RAM " + memory + " MB";
+            text = getString(R.string.task_free_ram) + " " + + memory + " MB";
         }
         textView.setText(text);
     }

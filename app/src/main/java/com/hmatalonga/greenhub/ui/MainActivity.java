@@ -215,7 +215,11 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
 
                 // Check Internet connectivity
                 if (!NetworkWatcher.hasInternet(context, NetworkWatcher.COMMUNICATION_MANAGER)) {
-                    Snackbar.make(view, getString(R.string.alert_no_connectivity), Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(
+                            view,
+                            getString(R.string.event_no_connectivity),
+                            Snackbar.LENGTH_LONG
+                    ).show();
                     CommunicationManager.isQueued = true;
                     return;
                 }
@@ -224,7 +228,7 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
                 if (!SettingsUtils.isServerUrlPresent(context) || !SettingsUtils.isDeviceRegistered(context)) {
                     // Fetch web server status and update them
                     new ServerStatusTask().execute(context);
-                    EventBus.getDefault().post(new StatusEvent("It needs to sync with server. Try again later"));
+                    EventBus.getDefault().post(new StatusEvent(getString(R.string.event_needs_sync)));
                     refreshStatus();
                     return;
                 }
@@ -236,7 +240,7 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
                 if (!CommunicationManager.isUploading) {
                     manager.sendSamples();
                 } else {
-                    EventBus.getDefault().post(new StatusEvent("Upload is already running..."));
+                    EventBus.getDefault().post(new StatusEvent(getString(R.string.event_upload_running)));
                     refreshStatus();
                 }
             }
@@ -286,7 +290,7 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                EventBus.getDefault().post(new StatusEvent(Config.STATUS_IDLE));
+                EventBus.getDefault().post(new StatusEvent(getString(R.string.event_idle)));
             }
         }, Config.REFRESH_STATUS_ERROR);
     }

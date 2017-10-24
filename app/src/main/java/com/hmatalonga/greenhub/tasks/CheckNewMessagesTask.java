@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import com.google.gson.JsonObject;
 import com.hmatalonga.greenhub.BuildConfig;
 import com.hmatalonga.greenhub.Config;
+import com.hmatalonga.greenhub.R;
 import com.hmatalonga.greenhub.events.StatusEvent;
 import com.hmatalonga.greenhub.models.Specifications;
 import com.hmatalonga.greenhub.models.data.Message;
@@ -50,7 +51,11 @@ public class CheckNewMessagesTask extends AsyncTask<Context, Void, Void> {
             @Override
             public void onResponse(Call<List<JsonObject>> call, Response<List<JsonObject>> response) {
                 if (response == null) {
-                    EventBus.getDefault().post(new StatusEvent("Server response has failed..."));
+                    EventBus.getDefault().post(
+                            new StatusEvent(
+                                    params[0].getString(R.string.event_server_response_failed)
+                            )
+                    );
                     return;
                 }
                 if (response.body() != null && response.body().size() > 0) {
@@ -89,7 +94,9 @@ public class CheckNewMessagesTask extends AsyncTask<Context, Void, Void> {
             @Override
             public void onFailure(Call<List<JsonObject>> call, Throwable t) {
                 t.printStackTrace();
-                EventBus.getDefault().post(new StatusEvent("Server is not responding..."));
+                EventBus.getDefault().post(
+                        new StatusEvent(params[0].getString(R.string.event_server_not_responding))
+                );
             }
         });
         return null;

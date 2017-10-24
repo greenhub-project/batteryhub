@@ -53,7 +53,7 @@ public final class Config {
     // Whether to output debug messages.
     public static final boolean DEBUG = true;
 
-    public static final String SERVER_STATUS_URL = "http://greenhub.hmatalonga.com/";
+    public static final String SERVER_STATUS_URL = "https://greenhubproject.org/";
     public static final String SERVER_URL_DEFAULT = "none";
     public static final String SERVER_URL_DEVELOPMENT = "http://192.168.1.105:8080";
 
@@ -93,9 +93,6 @@ public final class Config {
     public static final double BATTERY_LOW_LEVEL = 0.2;
     public static final int BATTERY_TEMPERATURE_MEDIUM = 35;
     public static final int BATTERY_TEMPERATURE_HIGH = 45;
-
-
-    public static final String STATUS_IDLE = "Idle";
 
     public static final int PERMISSION_READ_PHONE_STATE = 1;
     public static final int PERMISSION_ACCESS_COARSE_LOCATION = 2;

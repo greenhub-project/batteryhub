@@ -213,31 +213,52 @@ public class HomeFragment extends Fragment {
                     color = Color.YELLOW;
                 }
                 mBatteryCards.add(
-                        new BatteryCard(R.drawable.ic_thermometer_black_18dp, "Temperature", value, color)
+                        new BatteryCard(
+                                R.drawable.ic_thermometer_black_18dp,
+                                getString(R.string.battery_summary_temperature),
+                                value,
+                                color
+                        )
                 );
 
                 // Voltage
                 value = String.valueOf(estimator.getVoltage() + " V");
                 mBatteryCards.add(
-                        new BatteryCard(R.drawable.ic_flash_black_18dp, "Voltage", value)
+                        new BatteryCard(
+                                R.drawable.ic_flash_black_18dp,
+                                getString(R.string.battery_summary_voltage),
+                                value
+                        )
                 );
 
                 // Health
-                color = estimator.getHealthStatus().equals("Good") ? Color.GREEN : Color.RED;
+                value = estimator.getHealthStatus(mContext);
+                color = value.equals(mContext.getString(R.string.battery_health_good)) ?
+                        Color.GREEN : Color.RED;
                 mBatteryCards.add(
-                        new BatteryCard(R.drawable.ic_heart_black_18dp, "Health", estimator.getHealthStatus(), color)
+                        new BatteryCard(
+                                R.drawable.ic_heart_black_18dp,
+                                getString(R.string.battery_summary_health),
+                                value,
+                                color
+                        )
                 );
 
                 // Technology
                 if (estimator.getTechnology() == null) {
                     color = Color.GRAY;
-                    value = "Not available";
+                    value = getString(R.string.not_available);
                 } else {
                     color = estimator.getTechnology().equals("Li-ion") ? Color.GRAY : Color.GREEN;
                     value = estimator.getTechnology();
                 }
                 mBatteryCards.add(
-                        new BatteryCard(R.drawable.ic_wrench_black_18dp, "Technology", value, color)
+                        new BatteryCard(
+                                R.drawable.ic_wrench_black_18dp,
+                                getString(R.string.battery_summary_technology),
+                                value,
+                                color
+                        )
                 );
             }
         });
@@ -317,7 +338,7 @@ public class HomeFragment extends Fragment {
         mBatteryCurrentMin.setText(value);
         value = "max: --";
         mBatteryCurrentMax.setText(value);
-        value = "Measuring";
+        value = getString(R.string.battery_measure);
         mBatteryCurrentNow.setText(value);
     }
 
@@ -334,7 +355,7 @@ public class HomeFragment extends Fragment {
                 mBatteryCurrentMin.setText(value);
                 value = "max: --";
                 mBatteryCurrentMax.setText(value);
-                value = "Full";
+                value = mContext.getString(R.string.battery_full);
                 mBatteryCurrentNow.setText(value);
                 mHandler.postDelayed(this, Config.REFRESH_CURRENT_INTERVAL);
                 return;

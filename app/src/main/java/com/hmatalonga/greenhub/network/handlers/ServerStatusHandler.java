@@ -49,18 +49,15 @@ public class ServerStatusHandler {
     }
 
     public void callGetStatus(final Context context) {
-        if (Config.DEBUG) {
-            LOGI(TAG, "callGetStatus()");
-        }
+        LOGI(TAG, "callGetStatus()");
 
         Call<ServerStatus> call = mService.getStatus();
         call.enqueue(new Callback<ServerStatus>() {
             @Override
             public void onResponse(Call<ServerStatus> call, Response<ServerStatus> response) {
                 if (response != null && response.body() != null) {
-                    if (Config.DEBUG) {
-                        LOGI(TAG, "Server Status: { server: " + response.body().server + ", version: " + response.body().version + " }");
-                    }
+                    LOGI(TAG, "Server Status: { server: " + response.body().server +
+                            ", version: " + response.body().version + " }");
 
                     // Server url has changed so it is necessary to register device again
                     if (! SettingsUtils.fetchServerUrl(context).equals(response.body().server)) {

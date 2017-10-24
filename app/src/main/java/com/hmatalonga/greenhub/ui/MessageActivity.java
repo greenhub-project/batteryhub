@@ -42,9 +42,15 @@ public class MessageActivity extends BaseActivity {
         textView.setText(extras.getString("body"));
         textView = (TextView) findViewById(R.id.message_date);
         try {
-            textView.setText(extras.getString("date").substring(0, 16));
+            String date = extras.getString("date");
+
+            if (date != null) date = date.substring(0, 16);
+
+            textView.setText(
+                    date != null ? date : getString(R.string.not_available)
+            );
         } catch (NullPointerException e) {
-            textView.setText("Not available");
+            textView.setText(getString(R.string.not_available));
             e.printStackTrace();
         }
 

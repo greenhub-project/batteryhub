@@ -61,6 +61,7 @@ import android.util.Log;
 
 import com.hmatalonga.greenhub.BuildConfig;
 import com.hmatalonga.greenhub.Config;
+import com.hmatalonga.greenhub.R;
 import com.hmatalonga.greenhub.events.StatusEvent;
 import com.hmatalonga.greenhub.models.Application;
 import com.hmatalonga.greenhub.models.Battery;
@@ -414,7 +415,9 @@ public final class Inspector {
         // be running when
         // those events (screen on / screen off) occur
 
-        EventBus.getDefault().post(new StatusEvent("Getting processes list..."));
+        EventBus.getDefault().post(
+                new StatusEvent(context.getString(R.string.event_get_processes))
+        );
         newSample.processInfos.addAll(getRunningProcessInfoForSample(context));
 
         newSample.screenBrightness = Screen.getBrightness(context);

@@ -54,6 +54,7 @@ import android.os.PowerManager;
 import org.greenrobot.eventbus.EventBus;
 
 import com.hmatalonga.greenhub.Config;
+import com.hmatalonga.greenhub.R;
 import com.hmatalonga.greenhub.events.StatusEvent;
 import com.hmatalonga.greenhub.managers.storage.GreenHubDb;
 import com.hmatalonga.greenhub.models.Specifications;
@@ -174,7 +175,7 @@ public class DataEstimatorService extends IntentService {
                         Inspector.getLastBatteryLevel()+ ")");
 
                 // take a sample and store it in the database
-                EventBus.getDefault().post(new StatusEvent("Getting new sample..."));
+                EventBus.getDefault().post(new StatusEvent(getString(R.string.event_new_sample)));
 
                 getSample(context, intent, lastSample, database);
                 getBatteryUsage(context, intent, database, false);
@@ -266,7 +267,7 @@ public class DataEstimatorService extends IntentService {
         }
 
         // Notify UI
-        EventBus.getDefault().post(new StatusEvent(Config.STATUS_IDLE));
+        EventBus.getDefault().post(new StatusEvent(context.getString(R.string.event_idle)));
     }
 
     private void getBatteryUsage(Context context, Intent intent, GreenHubDb database, boolean isScreenIntent) {

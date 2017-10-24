@@ -58,8 +58,8 @@ public class Notifier {
 
         int now = Battery.getBatteryCurrentNow(context);
         int level = estimator.getLevel();
-        String title = "Now: " + now + " mA";
-        String text = "BatteryHub is running";
+        String title = context.getString(R.string.now) + ": " + now + " mA";
+        String text = context.getString(R.string.notif_batteryhub_running);
 
         sBuilder = new NotificationCompat.Builder(context)
                         .setContentTitle(title)
@@ -112,8 +112,8 @@ public class Notifier {
 
         int now = Battery.getBatteryCurrentNow(context);
         int level = (int) (Inspector.getCurrentBatteryLevel() * 100);
-        String title = "Now: " + now + " mA";
-        String text = "GreenHub is running";
+        String title = context.getString(R.string.now) + ": " + now + " mA";
+        String text = context.getString(R.string.notif_batteryhub_running);
 
         sBuilder.setContentTitle(title)
                 .setContentText(text)
@@ -150,8 +150,8 @@ public class Notifier {
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
                 .setSmallIcon(R.drawable.ic_email_white_24dp)
-                .setContentTitle("You got a new message!")
-                .setContentText("Open your BatteryHub inbox to see it.")
+                .setContentTitle(context.getString(R.string.notif_new_message))
+                .setContentText(context.getString(R.string.notif_open_inbox))
                 .setAutoCancel(true)
                 .setOngoing(false)
                 .setLights(Color.GREEN, 500, 2000)
@@ -195,8 +195,8 @@ public class Notifier {
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
                 .setSmallIcon(R.drawable.ic_information_white_24dp)
-                .setContentTitle("Battery is full")
-                .setContentText("Remove your phone from the charger")
+                .setContentTitle(context.getString(R.string.notif_battery_full))
+                .setContentText(context.getString(R.string.notif_remove_charger))
                 .setAutoCancel(true)
                 .setOngoing(false)
                 .setLights(Color.GREEN, 500, 2000)
@@ -238,8 +238,8 @@ public class Notifier {
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
                 .setSmallIcon(R.drawable.ic_alert_circle_white_24dp)
-                .setContentTitle("Battery is low")
-                .setContentText("Connect your phone to a power source")
+                .setContentTitle(context.getString(R.string.notif_battery_low))
+                .setContentText(context.getString(R.string.notif_connect_power))
                 .setAutoCancel(true)
                 .setOngoing(false)
                 .setLights(Color.RED, 500, 2000)
@@ -281,8 +281,8 @@ public class Notifier {
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
                 .setSmallIcon(R.drawable.ic_alert_circle_white_24dp)
-                .setContentTitle("Battery warning")
-                .setContentText("Temperature is getting warm")
+                .setContentTitle(context.getString(R.string.notif_battery_warning))
+                .setContentText(context.getString(R.string.notif_battery_warm))
                 .setAutoCancel(true)
                 .setOngoing(false)
                 .setLights(Color.YELLOW, 500, 2000)
@@ -327,8 +327,8 @@ public class Notifier {
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
                 .setSmallIcon(R.drawable.ic_alert_circle_white_24dp)
-                .setContentTitle("Battery temperature is hot!")
-                .setContentText("Cool-down your phone for a while")
+                .setContentTitle(context.getString(R.string.notif_battery_hot))
+                .setContentText(context.getString(R.string.notif_battery_cooldown))
                 .setAutoCancel(true)
                 .setOngoing(false)
                 .setLights(Color.RED, 500, 2000)

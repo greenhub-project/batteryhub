@@ -28,6 +28,7 @@ import java.util.Iterator;
 
 import com.hmatalonga.greenhub.BuildConfig;
 import com.hmatalonga.greenhub.Config;
+import com.hmatalonga.greenhub.R;
 import com.hmatalonga.greenhub.events.StatusEvent;
 import com.hmatalonga.greenhub.managers.storage.GreenHubDb;
 import com.hmatalonga.greenhub.models.data.AppPermission;
@@ -99,7 +100,9 @@ public class CommunicationManager {
 
         if (!isConnected) {
             // Schedule upload next time connectivity changes
-            EventBus.getDefault().post(new StatusEvent("No Internet connectivity."));
+            EventBus.getDefault().post(
+                    new StatusEvent(mContext.getString(R.string.event_no_connectivity))
+            );
             isUploading = false;
             isQueued = true;
             return;
@@ -111,13 +114,15 @@ public class CommunicationManager {
         database.close();
 
         if (!mCollection.hasNext()) {
-            EventBus.getDefault().post(new StatusEvent("No samples to send..."));
+            EventBus.getDefault().post(
+                    new StatusEvent(mContext.getString(R.string.event_no_samples))
+            );
             isUploading = false;
             refreshStatus();
             return;
         }
 
-        EventBus.getDefault().post(new StatusEvent("Uploading " + count + " samples"));
+        EventBus.getDefault().post(new StatusEvent(this.makeUploadingMessage(count)));
         isUploading = true;
         uploadSample(mCollection.next());
     }
@@ -140,7 +145,9 @@ public class CommunicationManager {
             @Override
             public void onResponse(Call<Integer> call, Response<Integer> response) {
                 if (response == null) {
-                    EventBus.getDefault().post(new StatusEvent("Server response has failed..."));
+                    EventBus.getDefault().post(new StatusEvent(
+                            mContext.getString(R.string.event_server_response_failed)
+                    ));
                     return;
                 }
                 if (response.body() != null) {
@@ -153,7 +160,9 @@ public class CommunicationManager {
             @Override
             public void onFailure(Call<Integer> call, Throwable t) {
                 t.printStackTrace();
-                EventBus.getDefault().post(new StatusEvent("Server is not responding..."));
+                EventBus.getDefault().post(
+                        new StatusEvent(mContext.getString(R.string.event_server_not_responding))
+                );
                 // If was called from service count uploadAttempts attempts
                 if (mOnBackground) {
                     uploadAttempts++;
@@ -171,7 +180,9 @@ public class CommunicationManager {
             new DeleteSampleTask().execute(id);
 
             if (!mCollection.hasNext()) {
-                EventBus.getDefault().post(new StatusEvent("Upload finished!"));
+                EventBus.getDefault().post(new StatusEvent(
+                        mContext.getString(R.string.event_upload_finished))
+                );
                 // If was called from service reset uploadAttempts counter
                 if (mOnBackground) {
                     uploadAttempts = 0;
@@ -182,7 +193,9 @@ public class CommunicationManager {
                 uploadSample(mCollection.next());
             }
         } else if (response == RESPONSE_ERROR){
-            EventBus.getDefault().post(new StatusEvent("Server error uploading a sample"));
+            EventBus.getDefault().post(new StatusEvent(
+                    mContext.getString(R.string.event_error_uploading_sample)
+            ));
             isUploading = false;
             refreshStatus();
         }
@@ -375,8 +388,13 @@ public class CommunicationManager {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                EventBus.getDefault().post(new StatusEvent(Config.STATUS_IDLE));
+                EventBus.getDefault().post(new StatusEvent(mContext.getString(R.string.event_idle)));
             }
         }, Config.REFRESH_STATUS_ERROR);
+    }
+
+    private String makeUploadingMessage(long count) {
+        return mContext.getString(R.string.event_uploading) + " " + count +
+                " " + mContext.getString(R.string.event_samples);
     }
 }

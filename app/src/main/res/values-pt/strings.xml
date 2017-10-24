@@ -14,6 +14,11 @@
   ~ limitations under the License.
   -->
 
+<!--
+  ~ If any string is not in this file is because the translation doesn't apply,
+  ~ since the designation is in English.
+  -->
+
 <resources>
     <string name="app_name">BatteryHub</string>
 
@@ -21,6 +26,10 @@
     <string name="decline">Rejeitar</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancelar</string>
+    <string name="yes">Sim</string>
+    <string name="no">Não</string>
+    <string name="not_available">Não disponível</string>
+    <string name="now">Agora</string>
 
     <!-- Short text welcoming the user to the application -->
     <string name="welcome_to_greenhub_app">Bemvindo ao BatteryHub!</string>
@@ -48,12 +57,28 @@
     <string name="title_fragment_history">Histórico</string>
     <string name="title_fragment_about">Sobre</string>
 
-    <string name="alert_no_connectivity">Sem ligação à Internet.</string>
-
+    <!-- Inbox -->
     <string name="inbox_no_messages">Não existem mensagens de momento</string>
 
     <string name="dialog_message_title">Apagar mensagem</string>
     <string name="dialog_message_text">Tem a certeza que deseja apagar esta mensagem definitivamente?</string>
+
+    <!-- HomeFragment -->
+    <string name="battery_right_now">Agora</string>
+    <string name="battery_measure">A medir</string>
+    <string name="battery_full">Cheia</string>
+
+    <string name="battery_summary_temperature">Temperatura</string>
+    <string name="battery_summary_voltage">Voltagem</string>
+    <string name="battery_summary_health">Saúde</string>
+    <string name="battery_summary_technology">Tecnologia</string>
+
+    <string name="battery_health_unknown">Desconhecida</string>
+    <string name="battery_health_good">Boa</string>
+    <string name="battery_health_overheat">Sobreaquecimento</string>
+    <string name="battery_health_dead">Sem Energia</string>
+    <string name="battery_health_over_voltage">Sobretensão</string>
+    <string name="battery_health_failure">Falha Desconhecida</string>
 
     <!-- DeviceFragment -->
     <string name="device_summary_title">Resumo</string>
@@ -66,25 +91,66 @@
     <string name="device_summary_memory_label">Uso de memória</string>
     <string name="device_summary_network_label">Rede</string>
 
+    <string name="card_view_more">Ver mais</string>
+
+    <string name="device_card_title">Dispositivo</string>
+    <string name="device_card_android">Android</string>
+    <string name="device_card_model">Modelo</string>
+
+    <string name="network_card_title">Rede</string>
+    <string name="network_card_ip">Endereço IP</string>
+    <string name="network_card_mac">Endereço MAC</string>
+    <string name="network_card_ssid">SSID de Rede</string>
+    <string name="network_card_bluetooth_address">Endereço bluetooth</string>
+    <string name="network_card_mobile_data">Dados móveis</string>
+    <string name="network_card_network_type">Tipo de rede</string>
+
+    <string name="memory_card_title">Memória</string>
+    <string name="memory_card_used">Em uso</string>
+    <string name="memory_card_available">Disponível</string>
+
+    <string name="storage_card_title">Armazenamento</string>
+    <string name="storage_card_used">Em uso</string>
+    <string name="storage_card_available">Disponível</string>
+
+    <!-- StatisticsFragment -->
+    <string name="chart_battery_level">Bateria Nível (%)</string>
+    <string name="chart_battery_temperature">Bateria Temperatura (ºC)</string>
+    <string name="chart_battery_voltage">Bateria Voltagem (V)</string>
+    <string name="chart_average_title">Média</string>
+    <string name="chart_loading_data">A carregar dados&#8230;</string>
+
     <!-- AboutFragment -->
     <string name="about_general_text">BatteryHub is a research project of the University of Coimbra.</string>
     <string name="about_data_text">BatteryHub collects and reports generic usage statistics about
     your phone that allow it to do its job; this process involves absolutely no personally
     identifying information.</string>
 
-    <!-- Process List -->
-    <string name="expected">Expected improvement:</string>
-    <string name="killappname">Kill App Name</string>
-    <string name="appname">App Name</string>
-    <string name="priority">Priority:</string>
-    <string name="priorityDefault">Not running</string>
-    <string name="prioritynotrunning">Not running</string>
-    <string name="priorityforeground">Foreground App</string>
-    <string name="prioritybackground">Background App</string>
-    <string name="priorityservice">Service</string>
-    <string name="priorityperceptible">Perceptible App</string>
-    <string name="priorityvisible">Visible App</string>
-    <string name="prioritysuggestion">Suggestion</string>
+    <!-- Event Post messages -->
+    <string name="event_idle">Inativo</string>
+    <string name="event_samples">amostras</string>
+    <string name="event_uploading">Enviando</string>
+    <string name="event_new_sample">Obtendo amostra&#8230;</string>
+    <string name="event_no_samples">Sem amostras para enviar&#8230;</string>
+    <string name="event_upload_finished">O upload terminou!</string>
+    <string name="event_get_processes">Obtendo lista de apps&#8230;</string>
+    <string name="event_no_connectivity">Sem ligação à Internet.</string>
+    <string name="event_upload_running">Upload já está a decorrer&#8230;</string>
+    <string name="event_already_registered">O dispositivo já está registado</string>
+    <string name="event_registration_failed">Registo do dispositivo falhou!</string>
+    <string name="event_device_registered">Dispositivo registado com sucesso!</string>
+    <string name="event_server_not_responding">O servidor não está a responder&#8230;</string>
+    <string name="event_error_uploading_sample">Erro de servidor no envio de uma amostra!</string>
+    <string name="event_server_response_failed">A resposta do servidor falhou&#8230;</string>
+    <string name="event_needs_sync">É necessário sincronizar com o servidor. Tente mais tarde</string>
+
+
+    <!-- TaskList Activity -->
+    <string name="task_no_apps_running">Nenhuma app a correr &#8230;</string>
+    <string name="task_no_apps_killed">Nenhuma app terminada&#8230;</string>
+    <string name="task_killed">Terminadas</string>
+    <string name="task_cleared">Limpos</string>
+    <string name="task_free_ram">Memória livre</string>
 
     <!-- Strings related to ProcessList -->
     <string name="action_sort_name">Ordenar por nome</string>
@@ -103,6 +169,19 @@
     <string name="background_service">Serviço de Background</string>
 
     <string name="header_status_loading">A carregar apps a correr</string>
+
+    <!-- Notifications -->
+    <string name="notif_batteryhub_running">BatteryHub está a correr</string>
+    <string name="notif_new_message">Tem uma nova mensagem!</string>
+    <string name="notif_open_inbox">Abra a sua caixa de correio BatteryHub para ver.</string>
+    <string name="notif_battery_full">Bateria está cheia</string>
+    <string name="notif_remove_charger">Remova o seu dispositivo da fonte de alimentação</string>
+    <string name="notif_battery_low">Bateria está fraca</string>
+    <string name="notif_connect_power">Ligue o seu dispositivo a uma fonte de alimentação</string>
+    <string name="notif_battery_warning">Bateria aviso</string>
+    <string name="notif_battery_warm">A temperatura está a subir</string>
+    <string name="notif_battery_hot">A temperatura da bateria está demasiado quente!</string>
+    <string name="notif_battery_cooldown">Arrefeça o seu dispositivo durante alguns momentos</string>
 
     <!-- Strings related to SettingsInfo -->
     <string name="pref_header_sampling">Amostragem</string>
@@ -156,7 +235,4 @@
     <string name="pref_title_help">Ajuda</string>
     <string name="pref_description_help">Se o botão de envio de dados não responder, por favor
         encerre a aplicação e reinicie novamente.</string>
-
-    <!-- Others -->
-    <string name="status_idle">Inativo</string>
 </resources>
