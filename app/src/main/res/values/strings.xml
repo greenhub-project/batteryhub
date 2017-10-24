@@ -248,4 +248,7 @@
     <string name="pref_title_help">Help</string>
     <string name="pref_description_help">Se o botão de envio de dados não responder, por favor
         encerre a aplicação e reinicie novamente.</string>
+
+    <!-- EULA Text -->
+    <string name="eula_legal_text">Your use of this application is governed by:\n\na) GreenHub\'s Privacy Policy (https://goo.gl/m9hM3L).\n\nGreenHub\'s privacy policies may be updated from time to time. If we do, we will let you know by revising the date at the top of the policy.\n\nThis application collects certain information as you use it. GreenHub\'s Privacy Policy explains how GreenHub treats your information and protects your privacy when you use the application. By using the application, you agree to the use of your data in accordance with GreenHub\'s Privacy Policy.</string>
 </resources>
