@@ -1,12 +1,12 @@
 # GreenHub BatteryHub
 
-[![Build Status](https://travis-ci.org/greenhub-project/batteryhub.svg?branch=master)](https://travis-ci.org/hmatalonga/greenhub)
+[![Build Status](https://travis-ci.org/greenhub-project/batteryhub.svg?branch=master)](https://travis-ci.org/greenhub-project/batteryhub)
 
-GreenHub is a collaborative approach to power consumption analysis of Android devices.
+> GreenHub is a collaborative approach to power consumption analysis of Android devices.
 
 The GreenHub mobile app is a fork of the Carat Project.
 
-Learn more at [greenhub.hmatalonga.com](http://greenhub.hmatalonga.com).
+Learn more at [greenhubproject.org](https://greenhubproject.org).
 
 **Disclamer:** The project is still under development, the beta testing is now over. At the moment there is available a release candidate version.
 
@@ -65,16 +65,17 @@ docker build -t hmatalonga/greenhub-android . && docker run -it --name greenhub-
 To list all available gradle tasks run `./gradlew tasks`.
 
 #### Need help?
-Having problems building GreenHub? Please see the [Troubleshooting guide](https://github.com/hmatalonga/greenhub/wiki/Troubleshooting).
+Having problems building GreenHub? Please see the [Troubleshooting guide](https://github.com/greenhub-project/batteryhub/wiki/Troubleshooting).
 
-For more details, please check our [wiki](https://github.com/hmatalonga/greenhub/wiki).
+For more details, please check our [documentation](https://docs.greenhubproject.org).
 
 ## Issues
-If you think you have found a bug or have a feature request, refer to the [issues page](https://github.com/hmatalonga/greenhub/issues), proper labels are provided.
+If you think you have found a bug or have a feature request, refer to the [issues page](https://github.com/greenhub-project/batteryhub/issues), proper labels are provided.
 Before opening a new issue, be sure to search existing ones to avoid duplicates. Please try to include steps to reproduce the problem.
 
 ### Known issues
-- Some Android devices don't support instant consumption with BatteryManager API. Legacy support is being developed;
+- Some Android devices don't support current measurement with BatteryManager API. Legacy support is being developed
+- Power Indicator is not working properly see [issue](https://github.com/greenhub-project/batteryhub/issues/40)
 
 ## Contributing
 Please read through our [contributing guidelines](CONTRIBUTING.md). Included are directions for opening issues, coding standards and development process.
