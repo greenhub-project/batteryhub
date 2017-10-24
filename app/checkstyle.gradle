@@ -49,17 +49,19 @@ task checkstyleTest (type: Checkstyle){
 }
 
 
-task checkstyleReport << {
-    checkType = project.ext.get("checkType")
-    if (file("$buildDir/reports/checkstyle/${checkType}.xml").exists()) {
-        ant.xslt(in: "$project.buildDir/reports/checkstyle/${checkType}.xml",
-                style:"${rootProject.rootDir}/config/checkstyle/checkstyle-html.xsl",
-                out:"$project.buildDir/reports/checkstyle/checkstyle_${checkType}.html"
-        )
+task checkstyleReport {
+    doLast {
+        checkType = project.ext.get("checkType")
+        if (file("$buildDir/reports/checkstyle/${checkType}.xml").exists()) {
+            ant.xslt(in: "$project.buildDir/reports/checkstyle/${checkType}.xml",
+                    style:"${rootProject.rootDir}/config/checkstyle/checkstyle-html.xsl",
+                    out:"$project.buildDir/reports/checkstyle/checkstyle_${checkType}.html"
+            )
+        }
     }
 }
 
-task checkstyle(dependsOn:['checkstyleMain', 'checkstyleTest']){
+task checkstyle(dependsOn:['checkstyleMain']){
     description 'Runs Checkstyle inspection against Android sourcesets.'
     group = 'Code Quality'
 }
