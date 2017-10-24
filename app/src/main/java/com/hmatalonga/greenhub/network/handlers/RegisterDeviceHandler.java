@@ -24,6 +24,7 @@ import org.greenrobot.eventbus.EventBus;
 
 import com.hmatalonga.greenhub.BuildConfig;
 import com.hmatalonga.greenhub.Config;
+import com.hmatalonga.greenhub.R;
 import com.hmatalonga.greenhub.events.StatusEvent;
 import com.hmatalonga.greenhub.models.Specifications;
 import com.hmatalonga.greenhub.models.data.Device;
@@ -97,13 +98,19 @@ public class RegisterDeviceHandler {
                         LOGI(TAG, "response body is null");
                     }
                     SettingsUtils.markDeviceAccepted(mContext, false);
-                    EventBus.getDefault().post(new StatusEvent("Device registration failed!"));
+                    EventBus.getDefault().post(
+                            new StatusEvent(mContext.getString(R.string.event_registration_failed))
+                    );
                     return;
                 }
                 if (response.body() > 0) {
-                    EventBus.getDefault().post(new StatusEvent("Device registered successfully!"));
+                    EventBus.getDefault().post(
+                            new StatusEvent(mContext.getString(R.string.event_device_registered))
+                    );
                 } else if (response.body() == 0){
-                    EventBus.getDefault().post(new StatusEvent("Device is already registered"));
+                    EventBus.getDefault().post(
+                            new StatusEvent(mContext.getString(R.string.event_already_registered))
+                    );
                 }
                 SettingsUtils.markDeviceAccepted(mContext, true);
 
@@ -114,7 +121,9 @@ public class RegisterDeviceHandler {
             @Override
             public void onFailure(Call<Integer> call, Throwable t) {
                 SettingsUtils.markDeviceAccepted(mContext, false);
-                EventBus.getDefault().post(new StatusEvent("Device registration failed!"));
+                EventBus.getDefault().post(
+                        new StatusEvent(mContext.getString(R.string.event_registration_failed))
+                );
                 LOGI(TAG, t.getMessage());
             }
         });

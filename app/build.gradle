@@ -2,20 +2,18 @@ apply plugin: 'com.android.application'
 apply plugin: 'realm-android'
 apply plugin: 'io.fabric'
 
-// Check if is running locally or on Travis CI
-def runningOnLocalMachine = ! System.env.TRAVIS
+apply from: 'checkstyle.gradle'
 
-println "Running on local machine -> $runningOnLocalMachine"
+// Check if can build a release config
+def canBuildRelease = rootProject.file('keystore.properties').exists()
 
 // Initialize a new Properties() object called keystoreProperties.
 def keystoreProperties = new Properties()
 
-// Check if is running locally then load keystore file for release build config
-if (runningOnLocalMachine) {
+// Load keystore file for release build config
+if (canBuildRelease) {
     // Load your keystore.properties file into the keystoreProperties object.
-    if (rootProject.file('keystore.properties').exists()) {
-        keystoreProperties.load(new FileInputStream(rootProject.file('keystore.properties')))
-    }
+    keystoreProperties.load(new FileInputStream(rootProject.file('keystore.properties')))
 }
 
 android {
@@ -29,8 +27,8 @@ android {
             storeFile file('greenhub-debug.jks')
             storePassword 'greenhub_debug'
         }
-        release {
-            if (runningOnLocalMachine) {
+        if (canBuildRelease) {
+            release {
                 keyAlias keystoreProperties['keyAlias']
                 keyPassword keystoreProperties['keyPassword']
                 storeFile file(keystoreProperties['storeFile'])
@@ -54,12 +52,14 @@ android {
             minifyEnabled false
             signingConfig signingConfigs.debug
         }
-        release {
-            debuggable false
-            minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.release
-            zipAlignEnabled true
+        if (canBuildRelease) {
+            release {
+                debuggable false
+                minifyEnabled true
+                proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+                signingConfig signingConfigs.release
+                zipAlignEnabled true
+            }
         }
     }
     testOptions {
@@ -77,6 +77,7 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+    androidTestCompile 'com.google.code.findbugs:jsr305:3.0.2'
     // Dependencies for unit tests which reside in the "tests" src folder.
     testCompile 'junit:junit:4.12'
     testCompile 'org.mockito:mockito-core:1.10.19'

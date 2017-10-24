@@ -25,8 +25,8 @@ import android.os.BatteryManager;
 import android.support.v4.content.WakefulBroadcastReceiver;
 
 import com.hmatalonga.greenhub.Config;
+import com.hmatalonga.greenhub.R;
 import com.hmatalonga.greenhub.events.BatteryLevelEvent;
-import com.hmatalonga.greenhub.models.Battery;
 import com.hmatalonga.greenhub.util.Notifier;
 import com.hmatalonga.greenhub.util.SettingsUtils;
 
@@ -47,10 +47,9 @@ public class DataEstimator extends WakefulBroadcastReceiver {
 
     private static final String TAG = makeLogTag(DataEstimator.class);
 
-    private double distance = 0.0;
     private long lastNotify;
 
-    private int health;
+    private int mHealth;
     private int level;
     private int plugged;
     private boolean present;
@@ -78,7 +77,7 @@ public class DataEstimator extends WakefulBroadcastReceiver {
             try {
                 level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
                 scale = intent.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
-                health = intent.getIntExtra(BatteryManager.EXTRA_HEALTH, 0);
+                mHealth = intent.getIntExtra(BatteryManager.EXTRA_HEALTH, 0);
                 plugged = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, 0);
                 present = intent.getExtras().getBoolean(BatteryManager.EXTRA_PRESENT);
                 status = intent.getIntExtra(BatteryManager.EXTRA_STATUS, 0);
@@ -148,7 +147,6 @@ public class DataEstimator extends WakefulBroadcastReceiver {
             Intent service = new Intent(context, DataEstimatorService.class);
             service.putExtra("OriginalAction", intent.getAction());
             service.fillIn(intent, 0);
-            service.putExtra("distance", distance);
 
             if (SettingsUtils.isPowerIndicatorShown(context)) {
                 LOGI(TAG, "Updating notification status bar");
@@ -177,7 +175,7 @@ public class DataEstimator extends WakefulBroadcastReceiver {
             if (batteryStatus != null) {
                 level = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
                 scale = batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
-                health = batteryStatus.getIntExtra(BatteryManager.EXTRA_HEALTH, 0);
+                mHealth = batteryStatus.getIntExtra(BatteryManager.EXTRA_HEALTH, 0);
                 plugged = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, 0);
                 present = batteryStatus.getExtras().getBoolean(BatteryManager.EXTRA_PRESENT);
                 status = batteryStatus.getIntExtra(BatteryManager.EXTRA_STATUS, 0);
@@ -193,7 +191,7 @@ public class DataEstimator extends WakefulBroadcastReceiver {
 
     public String getHealthStatus() {
         String status = "";
-        switch (health) {
+        switch (mHealth) {
             case BatteryManager.BATTERY_HEALTH_UNKNOWN:
                 status = "Unknown";
                 break;
@@ -217,6 +215,32 @@ public class DataEstimator extends WakefulBroadcastReceiver {
         return status;
     }
 
+    public String getHealthStatus(Context context) {
+        String status = "";
+        switch (mHealth) {
+            case BatteryManager.BATTERY_HEALTH_UNKNOWN:
+                status = context.getString(R.string.battery_health_unknown);
+                break;
+            case BatteryManager.BATTERY_HEALTH_GOOD:
+                status = context.getString(R.string.battery_health_good);
+                break;
+            case BatteryManager.BATTERY_HEALTH_OVERHEAT:
+                status = context.getString(R.string.battery_health_overheat);
+                break;
+            case BatteryManager.BATTERY_HEALTH_DEAD:
+                status = context.getString(R.string.battery_health_dead);
+                break;
+            case BatteryManager.BATTERY_HEALTH_OVER_VOLTAGE:
+                status = context.getString(R.string.battery_health_over_voltage);
+                break;
+            case BatteryManager.BATTERY_HEALTH_UNSPECIFIED_FAILURE:
+                status = context.getString(R.string.battery_health_failure);
+                break;
+        }
+
+        return status;
+    }
+
     public long getLastNotify() {
         return lastNotify;
     }
@@ -226,7 +250,7 @@ public class DataEstimator extends WakefulBroadcastReceiver {
     }
 
     public int getHealth() {
-        return health;
+        return mHealth;
     }
 
     public int getLevel() {

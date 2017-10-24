@@ -21,6 +21,10 @@
     <string name="decline">Decline</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="not_available">Not available</string>
+    <string name="now">Now</string>
 
     <!-- Short text welcoming the user to the application -->
     <string name="welcome_to_greenhub_app">Welcome to the BatteryHub app!</string>
@@ -48,13 +52,29 @@
     <string name="title_fragment_history">History</string>
     <string name="title_fragment_about">About</string>
 
-    <string name="alert_no_connectivity">No Internet connectivity.</string>
-
+    <!-- Inbox -->
     <string name="inbox_no_messages">There are no messages at the moment</string>
 
     <string name="dialog_message_title">Delete message</string>
     <string name="dialog_message_text">Are you sure that you want to delete this message permanently?</string>
 
+    <!-- HomeFragment -->
+    <string name="battery_right_now">Right now</string>
+    <string name="battery_measure">Measuring</string>
+    <string name="battery_full">Full</string>
+
+    <string name="battery_summary_temperature">Temperature</string>
+    <string name="battery_summary_voltage">Voltage</string>
+    <string name="battery_summary_health">Health</string>
+    <string name="battery_summary_technology">Technology</string>
+
+    <string name="battery_health_unknown">Unknown</string>
+    <string name="battery_health_good">Good</string>
+    <string name="battery_health_overheat">Overheat</string>
+    <string name="battery_health_dead">Dead</string>
+    <string name="battery_health_over_voltage">Over Voltage</string>
+    <string name="battery_health_failure">Unspecified Failure</string>
+    
     <!-- DeviceFragment -->
     <string name="device_summary_title">Summary</string>
     <string name="device_summary_id_label">BatteryHub ID</string>
@@ -66,12 +86,70 @@
     <string name="device_summary_memory_label">Memory usage</string>
     <string name="device_summary_network_label">Network</string>
 
+    <string name="card_no_value">#####</string>
+    <string name="card_no_value_short">##</string>
+    <string name="card_no_value_dash">--</string>
+    <string name="card_view_more">View more</string>
+
+    <string name="device_card_title">Device</string>
+    <string name="device_card_android">Android</string>
+    <string name="device_card_model">Model</string>
+
+    <string name="network_card_title">Network</string>
+    <string name="network_card_wifi">Wifi</string>
+    <string name="network_card_ip">IP address</string>
+    <string name="network_card_mac">Mac address</string>
+    <string name="network_card_ssid">SSID network</string>
+    <string name="network_card_bluetooth">Bluetooth</string>
+    <string name="network_card_bluetooth_address">Bluetooth address</string>
+    <string name="network_card_mobile_data">Mobile data</string>
+    <string name="network_card_network_type">Network type</string>
+
+    <string name="memory_card_title">Memory</string>
+    <string name="memory_card_used">Used</string>
+    <string name="memory_card_available">Available</string>
+
+    <string name="storage_card_title">Storage</string>
+    <string name="storage_card_used">Used</string>
+    <string name="storage_card_available">Available</string>
+
+    <!-- StatisticsFragment -->
+    <string name="chart_battery_level">Battery Level (%)</string>
+    <string name="chart_battery_temperature">Battery Temperature (ºC)</string>
+    <string name="chart_battery_voltage">Battery Voltage (V)</string>
+    <string name="chart_average_title">Average</string>
+    <string name="chart_loading_data">Loading Data&#8230;</string>
+
     <!-- AboutFragment -->
-    <string name="about_general_text">BatteryHub is a research project of the University of Beira
-        Interior.</string>
+    <string name="about_general_text">BatteryHub is a research project of the University of Beira Interior.</string>
     <string name="about_data_text">BatteryHub collects and reports generic usage statistics about
     your phone that allow it to do its job; this process involves absolutely no personally
     identifying information.</string>
+
+    <!-- Event Post messages -->
+    <string name="event_idle">Idle</string>
+    <string name="event_samples">samples</string>
+    <string name="event_uploading">Uploading</string>
+    <string name="event_new_sample">Getting new sample&#8230;</string>
+    <string name="event_no_samples">No samples to send&#8230;</string>
+    <string name="event_upload_finished">Upload is finished!</string>
+    <string name="event_get_processes">Getting processes list&#8230;</string>
+    <string name="event_no_connectivity">No Internet connectivity.</string>
+    <string name="event_upload_running">Upload is already running&#8230;</string>
+    <string name="event_already_registered">Device is already registered</string>
+    <string name="event_registration_failed">Device registration failed!</string>
+    <string name="event_device_registered">Device registered successfully!</string>
+    <string name="event_server_not_responding">Server is not responding&#8230;</string>
+    <string name="event_error_uploading_sample">Server error uploading a sample!</string>
+    <string name="event_server_response_failed">Server response has failed&#8230;</string>
+    <string name="event_needs_sync">It needs to sync with server. Try again later</string>
+
+    <!-- TaskList Activity -->
+    <string name="task_no_apps_running">No apps running&#8230;</string>
+    <string name="task_no_apps_killed">No apps killed&#8230;</string>
+    <string name="task_killed">Killed</string>
+    <string name="task_cleared">Cleared</string>
+    <string name="task_free_ram">Free RAM</string>
 
     <!-- Process List -->
     <string name="expected">Expected improvement:</string>
@@ -104,6 +182,19 @@
     <string name="background_service">Background service</string>
 
     <string name="header_status_loading">Loading running apps</string>
+
+    <!-- Notifications -->
+    <string name="notif_batteryhub_running">BatteryHub is running</string>
+    <string name="notif_new_message">You got a new message!</string>
+    <string name="notif_open_inbox">Open your BatteryHub inbox to see it.</string>
+    <string name="notif_battery_full">Battery is full</string>
+    <string name="notif_remove_charger">Remove your phone from the charger</string>
+    <string name="notif_battery_low">Battery is low</string>
+    <string name="notif_connect_power">Connect your phone to a power source</string>
+    <string name="notif_battery_warning">Battery warning</string>
+    <string name="notif_battery_warm">Temperature is getting warm</string>
+    <string name="notif_battery_hot">Battery temperature is hot!</string>
+    <string name="notif_battery_cooldown">Cool-down your phone for a while</string>
 
     <!-- Strings related to SettingsInfo -->
     <string name="pref_header_sampling">Sampling</string>
@@ -158,6 +249,6 @@
     <string name="pref_description_help">Se o botão de envio de dados não responder, por favor
         encerre a aplicação e reinicie novamente.</string>
 
-    <!-- Others -->
-    <string name="status_idle">Idle</string>
+    <!-- EULA Text -->
+    <string name="eula_legal_text">Your use of this application is governed by:\n\na) GreenHub\'s Privacy Policy (https://goo.gl/m9hM3L).\n\nGreenHub\'s privacy policies may be updated from time to time. If we do, we will let you know by revising the date at the top of the policy.\n\nThis application collects certain information as you use it. GreenHub\'s Privacy Policy explains how GreenHub treats your information and protects your privacy when you use the application. By using the application, you agree to the use of your data in accordance with GreenHub\'s Privacy Policy.</string>
 </resources>

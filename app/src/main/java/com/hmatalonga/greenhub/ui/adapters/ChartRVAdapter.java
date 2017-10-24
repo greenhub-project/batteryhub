@@ -16,6 +16,7 @@
 
 package com.hmatalonga.greenhub.ui.adapters;
 
+import android.content.Context;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -53,6 +54,8 @@ public class ChartRVAdapter extends RecyclerView.Adapter<ChartRVAdapter.Dashboar
 
     private int mInterval;
 
+    private Context mContext;
+
     static class DashboardViewHolder extends RecyclerView.ViewHolder {
 
         CardView cv;
@@ -77,9 +80,10 @@ public class ChartRVAdapter extends RecyclerView.Adapter<ChartRVAdapter.Dashboar
         }
     }
 
-    public ChartRVAdapter(ArrayList<ChartCard> chartCards, int interval) {
+    public ChartRVAdapter(ArrayList<ChartCard> chartCards, int interval, Context context) {
         this.mChartCards = chartCards;
         this.mInterval = interval;
+        this.mContext = context;
     }
 
     public void setInterval(int interval) {
@@ -108,19 +112,22 @@ public class ChartRVAdapter extends RecyclerView.Adapter<ChartRVAdapter.Dashboar
         holder.chart.setData(loadData(card));
         holder.chart.invalidate();
         holder.label.setText(card.label);
+
         if (card.extras != null) {
             String value;
             if (card.type == BATTERY_TEMPERATURE) {
                 value = "Min: " + StringHelper.formatNumber(card.extras[0]) + " ºC";
                 holder.min.setText(value);
-                value = "Average: " + StringHelper.formatNumber(card.extras[1]) + " ºC";
+                value = mContext.getString(R.string.chart_average_title) +
+                        ": " + StringHelper.formatNumber(card.extras[1]) + " ºC";
                 holder.avg.setText(value);
                 value = "Max: " + StringHelper.formatNumber(card.extras[2]) + " ºC";
                 holder.max.setText(value);
             } else if (card.type == BATTERY_VOLTAGE) {
                 value = "Min: " + StringHelper.formatNumber(card.extras[0]) + " V";
                 holder.min.setText(value);
-                value = "Average: " + StringHelper.formatNumber(card.extras[1]) + " V";
+                value = mContext.getString(R.string.chart_average_title) +
+                        ": " + StringHelper.formatNumber(card.extras[1]) + " V";
                 holder.avg.setText(value);
                 value = "Max: " + StringHelper.formatNumber(card.extras[2]) + " V";
                 holder.max.setText(value);
@@ -209,7 +216,7 @@ public class ChartRVAdapter extends RecyclerView.Adapter<ChartRVAdapter.Dashboar
 
         holder.chart.getLegend().setEnabled(false);
         holder.chart.getDescription().setEnabled(false);
-        holder.chart.setNoDataText("Loading Data...");
+        holder.chart.setNoDataText(mContext.getString(R.string.chart_loading_data));
 
         IMarker marker = new ChartMarkerView(
                 holder.itemView.getContext(), R.layout.item_marker, card.type

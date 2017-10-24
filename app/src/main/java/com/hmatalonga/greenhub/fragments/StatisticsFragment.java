@@ -17,6 +17,7 @@
 package com.hmatalonga.greenhub.fragments;
 
 import android.app.Fragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -196,7 +197,7 @@ public class StatisticsFragment extends Fragment {
         // Battery Level
         card = new ChartCard(
                 ChartRVAdapter.BATTERY_LEVEL,
-                "Battery Level (%)",
+                getString(R.string.chart_battery_level),
                 ColorTemplate.rgb("#E84813")
         );
 
@@ -215,7 +216,7 @@ public class StatisticsFragment extends Fragment {
 
         card = new ChartCard(
                 ChartRVAdapter.BATTERY_TEMPERATURE,
-                "Battery Temperature (ºC)",
+                getString(R.string.chart_battery_temperature),
                 ColorTemplate.rgb("#E81332")
         );
 
@@ -243,7 +244,7 @@ public class StatisticsFragment extends Fragment {
 
         card = new ChartCard(
                 ChartRVAdapter.BATTERY_VOLTAGE,
-                "Battery Voltage (V)",
+                getString(R.string.chart_battery_voltage),
                 ColorTemplate.rgb("#FF15AC")
         );
 
@@ -271,7 +272,10 @@ public class StatisticsFragment extends Fragment {
      */
     private void setAdapter(final int interval) {
         if (mAdapter == null) {
-            mAdapter = new ChartRVAdapter(mChartCards, interval);
+            // We need the application context to access String resources within the Adapter
+            Context context = getActivity().getApplicationContext();
+
+            mAdapter = new ChartRVAdapter(mChartCards, interval, context);
             mRecyclerView.setAdapter(mAdapter);
         } else {
             mAdapter.setInterval(interval);

@@ -27,6 +27,7 @@ import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
 import com.hmatalonga.greenhub.managers.sampling.DataEstimator;
+import com.hmatalonga.greenhub.managers.storage.GreenHubDbMigration;
 import com.hmatalonga.greenhub.receivers.NotificationReceiver;
 import com.hmatalonga.greenhub.tasks.DeleteSessionsTask;
 import com.hmatalonga.greenhub.tasks.DeleteUsagesTask;
@@ -77,7 +78,7 @@ public class GreenHubApp extends Application {
         Realm.init(this);
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder()
                 .schemaVersion(Config.DATABASE_VERSION)
-                .migration(buildMigration())
+                .migration(new GreenHubDbMigration())
                 .build();
         Realm.setDefaultConfiguration(realmConfiguration);
 
@@ -162,33 +163,5 @@ public class GreenHubApp extends Application {
         if (mAlarmManager != null) {
             mAlarmManager.cancel(mNotificationIntent);
         }
-    }
-
-    private RealmMigration buildMigration() {
-        return new RealmMigration() {
-            @Override
-            public void migrate(DynamicRealm realm, long oldVersion, long newVersion) {
-
-                // DynamicRealm exposes an editable schema
-                RealmSchema schema = realm.getSchema();
-
-                // Migrate to version 1: Add a new field.
-                // public Sample extends RealmObject {
-                //     public int version;
-                // }
-                if (oldVersion == 1) {
-                    schema.get("Sample")
-                            .addField("version", int.class);
-                    oldVersion++;
-                }
-
-                if (oldVersion == 2) {
-                    schema.get("Device")
-                            .removeField("serialNumber");
-                    schema.get("Sample")
-                            .addField("database", int.class);
-                }
-            }
-        };
     }
 }

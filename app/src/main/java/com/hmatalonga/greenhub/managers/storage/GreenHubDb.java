@@ -147,14 +147,14 @@ public class GreenHubDb {
     public void markMessageAsRead(int id) {
         mRealm.beginTransaction();
         Message message = mRealm.where(Message.class).equalTo("id", id).findFirst();
-        message.read = true;
+        if (message != null) message.read = true;
         mRealm.commitTransaction();
     }
 
     public void deleteMessage(int id) {
         mRealm.beginTransaction();
         Message message = mRealm.where(Message.class).equalTo("id", id).findFirst();
-        message.deleteFromRealm();
+        if (message != null) message.deleteFromRealm();
         mRealm.commitTransaction();
     }
 }

@@ -39,7 +39,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Right now"
+            android:text="@string/battery_right_now"
             android:textSize="12sp"
             android:id="@+id/batteryLabel"
             android:layout_above="@+id/batteryCurrentValue"
@@ -49,7 +49,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Measuring"
+            android:text="@string/battery_measure"
             android:textSize="24sp"
             android:id="@+id/batteryCurrentNow"
             android:layout_alignBaseline="@+id/batteryPercentageSign"
@@ -105,7 +105,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="Idle"
+            android:text="@string/event_idle"
             android:id="@+id/status"
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
