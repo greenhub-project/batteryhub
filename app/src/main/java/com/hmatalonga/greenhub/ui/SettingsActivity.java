@@ -152,7 +152,11 @@ public class SettingsActivity extends BaseActivity {
                                 ? listPreference.getEntries()[index]
                                 : null);
             } else if (preference instanceof EditTextPreference) {
-                preference.setSummary(stringValue);
+                EditTextPreference editTextPreference = (EditTextPreference) preference;
+                stringValue = stringValue.replaceFirst("^0+(?!$)", "");
+
+                editTextPreference.setText(stringValue);
+                preference.setSummary(stringValue.replaceFirst("^0+(?!$)", ""));
             }
         }
     }

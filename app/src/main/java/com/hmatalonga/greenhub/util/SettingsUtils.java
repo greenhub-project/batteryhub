@@ -316,14 +316,20 @@ public class SettingsUtils {
     public static int fetchTemperatureWarning(final Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         return Integer.parseInt(
-                sp.getString(PREF_TEMPERATURE_WARNING, Config.NOTIFICATION_DEFAULT_TEMPERATURE_WARNING)
+                sp.getString(
+                        PREF_TEMPERATURE_WARNING,
+                        Config.NOTIFICATION_DEFAULT_TEMPERATURE_WARNING
+                ).replaceFirst("^0+(?!$)", "")
         );
     }
 
     public static int fetchTemperatureHigh(final Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         return Integer.parseInt(
-                sp.getString(PREF_TEMPERATURE_HIGH, Config.NOTIFICATION_DEFAULT_TEMPERATURE_HIGH)
+                sp.getString(
+                        PREF_TEMPERATURE_HIGH,
+                        Config.NOTIFICATION_DEFAULT_TEMPERATURE_HIGH
+                ).replaceFirst("^0+(?!$)", "")
         );
     }
 
