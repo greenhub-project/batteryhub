@@ -28,6 +28,8 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 
+import com.crashlytics.android.answers.Answers;
+import com.crashlytics.android.answers.CustomEvent;
 import com.hmatalonga.greenhub.BuildConfig;
 import com.hmatalonga.greenhub.GreenHubApp;
 import com.hmatalonga.greenhub.R;
@@ -100,6 +102,11 @@ public class SettingsActivity extends BaseActivity {
                     LOGI(TAG, "Restarting GreenHub Service because of preference changes");
                     app.stopGreenHubService();
                     app.startGreenHubService();
+                    Answers.getInstance().logCustom(new CustomEvent("Preference Change")
+                            .putCustomAttribute(
+                                    "Sampling on Screen",
+                                    String.valueOf(SettingsUtils.isSamplingScreenOn(context))
+                            ));
                     break;
                 case SettingsUtils.PREF_DATA_HISTORY:
                     bindPreferenceSummaryToValue(preference);
@@ -119,6 +126,11 @@ public class SettingsActivity extends BaseActivity {
                         Notifier.closeStatusBar();
                         app.stopStatusBarUpdater();
                     }
+                    Answers.getInstance().logCustom(new CustomEvent("Preference Change")
+                            .putCustomAttribute(
+                                    "Power Indicator",
+                                    String.valueOf(SettingsUtils.isPowerIndicatorShown(context))
+                            ));
                     break;
                 case SettingsUtils.PREF_TEMPERATURE_WARNING:
                     bindPreferenceSummaryToValue(preference);

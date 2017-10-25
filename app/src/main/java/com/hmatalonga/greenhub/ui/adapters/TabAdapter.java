@@ -49,7 +49,7 @@ public class TabAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public void restoreState(Parcelable state, ClassLoader loader) {
-        // work around "Fragement no longer exists for key" Android bug
+        // work around "Fragment no longer exists for key" Android bug
         // by catching the IllegalStateException
         // https://code.google.com/p/android/issues/detail?id=42601
         try {
@@ -102,6 +102,19 @@ public class TabAdapter extends FragmentStatePagerAdapter {
             return mFragments.get(position);
         } else {
             return null;
+        }
+    }
+
+    public String getTabName(int position) {
+        switch (position) {
+            case TAB_HOME:
+                return "Home";
+            case TAB_MY_DEVICE:
+                return "My Device";
+            case TAB_CHARTS:
+                return "Statistics";
+            default:
+                return "default";
         }
     }
 

@@ -31,8 +31,6 @@ import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
  */
 public class MainTabLayout extends TabLayout {
 
-    private static final String TAG = makeLogTag(MainTabLayout.class);
-
     public MainTabLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
