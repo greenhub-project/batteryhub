@@ -49,7 +49,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.hmatalonga.greenhub.Config;
-import com.hmatalonga.greenhub.controllers.TaskController;
+import com.hmatalonga.greenhub.managers.TaskController;
 import com.hmatalonga.greenhub.events.OpenTaskDetailsEvent;
 import com.hmatalonga.greenhub.events.TaskRemovedEvent;
 import com.hmatalonga.greenhub.models.ui.Task;

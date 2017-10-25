@@ -1,4 +1,4 @@
-package com.hmatalonga.greenhub.controllers;
+package com.hmatalonga.greenhub.managers;
 
 import android.Manifest;
 import android.annotation.TargetApi;
