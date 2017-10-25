@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'realm-android'
 apply plugin: 'io.fabric'
 
-apply from: 'checkstyle.gradle'
+// apply from: 'checkstyle.gradle'
 
 // Check if can build a release config
 def canBuildRelease = rootProject.file('keystore.properties').exists()
@@ -72,35 +72,35 @@ android {
 
 dependencies {
     // Include libraries checked into the libs directory.
-    compile fileTree(include: ['*.jar'], dir: 'libs')
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     // Dependencies for android tests which reside in the "androidTest" src folder.
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    androidTestCompile 'com.google.code.findbugs:jsr305:3.0.2'
+    androidTestImplementation 'com.google.code.findbugs:jsr305:3.0.2'
     // Dependencies for unit tests which reside in the "tests" src folder.
-    testCompile 'junit:junit:4.12'
-    testCompile 'org.mockito:mockito-core:1.10.19'
+    testImplementation 'junit:junit:4.12'
+    testImplementation 'org.mockito:mockito-core:1.10.19'
     // Android support libraries.
-    compile "com.android.support:appcompat-v7:${androidSupportLibVersion}"
-    compile "com.android.support:design:${androidSupportLibVersion}"
-    compile "com.android.support:support-v4:${androidSupportLibVersion}"
-    compile "com.android.support:support-v13:${androidSupportLibVersion}"
-    compile "com.android.support:cardview-v7:${androidSupportLibVersion}"
-    compile "com.android.support:recyclerview-v7:${androidSupportLibVersion}"
+    implementation "com.android.support:appcompat-v7:${androidSupportLibVersion}"
+    implementation "com.android.support:design:${androidSupportLibVersion}"
+    implementation "com.android.support:support-v4:${androidSupportLibVersion}"
+    implementation "com.android.support:support-v13:${androidSupportLibVersion}"
+    implementation "com.android.support:cardview-v7:${androidSupportLibVersion}"
+    implementation "com.android.support:recyclerview-v7:${androidSupportLibVersion}"
     // JSON utility library.
-    compile 'com.google.code.gson:gson:2.7'
+    implementation 'com.google.code.gson:gson:2.8.0'
     // Retrofit library for networking operations
-    compile 'com.squareup.retrofit2:retrofit:2.1.0'
-    compile 'com.squareup.retrofit2:converter-gson:2.1.0'
+    implementation 'com.squareup.retrofit2:retrofit:2.1.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.1.0'
     // greenrobot for event communications
-    compile 'org.greenrobot:eventbus:3.0.0'
+    implementation 'org.greenrobot:eventbus:3.0.0'
     // MPAndroidChart library for drawing charts
-    compile 'com.github.PhilJay:MPAndroidChart:v3.0.1'
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.0.1'
     // Android Processes library
-    compile 'com.jaredrummler:android-processes:1.0.9'
+    implementation 'com.jaredrummler:android-processes:1.0.9'
     // crashlytics
-    compile('com.crashlytics.sdk.android:crashlytics:2.6.8@aar') {
-        transitive = true;
+    implementation('com.crashlytics.sdk.android:crashlytics:2.7.1@aar') {
+        transitive = true
     }
 }
