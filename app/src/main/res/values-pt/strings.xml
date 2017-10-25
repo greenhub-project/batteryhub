@@ -35,7 +35,7 @@
     <string name="welcome_to_greenhub_app">Bemvindo ao BatteryHub!</string>
 
     <!-- Medium-length welcome text indicating the subsequent text is important legal information -->
-    <string name="welcome_text">Antes de começar, aqui estão algumas informações importantes sobre como usar esta app. Apenas demorará um minuto!</string>
+    <string name="welcome_text">Antes de começar, estão aqui algumas informações importantes como usar esta app. Demorará apenas um minuto!</string>
 
     <string name="action_inbox">Mensagens</string>
     <string name="action_summary">Resumo</string>
@@ -66,7 +66,7 @@
     <!-- HomeFragment -->
     <string name="battery_right_now">Agora</string>
     <string name="battery_measure">A medir</string>
-    <string name="battery_full">Cheia</string>
+    <string name="battery_full">Carregada</string>
 
     <string name="battery_summary_temperature">Temperatura</string>
     <string name="battery_summary_voltage">Voltagem</string>
@@ -162,7 +162,7 @@
     <string name="force_close">Forçar paragem</string>
 
     <string name="package_usage_permission_title">Permissão da App</string>
-    <string name="package_usage_permission_text">Parece que está a correr o Android N or mais recente. É necessário dar uma permissão especial para que o BatteryHub possa trabalhar. Será redireccionado para o menu.</string>
+    <string name="package_usage_permission_text">Parece que está a correr o Android N ou mais recente. É necessário dar uma permissão especial para que o BatteryHub possa trabalhar. Será redireccionado para o menu.</string>
     <string name="open_settings">Definições</string>
 
     <string name="auto_startup">Auto-arranque</string>
@@ -173,9 +173,9 @@
     <!-- Notifications -->
     <string name="notif_batteryhub_running">BatteryHub está a correr</string>
     <string name="notif_new_message">Tem uma nova mensagem!</string>
-    <string name="notif_open_inbox">Abra a sua caixa de correio BatteryHub para ver.</string>
-    <string name="notif_battery_full">Bateria está cheia</string>
-    <string name="notif_remove_charger">Remova o seu dispositivo da fonte de alimentação</string>
+    <string name="notif_open_inbox">Abra a sua caixa de correio BatteryHub para ler.</string>
+    <string name="notif_battery_full">Bateria está carregada</string>
+    <string name="notif_remove_charger">Retire o seu dispositivo da fonte de alimentação</string>
     <string name="notif_battery_low">Bateria está fraca</string>
     <string name="notif_connect_power">Ligue o seu dispositivo a uma fonte de alimentação</string>
     <string name="notif_battery_warning">Bateria aviso</string>
@@ -190,7 +190,7 @@
     <string name="pref_header_task_manager">Gestor de processos</string>
     <string name="pref_header_about">Sobre</string>
 
-    <string name="pref_title_sampling_screen">Seguir eventos do ecrã</string>
+    <string name="pref_title_sampling_screen">Guardar eventos do ecrã</string>
     <string name="pref_description_sampling_screen">Guarda informações quando o ecrã liga/desliga</string>
     <string name="pref_title_old_measurement">Usar antigo método de medição</string>
     <string name="pref_description_old_measurement">Tente isto, se o valor de agora for sempre 0</string>
@@ -217,6 +217,12 @@
 
     <string name="pref_title_temperature_rate">Frequência dos alertas de temperatura</string>
 
+    <string name="pref_title_temperature_warning">Temperatura média</string>
+    <string name="pref_description_temperature_warning">Valor em graus do alerta de temperatura média</string>
+
+    <string name="pref_title_temperature_high">Temperatura alta</string>
+    <string name="pref_description_temperature_high">Valor em graus do alerta de temperatura alta</string>
+
     <string name="pref_title_message_alerts">Alertas novas mensagens</string>
     <string name="pref_description_message_alerts">Mostra notificações sobre novas mensagens</string>
 
@@ -237,9 +243,9 @@
         encerre a aplicação e reinicie novamente.</string>
 
     <!-- EULA Text -->
-    <string name="eula_legal_text">O uso desta aplicação é regida por:\n\n)a A política de privacidade do GreenHub (https://goo.gl/m9hM3L).\n\n
-        A política de privacidade do GreenHub pode ser atualizada de tempos a tempos, sendo a data no topo do documento alterada.\n\nEsta aplicação
-        recolhe certas informações como você a usa. A política de privacidade do GreenHub explica como o GreenHub trata suas informações e protege sua
-        privacidade quando você usa a aplicação. Ao usar a aplicação, você concorda com o uso dos seus dados de acordo com a política de privacidade do GreenHub.
+    <string name="eula_legal_text">O uso desta aplicação é regida por:\n\na) A política de privacidade do GreenHub (https://goo.gl/m9hM3L).\n\n
+        A política de privacidade do GreenHub pode ser atualizada de tempos a tempos, sendo alterada a data no início do documento.\n\nEsta aplicação
+        recolhe certas informações relativas à forma como se usa. A política de privacidade do GreenHub explica como o GreenHub trata as suas informações e protege
+        a sua privacidade quando é usada a aplicação. Ao usar a aplicação, está a concordar com a política de privacidade do GreenHub.
     </string>
 </resources>

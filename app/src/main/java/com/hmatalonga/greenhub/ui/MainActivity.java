@@ -38,6 +38,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.crashlytics.android.answers.Answers;
+import com.crashlytics.android.answers.ContentViewEvent;
 import com.hmatalonga.greenhub.Config;
 import com.hmatalonga.greenhub.GreenHubApp;
 import com.hmatalonga.greenhub.R;
@@ -132,9 +134,17 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
                 }
                 return true;
             case R.id.action_settings:
+                Answers.getInstance().logContentView(new ContentViewEvent()
+                        .putContentName("Enters settings page")
+                        .putContentType("Page visit")
+                        .putContentId("page-settings"));
                 startActivity(new Intent(this, SettingsActivity.class));
                 return true;
             case R.id.action_rating:
+                Answers.getInstance().logContentView(new ContentViewEvent()
+                        .putContentName("Enters Google Play Store to rate")
+                        .putContentType("Page visit")
+                        .putContentId("page-store"));
                 try {
                     startActivity(new Intent(Intent.ACTION_VIEW,
                             Uri.parse("market://details?id=com.hmatalonga.greenhub")));
@@ -251,6 +261,7 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
             public void onTabSelected(TabLayout.Tab tab) {
                 mViewPager.setCurrentItem(tab.getPosition());
                 getActionBarToolbar().setTitle(tab.getContentDescription());
+
                 if (tab.getPosition() == TabAdapter.TAB_HOME) {
                     fab.show();
                 } else {
@@ -260,6 +271,11 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
                 if (tab.getPosition() == TabAdapter.TAB_CHARTS) {
                     EventBus.getDefault().post(new RefreshChartEvent());
                 }
+
+                Answers.getInstance().logContentView(new ContentViewEvent()
+                        .putContentName("Visits Tab " + tabAdapter.getTabName(tab.getPosition()))
+                        .putContentType("Tab navigation")
+                        .putContentId("page-tab"));
             }
 
             @Override

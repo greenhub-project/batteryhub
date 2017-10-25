@@ -54,6 +54,7 @@ public class SettingsUtils {
     /**
      * Boolean indicating whether to save data on screen on/off broadcasts.
      */
+
     public static final String PREF_SAMPLING_SCREEN = "pref_sampling_screen";
     /**
      * Integer indicating which data history days range to keep.
@@ -71,6 +72,7 @@ public class SettingsUtils {
      * Integer indicating which upload interval rate to use.
      */
     public static final String PREF_UPLOAD_RATE = "pref_upload_rate";
+
     /**
      * Integer indicating which upload interval rate to use.
      */
@@ -99,6 +101,15 @@ public class SettingsUtils {
      * Long integer indicating when was send the last battery temperature alert.
      */
     public static final String PREF_LAST_TEMPERATURE_ALERT = "pref_last_temperature_alert";
+    /**
+     * Integer indicating which temperature warning value in celsius degrees to use.
+     */
+    public static final String PREF_TEMPERATURE_WARNING = "pref_temperature_warning";
+    /**
+     * Integer indicating which temperature critical value in celsius degrees to use.
+     */
+    public static final String PREF_TEMPERATURE_HIGH = "pref_temperature_high";
+
     /**
      * Boolean indicating whether to display battery alerts.
      */
@@ -299,6 +310,26 @@ public class SettingsUtils {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         return Integer.parseInt(
                 sp.getString(PREF_TEMPERATURE_RATE, Config.NOTIFICATION_DEFAULT_TEMPERATURE_RATE)
+        );
+    }
+
+    public static int fetchTemperatureWarning(final Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return Integer.parseInt(
+                sp.getString(
+                        PREF_TEMPERATURE_WARNING,
+                        Config.NOTIFICATION_DEFAULT_TEMPERATURE_WARNING
+                ).replaceFirst("^0+(?!$)", "")
+        );
+    }
+
+    public static int fetchTemperatureHigh(final Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return Integer.parseInt(
+                sp.getString(
+                        PREF_TEMPERATURE_HIGH,
+                        Config.NOTIFICATION_DEFAULT_TEMPERATURE_HIGH
+                ).replaceFirst("^0+(?!$)", "")
         );
     }
 

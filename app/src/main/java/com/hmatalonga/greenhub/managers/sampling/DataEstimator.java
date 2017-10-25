@@ -24,7 +24,6 @@ import android.content.ReceiverCallNotAllowedException;
 import android.os.BatteryManager;
 import android.support.v4.content.WakefulBroadcastReceiver;
 
-import com.hmatalonga.greenhub.Config;
 import com.hmatalonga.greenhub.R;
 import com.hmatalonga.greenhub.events.BatteryLevelEvent;
 import com.hmatalonga.greenhub.util.Notifier;
@@ -92,7 +91,7 @@ public class DataEstimator extends WakefulBroadcastReceiver {
             // We don't send battery level alerts here because we need to check if the level changed
             // So we verify that inside the DataEstimator Service
 
-            if (temperature > Config.BATTERY_TEMPERATURE_MEDIUM) {
+            if (temperature > SettingsUtils.fetchTemperatureWarning(context)) {
                 if (SettingsUtils.isBatteryAlertsOn(context) &&
                         SettingsUtils.isTemperatureAlertsOn(context)) {
 
@@ -111,14 +110,14 @@ public class DataEstimator extends WakefulBroadcastReceiver {
                     // If last saved time isn't default and now is after limit rate then notify
                     if (lastSavedTime == 0 || Calendar.getInstance().after(lastAlert)) {
                         // Notify for temperature alerts...
-                        if (temperature > Config.BATTERY_TEMPERATURE_HIGH) {
+                        if (temperature > SettingsUtils.fetchTemperatureHigh(context)) {
                             Notifier.batteryHighTemperature(context);
                             SettingsUtils.saveLastTemperatureAlertDate(
                                     context,
                                     System.currentTimeMillis()
                             );
-                        } else if (temperature <= Config.BATTERY_TEMPERATURE_HIGH &&
-                                temperature > Config.BATTERY_TEMPERATURE_MEDIUM) {
+                        } else if (temperature <= SettingsUtils.fetchTemperatureHigh(context) &&
+                                temperature > SettingsUtils.fetchTemperatureWarning(context)) {
                             Notifier.batteryWarningTemperature(context);
                             SettingsUtils.saveLastTemperatureAlertDate(
                                     context,

@@ -90,9 +90,9 @@ public final class Config {
     public static final int REFRESH_STATUS_ERROR = REFRESH_CURRENT_INTERVAL * 2;
 
     public static final String NOTIFICATION_DEFAULT_TEMPERATURE_RATE = "5";
+    public static final String NOTIFICATION_DEFAULT_TEMPERATURE_WARNING = "35";
+    public static final String NOTIFICATION_DEFAULT_TEMPERATURE_HIGH = "45";
     public static final double BATTERY_LOW_LEVEL = 0.2;
-    public static final int BATTERY_TEMPERATURE_MEDIUM = 35;
-    public static final int BATTERY_TEMPERATURE_HIGH = 45;
 
     public static final int PERMISSION_READ_PHONE_STATE = 1;
     public static final int PERMISSION_ACCESS_COARSE_LOCATION = 2;
