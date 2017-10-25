@@ -214,23 +214,6 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
 
         MainTabLayout tabLayout = (MainTabLayout) findViewById(R.id.tab_layout);
         tabLayout.createTabs();
-        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                Answers.getInstance().logContentView(new ContentViewEvent()
-                        .putContentName("Visits Tab " + tabAdapter.getTabName(tab.getPosition()))
-                        .putContentType("Tab navigation")
-                        .putContentId("page-tab"));
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-            }
-        });
 
         final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fabSendSample);
         if (fab == null) return;
@@ -278,6 +261,7 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
             public void onTabSelected(TabLayout.Tab tab) {
                 mViewPager.setCurrentItem(tab.getPosition());
                 getActionBarToolbar().setTitle(tab.getContentDescription());
+
                 if (tab.getPosition() == TabAdapter.TAB_HOME) {
                     fab.show();
                 } else {
@@ -287,6 +271,11 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
                 if (tab.getPosition() == TabAdapter.TAB_CHARTS) {
                     EventBus.getDefault().post(new RefreshChartEvent());
                 }
+
+                Answers.getInstance().logContentView(new ContentViewEvent()
+                        .putContentName("Visits Tab " + tabAdapter.getTabName(tab.getPosition()))
+                        .putContentType("Tab navigation")
+                        .putContentId("page-tab"));
             }
 
             @Override

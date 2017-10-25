@@ -28,6 +28,8 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.crashlytics.android.answers.Answers;
+import com.crashlytics.android.answers.ContentViewEvent;
 import com.hmatalonga.greenhub.Config;
 import com.hmatalonga.greenhub.R;
 import com.hmatalonga.greenhub.events.RefreshEvent;
@@ -139,6 +141,10 @@ public class DeviceFragment extends Fragment {
         btViewMore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Answers.getInstance().logContentView(new ContentViewEvent()
+                        .putContentName("Enters Task Manager")
+                        .putContentType("Page visit")
+                        .putContentId("page-task-manager"));
                 startActivity(new Intent(view.getContext(), TaskListActivity.class));
             }
         });
