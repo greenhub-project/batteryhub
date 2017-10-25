@@ -40,9 +40,9 @@ $ gradlew.bat check
 
 If it is the first time building the Android app with Docker, it is necessary to build a local Docker image before running it. Afterwards just run a container:
 ```shell
-$ docker build -t hmatalonga/greenhub-android . # Only necessary for first build
-$ docker run -it --name container-name \        # Choose a container name
--v `pwd`:/usr/src/app \                         # DO NOT change this src path
+$ docker build -t greenhub-project/batteryhub .  # Only necessary for first build
+$ docker run -it --name container-name \         # Choose a container name
+-v `pwd`:/usr/src/app \                          # DO NOT change this src path
 hmatalonga/greenhub-android \
 /bin/sh -c \
 "./gradlew assembleDebug; ./gradlew check"
@@ -52,7 +52,7 @@ To execute another gradle task, simply create a new container:
 ```shell
 $ docker run -it --name container-name \        # Choose another container name
 -v `pwd`:/usr/src/app \                         # DO NOT change this src path
-hmatalonga/greenhub-android \
+greenhub-project/batteryhub \
 /bin/sh -c \
 "./gradlew task-name"
 ```
@@ -64,7 +64,7 @@ $ docker start -i container-name
 
 One line build, for copy-paste:
 ```shell
-docker build -t hmatalonga/greenhub-android . && docker run -it --name greenhub-app -v `pwd`:/usr/src/app hmatalonga/greenhub-android /bin/sh -c "./gradlew assembleDebug; ./gradlew check"
+docker build -t greenhub-project/batteryhub . && docker run -it --name greenhub-app -v `pwd`:/usr/src/app greenhub-project/batteryhub /bin/sh -c "./gradlew assembleDebug; ./gradlew check"
 ```
 
 To list all available gradle tasks run `./gradlew tasks`.

@@ -45,15 +45,10 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
-
 /**
  * Device Fragment.
  */
 public class DeviceFragment extends Fragment {
-
-    private static final String TAG = makeLogTag("DeviceFragment");
-
     private Context mContext = null;
 
     private View mParentView = null;
@@ -169,6 +164,8 @@ public class DeviceFragment extends Fragment {
                 break;
             case "mobile":
                 updateMobileData(mParentView, event.value);
+                break;
+            default:
                 break;
         }
     }

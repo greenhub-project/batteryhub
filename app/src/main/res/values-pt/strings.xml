@@ -217,6 +217,12 @@
 
     <string name="pref_title_temperature_rate">Frequência dos alertas de temperatura</string>
 
+    <string name="pref_title_temperature_warning">Temperatura média</string>
+    <string name="pref_description_temperature_warning">Valor em graus do alerta de temperatura média</string>
+
+    <string name="pref_title_temperature_high">Temperatura alta</string>
+    <string name="pref_description_temperature_high">Valor em graus do alerta de temperatura alta</string>
+
     <string name="pref_title_message_alerts">Alertas novas mensagens</string>
     <string name="pref_description_message_alerts">Mostra notificações sobre novas mensagens</string>
 

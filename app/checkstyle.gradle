@@ -6,9 +6,11 @@
  * apply from : "{rootDir}/checkstyle.gradle"
  *
  * To configure checkstyle use configs at:
- * "{rootDir}/config/checkstyle/checkstyle.xml" - for main projects
- * "{rootDir}/config/checkstyle/checkstyle-test.xml" - for tests
- * "{rootDir}/config/checkstyle/suppresions.xml" - for style suppressions
+ * "{rootDir}/checkstyle.xml" - for main projects
+ * "{rootDir}/checkstyle-test.xml" - for tests
+ * "{rootDir}/suppresions.xml" - for style suppressions
+ *
+ * Config files must be in the root directory in order to Codacy to find them
  *
  * Xml and HTML reports are stored:
  * "{project.buildDir}/reports/checkstyle/"
@@ -30,7 +32,7 @@ task checkstyleMain (type: Checkstyle) {
         xml.destination "$project.buildDir/reports/checkstyle/main.xml"
     }
     classpath = files()
-    configFile = file("${rootProject.rootDir}/config/checkstyle/checkstyle.xml")
+    configFile = file("${rootProject.rootDir}/checkstyle.xml")
 }
 
 task checkstyleTest (type: Checkstyle){
@@ -45,7 +47,7 @@ task checkstyleTest (type: Checkstyle){
         xml.destination "$project.buildDir/reports/checkstyle/test.xml"
     }
     classpath = files()
-    configFile = file("${rootProject.rootDir}/config/checkstyle/checkstyle-test.xml")
+    configFile = file("${rootProject.rootDir}/checkstyle-test.xml")
 }
 
 

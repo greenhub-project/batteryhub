@@ -95,6 +95,24 @@
             android:entryValues="@array/temperature_rate_values"
             android:defaultValue="5"/>
 
+        <EditTextPreference
+            android:key="pref_temperature_warning"
+            android:dependency="pref_temperature_alerts"
+            android:inputType="number"
+            android:title="@string/pref_title_temperature_warning"
+            android:dialogTitle="@string/pref_title_temperature_warning"
+            android:dialogMessage="@string/pref_description_temperature_warning"
+            android:defaultValue="35"/>
+
+        <EditTextPreference
+            android:key="pref_temperature_high"
+            android:dependency="pref_temperature_alerts"
+            android:inputType="number"
+            android:title="@string/pref_title_temperature_high"
+            android:dialogTitle="@string/pref_title_temperature_high"
+            android:dialogMessage="@string/pref_description_temperature_high"
+            android:defaultValue="45"/>
+
         <SwitchPreference
             android:defaultValue="true"
             android:key="pref_message_alerts"

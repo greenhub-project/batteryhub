@@ -230,6 +230,12 @@
 
     <string name="pref_title_temperature_rate">Temperature alerts rate</string>
 
+    <string name="pref_title_temperature_warning">Temperature warning</string>
+    <string name="pref_description_temperature_warning">Degrees value of temperature warning</string>
+
+    <string name="pref_title_temperature_high">Temperature high</string>
+    <string name="pref_description_temperature_high">Degrees value of temperature high</string>
+
     <string name="pref_title_message_alerts">New message alerts</string>
     <string name="pref_description_message_alerts">Show incoming messages notifications</string>
 
