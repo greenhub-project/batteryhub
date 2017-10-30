@@ -21,13 +21,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.BatteryManager;
+import android.os.Build;
 
 import org.greenrobot.eventbus.EventBus;
 
+import com.hmatalonga.greenhub.BuildConfig;
 import com.hmatalonga.greenhub.events.PowerSourceEvent;
 import com.hmatalonga.greenhub.managers.sampling.Inspector;
 import com.hmatalonga.greenhub.managers.storage.GreenHubDb;
 
+import io.realm.exceptions.RealmMigrationNeededException;
+
+import static com.hmatalonga.greenhub.util.LogUtils.LOGE;
 import static com.hmatalonga.greenhub.util.LogUtils.LOGI;
 import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
 
@@ -37,6 +42,10 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        String action = intent.getAction();
+
+        if (action == null) return;
+
         if (intent.getAction().equals(Intent.ACTION_POWER_CONNECTED)) {
 
             final Intent mIntent = context.getApplicationContext()
@@ -47,7 +56,11 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
             int chargePlug = mIntent.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1);
             boolean usbCharge = chargePlug == BatteryManager.BATTERY_PLUGGED_USB;
             boolean acCharge = chargePlug == BatteryManager.BATTERY_PLUGGED_AC;
-            boolean wirelessCharge = chargePlug == BatteryManager.BATTERY_PLUGGED_WIRELESS;
+            boolean wirelessCharge = false;
+
+            if (Build.VERSION.SDK_INT >= 21) {
+                wirelessCharge = chargePlug == BatteryManager.BATTERY_PLUGGED_WIRELESS;
+            }
 
             if (acCharge) {
                 EventBus.getDefault().post(new PowerSourceEvent("ac"));
@@ -60,10 +73,15 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
             EventBus.getDefault().post(new PowerSourceEvent("unplugged"));
         }
 
-        // Save a new Battery Session to the database
-        GreenHubDb database = new GreenHubDb();
-        LOGI(TAG, "Getting new session");
-        database.saveSession(Inspector.getBatterySession(context, intent));
-        database.close();
+        try {
+            // Save a new Battery Session to the database
+            GreenHubDb database = new GreenHubDb();
+            LOGI(TAG, "Getting new session");
+            database.saveSession(Inspector.getBatterySession(context, intent));
+            database.close();
+        } catch (IllegalStateException | RealmMigrationNeededException e) {
+            LOGE(TAG, "No session was created");
+            e.printStackTrace();
+        }
     }
 }

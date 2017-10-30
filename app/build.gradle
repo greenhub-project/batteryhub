@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'realm-android'
 apply plugin: 'io.fabric'
 
-// apply from: 'checkstyle.gradle'
+apply from: 'checkstyle.gradle'
 
 // Check if can build a release config
 def canBuildRelease = rootProject.file('keystore.properties').exists()
