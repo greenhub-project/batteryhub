@@ -24,9 +24,12 @@ import android.os.BatteryManager;
 
 import org.greenrobot.eventbus.EventBus;
 
+import com.hmatalonga.greenhub.events.BatteryTimeEvent;
 import com.hmatalonga.greenhub.events.PowerSourceEvent;
 import com.hmatalonga.greenhub.managers.sampling.Inspector;
 import com.hmatalonga.greenhub.managers.storage.GreenHubDb;
+import com.hmatalonga.greenhub.models.Battery;
+import com.hmatalonga.greenhub.util.Notifier;
 
 import static com.hmatalonga.greenhub.util.LogUtils.LOGI;
 import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
@@ -37,7 +40,9 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        boolean isCharging = false;
         if (intent.getAction().equals(Intent.ACTION_POWER_CONNECTED)) {
+            isCharging = true;
 
             final Intent mIntent = context.getApplicationContext()
                     .registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
@@ -57,8 +62,16 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
                 EventBus.getDefault().post(new PowerSourceEvent("wireless"));
             }
         } else if(intent.getAction().equals(Intent.ACTION_POWER_DISCONNECTED)) {
+            isCharging = false;
             EventBus.getDefault().post(new PowerSourceEvent("unplugged"));
         }
+        // Post to subscribers & update notification
+        int batteryRemaining = (int)(Battery.getRemainingBatteryTime(context, isCharging)/60);
+        int batteryRemainingHours = batteryRemaining/60;
+        int batteryRemainingMinutes = batteryRemaining % 60;
+
+        EventBus.getDefault().post(new BatteryTimeEvent(batteryRemainingHours, batteryRemainingMinutes, isCharging));
+        Notifier.remainingBatteryTimeAlert(context, batteryRemainingHours+"h "+batteryRemainingMinutes+"m", isCharging);
 
         // Save a new Battery Session to the database
         GreenHubDb database = new GreenHubDb();

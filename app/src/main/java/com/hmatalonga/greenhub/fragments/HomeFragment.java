@@ -30,6 +30,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -40,6 +41,7 @@ import java.util.ArrayList;
 import com.hmatalonga.greenhub.Config;
 import com.hmatalonga.greenhub.R;
 import com.hmatalonga.greenhub.events.BatteryLevelEvent;
+import com.hmatalonga.greenhub.events.BatteryTimeEvent;
 import com.hmatalonga.greenhub.events.PowerSourceEvent;
 import com.hmatalonga.greenhub.events.StatusEvent;
 import com.hmatalonga.greenhub.managers.sampling.DataEstimator;
@@ -49,6 +51,7 @@ import com.hmatalonga.greenhub.models.ui.BatteryCard;
 import com.hmatalonga.greenhub.ui.MainActivity;
 import com.hmatalonga.greenhub.ui.adapters.BatteryRVAdapter;
 
+import static com.hmatalonga.greenhub.util.LogUtils.LOGI;
 import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
 
 /**
@@ -177,6 +180,16 @@ public class HomeFragment extends Fragment {
 
         // Reload battery cards data from estimator
         loadData(mActivity.getEstimator());
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void updateBatteryRemainingTime(BatteryTimeEvent event){
+        //TODO: change the UI with the value from this event
+        //For now, it's just logging
+        String logText = event.charging ?
+                "" + event.remainingHours + " h " + event.remainingMinutes + " m until complete charge"
+                : "Remaining Time: " + event.remainingHours + " h " + event.remainingMinutes + " m";
+        LOGI("BATTERY_LOG", logText);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
