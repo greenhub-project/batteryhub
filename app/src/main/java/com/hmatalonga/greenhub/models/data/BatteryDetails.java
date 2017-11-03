@@ -38,8 +38,11 @@ public class BatteryDetails extends RealmObject {
     // Battery technology
     public String technology;
 
-    // Capacity in mAh
+    // Total capacity in mAh
     public int capacity;
+
+    // Remaining capacity in mAh
+    public int remainingCapacity;
 
     // Battery capacity in microAmpere-hours
     public int chargeCounter;
