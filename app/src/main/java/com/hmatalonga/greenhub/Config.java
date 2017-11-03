@@ -57,7 +57,7 @@ public final class Config {
     public static final String SERVER_URL_DEFAULT = "none";
     public static final String SERVER_URL_DEVELOPMENT = "http://192.168.1.105:8080";
 
-    public static final int DATABASE_VERSION = 3;
+    public static final int DATABASE_VERSION = 4;
 
     // Alarm event for sampling when battery has not changed for
     // SAMPLE_INTERVAL_MS. Currently not used.
@@ -75,6 +75,17 @@ public final class Config {
             "/sys/class/power_supply/battery/current_now";
     public static final String BATTERY_SOURCE_ALTERNATIVE =
             "/sys/devices/platform/battery/power_supply/battery/BatteryAverageCurrent";
+
+    public static final String BATTERY_STATS_SOURCE_DEFAULT =
+            "/sys/class/power_supply/battery/uevent";
+    public static final String BATTERY_CHARGE_FULL = "POWER_SUPPLY_CHARGE_FULL";  // Battery Full Capacity in uAh
+    public static final String BATTERY_CHARGE_FULL_DESIGN = "POWER_SUPPLY_CHARGE_FULL_DESIGN";
+    public static final String BATTERY_ENERGY_FULL = "POWER_SUPPLY_ENERGY_FULL";  // Battery Full Capacity in uWh
+    public static final String BATTERY_ENERGY_FULL_DESIGN = "POWER_SUPPLY_CHARGE_FULL_DESIGN";
+    public static final String BATTERY_VOLTAGE_NOW = "POWER_SUPPLY_VOLTAGE_NOW";  // The circuit voltage at the moment
+    public static final String BATTERY_CURRENT_NOW = "POWER_SUPPLY_CURRENT_NOW";  // The Current at the moment in uA
+    public static final String BATTERY_ENERGY_NOW = "POWER_SUPPLY_ENERGY_NOW";   // The device remaining capacity in uAh
+    public static final String BATTERY_CAPACITY = "POWER_SUPPLY_CAPACITY";     // The battery capacity percentage (1-100)
 
     public static final String DATA_HISTORY_DEFAULT = "4";
 
@@ -114,4 +125,6 @@ public final class Config {
     public static final int KILL_APP_TIMEOUT = 15000; // 15s
     public static final int SORT_BY_MEMORY = 1;
     public static final int SORT_BY_NAME = 2;
+
+    public static final int BATTERY_CAPACITY_SAMPLES_SIZE = 5;
 }
