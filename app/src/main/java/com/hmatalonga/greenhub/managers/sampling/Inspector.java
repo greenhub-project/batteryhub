@@ -61,6 +61,7 @@ import android.util.Log;
 
 import com.hmatalonga.greenhub.BuildConfig;
 import com.hmatalonga.greenhub.Config;
+import com.hmatalonga.greenhub.events.BatteryTimeEvent;
 import com.hmatalonga.greenhub.events.StatusEvent;
 import com.hmatalonga.greenhub.models.Application;
 import com.hmatalonga.greenhub.models.Battery;
@@ -89,6 +90,7 @@ import com.hmatalonga.greenhub.models.data.NetworkDetails;
 import com.hmatalonga.greenhub.models.data.ProcessInfo;
 import com.hmatalonga.greenhub.models.data.Sample;
 import com.hmatalonga.greenhub.models.data.Settings;
+import com.hmatalonga.greenhub.util.Notifier;
 import com.hmatalonga.greenhub.util.SettingsUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -586,11 +588,22 @@ public final class Inspector {
         batteryDetails.technology = batteryTechnology;
 
         // Battery other values with API level limitations
+        batteryDetails.remainingCapacity = Battery.getBatteryRemainingCapacity(context);
+        LOGI("Bat. Capacity", ""+batteryDetails.remainingCapacity);
         batteryDetails.capacity = Battery.getActualBatteryCapacity(context);
         batteryDetails.chargeCounter = Battery.getBatteryChargeCounter(context);
         batteryDetails.currentAverage = Battery.getBatteryCurrentAverage(context);
         batteryDetails.currentNow = Battery.getBatteryCurrentNow(context);
         batteryDetails.energyCounter = Battery.getBatteryEnergyCounter(context);
+
+        boolean isCharging = batteryStatus == "Charging";
+        int batteryRemaining = (int)(Battery.getRemainingBatteryTime(context, isCharging)/60);
+        int batteryRemainingHours = batteryRemaining/60;
+        int batteryRemainingMinutes = batteryRemaining % 60;
+
+        EventBus.getDefault().post(new BatteryTimeEvent(batteryRemainingHours, batteryRemainingMinutes, isCharging));
+        Notifier.remainingBatteryTimeAlert(context, batteryRemainingHours+"h "+batteryRemainingMinutes+"m", isCharging);
+        LOGI("Rem. Time (regression)", batteryRemainingHours+"h "+batteryRemainingMinutes+"m");
 
         newSample.batteryDetails = batteryDetails;
         newSample.batteryLevel = sCurrentBatteryLevel;
