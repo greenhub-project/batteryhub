@@ -30,7 +30,6 @@ import java.io.InputStreamReader;
 import java.io.RandomAccessFile;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.List;
 
 import com.hmatalonga.greenhub.Config;
 import com.hmatalonga.greenhub.managers.storage.GreenHubDb;
@@ -351,8 +350,6 @@ public class Battery {
 
         for (BatteryUsage currentUsage : lastUsages) {
             if (previousUsage != null) {
-                float x = currentUsage.level;
-                float y = currentUsage.details.capacity;
                 int currentCapacity = currentUsage.details.remainingCapacity;
                 int previousCapacity = previousUsage.details.remainingCapacity;
                 double discharge = chargingSignal * (previousCapacity - currentCapacity);
@@ -360,7 +357,7 @@ public class Battery {
                 // prevent division by zero OR a negative charge/discharge:
                 // i.e., only positive differences are considered
                 if (discharge > 0.0) {
-                    long elapsedTime = Math.abs((currentUsage.timestamp - previousUsage.timestamp) / 1000);  // in seconds
+                    long elapsedTime = abs((currentUsage.timestamp - previousUsage.timestamp) / 1000);  // in seconds
                     dischargeSamples.add(elapsedTime / discharge);
                 }
             }
