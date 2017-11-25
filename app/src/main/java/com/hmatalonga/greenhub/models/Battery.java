@@ -136,7 +136,7 @@ public class Battery {
             value = manager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CHARGE_COUNTER)/1000;
         }
 
-        if (Build.VERSION.SDK_INT < 21 || value == Integer.MIN_VALUE) {
+        if (Build.VERSION.SDK_INT < 21 || value <= 0) {
             value = getBatteryPropertyLegacy(Config.BATTERY_CHARGE_FULL)/1000;  // in mAh
         }
 
@@ -301,31 +301,50 @@ public class Battery {
      * @param charging If true, the method returns the expected time until full charge
      * @return remaining battery time in seconds
      */
-    public static long getRemainingBatteryTime(final Context context, boolean charging) {
+    public static long getRemainingBatteryTime(final Context context, boolean charging, String charger) {
         double remainingCapacity = 0;
+        double chargingSignal;
+        int defaultDischargeRate = Config.DEFAULT_DISCHARGE_RATE;
         if (!charging) {
+            chargingSignal = -1;
             remainingCapacity = getBatteryRemainingCapacity(context);
-            LOGI("WOW", "| "+remainingCapacity);
+            LOGI("WOW", "[B] RemCap: "+remainingCapacity);
         }else{
+            chargingSignal = 1;
+            switch (charger) {
+                case "usb":
+                    defaultDischargeRate = Config.DEFAULT_USB_CHARGE_RATE;
+                    break;
+                case "ac":
+                    defaultDischargeRate = Config.DEFAULT_AC_CHARGE_RATE;
+                    break;
+                case "wireless":
+                    defaultDischargeRate = Config.DEFAULT_WIRELESS_CHARGE_RATE;
+                    break;
+                default:
+                    break;
+            }
+
             int fullCapacity = getBatteryChargeCounter(context) != -1 ? getBatteryChargeCounter(context) : getActualBatteryCapacity(context);
             remainingCapacity = fullCapacity - getBatteryRemainingCapacity(context);
-            LOGI("WOW", fullCapacity+" - "+getBatteryRemainingCapacity(context)+" = "+remainingCapacity);
+            LOGI("WOW", "[C] FullCap: "+fullCapacity);
+            LOGI("WOW", "[C] CapLeft: "+getBatteryRemainingCapacity(context));
+            LOGI("WOW", "[C] RemCap: "+remainingCapacity);
         }
 
         GreenHubDb database = new GreenHubDb();
 
         RealmResults<BatteryUsage> allUsages = database.getUsages();
-        database.close();
         int limit = Math.min(Config.BATTERY_CAPACITY_SAMPLES_SIZE, allUsages.size());
         if (limit <= 1) {
             // no samples collected yet
             // consider a naive value
             LOGI(TAG,"Not enough samples yet in the DB. Assuming a blind estimation of battery remaining time");
-            int remainingHours = (int)(remainingCapacity/150);  // assume a continuous discharge of 150 mA
-            return (remainingHours*60*60);
+            int remainingSeconds = (int)((remainingCapacity*(60*60))/defaultDischargeRate);
+            return (remainingSeconds);
         }
 
-        LOGI(TAG,"Estimating battery time using " + limit + " samples");
+        LOGI(TAG,"Estimating battery remaining time using " + limit + " samples");
         ArrayList<BatteryUsage> lastUsages = new ArrayList<>(allUsages.subList(0,limit));
         ArrayList<Double> dischargeSamples = new ArrayList<>();
         BatteryUsage previousUsage = null;
@@ -336,15 +355,21 @@ public class Battery {
                 float y = currentUsage.details.capacity;
                 int currentCapacity = currentUsage.details.remainingCapacity;
                 int previousCapacity = previousUsage.details.remainingCapacity;
-                LOGI("TEST", "x: "+ x+"; y: "+y);
-                LOGI("USAGES", "current: "+ currentCapacity +"; previous: "+previousCapacity);
-                double discharge = Math.abs(previousCapacity - currentCapacity);
-                if (discharge == 0.0) continue;  // prevent division by zero
-                long elapsedTime = Math.abs((currentUsage.timestamp - previousUsage.timestamp)/1000);  // in seconds
-                LOGI(TAG,"Discharge: "+discharge+"; Elapsed Time: "+elapsedTime);
-                dischargeSamples.add(elapsedTime / discharge);
+                double discharge = chargingSignal * (previousCapacity - currentCapacity);
+
+                // prevent division by zero OR a negative charge/discharge:
+                // i.e., only positive differences are considered
+                if (discharge > 0.0) {
+                    long elapsedTime = Math.abs((currentUsage.timestamp - previousUsage.timestamp) / 1000);  // in seconds
+                    dischargeSamples.add(elapsedTime / discharge);
+                }
             }
             previousUsage = currentUsage;
+        }
+        database.close();
+        if (dischargeSamples.size() == 0) {
+            int remainingSeconds = (int) ((remainingCapacity * (60 * 60)) / defaultDischargeRate);
+            return (remainingSeconds);
         }
 
         double sumDischarges = 0;

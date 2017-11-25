@@ -41,6 +41,7 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         boolean isCharging = false;
+        String batteryCharger = "";
         if (intent.getAction().equals(Intent.ACTION_POWER_CONNECTED)) {
             isCharging = true;
 
@@ -55,10 +56,13 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
             boolean wirelessCharge = chargePlug == BatteryManager.BATTERY_PLUGGED_WIRELESS;
 
             if (acCharge) {
+                batteryCharger = "ac";
                 EventBus.getDefault().post(new PowerSourceEvent("ac"));
             } else if (usbCharge) {
+                batteryCharger = "usb";
                 EventBus.getDefault().post(new PowerSourceEvent("usb"));
             } else if (wirelessCharge) {
+                batteryCharger = "wireless";
                 EventBus.getDefault().post(new PowerSourceEvent("wireless"));
             }
         } else if(intent.getAction().equals(Intent.ACTION_POWER_DISCONNECTED)) {
@@ -66,7 +70,7 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
             EventBus.getDefault().post(new PowerSourceEvent("unplugged"));
         }
         // Post to subscribers & update notification
-        int batteryRemaining = (int)(Battery.getRemainingBatteryTime(context, isCharging)/60);
+        int batteryRemaining = (int)(Battery.getRemainingBatteryTime(context, isCharging, batteryCharger)/60);
         int batteryRemainingHours = batteryRemaining/60;
         int batteryRemainingMinutes = batteryRemaining % 60;
 

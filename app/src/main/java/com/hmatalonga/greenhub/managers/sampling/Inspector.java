@@ -560,6 +560,8 @@ public final class Inspector {
             case BatteryManager.BATTERY_PLUGGED_USB:
                 batteryCharger = "usb";
                 break;
+            case BatteryManager.BATTERY_PLUGGED_WIRELESS:
+                batteryCharger = "wireless";
         }
 
 
@@ -589,7 +591,6 @@ public final class Inspector {
 
         // Battery other values with API level limitations
         batteryDetails.remainingCapacity = Battery.getBatteryRemainingCapacity(context);
-        LOGI("Bat. Capacity", ""+batteryDetails.remainingCapacity);
         batteryDetails.capacity = Battery.getActualBatteryCapacity(context);
         batteryDetails.chargeCounter = Battery.getBatteryChargeCounter(context);
         batteryDetails.currentAverage = Battery.getBatteryCurrentAverage(context);
@@ -597,13 +598,12 @@ public final class Inspector {
         batteryDetails.energyCounter = Battery.getBatteryEnergyCounter(context);
 
         boolean isCharging = batteryStatus == "Charging";
-        int batteryRemaining = (int)(Battery.getRemainingBatteryTime(context, isCharging)/60);
+        int batteryRemaining = (int)(Battery.getRemainingBatteryTime(context, isCharging, batteryCharger)/60);
         int batteryRemainingHours = batteryRemaining/60;
         int batteryRemainingMinutes = batteryRemaining % 60;
 
         EventBus.getDefault().post(new BatteryTimeEvent(batteryRemainingHours, batteryRemainingMinutes, isCharging));
         Notifier.remainingBatteryTimeAlert(context, batteryRemainingHours+"h "+batteryRemainingMinutes+"m", isCharging);
-        LOGI("Rem. Time (regression)", batteryRemainingHours+"h "+batteryRemainingMinutes+"m");
 
         newSample.batteryDetails = batteryDetails;
         newSample.batteryLevel = sCurrentBatteryLevel;
@@ -721,6 +721,8 @@ public final class Inspector {
             case BatteryManager.BATTERY_PLUGGED_USB:
                 batteryCharger = "usb";
                 break;
+            case BatteryManager.BATTERY_PLUGGED_WIRELESS:
+                batteryCharger = "wireless";
         }
 
         details.temperature = ((float) intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, 0)) / 10;
@@ -738,6 +740,7 @@ public final class Inspector {
         details.currentAverage = Battery.getBatteryCurrentAverage(context);
         details.currentNow = Battery.getBatteryCurrentNow(context);
         details.energyCounter = Battery.getBatteryEnergyCounter(context);
+        details.remainingCapacity = Battery.getBatteryRemainingCapacity(context);
 
         usage.level = (float) sCurrentBatteryLevel;
         usage.state = batteryStatus;

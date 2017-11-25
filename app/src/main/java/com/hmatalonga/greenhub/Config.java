@@ -87,6 +87,11 @@ public final class Config {
     public static final String BATTERY_ENERGY_NOW = "POWER_SUPPLY_ENERGY_NOW";   // The device remaining capacity in uAh
     public static final String BATTERY_CAPACITY = "POWER_SUPPLY_CAPACITY";     // The battery capacity percentage (1-100)
 
+    public static final int DEFAULT_USB_CHARGE_RATE = 500;  // assume that, in one hours, it charges 500 mA
+    public static final int DEFAULT_AC_CHARGE_RATE = 1500;  // assume that, in one hours, it charges 1500 mA
+    public static final int DEFAULT_WIRELESS_CHARGE_RATE = 500;  // assume that, in one hours, it charges 500 mA
+    public static final int DEFAULT_DISCHARGE_RATE = 200;  // assume a continuous discharge of 200 mA per hour
+
     public static final String DATA_HISTORY_DEFAULT = "4";
 
     public static final int UPLOAD_MAX_TRIES = 3;
@@ -126,5 +131,5 @@ public final class Config {
     public static final int SORT_BY_MEMORY = 1;
     public static final int SORT_BY_NAME = 2;
 
-    public static final int BATTERY_CAPACITY_SAMPLES_SIZE = 5;
+    public static final int BATTERY_CAPACITY_SAMPLES_SIZE = 10;
 }
