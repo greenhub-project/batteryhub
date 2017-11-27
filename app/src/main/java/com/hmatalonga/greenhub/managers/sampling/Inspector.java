@@ -597,7 +597,7 @@ public final class Inspector {
         batteryDetails.currentNow = Battery.getBatteryCurrentNow(context);
         batteryDetails.energyCounter = Battery.getBatteryEnergyCounter(context);
 
-        boolean isCharging = batteryStatus.equals("Charging");
+        boolean isCharging = "Charging".equals(batteryStatus);
         int batteryRemaining = (int)(Battery.getRemainingBatteryTime(context, isCharging, batteryCharger)/60);
         int batteryRemainingHours = batteryRemaining/60;
         int batteryRemainingMinutes = batteryRemaining % 60;

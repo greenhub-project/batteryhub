@@ -40,6 +40,7 @@ import io.realm.RealmResults;
 import static com.hmatalonga.greenhub.util.LogUtils.LOGI;
 import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
 import static java.lang.Math.abs;
+import static java.lang.Math.max;
 
 /**
  * Battery.
@@ -259,16 +260,24 @@ public class Battery {
      */
     public static int getBatteryRemainingCapacity(final Context context) {
         double remainingCapacity = 0;
-        long capacity = getBatteryCapacity(context) != -1 ? abs(getBatteryCapacity(context)) : 0;  //in %
-        long chargeCounter = getBatteryChargeCounter(context) != -1 ?
-                abs(getBatteryChargeCounter(context))
-                : abs(getActualBatteryCapacity(context));  //in mAh
+        long capacity = getBatteryCapacity(context);  // in %
+        if (capacity <= -1) {
+            capacity = 0;
+        }
+        
+        long chargeCounter = getBatteryChargeCounter(context);
+        if (chargeCounter <= -1) {
+            chargeCounter = abs(getActualBatteryCapacity(context));  // in mAh
+        }
 
         if (capacity > 0 && chargeCounter > 0) {
             remainingCapacity = (double)((chargeCounter * capacity) / 100);
         }else{
-            double voltageNow = getBatteryVoltage(context) != 0 ? abs(getBatteryVoltage(context)) : 1;
-            long energyCounter = getBatteryEnergyCounter(context) != -1 ? abs(getBatteryEnergyCounter(context)) : 0;
+            double voltageNow = max(1, getBatteryVoltage(context));
+            long energyCounter = getBatteryEnergyCounter(context);
+            if (energyCounter <= -1) {
+                 energyCounter = 0;
+            }
             return (int)(energyCounter / voltageNow);
         }
 
@@ -326,9 +335,6 @@ public class Battery {
 
             int fullCapacity = getBatteryChargeCounter(context) != -1 ? getBatteryChargeCounter(context) : getActualBatteryCapacity(context);
             remainingCapacity = fullCapacity - getBatteryRemainingCapacity(context);
-            LOGI("WOW", "[C] FullCap: "+fullCapacity);
-            LOGI("WOW", "[C] CapLeft: "+getBatteryRemainingCapacity(context));
-            LOGI("WOW", "[C] RemCap: "+remainingCapacity);
         }
 
         GreenHubDb database = new GreenHubDb();
