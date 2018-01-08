@@ -20,6 +20,7 @@ import android.content.Intent;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import com.hmatalonga.greenhub.models.data.BatterySession;
 import com.hmatalonga.greenhub.models.data.BatteryUsage;
@@ -142,6 +143,12 @@ public class GreenHubDb {
         return mRealm
                 .where(Message.class)
                 .findAllSorted("id", Sort.DESCENDING);
+    }
+
+    public RealmResults<BatteryUsage> getUsages() {
+        return mRealm
+                .where(BatteryUsage.class)
+                .findAllSorted("timestamp", Sort.DESCENDING);
     }
 
     public void markMessageAsRead(int id) {

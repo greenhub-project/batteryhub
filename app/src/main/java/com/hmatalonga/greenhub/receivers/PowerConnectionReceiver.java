@@ -25,10 +25,13 @@ import android.os.Build;
 
 import org.greenrobot.eventbus.EventBus;
 
+import com.hmatalonga.greenhub.events.BatteryTimeEvent;
 import com.hmatalonga.greenhub.BuildConfig;
 import com.hmatalonga.greenhub.events.PowerSourceEvent;
 import com.hmatalonga.greenhub.managers.sampling.Inspector;
 import com.hmatalonga.greenhub.managers.storage.GreenHubDb;
+import com.hmatalonga.greenhub.models.Battery;
+import com.hmatalonga.greenhub.util.Notifier;
 
 import io.realm.exceptions.RealmMigrationNeededException;
 
@@ -46,7 +49,10 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
 
         if (action == null) return;
 
+        boolean isCharging = false;
+        String batteryCharger = "";
         if (intent.getAction().equals(Intent.ACTION_POWER_CONNECTED)) {
+            isCharging = true;
 
             final Intent mIntent = context.getApplicationContext()
                     .registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
@@ -63,15 +69,26 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
             }
 
             if (acCharge) {
+                batteryCharger = "ac";
                 EventBus.getDefault().post(new PowerSourceEvent("ac"));
             } else if (usbCharge) {
+                batteryCharger = "usb";
                 EventBus.getDefault().post(new PowerSourceEvent("usb"));
             } else if (wirelessCharge) {
+                batteryCharger = "wireless";
                 EventBus.getDefault().post(new PowerSourceEvent("wireless"));
             }
         } else if(intent.getAction().equals(Intent.ACTION_POWER_DISCONNECTED)) {
+            isCharging = false;
             EventBus.getDefault().post(new PowerSourceEvent("unplugged"));
         }
+        // Post to subscribers & update notification
+        int batteryRemaining = (int)(Battery.getRemainingBatteryTime(context, isCharging, batteryCharger)/60);
+        int batteryRemainingHours = batteryRemaining/60;
+        int batteryRemainingMinutes = batteryRemaining % 60;
+
+        EventBus.getDefault().post(new BatteryTimeEvent(batteryRemainingHours, batteryRemainingMinutes, isCharging));
+        Notifier.remainingBatteryTimeAlert(context, batteryRemainingHours+"h "+batteryRemainingMinutes+"m", isCharging);
 
         try {
             // Save a new Battery Session to the database

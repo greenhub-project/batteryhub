@@ -364,4 +364,55 @@ public class Notifier {
         notification.flags |= Notification.FLAG_ONLY_ALERT_ONCE;
         sNotificationManager.notify(Config.NOTIFICATION_TEMPERATURE_HIGH, notification);
     }
+
+    public static void remainingBatteryTimeAlert(final Context context, String timeRemaining, boolean charging) {
+        String title = timeRemaining;
+        String text;
+        if (!charging) {
+            text = "Battery remaining time";
+        }else{
+            text = "Remaining time until full charge";
+        }
+
+        sBuilder = new NotificationCompat.Builder(context)
+                .setContentTitle(title)
+                .setContentText(text)
+                .setAutoCancel(false)
+                .setOngoing(true)
+                .setPriority(SettingsUtils.fetchNotificationsPriority(context));
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            sBuilder.setVisibility(Notification.VISIBILITY_PUBLIC);
+        }
+
+        if (!charging) {
+            sBuilder.setSmallIcon(R.drawable.ic_battery_50_grey600_24dp);
+        }else{
+            sBuilder.setSmallIcon(R.drawable.ic_battery_50_white_24dp);
+        }
+
+        // Creates an explicit intent for an Activity in your app
+        Intent resultIntent = new Intent(context, MainActivity.class);
+
+        // The stack builder object will contain an artificial back stack for the
+        // started Activity.
+        // This ensures that navigating backward from the Activity leads out of
+        // your application to the Home screen.
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+        // Adds the back stack for the Intent (but not the Intent itself)
+        stackBuilder.addParentStack(MainActivity.class);
+        // Adds the Intent that starts the Activity to the top of the stack
+        stackBuilder.addNextIntent(resultIntent);
+        PendingIntent resultPendingIntent =
+                stackBuilder.getPendingIntent(
+                        0,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+        sBuilder.setContentIntent(resultPendingIntent);
+        sNotificationManager =
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        // mId allows you to update the notification later on.
+        sNotificationManager.notify(Config.NOTIFICATION_BATTERY_STATUS, sBuilder.build());
+        isStatusBarShown = true;
+    }
 }

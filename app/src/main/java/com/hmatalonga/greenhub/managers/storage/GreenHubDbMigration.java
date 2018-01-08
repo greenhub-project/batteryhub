@@ -39,6 +39,12 @@ public class GreenHubDbMigration implements RealmMigration {
                         .addField("database", int.class);
                 oldVersion++;
             }
+
+            if (oldVersion == 3) {
+                schema.get("BatteryDetails")
+                        .addField("remainingCapacity", int.class);
+                oldVersion++;
+            }
         } catch (NullPointerException e) {
             LOGE(TAG, "Schema is null!");
             e.printStackTrace();
