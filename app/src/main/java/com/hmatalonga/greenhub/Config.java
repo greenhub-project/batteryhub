@@ -50,20 +50,13 @@ package com.hmatalonga.greenhub;
  * Created by hugo on 24-03-2016.
  */
 public final class Config {
-    // Whether to output debug messages.
     public static final boolean DEBUG = true;
 
     public static final String SERVER_STATUS_URL = "https://greenhubproject.org/";
     public static final String SERVER_URL_DEFAULT = "none";
-    public static final String SERVER_URL_DEVELOPMENT = "http://192.168.1.105:8080";
+    public static final String SERVER_URL_DEVELOPMENT = "http://192.168.1.55:8080";
 
     public static final int DATABASE_VERSION = 4;
-
-    // Alarm event for sampling when battery has not changed for
-    // SAMPLE_INTERVAL_MS. Currently not used.
-    public static final String ACTION_GREENHUB_SAMPLE = "com.hmatalonga.greenhub.ACTION_SAMPLE";
-
-    public static final String GREENHUB_PACKAGE = "com.hmatalonga.greenhub";
 
     public static final String IMPORTANCE_NOT_RUNNING = "Not Running";
     public static final String IMPORTANCE_UNINSTALLED = "uninstalled";
