@@ -35,9 +35,6 @@ import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
  * Application properties model.
  */
 public class Application {
-
-    private static final String TAG = makeLogTag(Application.class);
-
     public static ArrayList<ProcessInfo> getRunningAppInfo(final Context context) {
         List<RunningAppProcessInfo> runningProcessInfo = Process.getRunningProcessInfo(context);
         List<RunningServiceInfo> runningServices = Service.getRunningServiceInfo(context);
@@ -78,10 +75,11 @@ public class Application {
     }
 
     /**
-     * Helper to query whether an application is currently running and its code has not been evicted from memory.
+     * Helper to query whether an application is currently running
+     * and its code has not been evicted from memory.
      *
-     * @param context the Context
-     * @param appName the package name or process name of the application.
+     * @param context Application's context
+     * @param appName The package name or process name of the application.
      * @return true if the application is running, false otherwise.
      */
     public static boolean isRunning(final Context context, String appName) {

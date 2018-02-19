@@ -67,7 +67,6 @@ public class SettingsActivity extends BaseActivity {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.preferences);
 
-            final Context context = getActivity().getApplicationContext();
             final String versionName = BuildConfig.DEBUG ?
                     BuildConfig.VERSION_NAME + " (Debug)" :
                     BuildConfig.VERSION_NAME;
@@ -86,8 +85,8 @@ public class SettingsActivity extends BaseActivity {
 
         @Override
         public void onDestroy() {
-            super.onDestroy();
             SettingsUtils.unregisterOnSharedPreferenceChangeListener(getActivity(), this);
+            super.onDestroy();
         }
 
         @Override
@@ -143,6 +142,9 @@ public class SettingsActivity extends BaseActivity {
                     break;
                 case SettingsUtils.PREF_NOTIFICATIONS_PRIORITY:
                     bindPreferenceSummaryToValue(preference);
+                    break;
+                case SettingsUtils.PREF_REMAINING_TIME:
+
                     break;
             }
         }

@@ -131,6 +131,11 @@ public class SettingsUtils {
      */
     public static final String PREF_USE_OLD_MEASUREMENT = "pref_old_measurement";
 
+    /**
+     * Boolean indicating whether to display remaining time notification or not.
+     */
+    public static final String PREF_REMAINING_TIME = "pref_remaining_time";
+
     // endregion
 
     /**
@@ -445,6 +450,16 @@ public class SettingsUtils {
     public static int fetchAppVersion(final Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         return sp.getInt(PREF_APP_VERSION, BuildConfig.VERSION_CODE);
+    }
+
+    /**
+     * Return true if remaining time alert is to display, false if it isn't.
+     *
+     * @param context Context to be used to lookup the {@link android.content.SharedPreferences}.
+     */
+    public static boolean isRemainingTimeAlertOn(final Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getBoolean(PREF_USE_OLD_MEASUREMENT, false);
     }
 
     // region Listeners

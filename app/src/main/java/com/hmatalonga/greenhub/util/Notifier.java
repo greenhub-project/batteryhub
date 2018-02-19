@@ -61,12 +61,12 @@ public class Notifier {
         String title = context.getString(R.string.now) + ": " + now + " mA";
         String text = context.getString(R.string.notif_batteryhub_running);
 
-        sBuilder = new NotificationCompat.Builder(context)
-                        .setContentTitle(title)
-                        .setContentText(text)
-                        .setAutoCancel(false)
-                        .setOngoing(true)
-                        .setPriority(SettingsUtils.fetchNotificationsPriority(context));
+        sBuilder = new NotificationCompat.Builder(context, "start_status")
+                .setContentTitle(title)
+                .setContentText(text)
+                .setAutoCancel(false)
+                .setOngoing(true)
+                .setPriority(SettingsUtils.fetchNotificationsPriority(context));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             sBuilder.setVisibility(Notification.VISIBILITY_PUBLIC);
@@ -148,14 +148,14 @@ public class Notifier {
                     (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         }
 
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, "new_message")
                 .setSmallIcon(R.drawable.ic_email_white_24dp)
                 .setContentTitle(context.getString(R.string.notif_new_message))
                 .setContentText(context.getString(R.string.notif_open_inbox))
                 .setAutoCancel(true)
                 .setOngoing(false)
                 .setLights(Color.GREEN, 500, 2000)
-                .setVibrate(new long[] {0, 800, 1500})
+                .setVibrate(new long[]{0, 800, 1500})
                 .setPriority(SettingsUtils.fetchNotificationsPriority(context));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -193,14 +193,14 @@ public class Notifier {
                     (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         }
 
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, "battery_full")
                 .setSmallIcon(R.drawable.ic_information_white_24dp)
                 .setContentTitle(context.getString(R.string.notif_battery_full))
                 .setContentText(context.getString(R.string.notif_remove_charger))
                 .setAutoCancel(true)
                 .setOngoing(false)
                 .setLights(Color.GREEN, 500, 2000)
-                .setVibrate(new long[] {0, 400, 1000})
+                .setVibrate(new long[]{0, 400, 1000})
                 .setPriority(SettingsUtils.fetchNotificationsPriority(context));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -236,14 +236,14 @@ public class Notifier {
                     (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         }
 
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, "battery_low")
                 .setSmallIcon(R.drawable.ic_alert_circle_white_24dp)
                 .setContentTitle(context.getString(R.string.notif_battery_low))
                 .setContentText(context.getString(R.string.notif_connect_power))
                 .setAutoCancel(true)
                 .setOngoing(false)
                 .setLights(Color.RED, 500, 2000)
-                .setVibrate(new long[] {0, 400, 1000})
+                .setVibrate(new long[]{0, 400, 1000})
                 .setPriority(SettingsUtils.fetchNotificationsPriority(context));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -279,14 +279,14 @@ public class Notifier {
                     (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         }
 
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, "battery_warning")
                 .setSmallIcon(R.drawable.ic_alert_circle_white_24dp)
                 .setContentTitle(context.getString(R.string.notif_battery_warning))
                 .setContentText(context.getString(R.string.notif_battery_warm))
                 .setAutoCancel(true)
                 .setOngoing(false)
                 .setLights(Color.YELLOW, 500, 2000)
-                .setVibrate(new long[] {0, 400, 1000})
+                .setVibrate(new long[]{0, 400, 1000})
                 .setPriority(SettingsUtils.fetchNotificationsPriority(context));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -325,14 +325,14 @@ public class Notifier {
                     (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         }
 
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, "battery_high")
                 .setSmallIcon(R.drawable.ic_alert_circle_white_24dp)
                 .setContentTitle(context.getString(R.string.notif_battery_hot))
                 .setContentText(context.getString(R.string.notif_battery_cooldown))
                 .setAutoCancel(true)
                 .setOngoing(false)
                 .setLights(Color.RED, 500, 2000)
-                .setVibrate(new long[] {0, 800, 1500})
+                .setVibrate(new long[]{0, 800, 1500})
                 .setPriority(SettingsUtils.fetchNotificationsPriority(context));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -366,16 +366,10 @@ public class Notifier {
     }
 
     public static void remainingBatteryTimeAlert(final Context context, String timeRemaining, boolean charging) {
-        String title = timeRemaining;
-        String text;
-        if (!charging) {
-            text = "Battery remaining time";
-        }else{
-            text = "Remaining time until full charge";
-        }
+        String text = !charging ? "Battery remaining time" : "Remaining time until full charge";
 
-        sBuilder = new NotificationCompat.Builder(context)
-                .setContentTitle(title)
+        sBuilder = new NotificationCompat.Builder(context, "remaining_battery_time")
+                .setContentTitle(timeRemaining)
                 .setContentText(text)
                 .setAutoCancel(false)
                 .setOngoing(true)
@@ -387,7 +381,7 @@ public class Notifier {
 
         if (!charging) {
             sBuilder.setSmallIcon(R.drawable.ic_battery_50_grey600_24dp);
-        }else{
+        } else {
             sBuilder.setSmallIcon(R.drawable.ic_battery_50_white_24dp);
         }
 
