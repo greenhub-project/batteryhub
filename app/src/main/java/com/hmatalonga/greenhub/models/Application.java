@@ -20,16 +20,14 @@ import android.app.ActivityManager.RunningAppProcessInfo;
 import android.app.ActivityManager.RunningServiceInfo;
 import android.content.Context;
 
+import com.hmatalonga.greenhub.models.data.ProcessInfo;
+import com.hmatalonga.greenhub.util.StringHelper;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import com.hmatalonga.greenhub.models.data.ProcessInfo;
-import com.hmatalonga.greenhub.util.StringHelper;
-
-import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
 
 /**
  * Application properties model.

@@ -105,7 +105,7 @@ public class TaskListActivity extends BaseActivity {
 
         setContentView(R.layout.activity_task_list);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
+        Toolbar toolbar = findViewById(R.id.toolbar_actionbar);
         if (toolbar != null) {
             setSupportActionBar(toolbar);
         }
@@ -182,15 +182,15 @@ public class TaskListActivity extends BaseActivity {
     }
 
     private void loadComponents() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
+        Toolbar toolbar = findViewById(R.id.toolbar_actionbar);
         setSupportActionBar(toolbar);
 
-        mLoader = (ProgressBar) findViewById(R.id.loader);
+        mLoader = findViewById(R.id.loader);
         mLastKilledApp = null;
         mSortOrderName = 1;
         mSortOrderMemory = 1;
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -292,7 +292,7 @@ public class TaskListActivity extends BaseActivity {
     }
 
     private void setupRecyclerView() {
-        mRecyclerView = (RecyclerView) findViewById(R.id.rv);
+        mRecyclerView = findViewById(R.id.rv);
 
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
@@ -309,7 +309,7 @@ public class TaskListActivity extends BaseActivity {
     }
 
     private void setupRefreshLayout() {
-        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_layout);
+        mSwipeRefreshLayout = findViewById(R.id.swipe_layout);
         //noinspection ResourceAsColor
         if (Build.VERSION.SDK_INT >= 23) {
             mSwipeRefreshLayout.setColorSchemeColors(
@@ -542,10 +542,10 @@ public class TaskListActivity extends BaseActivity {
 
     private void updateHeaderInfo() {
         String text;
-        TextView textView = (TextView) findViewById(R.id.count);
+        TextView textView = findViewById(R.id.count);
         text = "Apps " + mTaskList.size();
         textView.setText(text);
-        textView = (TextView) findViewById(R.id.usage);
+        textView = findViewById(R.id.usage);
         double memory = getAvailableMemory();
         if (memory > 1000) {
             text = getString(R.string.task_free_ram) + " " +
@@ -557,9 +557,9 @@ public class TaskListActivity extends BaseActivity {
     }
 
     private void setHeaderToRefresh() {
-        TextView textView = (TextView) findViewById(R.id.count);
+        TextView textView = findViewById(R.id.count);
         textView.setText(getString(R.string.header_status_loading));
-        textView = (TextView) findViewById(R.id.usage);
+        textView = findViewById(R.id.usage);
         textView.setText("");
     }
 

@@ -48,7 +48,7 @@ public class ChartMarkerView extends MarkerView {
     public ChartMarkerView(Context context, int layoutResource) {
         super(context, layoutResource);
 
-        mContent = (TextView) findViewById(R.id.tvContent);
+        mContent = findViewById(R.id.tvContent);
     }
 
     /**
@@ -61,7 +61,7 @@ public class ChartMarkerView extends MarkerView {
         super(context, layoutResource);
 
         mType = type;
-        mContent = (TextView) findViewById(R.id.tvContent);
+        mContent = findViewById(R.id.tvContent);
     }
 
 

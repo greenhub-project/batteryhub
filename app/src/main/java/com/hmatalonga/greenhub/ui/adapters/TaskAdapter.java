@@ -66,17 +66,17 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
 
         ViewHolder(View view) {
             super(view);
-            name = (TextView) view.findViewById(R.id.taskName);
-            memory = (TextView) view.findViewById(R.id.taskMemory);
-            details = (RelativeLayout) view.findViewById(R.id.taskDetailsContainer);
-            autoStart = (TextView) view.findViewById(R.id.taskAutoStart);
-            backgroundService = (TextView) view.findViewById(R.id.taskBackgroundService);
-            appPackage = (TextView) view.findViewById(R.id.taskPackage);
-            appVersion = (TextView) view.findViewById(R.id.taskAppVersion);
-            icon = (ImageView) view.findViewById(R.id.taskIcon);
-            more = (ImageView) view.findViewById(R.id.taskShowDetails);
-            undoButton = (Button) view.findViewById(R.id.undo_button);
-            checkBox = (CheckBox) view.findViewById(R.id.checkBox);
+            name = view.findViewById(R.id.taskName);
+            memory = view.findViewById(R.id.taskMemory);
+            details = view.findViewById(R.id.taskDetailsContainer);
+            autoStart = view.findViewById(R.id.taskAutoStart);
+            backgroundService = view.findViewById(R.id.taskBackgroundService);
+            appPackage = view.findViewById(R.id.taskPackage);
+            appVersion = view.findViewById(R.id.taskAppVersion);
+            icon = view.findViewById(R.id.taskIcon);
+            more = view.findViewById(R.id.taskShowDetails);
+            undoButton = view.findViewById(R.id.undo_button);
+            checkBox = view.findViewById(R.id.checkBox);
         }
     }
 

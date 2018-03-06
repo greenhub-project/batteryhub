@@ -112,7 +112,7 @@ public class HomeFragment extends Fragment {
         mContext = view.getContext();
         mActivity = (MainActivity) getActivity();
 
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.rv);
+        mRecyclerView = view.findViewById(R.id.rv);
         mAdapter = null;
 
         LinearLayoutManager layout = new LinearLayoutManager(mContext) {
@@ -125,18 +125,18 @@ public class HomeFragment extends Fragment {
         mRecyclerView.setLayoutManager(layout);
         mRecyclerView.setHasFixedSize(true);
 
-        mBatteryPercentage = (TextView) view.findViewById(R.id.batteryCurrentValue);
-        mBatteryCircleBar = (ProgressBar) view.findViewById(R.id.batteryProgressbar);
-        mStatus = (TextView) view.findViewById(R.id.status);
+        mBatteryPercentage = view.findViewById(R.id.batteryCurrentValue);
+        mBatteryCircleBar = view.findViewById(R.id.batteryProgressbar);
+        mStatus = view.findViewById(R.id.status);
 
-        mBatteryCurrentNow = (TextView) view.findViewById(R.id.batteryCurrentNow);
-        mBatteryCurrentMin = (TextView) view.findViewById(R.id.batteryCurrentMin);
-        mBatteryCurrentMax = (TextView) view.findViewById(R.id.batteryCurrentMax);
+        mBatteryCurrentNow = view.findViewById(R.id.batteryCurrentNow);
+        mBatteryCurrentMin = view.findViewById(R.id.batteryCurrentMin);
+        mBatteryCurrentMax = view.findViewById(R.id.batteryCurrentMax);
 
-        mPowerDischarging = (ImageView) view.findViewById(R.id.imgPowerDischarging);
-        mPowerAc = (ImageView) view.findViewById(R.id.imgPowerAc);
-        mPowerUsb = (ImageView) view.findViewById(R.id.imgPowerUsb);
-        mPowerWireless = (ImageView) view.findViewById(R.id.imgPowerWireless);
+        mPowerDischarging = view.findViewById(R.id.imgPowerDischarging);
+        mPowerAc = view.findViewById(R.id.imgPowerAc);
+        mPowerUsb = view.findViewById(R.id.imgPowerUsb);
+        mPowerWireless = view.findViewById(R.id.imgPowerWireless);
         mActivePower = "";
 
         mMin = Integer.MAX_VALUE;

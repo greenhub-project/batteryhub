@@ -38,7 +38,7 @@ public class InboxActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inbox);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
+        Toolbar toolbar = findViewById(R.id.toolbar_actionbar);
         if (toolbar != null) {
             setSupportActionBar(toolbar);
         }
@@ -47,8 +47,8 @@ public class InboxActivity extends BaseActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        mNoMessagesTextView = (TextView) findViewById(R.id.no_messages_view);
-        mRecyclerView = (RecyclerView) findViewById(R.id.rv);
+        mNoMessagesTextView = findViewById(R.id.no_messages_view);
+        mRecyclerView = findViewById(R.id.rv);
         mAdapter = null;
 
         LinearLayoutManager layout = new LinearLayoutManager(getApplicationContext());

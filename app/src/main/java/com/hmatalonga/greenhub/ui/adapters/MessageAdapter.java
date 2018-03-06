@@ -28,9 +28,9 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.Dashboar
 
         DashboardViewHolder(View itemView) {
             super(itemView);
-            title = (TextView) itemView.findViewById(R.id.message_title);
-            body = (TextView) itemView.findViewById(R.id.message_body);
-            date = (TextView) itemView.findViewById(R.id.message_date);
+            title = itemView.findViewById(R.id.message_title);
+            body = itemView.findViewById(R.id.message_body);
+            date = itemView.findViewById(R.id.message_date);
         }
     }
 

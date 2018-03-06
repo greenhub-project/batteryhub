@@ -78,7 +78,7 @@ public class StatisticsFragment extends Fragment {
 
         mActivity = (MainActivity) getActivity();
 
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.rv);
+        mRecyclerView = view.findViewById(R.id.rv);
         mAdapter = null;
 
         LinearLayoutManager layout = new LinearLayoutManager(view.getContext());
@@ -87,7 +87,7 @@ public class StatisticsFragment extends Fragment {
         mRecyclerView.setHasFixedSize(true);
 
         final BottomNavigationView bottomNavigationView =
-                (BottomNavigationView) view.findViewById(R.id.bottom_navigation);
+                view.findViewById(R.id.bottom_navigation);
 
         bottomNavigationView.setOnNavigationItemSelectedListener(
                 new BottomNavigationView.OnNavigationItemSelectedListener() {

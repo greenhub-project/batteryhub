@@ -46,10 +46,10 @@ public class BatteryRVAdapter extends RecyclerView.Adapter<BatteryRVAdapter.Dash
 
         DashboardViewHolder(View itemView) {
             super(itemView);
-            cv = (CardView) itemView.findViewById(R.id.cv);
-            icon = (ImageView) itemView.findViewById(R.id.icon);
-            label = (TextView) itemView.findViewById(R.id.label);
-            value = (TextView) itemView.findViewById(R.id.value);
+            cv = itemView.findViewById(R.id.cv);
+            icon = itemView.findViewById(R.id.icon);
+            label = itemView.findViewById(R.id.label);
+            value = itemView.findViewById(R.id.value);
             indicator = itemView.findViewById(R.id.indicator);
         }
     }

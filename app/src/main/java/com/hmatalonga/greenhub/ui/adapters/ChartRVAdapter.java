@@ -69,14 +69,14 @@ public class ChartRVAdapter extends RecyclerView.Adapter<ChartRVAdapter.Dashboar
 
         DashboardViewHolder(View itemView) {
             super(itemView);
-            cv = (CardView) itemView.findViewById(R.id.cv);
-            label = (TextView) itemView.findViewById(R.id.label);
-            interval = (TextView) itemView.findViewById(R.id.interval);
-            chart = (LineChart) itemView.findViewById(R.id.chart);
-            extras = (RelativeLayout) itemView.findViewById(R.id.extra_details);
-            min = (TextView) itemView.findViewById(R.id.minValue);
-            avg = (TextView) itemView.findViewById(R.id.avgValue);
-            max = (TextView) itemView.findViewById(R.id.maxValue);
+            cv = itemView.findViewById(R.id.cv);
+            label = itemView.findViewById(R.id.label);
+            interval = itemView.findViewById(R.id.interval);
+            chart = itemView.findViewById(R.id.chart);
+            extras = itemView.findViewById(R.id.extra_details);
+            min = itemView.findViewById(R.id.minValue);
+            avg = itemView.findViewById(R.id.avgValue);
+            max = itemView.findViewById(R.id.maxValue);
         }
     }
 

@@ -77,7 +77,6 @@ import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
 public class DataEstimatorService extends IntentService {
 
     private static final String TAG = makeLogTag(DataEstimatorService.class);
-    private double mDistance;
 
     public DataEstimatorService() {
         super(TAG);
@@ -104,15 +103,10 @@ public class DataEstimatorService extends IntentService {
 
         wakeLock.acquire();
 
-        String action = null;
         Context context = getApplicationContext();
 
         if (intent != null) {
-            action = intent.getStringExtra("OriginalAction");
-        }
-
-        if (action != null) {
-            takeSampleIfBatteryLevelChanged(intent, context);
+            takeSampleIfBatteryLevelChanged(context, intent);
         }
 
         wakeLock.release();
@@ -133,112 +127,109 @@ public class DataEstimatorService extends IntentService {
      *                In our case, this broadcast receiver is 'Sampler'.
      * @param context
      */
-    private void takeSampleIfBatteryLevelChanged(Intent intent, final Context context) {
-        mDistance = intent.getDoubleExtra("distance", 0);
+    private void takeSampleIfBatteryLevelChanged(final Context context, Intent intent) {
+        String action = intent.getAction();
+        if (action == null) return;
 
         // Make sure our new sample doesn't have a zero value as its current battery level
-        if (Inspector.getCurrentBatteryLevel() > 0) {
-            GreenHubDb database = new GreenHubDb();
-            Sample lastSample = database.lastSample();
+        if (Inspector.getCurrentBatteryLevel() <= 0) return;
 
-            // If intent has action Screen ON or Screen OFF don't check the change on battery level
-            if (intent.getAction().equals(Intent.ACTION_SCREEN_ON) ||
-                    intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
-                LOGI(TAG, "Getting new usage details");
-                getBatteryUsage(context, intent, database, true);
-                database.close();
-                return;
-            }
+        GreenHubDb database = new GreenHubDb();
+        Sample lastSample = database.lastSample();
 
-            // Set last sample, if exists extract the last battery level
-            if (lastSample != null) {
-                Inspector.setLastBatteryLevel(lastSample.batteryLevel);
-            }
+        // If intent has action Screen ON or Screen OFF don't check the change on battery level
+        if (action.equals(Intent.ACTION_SCREEN_ON) ||
+                action.equals(Intent.ACTION_SCREEN_OFF)) {
+            LOGI(TAG, "Getting new usage details");
+            getBatteryUsage(context, intent, database, true);
+            database.close();
+            return;
+        }
 
-			/**
+        // Set last sample, if exists extract the last battery level
+        if (lastSample != null) {
+            Inspector.setLastBatteryLevel(lastSample.batteryLevel);
+        }
+
+			/*
 			 * Read the battery levels again, they are now changed. We just
 			 * changed the last battery level (in the previous block of code).
 			 * The current battery level might also have been changed while the
 			 * device has been taking a sample.
 			 */
-            boolean batteryLevelChanged =
-                    Inspector.getLastBatteryLevel() != Inspector.getCurrentBatteryLevel();
+        boolean batteryLevelChanged =
+                Inspector.getLastBatteryLevel() != Inspector.getCurrentBatteryLevel();
 
-            /**
-             * Among all occurrence of the event BATTERY_CHANGED, only take a sample
-             * whenever a battery PERCENTAGE CHANGE happens
-             * (BATTERY_CHANGED happens whenever the battery temperature or voltage of other parameters change)
-             */
-            if (batteryLevelChanged) {
-                LOGI(TAG, "The battery percentage changed. About to take a new sample (currentBatteryLevel=" +
-                        Inspector.getCurrentBatteryLevel() + ", lastBatteryLevel=" +
-                        Inspector.getLastBatteryLevel()+ ")");
+        /**
+         * Among all occurrence of the event BATTERY_CHANGED, only take a sample
+         * whenever a battery PERCENTAGE CHANGE happens
+         * (BATTERY_CHANGED happens whenever the battery temperature or voltage of other parameters change)
+         */
+        if (batteryLevelChanged) {
+            LOGI(TAG, "The battery percentage changed. About to take a new sample (currentBatteryLevel=" +
+                    Inspector.getCurrentBatteryLevel() + ", lastBatteryLevel=" +
+                    Inspector.getLastBatteryLevel()+ ")");
 
-                // take a sample and store it in the database
-                EventBus.getDefault().post(new StatusEvent(getString(R.string.event_new_sample)));
+            // take a sample and store it in the database
+            EventBus.getDefault().post(new StatusEvent(getString(R.string.event_new_sample)));
 
-                getSample(context, intent, lastSample, database);
-                getBatteryUsage(context, intent, database, false);
+            getSample(context, intent, database);
+            getBatteryUsage(context, intent, database, false);
 
-                boolean isPlugged = 0 != intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, 0);
+            boolean isPlugged = 0 != intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, 0);
 
-                if (SettingsUtils.isBatteryAlertsOn(context) &&
-                        SettingsUtils.isChargeAlertsOn(context)) {
-                    if (Inspector.getCurrentBatteryLevel() == 1 && isPlugged) {
-                        Notifier.batteryFullAlert(context);
-                    } else if (Inspector.getCurrentBatteryLevel() == Config.BATTERY_LOW_LEVEL) {
-                        Notifier.batteryLowAlert(context);
-                    }
-                }
-
-                // If last battery level = 0 then it is the first sample in the current instance
-                if (Inspector.getLastBatteryLevel() == 0) {
-                    LOGI(TAG, "Last Battery Level = 0. Updating to BatteryLevel => " + Inspector.getCurrentBatteryLevel());
-                    // before taking the first sample in a batch, first record the battery level
-                    Inspector.setLastBatteryLevel(Inspector.getCurrentBatteryLevel());
-                }
-            } else {
-                if (Config.DEBUG) {
-                    LOGI(TAG, "No battery percentage change. BatteryLevel => " + Inspector.getCurrentBatteryLevel());
+            if (SettingsUtils.isBatteryAlertsOn(context) &&
+                    SettingsUtils.isChargeAlertsOn(context)) {
+                if (Inspector.getCurrentBatteryLevel() == 1 && isPlugged) {
+                    Notifier.batteryFullAlert(context);
+                } else if (Inspector.getCurrentBatteryLevel() == Config.BATTERY_LOW_LEVEL) {
+                    Notifier.batteryLowAlert(context);
                 }
             }
 
-            /**
-             * Check upload constraints:
-             * - Automatic uploads allowed
-             * - Server url present
-             * - Max uploadAttempts
-             * - Not registered
-             * - Not batteryChanged
-             */
-            if (CommunicationManager.uploadAttempts >= Config.UPLOAD_MAX_TRIES ||
-                    !SettingsUtils.isAutomaticUploadingAllowed(context) ||
-                    !SettingsUtils.isServerUrlPresent(context) ||
-                    !SettingsUtils.isDeviceRegistered(context) ||
-                    !batteryLevelChanged) {
-                database.close();
-                return;
+            // If last battery level = 0 then it is the first sample in the current instance
+            if (Inspector.getLastBatteryLevel() == 0) {
+                LOGI(TAG, "Last Battery Level = 0. Updating to BatteryLevel => " + Inspector.getCurrentBatteryLevel());
+                // before taking the first sample in a batch, first record the battery level
+                Inspector.setLastBatteryLevel(Inspector.getCurrentBatteryLevel());
             }
-
-            // Update server status
-            new ServerStatusTask().execute(context);
-
-            new CheckNewMessagesTask().execute(context);
-
-            // Check if is necessary to sendSamples samples >= pref_upload_rate
-            if (database.count(Sample.class) >= SettingsUtils.fetchUploadRate(context) &&
-                    !CommunicationManager.isUploading) {
-                CommunicationManager manager = new CommunicationManager(context, true);
-                manager.sendSamples();
-            }
-
-            // Finally close database access
-            database.close();
         } else {
             if (Config.DEBUG) {
-                LOGI(TAG, "current battery level = 0");
+                LOGI(TAG, "No battery percentage change. BatteryLevel => " + Inspector.getCurrentBatteryLevel());
             }
         }
+
+        /**
+         * Check upload constraints:
+         * - Automatic uploads allowed
+         * - Server url present
+         * - Max uploadAttempts
+         * - Not registered
+         * - Not batteryChanged
+         */
+        if (CommunicationManager.uploadAttempts >= Config.UPLOAD_MAX_TRIES ||
+                !SettingsUtils.isAutomaticUploadingAllowed(context) ||
+                !SettingsUtils.isServerUrlPresent(context) ||
+                !SettingsUtils.isDeviceRegistered(context) ||
+                !batteryLevelChanged) {
+            database.close();
+            return;
+        }
+
+        // Update server status
+        new ServerStatusTask().execute(context);
+
+        new CheckNewMessagesTask().execute(context);
+
+        // Check if is necessary to sendSamples samples >= pref_upload_rate
+        if (database.count(Sample.class) >= SettingsUtils.fetchUploadRate(context) &&
+                !CommunicationManager.isUploading) {
+            CommunicationManager manager = new CommunicationManager(context, true);
+            manager.sendSamples();
+        }
+
+        // Finally close database access
+        database.close();
     }
 
     /**
@@ -248,16 +239,8 @@ public class DataEstimatorService extends IntentService {
      * @param context from onReceive
      * @param intent from onReceive
      */
-    private void getSample(Context context, Intent intent, Sample lastSample, GreenHubDb database) {
-        String lastBatteryState = lastSample != null ? lastSample.batteryState : "Unknown";
-        Sample sample = Inspector.getSample(context, intent, lastBatteryState);
-
-        // Set mDistance to current mDistance value
-        if (sample != null) {
-            sample.distanceTraveled = mDistance;
-            // FIX: Do not use same mDistance again.
-            mDistance = 0;
-        }
+    private void getSample(Context context, Intent intent, GreenHubDb database) {
+        Sample sample = Inspector.getSample(context, intent);
 
         // Write to database, but only after first real numbers
         if (sample != null && !sample.batteryState.equals("Unknown") && sample.batteryLevel >= 0) {

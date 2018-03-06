@@ -21,7 +21,7 @@ public class MessageActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_message);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
+        Toolbar toolbar = findViewById(R.id.toolbar_actionbar);
         if (toolbar != null) {
             setSupportActionBar(toolbar);
         }
@@ -36,11 +36,11 @@ public class MessageActivity extends BaseActivity {
 
         mMessageId = extras.getInt("id");
 
-        TextView textView = (TextView) findViewById(R.id.message_title);
+        TextView textView = findViewById(R.id.message_title);
         textView.setText(extras.getString("title"));
-        textView = (TextView) findViewById(R.id.message_body);
+        textView = findViewById(R.id.message_body);
         textView.setText(extras.getString("body"));
-        textView = (TextView) findViewById(R.id.message_date);
+        textView = findViewById(R.id.message_date);
         try {
             String date = extras.getString("date");
 
@@ -54,7 +54,7 @@ public class MessageActivity extends BaseActivity {
             e.printStackTrace();
         }
 
-        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fabDeleteMessage);
+        final FloatingActionButton fab = findViewById(R.id.fabDeleteMessage);
         if (fab == null) return;
 
         fab.setOnClickListener(new View.OnClickListener() {

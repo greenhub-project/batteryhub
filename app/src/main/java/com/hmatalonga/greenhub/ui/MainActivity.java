@@ -206,16 +206,16 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
     }
 
     private void loadViews() {
-        mViewPager = (ViewPager) findViewById(R.id.viewpager);
+        mViewPager = findViewById(R.id.viewpager);
         mViewPager.setOffscreenPageLimit(TabAdapter.NUM_TABS - 1);
 
         final TabAdapter tabAdapter = new TabAdapter(getFragmentManager());
         mViewPager.setAdapter(tabAdapter);
 
-        MainTabLayout tabLayout = (MainTabLayout) findViewById(R.id.tab_layout);
+        MainTabLayout tabLayout = findViewById(R.id.tab_layout);
         tabLayout.createTabs();
 
-        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fabSendSample);
+        final FloatingActionButton fab = findViewById(R.id.fabSendSample);
         if (fab == null) return;
 
         fab.setOnClickListener(new View.OnClickListener() {

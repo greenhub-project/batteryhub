@@ -114,6 +114,8 @@ import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
  */
 public final class Inspector {
 
+    public static boolean isSampling = false;
+
     private static final String TAG = makeLogTag(Inspector.class);
 
     private static final String INSTALLED = "installed:";
@@ -129,16 +131,10 @@ public final class Inspector {
 
     private static double sCurrentBatteryLevel = 0;
 
-
     // we might not be able to read the current battery level at the first run
     // of GreenHub.
     // so it might be zero until we get the non-zero value from the intent
     // (BatteryManager.EXTRA_LEVEL & BatteryManager.EXTRA_SCALE)
-
-    /**
-     * Library class, prevent instantiation
-     */
-    private Inspector() {}
 
     public static void setLastBatteryLevel(double level) {
         sLastBatteryLevel = level;
@@ -381,7 +377,9 @@ public final class Inspector {
         return res;
     }
 
-    static Sample getSample(final Context context, Intent intent, String lastBatteryState) {
+    static Sample getSample(final Context context, Intent intent) {
+        isSampling = true;
+
         // Construct sample and return it in the end
         Sample newSample = new Sample();
         NetworkDetails networkDetails = new NetworkDetails();
@@ -551,7 +549,8 @@ public final class Inspector {
                 batteryStatus = "Unknown";
                 break;
             default:
-                batteryStatus = lastBatteryState != null ? lastBatteryState : "Unknown";
+                // New value for error state
+                batteryStatus = "None";
         }
 
         // FIXED: Not used yet, Sample needs more fields
@@ -614,7 +613,7 @@ public final class Inspector {
 
         // Memory statistics
         int[] usedFreeActiveInactive = Memory.readMemoryInfo();
-        if (usedFreeActiveInactive != null && usedFreeActiveInactive.length == 4) {
+        if (usedFreeActiveInactive.length == 4) {
             newSample.memoryUser = usedFreeActiveInactive[0];
             newSample.memoryFree = usedFreeActiveInactive[1];
             newSample.memoryActive = usedFreeActiveInactive[2];
@@ -656,6 +655,8 @@ public final class Inspector {
         if (extras != null && extras.size() > 0) {
             newSample.features.addAll(extras);
         }
+
+        isSampling = false;
 
         return newSample;
     }

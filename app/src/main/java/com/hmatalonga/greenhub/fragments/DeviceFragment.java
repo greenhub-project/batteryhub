@@ -117,14 +117,14 @@ public class DeviceFragment extends Fragment {
         model.append(Specifications.getModel());
 
         // Device
-        textView = (TextView) view.findViewById(R.id.androidVersion);
+        textView = view.findViewById(R.id.androidVersion);
         textView.setText(Specifications.getOsVersion());
-        textView = (TextView) view.findViewById(R.id.androidModel);
+        textView = view.findViewById(R.id.androidModel);
         textView.setText(model);
-        textView = (TextView) view.findViewById(R.id.androidImei);
+        textView = view.findViewById(R.id.androidImei);
         value = Phone.getDeviceId(mContext);
         textView.setText(value == null ? getString(R.string.not_available) : value);
-        textView = (TextView) view.findViewById(R.id.androidRoot);
+        textView = view.findViewById(R.id.androidRoot);
         textView.setText(Specifications.isRooted() ?
                 getString(R.string.yes) : getString(R.string.no));
 
@@ -134,10 +134,10 @@ public class DeviceFragment extends Fragment {
         updateMobileData(view, Network.isMobileDataEnabled(mContext));
 
         // Memory
-        mMemoryBar = (ProgressBar) view.findViewById(R.id.memoryBar);
-        mMemoryUsed = (TextView) view.findViewById(R.id.memoryUsed);
-        mMemoryFree = (TextView) view.findViewById(R.id.memoryFree);
-        Button btViewMore = (Button) view.findViewById(R.id.buttonViewMore);
+        mMemoryBar = view.findViewById(R.id.memoryBar);
+        mMemoryUsed = view.findViewById(R.id.memoryUsed);
+        mMemoryFree = view.findViewById(R.id.memoryFree);
+        Button btViewMore = view.findViewById(R.id.buttonViewMore);
         btViewMore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -150,9 +150,9 @@ public class DeviceFragment extends Fragment {
         });
 
         // Storage
-        mStorageBar = (ProgressBar) view.findViewById(R.id.storageBar);
-        mStorageUsed = (TextView) view.findViewById(R.id.storageUsed);
-        mStorageFree = (TextView) view.findViewById(R.id.storageFree);
+        mStorageBar = view.findViewById(R.id.storageBar);
+        mStorageUsed = view.findViewById(R.id.storageUsed);
+        mStorageFree = view.findViewById(R.id.storageFree);
 
         mHandler.post(runnable);
     }
@@ -179,35 +179,35 @@ public class DeviceFragment extends Fragment {
     private void updateWifiData(final View view, boolean value) {
         TextView textView;
 
-        textView = (TextView) view.findViewById(R.id.wifi);
+        textView = view.findViewById(R.id.wifi);
         textView.setText(value ? getString(R.string.yes) : getString(R.string.no));
 
         // Display/Hide Additional Wifi fields
-        textView = (TextView) view.findViewById(R.id.ipAddressLabel);
+        textView = view.findViewById(R.id.ipAddressLabel);
         textView.setVisibility(value ? View.VISIBLE : View.GONE);
 
         // IP Address
-        textView = (TextView) view.findViewById(R.id.ipAddress);
+        textView = view.findViewById(R.id.ipAddress);
         if (value) {
             textView.setText(Wifi.getIpAddress(mContext));
         }
         textView.setVisibility(value ? View.VISIBLE : View.GONE);
 
-        textView = (TextView) view.findViewById(R.id.macAddressLabel);
+        textView = view.findViewById(R.id.macAddressLabel);
         textView.setVisibility(value ? View.VISIBLE : View.GONE);
 
         // MAC Address
-        textView = (TextView) view.findViewById(R.id.macAddress);
+        textView = view.findViewById(R.id.macAddress);
         if (value) {
             textView.setText(Wifi.getMacAddress(mContext));
         }
         textView.setVisibility(value ? View.VISIBLE : View.GONE);
 
-        textView = (TextView) view.findViewById(R.id.ssidLabel);
+        textView = view.findViewById(R.id.ssidLabel);
         textView.setVisibility(value ? View.VISIBLE : View.GONE);
 
         // SSID Network
-        textView = (TextView) view.findViewById(R.id.ssid);
+        textView = view.findViewById(R.id.ssid);
         if (value) {
             textView.setText(Wifi.getInfo(mContext).getSSID());
         }
@@ -217,34 +217,34 @@ public class DeviceFragment extends Fragment {
     private void updateBluetoothData(final View view, boolean value) {
         TextView textView;
 
-        textView = (TextView) view.findViewById(R.id.bluetooth);
+        textView = view.findViewById(R.id.bluetooth);
         textView.setText(value ? getString(R.string.yes) : getString(R.string.no));
 
         // Bluetooth Address
-        textView = (TextView) view.findViewById(R.id.bluetoothAddress);
+        textView = view.findViewById(R.id.bluetoothAddress);
         if (value) {
             textView.setText(Bluetooth.getAddress());
         }
         textView.setVisibility(value ? View.VISIBLE : View.GONE);
 
-        textView = (TextView) view.findViewById(R.id.bluetoothAddressLabel);
+        textView = view.findViewById(R.id.bluetoothAddressLabel);
         textView.setVisibility(value ? View.VISIBLE : View.GONE);
     }
 
     private void updateMobileData(final View view, boolean value) {
         TextView textView;
 
-        textView = (TextView) view.findViewById(R.id.mobileData);
+        textView = view.findViewById(R.id.mobileData);
         textView.setText(value ? getString(R.string.yes) : getString(R.string.no));
 
         // Bluetooth Address
-        textView = (TextView) view.findViewById(R.id.networkType);
+        textView = view.findViewById(R.id.networkType);
         if (value) {
             textView.setText(Network.getMobileNetworkType(mContext));
         }
         textView.setVisibility(value ? View.VISIBLE : View.GONE);
 
-        textView = (TextView) view.findViewById(R.id.networkTypeLabel);
+        textView = view.findViewById(R.id.networkTypeLabel);
         textView.setVisibility(value ? View.VISIBLE : View.GONE);
     }
 
