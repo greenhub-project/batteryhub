@@ -49,15 +49,13 @@ import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 import android.os.BatteryManager;
+import android.os.Bundle;
 import android.os.PowerManager;
-
-import org.greenrobot.eventbus.EventBus;
 
 import com.hmatalonga.greenhub.Config;
 import com.hmatalonga.greenhub.R;
 import com.hmatalonga.greenhub.events.StatusEvent;
 import com.hmatalonga.greenhub.managers.storage.GreenHubDb;
-import com.hmatalonga.greenhub.models.Specifications;
 import com.hmatalonga.greenhub.models.data.BatteryUsage;
 import com.hmatalonga.greenhub.models.data.Sample;
 import com.hmatalonga.greenhub.network.CommunicationManager;
@@ -65,6 +63,8 @@ import com.hmatalonga.greenhub.tasks.CheckNewMessagesTask;
 import com.hmatalonga.greenhub.tasks.ServerStatusTask;
 import com.hmatalonga.greenhub.util.Notifier;
 import com.hmatalonga.greenhub.util.SettingsUtils;
+
+import org.greenrobot.eventbus.EventBus;
 
 import static com.hmatalonga.greenhub.util.LogUtils.LOGI;
 import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
@@ -160,12 +160,21 @@ public class DataEstimatorService extends IntentService {
         boolean batteryLevelChanged =
                 Inspector.getLastBatteryLevel() != Inspector.getCurrentBatteryLevel();
 
-        /**
+        /*
          * Among all occurrence of the event BATTERY_CHANGED, only take a sample
          * whenever a battery PERCENTAGE CHANGE happens
          * (BATTERY_CHANGED happens whenever the battery temperature or voltage of other parameters change)
          */
-        if (batteryLevelChanged) {
+        if (!batteryLevelChanged || Inspector.isSampling) {
+            if (Config.DEBUG) {
+                if (!batteryLevelChanged) {
+                    LOGI(TAG, "No battery percentage change. BatteryLevel=" +
+                            Inspector.getCurrentBatteryLevel());
+                } else if (Inspector.isSampling) {
+                    LOGI(TAG, "Inspector is already sampling...");
+                }
+            }
+        } else {
             LOGI(TAG, "The battery percentage changed. About to take a new sample (currentBatteryLevel=" +
                     Inspector.getCurrentBatteryLevel() + ", lastBatteryLevel=" +
                     Inspector.getLastBatteryLevel()+ ")");
@@ -193,13 +202,9 @@ public class DataEstimatorService extends IntentService {
                 // before taking the first sample in a batch, first record the battery level
                 Inspector.setLastBatteryLevel(Inspector.getCurrentBatteryLevel());
             }
-        } else {
-            if (Config.DEBUG) {
-                LOGI(TAG, "No battery percentage change. BatteryLevel => " + Inspector.getCurrentBatteryLevel());
-            }
         }
 
-        /**
+        /*
          * Check upload constraints:
          * - Automatic uploads allowed
          * - Server url present
@@ -257,7 +262,8 @@ public class DataEstimatorService extends IntentService {
         // if Intent is screen related, it is necessary to add extras from DataEstimator
         // since original intent has none
         if (isScreenIntent) {
-            intent.putExtras(DataEstimator.getBatteryChangedIntent(context).getExtras());
+            Bundle extras = DataEstimator.getBatteryChangedIntent(context).getExtras();
+            if (extras != null) intent.putExtras(extras);
         }
 
         BatteryUsage usage = Inspector.getBatteryUsage(context, intent);

@@ -96,7 +96,10 @@ public class CommunicationManager {
     }
 
     public void sendSamples() {
-        boolean isConnected = NetworkWatcher.hasInternet(mContext, NetworkWatcher.COMMUNICATION_MANAGER);
+        boolean isConnected = NetworkWatcher.hasInternet(
+                mContext,
+                NetworkWatcher.COMMUNICATION_MANAGER
+        );
 
         if (!isConnected) {
             // Schedule upload next time connectivity changes
@@ -202,7 +205,7 @@ public class CommunicationManager {
     }
 
     private JsonObject bundleSample(final Sample sample) {
-        /**
+        /*
          * This is a manual approach, not ideal.
          * In the future create a gson builder with proper type adapters.
          */

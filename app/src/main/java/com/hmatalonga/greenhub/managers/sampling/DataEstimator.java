@@ -79,7 +79,7 @@ public class DataEstimator extends WakefulBroadcastReceiver {
         }
         //endregion
 
-        LOGI(TAG, "onReceive action => " + action);
+        LOGI(TAG, "ENTRY onReceive => " + action);
 
         if (!action.equals(Intent.ACTION_BATTERY_CHANGED)) return;
 

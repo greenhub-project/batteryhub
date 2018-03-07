@@ -223,7 +223,7 @@ public class DeviceFragment extends Fragment {
         // Bluetooth Address
         textView = view.findViewById(R.id.bluetoothAddress);
         if (value) {
-            textView.setText(Bluetooth.getAddress());
+            textView.setText(Bluetooth.getAddress(view.getContext()));
         }
         textView.setVisibility(value ? View.VISIBLE : View.GONE);
 
