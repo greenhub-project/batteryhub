@@ -88,6 +88,9 @@ public class CommunicationManager {
             url = Config.SERVER_URL_DEVELOPMENT;
         }
 
+        LOGI(TAG, "new CommunicationManager background:" + mOnBackground);
+        LOGI(TAG, "Server url => " + url);
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(url)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -116,6 +119,8 @@ public class CommunicationManager {
         mCollection = database.allSamplesIds();
         database.close();
 
+        LOGI(TAG, count + " samples to upload...");
+
         if (!mCollection.hasNext()) {
             EventBus.getDefault().post(
                     new StatusEvent(mContext.getString(R.string.event_no_samples))
@@ -126,7 +131,6 @@ public class CommunicationManager {
         }
 
         EventBus.getDefault().post(new StatusEvent(this.makeUploadingMessage(count)));
-        isUploading = true;
         uploadSample(mCollection.next());
     }
 
@@ -136,7 +140,9 @@ public class CommunicationManager {
      * @param id Id of sample to upload
      */
     private void uploadSample(final int id) {
-        LOGI(TAG, "Uploading Sample => " + id);
+        isUploading = true;
+
+        LOGI(TAG, "Uploading sample => " + id);
 
         Realm realm = Realm.getDefaultInstance();
         final Sample sample = realm.where(Sample.class).equalTo("id", id).findFirst();
@@ -148,9 +154,9 @@ public class CommunicationManager {
             @Override
             public void onResponse(Call<Integer> call, Response<Integer> response) {
                 if (response == null) {
-                    EventBus.getDefault().post(new StatusEvent(
-                            mContext.getString(R.string.event_server_response_failed)
-                    ));
+                    EventBus.getDefault().post(
+                            new StatusEvent(mContext.getString(R.string.event_server_response_failed))
+                    );
                     return;
                 }
                 if (response.body() != null) {
@@ -167,10 +173,14 @@ public class CommunicationManager {
                         new StatusEvent(mContext.getString(R.string.event_server_not_responding))
                 );
                 // If was called from service count uploadAttempts attempts
-                if (mOnBackground) {
-                    uploadAttempts++;
-                }
+                if (mOnBackground) uploadAttempts++;
                 isUploading = false;
+                isQueued = true;
+
+                LOGI(TAG, "HTTP call onFailure uploadAttempts:" + uploadAttempts);
+
+                // Clean up database
+
                 refreshStatus();
             }
         });
@@ -183,23 +193,31 @@ public class CommunicationManager {
             new DeleteSampleTask().execute(id);
 
             if (!mCollection.hasNext()) {
-                EventBus.getDefault().post(new StatusEvent(
-                        mContext.getString(R.string.event_upload_finished))
+                EventBus.getDefault().post(
+                        new StatusEvent(mContext.getString(R.string.event_upload_finished))
                 );
                 // If was called from service reset uploadAttempts counter
-                if (mOnBackground) {
-                    uploadAttempts = 0;
-                }
+                if (mOnBackground) uploadAttempts = 0;
                 isUploading = false;
+
+                LOGI(TAG, "All samples were uploaded!");
+
                 refreshStatus();
             } else {
                 uploadSample(mCollection.next());
             }
         } else if (response == RESPONSE_ERROR){
-            EventBus.getDefault().post(new StatusEvent(
-                    mContext.getString(R.string.event_error_uploading_sample)
-            ));
+            EventBus.getDefault().post(
+                    new StatusEvent(mContext.getString(R.string.event_error_uploading_sample))
+            );
+            // If was called from service reset uploadAttempts counter
+            if (mOnBackground) uploadAttempts++;
             isUploading = false;
+
+            LOGI(TAG, "HTTP response error uploadAttempts:" + uploadAttempts);
+
+            // Clean up database
+
             refreshStatus();
         }
     }

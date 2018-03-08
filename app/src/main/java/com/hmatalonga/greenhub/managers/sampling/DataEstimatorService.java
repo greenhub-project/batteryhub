@@ -166,13 +166,11 @@ public class DataEstimatorService extends IntentService {
          * (BATTERY_CHANGED happens whenever the battery temperature or voltage of other parameters change)
          */
         if (!batteryLevelChanged || Inspector.isSampling) {
-            if (Config.DEBUG) {
-                if (!batteryLevelChanged) {
-                    LOGI(TAG, "No battery percentage change. BatteryLevel=" +
-                            Inspector.getCurrentBatteryLevel());
-                } else if (Inspector.isSampling) {
-                    LOGI(TAG, "Inspector is already sampling...");
-                }
+            if (!batteryLevelChanged) {
+                LOGI(TAG, "No battery percentage change. BatteryLevel=" +
+                        Inspector.getCurrentBatteryLevel());
+            } else if (Inspector.isSampling) {
+                LOGI(TAG, "Inspector is already sampling...");
             }
         } else {
             LOGI(TAG, "The battery percentage changed. About to take a new sample (currentBatteryLevel=" +
@@ -218,6 +216,7 @@ public class DataEstimatorService extends IntentService {
                 !SettingsUtils.isDeviceRegistered(context) ||
                 !batteryLevelChanged) {
             database.close();
+            LOGI(TAG, "Database closed. No upload now.");
             return;
         }
 
@@ -229,6 +228,7 @@ public class DataEstimatorService extends IntentService {
         // Check if is necessary to sendSamples samples >= pref_upload_rate
         if (database.count(Sample.class) >= SettingsUtils.fetchUploadRate(context) &&
                 !CommunicationManager.isUploading) {
+            LOGI(TAG, "Enough samples to upload on background...");
             CommunicationManager manager = new CommunicationManager(context, true);
             manager.sendSamples();
         }

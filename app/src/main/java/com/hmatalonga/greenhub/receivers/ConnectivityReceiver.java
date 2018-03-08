@@ -49,14 +49,19 @@ public class ConnectivityReceiver extends BroadcastReceiver {
      */
     @Override
     public void onReceive(Context context, Intent intent) {
-        String action = intent.getAction();
         int state;
+        String action = intent.getAction();
+
+        if (action == null) return;
 
         switch (action) {
             case ConnectivityManager.CONNECTIVITY_ACTION:
-                ConnectivityManager cm =
-                        (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
-                NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+                ConnectivityManager connectivityManager =
+                        (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+                if (connectivityManager == null) return;
+
+                NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
 
                 boolean isConnected = activeNetwork != null &&
                         activeNetwork.isConnectedOrConnecting();
