@@ -69,7 +69,7 @@ public class RegisterDeviceHandler {
         mService = retrofit.create(GreenHubAPIService.class);
     }
 
-    public Device registerClient() {
+    public void registerClient() {
         Device device = new Device();
         device.uuId = Specifications.getAndroidId(mContext);
         device.model = Specifications.getModel();
@@ -81,8 +81,6 @@ public class RegisterDeviceHandler {
         device.isRoot = Specifications.isRooted() ? 1 : 0;
 
         callRegistration(device);
-
-        return device;
     }
 
     private void callRegistration(Device device) {

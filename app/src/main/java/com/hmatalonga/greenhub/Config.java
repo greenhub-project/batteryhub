@@ -92,7 +92,7 @@ public final class Config {
     public static final int UPLOAD_MAX_TRIES = 3;
     public static final String UPLOAD_DEFAULT_RATE = "20";
 
-    public static final int SAMPLES_MAX_STORAGE_NUM = 250;
+    public static final int SAMPLES_MAX_STORAGE_NUM = 500;
 
     public static final int STARTER_MESSAGE_ID = 0;
 

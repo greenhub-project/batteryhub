@@ -39,7 +39,9 @@ import com.hmatalonga.greenhub.models.data.ProcessInfo;
 import com.hmatalonga.greenhub.models.data.Sample;
 import com.hmatalonga.greenhub.models.data.Upload;
 import com.hmatalonga.greenhub.network.services.GreenHubAPIService;
+import com.hmatalonga.greenhub.tasks.DeleteOldSamplesTask;
 import com.hmatalonga.greenhub.tasks.DeleteSampleTask;
+import com.hmatalonga.greenhub.tasks.RegisterDeviceTask;
 import com.hmatalonga.greenhub.util.NetworkWatcher;
 import com.hmatalonga.greenhub.util.SettingsUtils;
 import io.realm.Realm;
@@ -77,18 +79,15 @@ public class CommunicationManager {
 
     private Iterator<Integer> mCollection;
 
-    private boolean mOnBackground;
-
     public CommunicationManager(final Context context, boolean background) {
         mContext = context;
-        mOnBackground = background;
         String url = SettingsUtils.fetchServerUrl(context);
 
         if (BuildConfig.DEBUG) {
             url = Config.SERVER_URL_DEVELOPMENT;
         }
 
-        LOGI(TAG, "new CommunicationManager background:" + mOnBackground);
+        LOGI(TAG, "new CommunicationManager background:" + background);
         LOGI(TAG, "Server url => " + url);
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -146,8 +145,20 @@ public class CommunicationManager {
 
         Realm realm = Realm.getDefaultInstance();
         final Sample sample = realm.where(Sample.class).equalTo("id", id).findFirst();
-        final Upload upload = new Upload(bundleSample(sample));
+        final Upload upload = sample == null ? null : new Upload(bundleSample(sample));
         realm.close();
+
+        LOGI(TAG, "Sample found => " + String.valueOf(sample != null));
+
+        if (sample == null && mCollection.hasNext()) {
+            uploadSample(mCollection.next());
+        } else if (sample == null) {
+            new DeleteSampleTask().execute(id);
+            isUploading = false;
+            isQueued = false;
+            uploadAttempts = 0;
+            return;
+        }
 
         Call<Integer> call = mService.createSample(upload);
         call.enqueue(new Callback<Integer>() {
@@ -168,18 +179,17 @@ public class CommunicationManager {
 
             @Override
             public void onFailure(Call<Integer> call, Throwable t) {
-                t.printStackTrace();
                 EventBus.getDefault().post(
                         new StatusEvent(mContext.getString(R.string.event_server_not_responding))
                 );
-                // If was called from service count uploadAttempts attempts
-                if (mOnBackground) uploadAttempts++;
+                uploadAttempts++;
                 isUploading = false;
                 isQueued = true;
 
                 LOGI(TAG, "HTTP call onFailure uploadAttempts:" + uploadAttempts);
 
                 // Clean up database
+                // new DeleteOldSamplesTask().execute();
 
                 refreshStatus();
             }
@@ -196,9 +206,9 @@ public class CommunicationManager {
                 EventBus.getDefault().post(
                         new StatusEvent(mContext.getString(R.string.event_upload_finished))
                 );
-                // If was called from service reset uploadAttempts counter
-                if (mOnBackground) uploadAttempts = 0;
+                uploadAttempts = 0;
                 isUploading = false;
+                isQueued = false;
 
                 LOGI(TAG, "All samples were uploaded!");
 
@@ -210,13 +220,20 @@ public class CommunicationManager {
             EventBus.getDefault().post(
                     new StatusEvent(mContext.getString(R.string.event_error_uploading_sample))
             );
-            // If was called from service reset uploadAttempts counter
-            if (mOnBackground) uploadAttempts++;
+            uploadAttempts++;
             isUploading = false;
 
-            LOGI(TAG, "HTTP response error uploadAttempts:" + uploadAttempts);
+            LOGI(TAG, "Sample: " + id + " HTTP response error uploadAttempts:" + uploadAttempts);
+
+            if (uploadAttempts >= Config.UPLOAD_MAX_TRIES) {
+                // In case of server error, device was not found so try to register again...
+                new RegisterDeviceTask().execute(mContext);
+                uploadAttempts = 0;
+            }
 
             // Clean up database
+            // First try-force upload or ask user through notification?
+            // new DeleteOldSamplesTask().execute();
 
             refreshStatus();
         }
@@ -227,9 +244,6 @@ public class CommunicationManager {
          * This is a manual approach, not ideal.
          * In the future create a gson builder with proper type adapters.
          */
-
-        if (sample == null) return null;
-
         JsonObject root = new JsonObject();
         JsonObject child, subChild;
         JsonArray list, subList;

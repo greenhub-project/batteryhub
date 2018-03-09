@@ -241,8 +241,6 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
                     EventBus.getDefault().post(new StatusEvent(getString(R.string.event_needs_sync)));
                     refreshStatus();
                     return;
-                } else {
-                    CommunicationManager.uploadAttempts = 0;
                 }
 
                 // Upload samples

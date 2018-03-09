@@ -233,6 +233,8 @@ public class DataEstimatorService extends IntentService {
             manager.sendSamples();
         }
 
+        // Check if automatic upload are off do DB clean up here...
+
         // Finally close database access
         database.close();
     }
