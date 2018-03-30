@@ -63,6 +63,7 @@ public final class Config {
     public static final String IMPORTANCE_DISABLED = "disabled";
     public static final String IMPORTANCE_INSTALLED = "installed";
     public static final String IMPORTANCE_REPLACED = "replaced";
+    public static final int IMPORTANCE_APP = 9999;
 
     public static final String BATTERY_SOURCE_DEFAULT =
             "/sys/class/power_supply/battery/current_now";
