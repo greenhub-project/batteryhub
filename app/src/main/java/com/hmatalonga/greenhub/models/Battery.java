@@ -328,7 +328,6 @@ public class Battery {
 		if (!charging) {
 			chargingSignal = -1;
 			remainingCapacity = getBatteryRemainingCapacity(context);
-			LOGI("WOW", "[B] RemCap: " + remainingCapacity);
 		} else {
 			chargingSignal = 1;
 			switch (charger) {
@@ -435,28 +434,4 @@ public class Battery {
 		return value;
 	}
 
-	public static void logAllBatteryValues(final Context context) {
-		BatteryManager manager = (BatteryManager) context.getSystemService(Context.BATTERY_SERVICE);
-
-		LOGI("Battery Voltage", "v: " + getBatteryVoltage(context));
-		if (Build.VERSION.SDK_INT >= 21) {
-			LOGI("[API] Battery Capacity", "v: " + manager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY));
-			LOGI("[API] Battery Charge Counter", "v: " + manager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CHARGE_COUNTER));
-			LOGI("[API] Battery Energy Counter", "v: " + manager.getIntProperty(BatteryManager.BATTERY_PROPERTY_ENERGY_COUNTER));
-			LOGI("[API] Battery Current Average", "v: " + manager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_AVERAGE));
-			LOGI("[API] Battery Current Now", "v: " + manager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW));
-		}
-
-		LOGI("Battery Capacity", "v: " + getBatteryPropertyLegacy(Config.BATTERY_CAPACITY));
-		LOGI("Battery Charge Counter", "v: " + getBatteryPropertyLegacy(Config.BATTERY_CHARGE_FULL));
-		LOGI("Battery Charge Counter (Design)", "v: " + getBatteryPropertyLegacy(Config.BATTERY_CHARGE_FULL_DESIGN));
-		LOGI("Battery Energy Counter", "v: " + getBatteryPropertyLegacy(Config.BATTERY_ENERGY_FULL));
-		LOGI("Battery Energy Counter (Design)", "v: " + getBatteryPropertyLegacy(Config.BATTERY_ENERGY_FULL_DESIGN));
-		LOGI("Battery Current Now", "v: " + getBatteryPropertyLegacy(Config.BATTERY_CURRENT_NOW));
-		LOGI("Battery Current Now (2)", "v: " + getBatteryCurrentNowLegacy());
-		LOGI("Battery Energy Now", "v: " + getBatteryPropertyLegacy(Config.BATTERY_ENERGY_NOW));
-
-		//Reflections
-		LOGI("Actual Battery Capacity", "v: " + getActualBatteryCapacity(context));
-	}
 }
