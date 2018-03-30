@@ -27,14 +27,62 @@ import java.util.List;
 import java.util.Set;
 
 import com.hmatalonga.greenhub.models.data.ProcessInfo;
+import com.hmatalonga.greenhub.util.ProcessUtils;
 import com.hmatalonga.greenhub.util.StringHelper;
 
+import static com.hmatalonga.greenhub.util.LogUtils.LOGE;
+import static com.hmatalonga.greenhub.util.LogUtils.LOGI;
 import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
 
 /**
  * Application properties model.
  */
 public class Application {
+
+    public static ArrayList<ProcessInfo> getRunningAppInfoLegacy(final Context context) {
+        ArrayList<ProcessInfo> processInfoList = new ArrayList<>();
+        List<String> psOutput = ProcessUtils.getCommandOutputAsList("ps");
+        psOutput.remove(0); // the first line contains the headers of the `ps` command,
+                              // so we just discard that
+
+        for (String line : psOutput) {
+            String[] properties = line.split("[ \\t]+");
+            if (properties.length >= 9) {
+                String cmdUser = properties[0];
+                String cmdPid = properties[1];
+                String cmdName = properties[8];
+                String description = "";
+
+                if (cmdUser.matches("u[0-9]+_.+")) {
+                    if (cmdName.matches("(\\w+(\\.\\w+)+)$")) {  // this is a normal app
+                        description = "user";
+                    }else if (cmdName.matches("(\\w+(\\.\\w+)+:\\w+)$")) {  // this is a service
+                        description = "user-service";
+                    }else{
+                        description = "unknown";
+                    }
+                }else{
+                    description = "system";
+                }
+
+                ProcessInfo item = new ProcessInfo();
+                item.importance = StringHelper.importanceStringLegacy(description);
+                try {
+                    int pid = Integer.parseInt(cmdPid);
+                    item.processId = pid;
+                }catch (NumberFormatException e) {
+                    LOGE("Wrong PID format: ", "" + cmdPid);
+                    item.processId = -1;  // FIXME: what should the PID be in an error situation?
+                }
+                item.name = cmdName;  // FIXME:
+                processInfoList.add(item);
+
+            }
+        }
+
+        return null;
+    }
+
     public static ArrayList<ProcessInfo> getRunningAppInfo(final Context context) {
         List<RunningAppProcessInfo> runningProcessInfo = Process.getRunningProcessInfo(context);
         List<RunningServiceInfo> runningServices = Service.getRunningServiceInfo(context);

@@ -56,6 +56,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PermissionInfo;
 import android.os.BatteryManager;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
@@ -93,6 +94,7 @@ import com.hmatalonga.greenhub.models.data.Sample;
 import com.hmatalonga.greenhub.models.data.Settings;
 import com.hmatalonga.greenhub.util.Notifier;
 import com.hmatalonga.greenhub.util.SettingsUtils;
+import com.hmatalonga.greenhub.util.StringHelper;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -204,7 +206,12 @@ public final class Inspector {
         // Reset list for each sample
         Process.clear();
 
-        List<ProcessInfo> list = Application.getRunningAppInfo(context);
+        List<ProcessInfo> list;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            list = Application.getRunningAppInfo(context);
+        } else {
+            list = Application.getRunningAppInfoLegacy(context);
+        }
         List<ProcessInfo> result = new ArrayList<>();
 
         PackageManager pm = context.getPackageManager();
@@ -219,7 +226,7 @@ public final class Inspector {
                 (included) ? Package.getInstalledPackages(context, false) : null;
 
         for (ProcessInfo pi : list) {
-            String pName = pi.name;
+            String pName = StringHelper.formatProcessName(pi.name);
             if (processInfoMap != null && processInfoMap.containsKey(pName)) {
                 processInfoMap.remove(pName);
             }
@@ -231,6 +238,7 @@ public final class Inspector {
             item.appSignatures = new RealmList<>();
 
             PackageInfo packageInfo = Package.getPackageInfo(context, pName);
+            LOGI("getRunningProcessInfoForSample","ProcessName: "+pName);
 
             if (packageInfo != null) {
                 item.versionName = packageInfo.versionName;
