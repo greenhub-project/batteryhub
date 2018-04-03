@@ -31,8 +31,6 @@ import com.hmatalonga.greenhub.util.ProcessUtils;
 import com.hmatalonga.greenhub.util.StringHelper;
 
 import static com.hmatalonga.greenhub.util.LogUtils.LOGE;
-import static com.hmatalonga.greenhub.util.LogUtils.LOGI;
-import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
 
 /**
  * Application properties model.
