@@ -1,16 +1,24 @@
 package com.hmatalonga.greenhub.util;
 
+import android.util.Log;
+
+import com.hmatalonga.greenhub.managers.sampling.Inspector;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
+
 /**
  * Created by marco on 12-03-2018.
  */
 
 public class ProcessUtils {
+
+    private static final String TAG = makeLogTag(Inspector.class);
 
     public static List<String> getCommandOutputAsList(String command) {
         String[] lines = getCommandOutput(command).split(System.getProperty("line.separator"));
@@ -44,9 +52,11 @@ public class ProcessUtils {
 
 
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            Log.e(TAG, "Could not get ps command output");
         } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            Log.e(TAG, "Could not get ps command output");
         }
+
+        return "";
     }
 }

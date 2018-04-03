@@ -40,6 +40,12 @@ public class Application {
     public static ArrayList<ProcessInfo> getRunningAppInfoLegacy(final Context context) {
         ArrayList<ProcessInfo> processInfoList = new ArrayList<>();
         List<String> psOutput = ProcessUtils.getCommandOutputAsList("ps");
+
+        if (psOutput.size() == 0) {
+            // the ps command failed to return the complete list of processes
+            return null;
+        }
+
         psOutput.remove(0); // the first line contains the headers of the `ps` command,
                               // so we just discard that
 
@@ -49,7 +55,7 @@ public class Application {
                 String cmdUser = properties[0];
                 String cmdPid = properties[1];
                 String cmdName = properties[8];
-                String description = "";
+                String description;
 
                 if (cmdUser.matches("u[0-9]+_.+")) {
                     if (cmdName.matches("(\\w+(\\.\\w+)+)$")) {  // this is a normal app
@@ -70,9 +76,9 @@ public class Application {
                     item.processId = pid;
                 }catch (NumberFormatException e) {
                     LOGE("Wrong PID format: ", "" + cmdPid);
-                    item.processId = -1;  // FIXME: what should the PID be in an error situation?
+                    item.processId = -1;
                 }
-                item.name = cmdName;  // FIXME:
+                item.name = cmdName;
                 processInfoList.add(item);
 
             }
