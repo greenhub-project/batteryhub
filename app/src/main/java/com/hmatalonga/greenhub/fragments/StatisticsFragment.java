@@ -27,7 +27,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.utils.ColorTemplate;
@@ -35,7 +34,6 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 import java.util.ArrayList;
 
 import com.hmatalonga.greenhub.R;
-import com.hmatalonga.greenhub.events.BatteryLevelEvent;
 import com.hmatalonga.greenhub.events.RefreshChartEvent;
 import com.hmatalonga.greenhub.models.data.BatteryUsage;
 import com.hmatalonga.greenhub.models.ui.ChartCard;
@@ -73,7 +71,8 @@ public class StatisticsFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_statistics, container, false);
 
         mActivity = (MainActivity) getActivity();
@@ -140,7 +139,7 @@ public class StatisticsFragment extends Fragment {
     }
 
     /**
-     * Queries the data from database.
+     * Queries the data from mDatabase.
      *
      * @param interval Time interval for fetching the data.
      */
@@ -150,29 +149,29 @@ public class StatisticsFragment extends Fragment {
 
         mChartCards = new ArrayList<>();
 
-        // Make sure database instance is opened
-        if (mActivity.database.isClosed()) {
-            mActivity.database.getDefaultInstance();
+        // Make sure mDatabase instance is opened
+        if (mActivity.mDatabase.isClosed()) {
+            mActivity.mDatabase.getDefaultInstance();
         }
 
         // Query results according to selected time interval
         if (interval == DateUtils.INTERVAL_24H) {
-            results = mActivity.database.betweenUsages(
+            results = mActivity.mDatabase.betweenUsages(
                     DateUtils.getMilliSecondsInterval(DateUtils.INTERVAL_24H),
                     now
             );
         } else if (interval == DateUtils.INTERVAL_3DAYS) {
-            results = mActivity.database.betweenUsages(
+            results = mActivity.mDatabase.betweenUsages(
                     DateUtils.getMilliSecondsInterval(DateUtils.INTERVAL_3DAYS),
                     now
             );
         } else if (interval == DateUtils.INTERVAL_5DAYS) {
-            results = mActivity.database.betweenUsages(
+            results = mActivity.mDatabase.betweenUsages(
                     DateUtils.getMilliSecondsInterval(DateUtils.INTERVAL_5DAYS),
                     now
             );
         } else {
-            results = mActivity.database.betweenUsages(
+            results = mActivity.mDatabase.betweenUsages(
                     DateUtils.getMilliSecondsInterval(DateUtils.INTERVAL_24H),
                     now
             );
@@ -184,9 +183,9 @@ public class StatisticsFragment extends Fragment {
     }
 
     /**
-     * Fills in the data queried from the database.
+     * Fills in the data queried from the mDatabase.
      *
-     * @param results Collection of results fetched from the database.
+     * @param results Collection of results fetched from the mDatabase.
      */
     private void fillData(@NonNull RealmResults<BatteryUsage> results) {
         ChartCard card;

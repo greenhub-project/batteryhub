@@ -35,10 +35,11 @@ import com.hmatalonga.greenhub.GreenHubApp;
 import com.hmatalonga.greenhub.R;
 import com.hmatalonga.greenhub.tasks.DeleteSessionsTask;
 import com.hmatalonga.greenhub.tasks.DeleteUsagesTask;
+import com.hmatalonga.greenhub.util.LogUtils;
 import com.hmatalonga.greenhub.util.Notifier;
 import com.hmatalonga.greenhub.util.SettingsUtils;
 
-import static com.hmatalonga.greenhub.util.LogUtils.LOGI;
+import static com.hmatalonga.greenhub.util.LogUtils.logI;
 import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
 
 public class SettingsActivity extends BaseActivity {
@@ -59,7 +60,8 @@ public class SettingsActivity extends BaseActivity {
         }
     }
 
-    public static class SettingsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
+    public static class SettingsFragment extends PreferenceFragment implements
+            SharedPreferences.OnSharedPreferenceChangeListener {
         public SettingsFragment() {}
 
         @Override
@@ -98,7 +100,7 @@ public class SettingsActivity extends BaseActivity {
             switch (key) {
                 case SettingsUtils.PREF_SAMPLING_SCREEN:
                     // Restart GreenHub Service with new settings
-                    LOGI(TAG, "Restarting GreenHub Service because of preference changes");
+                    LogUtils.logI(TAG, "Restarting GreenHub Service because of preference changes");
                     app.stopGreenHubService();
                     app.startGreenHubService();
                     Answers.getInstance().logCustom(new CustomEvent("Preference Change")

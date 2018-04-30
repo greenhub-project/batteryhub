@@ -49,8 +49,9 @@ import com.hmatalonga.greenhub.models.Battery;
 import com.hmatalonga.greenhub.models.ui.BatteryCard;
 import com.hmatalonga.greenhub.ui.MainActivity;
 import com.hmatalonga.greenhub.ui.adapters.BatteryRVAdapter;
+import com.hmatalonga.greenhub.util.LogUtils;
 
-import static com.hmatalonga.greenhub.util.LogUtils.LOGI;
+import static com.hmatalonga.greenhub.util.LogUtils.logI;
 import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
 
 /**
@@ -142,7 +143,7 @@ public class HomeFragment extends Fragment {
         mMin = Integer.MAX_VALUE;
         mMax = 0;
         mHandler = new Handler();
-        mHandler.postDelayed(runnable, Config.REFRESH_CURRENT_INTERVAL);
+        mHandler.postDelayed(mRunnable, Config.REFRESH_CURRENT_INTERVAL);
 
         return view;
     }
@@ -182,13 +183,18 @@ public class HomeFragment extends Fragment {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void updateBatteryRemainingTime(BatteryTimeEvent event){
-        //TODO: change the UI with the value from this event
-        //For now, it's just logging
-        String logText = event.charging ?
-                "" + event.remainingHours + " h " + event.remainingMinutes + " m until complete charge"
-                : "Remaining Time: " + event.remainingHours + " h " + event.remainingMinutes + " m";
-        LOGI("BATTERY_LOG", logText);
+    public void updateBatteryRemainingTime(BatteryTimeEvent event) {
+        // TODO: change the UI with the value from this event
+        // For now, it's just logging
+        String logText;
+        if (event.charging) {
+            logText = "" + event.remainingHours + " h " +
+                    event.remainingMinutes + " m until complete charge";
+        } else {
+            logText = "Remaining Time: " + event.remainingHours + " h " +
+                    event.remainingMinutes + " m";
+        }
+        LogUtils.logI("BATTERY_LOG", logText);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -279,7 +285,7 @@ public class HomeFragment extends Fragment {
         setAdapter();
     }
 
-    private void setAdapter(){
+    private void setAdapter() {
         try {
             mLocalThread.join();
             if (mAdapter == null) {
@@ -289,8 +295,7 @@ public class HomeFragment extends Fragment {
                 mAdapter.swap(mBatteryCards);
             }
             mRecyclerView.invalidate();
-        }
-        catch (InterruptedException e) {
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
@@ -354,14 +359,14 @@ public class HomeFragment extends Fragment {
         mBatteryCurrentNow.setText(value);
     }
 
-    private Runnable runnable = new Runnable() {
+    private Runnable mRunnable = new Runnable() {
         @Override
         public void run() {
             int now = Battery.getBatteryCurrentNow(mContext);
             double level = Inspector.getCurrentBatteryLevel();
             String value;
 
-            // If is charging and full battery stop runnable
+            // If is charging and full battery stop mRunnable
             if (!mActivePower.equals("unplugged") && level == 1.0) {
                 value = "min: --";
                 mBatteryCurrentMin.setText(value);

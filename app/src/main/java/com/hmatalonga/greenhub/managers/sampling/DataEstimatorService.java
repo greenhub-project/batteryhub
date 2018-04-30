@@ -61,17 +61,18 @@ import com.hmatalonga.greenhub.models.data.Sample;
 import com.hmatalonga.greenhub.network.CommunicationManager;
 import com.hmatalonga.greenhub.tasks.CheckNewMessagesTask;
 import com.hmatalonga.greenhub.tasks.ServerStatusTask;
+import com.hmatalonga.greenhub.util.LogUtils;
 import com.hmatalonga.greenhub.util.Notifier;
 import com.hmatalonga.greenhub.util.SettingsUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
-import static com.hmatalonga.greenhub.util.LogUtils.LOGI;
+import static com.hmatalonga.greenhub.util.LogUtils.logI;
 import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
 
 /**
  * Data Estimator Service
- *
+ * <p>
  * Created by hugo on 13-04-2016.
  */
 public class DataEstimatorService extends IntentService {
@@ -121,9 +122,10 @@ public class DataEstimatorService extends IntentService {
      * only in changes of the battery level.
      *
      * @param intent  The parent intent (the one passed from the DataEstimator)
-     *				  (with one extra field set, called 'distance')
-     *				  This intent should be the intent which is passed by the Android system to your
-     *                broadcast receiver (which is registered with the BATTERY_CHANGED action).
+     *                (with one extra field set, called 'distance')
+     *                This intent should be the intent which is passed by the Android system
+     *                to your broadcast receiver
+     *                (which is registered with the BATTERY_CHANGED action).
      *                In our case, this broadcast receiver is 'Sampler'.
      * @param context
      */
@@ -140,7 +142,7 @@ public class DataEstimatorService extends IntentService {
         // If intent has action Screen ON or Screen OFF don't check the change on battery level
         if (action.equals(Intent.ACTION_SCREEN_ON) ||
                 action.equals(Intent.ACTION_SCREEN_OFF)) {
-            LOGI(TAG, "Getting new usage details");
+            LogUtils.logI(TAG, "Getting new usage details");
             getBatteryUsage(context, intent, database, true);
             database.close();
             return;
@@ -151,33 +153,37 @@ public class DataEstimatorService extends IntentService {
             Inspector.setLastBatteryLevel(lastSample.batteryLevel);
         }
 
-			/*
-			 * Read the battery levels again, they are now changed. We just
-			 * changed the last battery level (in the previous block of code).
-			 * The current battery level might also have been changed while the
-			 * device has been taking a sample.
-			 */
+        /*
+         * Read the battery levels again, they are now changed. We just
+         * changed the last battery level (in the previous block of code).
+         * The current battery level might also have been changed while the
+         * device has been taking a sample.
+         */
         boolean batteryLevelChanged =
                 Inspector.getLastBatteryLevel() != Inspector.getCurrentBatteryLevel();
 
         /*
          * Among all occurrence of the event BATTERY_CHANGED, only take a sample
          * whenever a battery PERCENTAGE CHANGE happens
-         * (BATTERY_CHANGED happens whenever the battery temperature or voltage of other parameters change)
+         * (BATTERY_CHANGED happens whenever the battery temperature
+         * or voltage of other parameters change)
          */
         if (!batteryLevelChanged || Inspector.isSampling) {
             if (!batteryLevelChanged) {
-                LOGI(TAG, "No battery percentage change. BatteryLevel=" +
+                LogUtils.logI(TAG, "No battery percentage change. BatteryLevel=" +
                         Inspector.getCurrentBatteryLevel());
             } else if (Inspector.isSampling) {
-                LOGI(TAG, "Inspector is already sampling...");
+                LogUtils.logI(TAG, "Inspector is already sampling...");
             }
         } else {
-            LOGI(TAG, "The battery percentage changed. About to take a new sample (currentBatteryLevel=" +
-                    Inspector.getCurrentBatteryLevel() + ", lastBatteryLevel=" +
-                    Inspector.getLastBatteryLevel()+ ")");
+            String message =
+                    "The battery percentage changed. " +
+                            "About to take a new sample (currentBatteryLevel=" +
+                            Inspector.getCurrentBatteryLevel() + ", lastBatteryLevel=" +
+                            Inspector.getLastBatteryLevel() + ")";
+            LogUtils.logI(TAG, message);
 
-            // take a sample and store it in the database
+            // take a sample and store it in the mDatabase
             EventBus.getDefault().post(new StatusEvent(getString(R.string.event_new_sample)));
 
             getSample(context, intent, database);
@@ -196,7 +202,11 @@ public class DataEstimatorService extends IntentService {
 
             // If last battery level = 0 then it is the first sample in the current instance
             if (Inspector.getLastBatteryLevel() == 0) {
-                LOGI(TAG, "Last Battery Level = 0. Updating to BatteryLevel => " + Inspector.getCurrentBatteryLevel());
+                LogUtils.logI(
+                        TAG,
+                        "Last Battery Level = 0. Updating to BatteryLevel => " +
+                                Inspector.getCurrentBatteryLevel()
+                );
                 // before taking the first sample in a batch, first record the battery level
                 Inspector.setLastBatteryLevel(Inspector.getCurrentBatteryLevel());
             }
@@ -216,7 +226,7 @@ public class DataEstimatorService extends IntentService {
                 !SettingsUtils.isDeviceRegistered(context) ||
                 !batteryLevelChanged) {
             database.close();
-            LOGI(TAG, "Database closed. No upload now.");
+            LogUtils.logI(TAG, "Database closed. No upload now.");
             return;
         }
 
@@ -228,39 +238,41 @@ public class DataEstimatorService extends IntentService {
         // Check if is necessary to sendSamples samples >= pref_upload_rate
         if (database.count(Sample.class) >= SettingsUtils.fetchUploadRate(context) &&
                 !CommunicationManager.isUploading) {
-            LOGI(TAG, "Enough samples to upload on background...");
+            LogUtils.logI(TAG, "Enough samples to upload on background...");
             CommunicationManager manager = new CommunicationManager(context, true);
             manager.sendSamples();
         }
 
         // Check if automatic upload are off do DB clean up here...
 
-        // Finally close database access
+        // Finally close mDatabase access
         database.close();
     }
 
     /**
-     * Takes a Sample and stores it in the database. Does not store the first ever samples
+     * Takes a Sample and stores it in the mDatabase. Does not store the first ever samples
      * that have no battery info.
      *
-     * @param context from onReceive
-     * @param intent from onReceive
+     * @param context  from onReceive
+     * @param intent   from onReceive
+     * @param database GreenHub database
      */
     private void getSample(Context context, Intent intent, GreenHubDb database) {
         Sample sample = Inspector.getSample(context, intent);
 
-        // Write to database, but only after first real numbers
+        // Write to mDatabase, but only after first real numbers
         if (sample != null && !sample.batteryState.equals("Unknown") && sample.batteryLevel >= 0) {
-            // store the sample into the database
+            // store the sample into the mDatabase
             database.saveSample(sample);
-            LOGI(TAG, "Took sample " + sample.id + " for " + intent.getAction());
+            LogUtils.logI(TAG, "Took sample " + sample.id + " for " + intent.getAction());
         }
 
         // Notify UI
         EventBus.getDefault().post(new StatusEvent(context.getString(R.string.event_idle)));
     }
 
-    private void getBatteryUsage(Context context, Intent intent, GreenHubDb database, boolean isScreenIntent) {
+    private void getBatteryUsage(Context context, Intent intent, GreenHubDb database,
+                                 boolean isScreenIntent) {
         // if Intent is screen related, it is necessary to add extras from DataEstimator
         // since original intent has none
         if (isScreenIntent) {
@@ -272,7 +284,7 @@ public class DataEstimatorService extends IntentService {
 
         if (usage != null && !usage.state.equals("Unknown") && usage.level >= 0) {
             database.saveUsage(usage);
-            LOGI(TAG, "Took usage details " + usage.id + " for " + intent.getAction());
+            LogUtils.logI(TAG, "Took usage details " + usage.id + " for " + intent.getAction());
         }
     }
 }

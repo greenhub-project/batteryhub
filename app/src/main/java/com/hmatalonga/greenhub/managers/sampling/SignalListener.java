@@ -24,28 +24,28 @@ import android.telephony.SignalStrength;
  */
 public class SignalListener extends PhoneStateListener {
 
-    private int gsmSignal = 0;
-    private int evdoDbm = 0;
-    private int cdmaDbm = 0;
+    private int mGsmSignal = 0;
+    private int mEvdoDbm = 0;
+    private int mCdmaDbm = 0;
 
     @Override
     public void onSignalStrengthsChanged(SignalStrength signalStrength) {
         // TODO Auto-generated method stub
         super.onSignalStrengthsChanged(signalStrength);
-        gsmSignal = signalStrength.getGsmSignalStrength();
-        cdmaDbm  = signalStrength.getCdmaDbm();
-        evdoDbm = signalStrength.getEvdoDbm();
+        mGsmSignal = signalStrength.getGsmSignalStrength();
+        mCdmaDbm = signalStrength.getCdmaDbm();
+        mEvdoDbm = signalStrength.getEvdoDbm();
     }
 
-    public int getGsmSignal() {
-        return gsmSignal;
+    public int getmGsmSignal() {
+        return mGsmSignal;
     }
 
-    public int getEvdoDbm() {
-        return evdoDbm;
+    public int getmEvdoDbm() {
+        return mEvdoDbm;
     }
 
-    public int getCdmaDbm() {
-        return cdmaDbm;
+    public int getmCdmaDbm() {
+        return mCdmaDbm;
     }
 }

@@ -83,7 +83,7 @@ public class TaskController {
             if (packageInfo == null) continue;
 
             /* Remove system apps if necessary */
-            if (isSystemApp(packageInfo) && SettingsUtils.isSystemAppsHidden(mContext)){
+            if (isSystemApp(packageInfo) && SettingsUtils.isSystemAppsHidden(mContext)) {
                 continue;
             }
 
@@ -111,7 +111,7 @@ public class TaskController {
             }
         }
 
-        if (! tasks.isEmpty()) {
+        if (!tasks.isEmpty()) {
             // Dirty quick sorting
             Collections.sort(tasks, new Comparator<Task>() {
                 @Override
@@ -148,7 +148,7 @@ public class TaskController {
             if (packageInfo == null) continue;
 
             /** Remove system apps if necessary */
-            if (isSystemApp(packageInfo) && SettingsUtils.isSystemAppsHidden(mContext)){
+            if (isSystemApp(packageInfo) && SettingsUtils.isSystemAppsHidden(mContext)) {
                 continue;
             }
 

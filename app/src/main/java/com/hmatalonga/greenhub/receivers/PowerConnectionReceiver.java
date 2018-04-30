@@ -26,17 +26,17 @@ import android.os.Build;
 import org.greenrobot.eventbus.EventBus;
 
 import com.hmatalonga.greenhub.events.BatteryTimeEvent;
-import com.hmatalonga.greenhub.BuildConfig;
 import com.hmatalonga.greenhub.events.PowerSourceEvent;
 import com.hmatalonga.greenhub.managers.sampling.Inspector;
 import com.hmatalonga.greenhub.managers.storage.GreenHubDb;
 import com.hmatalonga.greenhub.models.Battery;
+import com.hmatalonga.greenhub.util.LogUtils;
 import com.hmatalonga.greenhub.util.Notifier;
 
 import io.realm.exceptions.RealmMigrationNeededException;
 
-import static com.hmatalonga.greenhub.util.LogUtils.LOGE;
-import static com.hmatalonga.greenhub.util.LogUtils.LOGI;
+import static com.hmatalonga.greenhub.util.LogUtils.logE;
+import static com.hmatalonga.greenhub.util.LogUtils.logI;
 import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
 
 public class PowerConnectionReceiver extends BroadcastReceiver {
@@ -78,26 +78,32 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
                 batteryCharger = "wireless";
                 EventBus.getDefault().post(new PowerSourceEvent("wireless"));
             }
-        } else if(intent.getAction().equals(Intent.ACTION_POWER_DISCONNECTED)) {
+        } else if (intent.getAction().equals(Intent.ACTION_POWER_DISCONNECTED)) {
             isCharging = false;
             EventBus.getDefault().post(new PowerSourceEvent("unplugged"));
         }
         // Post to subscribers & update notification
-        int batteryRemaining = (int)(Battery.getRemainingBatteryTime(context, isCharging, batteryCharger)/60);
-        int batteryRemainingHours = batteryRemaining/60;
+        int batteryRemaining =
+                (int) (Battery.getRemainingBatteryTime(context, isCharging, batteryCharger) / 60);
+        int batteryRemainingHours = batteryRemaining / 60;
         int batteryRemainingMinutes = batteryRemaining % 60;
 
-        EventBus.getDefault().post(new BatteryTimeEvent(batteryRemainingHours, batteryRemainingMinutes, isCharging));
-        Notifier.remainingBatteryTimeAlert(context, batteryRemainingHours+"h "+batteryRemainingMinutes+"m", isCharging);
+        EventBus.getDefault().post(
+                new BatteryTimeEvent(batteryRemainingHours, batteryRemainingMinutes, isCharging)
+        );
+        Notifier.remainingBatteryTimeAlert(
+                context,
+                batteryRemainingHours + "h " + batteryRemainingMinutes + "m", isCharging
+        );
 
         try {
-            // Save a new Battery Session to the database
+            // Save a new Battery Session to the mDatabase
             GreenHubDb database = new GreenHubDb();
-            LOGI(TAG, "Getting new session");
+            LogUtils.logI(TAG, "Getting new session");
             database.saveSession(Inspector.getBatterySession(context, intent));
             database.close();
         } catch (IllegalStateException | RealmMigrationNeededException e) {
-            LOGE(TAG, "No session was created");
+            LogUtils.logE(TAG, "No session was created");
             e.printStackTrace();
         }
     }

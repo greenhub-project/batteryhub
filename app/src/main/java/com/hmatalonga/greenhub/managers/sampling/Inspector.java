@@ -89,6 +89,7 @@ import com.hmatalonga.greenhub.models.data.NetworkDetails;
 import com.hmatalonga.greenhub.models.data.ProcessInfo;
 import com.hmatalonga.greenhub.models.data.Sample;
 import com.hmatalonga.greenhub.models.data.Settings;
+import com.hmatalonga.greenhub.util.LogUtils;
 import com.hmatalonga.greenhub.util.Notifier;
 import com.hmatalonga.greenhub.util.SettingsUtils;
 
@@ -103,7 +104,7 @@ import java.util.Set;
 
 import io.realm.RealmList;
 
-import static com.hmatalonga.greenhub.util.LogUtils.LOGI;
+import static com.hmatalonga.greenhub.util.LogUtils.logI;
 import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
 
 /**
@@ -165,16 +166,18 @@ public final class Inspector {
      * @param scale        Battery scale, usually 100.0.
      */
     static void setCurrentBatteryLevel(double currentLevel, double scale) {
-        /* we should multiply the result of the division below by 100.0 to get the battery level
-		 * in the scale of 0-100, but since the previous samples in our server's dataset are in the scale of 0.00-1.00,
-		 * we omit the multiplication. */
+        /*
+         * we should multiply the result of the division below by 100.0 to get the battery level
+         * in the scale of 0-100, but since the previous samples
+         * in our server's dataset are in the scale of 0.00-1.00, we omit the multiplication.
+         */
         double level = currentLevel / scale;
-		/*
-		 * whenever we get these two arguments (extras from the intent:
-		 * EXTRA_LEVEL & EXTRA_SCALE), it doesn't necessarily mean that a battery
-		 * percentage change has happened. Check the comments in the
-		 * broadcast receiver (sampler).
-		 */
+        /*
+         * whenever we get these two arguments (extras from the intent:
+         * EXTRA_LEVEL & EXTRA_SCALE), it doesn't necessarily mean that a battery
+         * percentage change has happened. Check the comments in the
+         * broadcast receiver (sampler).
+         */
         if (level != sCurrentBatteryLevel) sCurrentBatteryLevel = level;
     }
 
@@ -193,10 +196,10 @@ public final class Inspector {
         newSample.features = new RealmList<>();
 
 
-        if (Config.DEBUG) LOGI(TAG, "getSample() was invoked.");
+        if (Config.DEBUG) LogUtils.logI(TAG, "getSample() was invoked.");
 
         String action = intent.getAction();
-        if (Config.DEBUG) LOGI(TAG, "action = " + action);
+        if (Config.DEBUG) LogUtils.logI(TAG, "action = " + action);
 
         newSample.uuId = Specifications.getAndroidId(context);
         newSample.triggeredBy = action;
@@ -272,27 +275,27 @@ public final class Inspector {
         // For now calling info is not included so is null the object
         newSample.callInfo = null;
 
-		/* Calling Information */
+        /* Calling Information */
         // List<String> callInfo;
         // callInfo=SamplingLibrary.getCallInfo(context);
-		/* Total call time */
+        /* Total call time */
         // long totalCallTime=0;
         // totalCallTime=SamplingLibrary.getTotalCallDur(context);
 
-		/*
-		 * long[] incomingOutgoingIdle = getCalltimesSinceBoot(context);
-		 * Log.d(TAG, "Call time since boot: Incoming=" +
-		 * incomingOutgoingIdle[0] + " Outgoing=" + incomingOutgoingIdle[1] +
-		 * " idle=" + incomingOutgoingIdle[2]);
-		 *
-		 * // Summary Call info CallInfo ci = new CallInfo(); String callState =
-		 * SamplingLibrary.getCallState(context); ci.setCallStatus(callState);
-		 * ci.setIncomingCallTime(incomingOutgoingIdle[0]);
-		 * ci.setOutgoingCallTime(incomingOutgoingIdle[1]);
-		 * ci.setNonCallTime(incomingOutgoingIdle[2]);
-		 *
-		 * mySample.setCallInfo(ci);
-		 */
+        /*
+         * long[] incomingOutgoingIdle = getCalltimesSinceBoot(context);
+         * Log.d(TAG, "Call time since boot: Incoming=" +
+         * incomingOutgoingIdle[0] + " Outgoing=" + incomingOutgoingIdle[1] +
+         * " idle=" + incomingOutgoingIdle[2]);
+         *
+         * // Summary Call info CallInfo ci = new CallInfo(); String callState =
+         * SamplingLibrary.getCallState(context); ci.setCallStatus(callState);
+         * ci.setIncomingCallTime(incomingOutgoingIdle[0]);
+         * ci.setOutgoingCallTime(incomingOutgoingIdle[1]);
+         * ci.setNonCallTime(incomingOutgoingIdle[2]);
+         *
+         * mySample.setCallInfo(ci);
+         */
 
         // Bundle b = intent.getExtras();
 
@@ -398,12 +401,19 @@ public final class Inspector {
         batteryDetails.energyCounter = Battery.getBatteryEnergyCounter(context);
 
         boolean isCharging = "Charging".equals(batteryStatus);
-        int batteryRemaining = (int)(Battery.getRemainingBatteryTime(context, isCharging, batteryCharger)/60);
-        int batteryRemainingHours = batteryRemaining/60;
+        int batteryRemaining =
+                (int) (Battery.getRemainingBatteryTime(context, isCharging, batteryCharger) / 60);
+        int batteryRemainingHours = batteryRemaining / 60;
         int batteryRemainingMinutes = batteryRemaining % 60;
 
-        EventBus.getDefault().post(new BatteryTimeEvent(batteryRemainingHours, batteryRemainingMinutes, isCharging));
-        Notifier.remainingBatteryTimeAlert(context, batteryRemainingHours+"h "+batteryRemainingMinutes+"m", isCharging);
+        EventBus.getDefault().post(
+                new BatteryTimeEvent(batteryRemainingHours, batteryRemainingMinutes, isCharging)
+        );
+        Notifier.remainingBatteryTimeAlert(
+                context,
+                batteryRemainingHours + "h " + batteryRemainingMinutes + "m",
+                isCharging
+        );
 
         newSample.batteryDetails = batteryDetails;
         newSample.batteryLevel = sCurrentBatteryLevel;
@@ -527,10 +537,13 @@ public final class Inspector {
                 batteryCharger = "wireless";
         }
 
-        details.temperature = ((float) intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, 0)) / 10;
+        details.temperature =
+                ((float) intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, 0)) / 10;
 
-        // current battery voltage in VOLTS (the unit of the returned value by BatteryManager is millivolts)
-        details.voltage = ((float) intent.getIntExtra(BatteryManager.EXTRA_VOLTAGE, 0)) / 1000;
+        // current battery voltage in VOLTS
+        // (the unit of the returned value by BatteryManager is millivolts)
+        details.voltage =
+                ((float) intent.getIntExtra(BatteryManager.EXTRA_VOLTAGE, 0)) / 1000;
 
         details.charger = batteryCharger;
         details.health = batteryHealth;
@@ -614,16 +627,16 @@ public final class Inspector {
                     }
                 }
 
-				/*
-				 * boolean sigSent = p.getBoolean(SIG_SENT_256 + pname, false);
-				 * if (collectSignatures && !sigSent && pak.signatures != null
-				 * && pak.signatures.length > 0) { List<String> sigList =
-				 * getSignatures(pak); boolean sigSentOld =
-				 * p.getBoolean(SIG_SENT + pname, false); if (sigSentOld)
-				 * p.edit().remove(SIG_SENT + pname);
-				 * p.edit().putBoolean(SIG_SENT_256 + pname, true).commit();
-				 * item.setAppSignatures(sigList); }
-				 */
+                /*
+                 * boolean sigSent = p.getBoolean(SIG_SENT_256 + pname, false);
+                 * if (collectSignatures && !sigSent && pak.signatures != null
+                 * && pak.signatures.length > 0) { List<String> sigList =
+                 * getSignatures(pak); boolean sigSentOld =
+                 * p.getBoolean(SIG_SENT + pname, false); if (sigSentOld)
+                 * p.edit().remove(SIG_SENT + pname);
+                 * p.edit().putBoolean(SIG_SENT_256 + pname, true).commit();
+                 * item.setAppSignatures(sigList); }
+                 */
             }
             item.importance = pi.importance;
             item.processId = pi.processId;
@@ -661,7 +674,8 @@ public final class Inspector {
         updatePackagePreferences(context, result);
 
         // FIXME: These are not used yet.
-        // ActivityManager pActivityManager = (ActivityManager) context.getSystemService(Activity.ACTIVITY_SERVICE);
+        // ActivityManager pActivityManager =
+        //      (ActivityManager) context.getSystemService(Activity.ACTIVITY_SERVICE);
         // Debug.MemoryInfo[] memoryInfo = pActivityManager.getProcessMemoryInfo(procMem);
         // for (Debug.MemoryInfo info : memoryInfo) {
         // Decide which ones of info. we want, add to a new and improved ProcessInfo object

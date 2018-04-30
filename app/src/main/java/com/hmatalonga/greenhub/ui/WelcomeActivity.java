@@ -32,15 +32,17 @@ import java.util.List;
 import com.hmatalonga.greenhub.R;
 import com.hmatalonga.greenhub.fragments.TosFragment;
 import com.hmatalonga.greenhub.fragments.WelcomeFragment;
+import com.hmatalonga.greenhub.util.LogUtils;
 
-import static com.hmatalonga.greenhub.util.LogUtils.LOGD;
+import static com.hmatalonga.greenhub.util.LogUtils.logD;
 import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
 
 /**
  * Terms of Service activity activated via
  * {@link com.hmatalonga.greenhub.ui.BaseActivity} functionality.
  */
-public class WelcomeActivity extends AppCompatActivity implements WelcomeFragment.WelcomeFragmentContainer {
+public class WelcomeActivity extends AppCompatActivity implements
+        WelcomeFragment.WelcomeFragmentContainer {
 
     private static final String TAG = makeLogTag(WelcomeActivity.class);
     WelcomeActivityContent mContentFragment;
@@ -63,7 +65,7 @@ public class WelcomeActivity extends AppCompatActivity implements WelcomeFragmen
         fragmentTransaction.add(R.id.welcome_content, (Fragment) mContentFragment);
         fragmentTransaction.commit();
 
-        LOGD(TAG, "Inside Create View.");
+        LogUtils.logD(TAG, "Inside Create View.");
     }
 
     /**
@@ -126,7 +128,7 @@ public class WelcomeActivity extends AppCompatActivity implements WelcomeFragmen
         try {
             getPositiveButton().setEnabled(enabled);
         } catch (NullPointerException e) {
-            LOGD(TAG, "Positive welcome button doesn't exist to set enabled.");
+            LogUtils.logD(TAG, "Positive welcome button doesn't exist to set enabled.");
         }
     }
 
@@ -140,7 +142,7 @@ public class WelcomeActivity extends AppCompatActivity implements WelcomeFragmen
         try {
             getNegativeButton().setEnabled(enabled);
         } catch (NullPointerException e) {
-            LOGD(TAG, "Negative welcome button doesn't exist to set enabled.");
+            LogUtils.logD(TAG, "Negative welcome button doesn't exist to set enabled.");
         }
     }
 

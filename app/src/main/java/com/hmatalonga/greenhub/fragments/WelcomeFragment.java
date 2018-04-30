@@ -30,13 +30,14 @@ import android.widget.Button;
 
 import com.hmatalonga.greenhub.ui.MainActivity;
 import com.hmatalonga.greenhub.ui.WelcomeActivity;
+import com.hmatalonga.greenhub.util.LogUtils;
 
-import static com.hmatalonga.greenhub.util.LogUtils.LOGD;
+import static com.hmatalonga.greenhub.util.LogUtils.logD;
 import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
 
 /**
  * A Fragment class for use with {@link WelcomeActivity} to embed content into the activity.
- *
+ * <p>
  * Contains utitlies for attaching the fragment to the activity and updating UI elements.
  */
 public abstract class WelcomeFragment extends Fragment {
@@ -48,7 +49,7 @@ public abstract class WelcomeFragment extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        LOGD(TAG, "Attaching to activity");
+        LogUtils.logD(TAG, "Attaching to activity");
         mActivity = activity;
     }
 
@@ -63,7 +64,7 @@ public abstract class WelcomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
-        LOGD(TAG, "Creating View");
+        LogUtils.logD(TAG, "Creating View");
 
         // If the activity the fragment has been attached to is a WelcomeFragmentContainer
         if (mActivity instanceof WelcomeFragmentContainer) {
@@ -110,7 +111,7 @@ public abstract class WelcomeFragment extends Fragment {
      * @return the value of the resource or null.
      */
     protected String getResourceString(int id) {
-        if(mActivity != null) {
+        if (mActivity != null) {
             return mActivity.getResources().getString(id);
         }
         return null;
@@ -118,7 +119,7 @@ public abstract class WelcomeFragment extends Fragment {
 
     /**
      * Get the text for the positive action button.
-     *
+     * <p>
      * E.g. Accept
      *
      * @return the text for the button.
@@ -127,7 +128,7 @@ public abstract class WelcomeFragment extends Fragment {
 
     /**
      * Get the text for the negative action button.
-     *
+     * <p>
      * E.g. Decline
      *
      * @return the text for the negative action button.
@@ -173,7 +174,7 @@ public abstract class WelcomeFragment extends Fragment {
          * Proceed to the next activity.
          */
         void doNext() {
-            LOGD(TAG, "Proceeding to next activity");
+            LogUtils.logD(TAG, "Proceeding to next activity");
             Intent intent = new Intent(mActivity, MainActivity.class);
             startActivity(intent);
             mActivity.finish();
@@ -181,11 +182,11 @@ public abstract class WelcomeFragment extends Fragment {
 
         /**
          * Finish the activity.
-         *
+         * <p>
          * We're done here.
          */
         void doFinish() {
-            LOGD(TAG, "Closing app");
+            LogUtils.logD(TAG, "Closing app");
             mActivity.finish();
         }
     }

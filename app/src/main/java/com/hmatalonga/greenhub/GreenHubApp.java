@@ -23,7 +23,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.SystemClock;
-import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
 import com.hmatalonga.greenhub.managers.sampling.DataEstimator;
@@ -35,14 +34,11 @@ import com.hmatalonga.greenhub.util.LogUtils;
 import com.hmatalonga.greenhub.util.SettingsUtils;
 
 import io.fabric.sdk.android.Fabric;
-import io.realm.DynamicRealm;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
-import io.realm.RealmMigration;
-import io.realm.RealmSchema;
 
-import static com.hmatalonga.greenhub.util.LogUtils.LOGE;
-import static com.hmatalonga.greenhub.util.LogUtils.LOGI;
+import static com.hmatalonga.greenhub.util.LogUtils.logE;
+import static com.hmatalonga.greenhub.util.LogUtils.logI;
 import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
 
 /**
@@ -69,7 +65,7 @@ public class GreenHubApp extends Application {
             LogUtils.LOGGING_ENABLED = true;
         }
 
-        LOGI(TAG, "onCreate() called");
+        LogUtils.logI(TAG, "onCreate() called");
 
         // Init crash reports
         Fabric.with(this, new Crashlytics());
@@ -82,14 +78,14 @@ public class GreenHubApp extends Application {
                 .build();
         Realm.setDefaultConfiguration(realmConfiguration);
 
-        LOGI(TAG, "Estimator new instance");
+        LogUtils.logI(TAG, "Estimator new instance");
         estimator = new DataEstimator();
 
         Context context = getApplicationContext();
 
         if (SettingsUtils.isTosAccepted(context)) {
             // Start GreenHub Service
-            LOGI(TAG, "startGreenHubService() called");
+            LogUtils.logI(TAG, "startGreenHubService() called");
             startGreenHubService();
 
             // Delete old data history
@@ -105,30 +101,30 @@ public class GreenHubApp extends Application {
 
     public void startGreenHubService() {
         if (!isServiceRunning) {
-            LOGI(TAG, "GreenHubService starting...");
+            LogUtils.logI(TAG, "GreenHubService starting...");
 
             final Context context = getApplicationContext();
             isServiceRunning = true;
 
             new Thread() {
-                private IntentFilter intentFilter;
+                private IntentFilter mIntentFilter;
 
                 public void run() {
-                    intentFilter = new IntentFilter();
-                    intentFilter.addAction(Intent.ACTION_BATTERY_CHANGED);
+                    mIntentFilter = new IntentFilter();
+                    mIntentFilter.addAction(Intent.ACTION_BATTERY_CHANGED);
 
-                    registerReceiver(estimator, intentFilter);
+                    registerReceiver(estimator, mIntentFilter);
 
                     if (SettingsUtils.isSamplingScreenOn(context)) {
-                        intentFilter.addAction(Intent.ACTION_SCREEN_ON);
-                        registerReceiver(estimator, intentFilter);
-                        intentFilter.addAction(Intent.ACTION_SCREEN_OFF);
-                        registerReceiver(estimator, intentFilter);
+                        mIntentFilter.addAction(Intent.ACTION_SCREEN_ON);
+                        registerReceiver(estimator, mIntentFilter);
+                        mIntentFilter.addAction(Intent.ACTION_SCREEN_OFF);
+                        registerReceiver(estimator, mIntentFilter);
                     }
                 }
             }.start();
         } else {
-            LOGI(TAG, "GreenHubService is already running...");
+            LogUtils.logI(TAG, "GreenHubService is already running...");
         }
     }
 
@@ -139,14 +135,19 @@ public class GreenHubApp extends Application {
                 isServiceRunning = false;
             }
         } catch (IllegalArgumentException e) {
-            LOGE(TAG, "Estimator receiver is not registered!");
+            LogUtils.logE(TAG, "Estimator receiver is not registered!");
             e.printStackTrace();
         }
     }
 
     public void startStatusBarUpdater() {
         Intent notificationIntent = new Intent(this, NotificationReceiver.class);
-        mNotificationIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        mNotificationIntent = PendingIntent.getBroadcast(
+                this,
+                0,
+                notificationIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT
+        );
         if (mAlarmManager == null) {
             mAlarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         }

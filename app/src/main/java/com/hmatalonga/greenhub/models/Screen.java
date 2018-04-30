@@ -50,7 +50,6 @@ public class Screen {
     }
 
     /**
-     *
      * @param context
      * @return
      */
@@ -82,8 +81,7 @@ public class Screen {
 
         if (Build.VERSION.SDK_INT >= 20) {
             return (powerManager.isInteractive()) ? 1 : 0;
-        }
-        else {
+        } else {
             //noinspection deprecation
             return (powerManager.isScreenOn()) ? 1 : 0;
         }

@@ -36,7 +36,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.Dashboar
 
     private ArrayList<Message> mMessages;
 
-    public MessageAdapter(ArrayList<Message> items){
+    public MessageAdapter(ArrayList<Message> items) {
         this.mMessages = items;
     }
 
@@ -78,12 +78,11 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.Dashboar
         return mMessages.size();
     }
 
-    public void swap(ArrayList<Message> list){
+    public void swap(ArrayList<Message> list) {
         if (mMessages != null) {
             mMessages.clear();
             mMessages.addAll(list);
-        }
-        else {
+        } else {
             mMessages = list;
         }
         notifyDataSetChanged();

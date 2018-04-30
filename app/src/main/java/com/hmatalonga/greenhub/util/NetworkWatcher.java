@@ -43,7 +43,8 @@ public class NetworkWatcher {
      * @return Whether or not it is connected
      */
     public static boolean hasInternet(Context context, int mode) {
-        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager cm =
+                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         if (activeNetwork != null) { // connected to the internet
             if (activeNetwork.getType() == ConnectivityManager.TYPE_WIFI) {
@@ -53,7 +54,8 @@ public class NetworkWatcher {
                 if (mode == BACKGROUND_TASKS) {
                     return activeNetwork.isConnected();
                 } else if (mode == COMMUNICATION_MANAGER) {
-                    return SettingsUtils.isMobileDataAllowed(context) && activeNetwork.isConnected();
+                    return SettingsUtils.isMobileDataAllowed(context) &&
+                            activeNetwork.isConnected();
                 }
             }
         }

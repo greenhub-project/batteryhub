@@ -72,11 +72,12 @@ public class Package {
     /**
      * Helper to ensure the WeakReferenced `packages` is populated.
      *
-     * @param context the Context
+     * @param context           the Context
      * @param collectSignatures if needs to collect signatures or not
      * @return The content of `packages` or null in case of failure.
      */
-    private static Map<String, PackageInfo> getPackages(Context context, boolean collectSignatures) {
+    private static Map<String, PackageInfo> getPackages(Context context,
+                                                        boolean collectSignatures) {
         List<PackageInfo> packageList = null;
         Map<String, PackageInfo> map;
 
@@ -127,7 +128,7 @@ public class Package {
     /**
      * Get info for a single package from the WeakReferenced packagelist.
      *
-     * @param context The Context
+     * @param context     The Context
      * @param processName The package to get info for.
      * @return info for a single package from the WeakReferenced packagelist.
      */
@@ -143,11 +144,12 @@ public class Package {
      * detection project. Later on, single package information is got by
      * receiving the package installed intent.
      *
-     * @param context The Context
+     * @param context      The Context
      * @param filterSystem if true, exclude system packages.
      * @return a list of installed packages on the device.
      */
-    public static Map<String, ProcessInfo> getInstalledPackages(Context context, boolean filterSystem) {
+    public static Map<String, ProcessInfo> getInstalledPackages(Context context,
+                                                                boolean filterSystem) {
         Map<String, PackageInfo> packageMap = getPackages(context, true);
         PackageManager pm = context.getPackageManager();
 
@@ -170,12 +172,13 @@ public class Package {
                     // get the amount of transmitted and received bytes by an
                     // app
                     // TODO: disabled for debugging
-//					TrafficRecord trafficRecord = getAppTraffic(appUid);
+                    // TrafficRecord trafficRecord = getAppTraffic(appUid);
 
                     int flags = pak.applicationInfo.flags;
                     // Check if it is a system app
                     boolean isSystemApp = (flags & ApplicationInfo.FLAG_SYSTEM) > 0;
-                    isSystemApp = isSystemApp || (flags & ApplicationInfo.FLAG_UPDATED_SYSTEM_APP) > 0;
+                    isSystemApp =
+                            isSystemApp || (flags & ApplicationInfo.FLAG_UPDATED_SYSTEM_APP) > 0;
                     if (filterSystem & isSystemApp)
                         continue;
                     if (pak.signatures.length > 0) {
@@ -189,8 +192,7 @@ public class Package {
                         pi.importance = Config.IMPORTANCE_NOT_RUNNING;
                         pi.installationPkg = pm.getInstallerPackageName(pkg);
                         pi.versionName = pak.versionName;
-                        //TODO: disbaled for debugging
-//						pi.setTrafficRecord(trafficRecord);
+                        // pi.setTrafficRecord(trafficRecord);
                         result.put(pkg, pi);
                     }
                 }
@@ -214,7 +216,10 @@ public class Package {
             return null;
         PackageInfo pak;
         try {
-            pak = pm.getPackageInfo(pkg, PackageManager.GET_SIGNATURES | PackageManager.GET_PERMISSIONS);
+            pak = pm.getPackageInfo(
+                    pkg,
+                    PackageManager.GET_SIGNATURES | PackageManager.GET_PERMISSIONS
+            );
         } catch (PackageManager.NameNotFoundException e) {
             return null;
         }

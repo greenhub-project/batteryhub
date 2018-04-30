@@ -1,6 +1,6 @@
 # GreenHub BatteryHub
 
-[![Build Status](https://travis-ci.org/greenhub-project/batteryhub.svg?branch=master)](https://travis-ci.org/greenhub-project/batteryhub)
+[![Build Status](https://travis-ci.org/greenhub-project/batteryhub.svg?branch=1.2)](https://travis-ci.org/greenhub-project/batteryhub)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/c87e12f6973248e3bf66f2d34185bdf8)](https://www.codacy.com/app/hmatalonga/batteryhub?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=greenhub-project/batteryhub&amp;utm_campaign=Badge_Grade)
 
 > GreenHub is a collaborative approach to power consumption analysis of Android devices.
@@ -8,8 +8,6 @@
 The GreenHub mobile app is a fork of the Carat Project.
 
 Learn more at [greenhubproject.org](https://greenhubproject.org).
-
-**Disclamer:** The project is still under development, the beta testing is now over. At the moment there is available a release candidate version.
 
 ## Build Instructions
 
@@ -92,11 +90,11 @@ Please read through our [contributing guidelines](CONTRIBUTING.md). Included are
 ### Code of Conduct
 
 GreenHub has adopted a code of conduct that we expect project participants to adhere to.
-Please read the [full text](CODE_OF_CONDUCT.md) so that you can understand what actions will and will not be tolerated.
+Please read the [full mText](CODE_OF_CONDUCT.md) so that you can understand what actions will and will not be tolerated.
 
 ## License
 
-Copyright (c) 2017 Hugo Matalonga & João Paulo Fernandes.
+Copyright (c) 2018 Hugo Matalonga & João Paulo Fernandes.
 
 The code is available under the [Apache 2.0 License](https://opensource.org/licenses/Apache-2.0) unless otherwise stated in the file or by a dependency's license file.
 

@@ -32,9 +32,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.hmatalonga.greenhub.models.data.AppSignature;
+import com.hmatalonga.greenhub.util.LogUtils;
 import com.hmatalonga.greenhub.util.StringHelper;
 
-import static com.hmatalonga.greenhub.util.LogUtils.LOGE;
+import static com.hmatalonga.greenhub.util.LogUtils.logE;
 
 /**
  * Signatures.
@@ -106,7 +107,7 @@ public class Signatures {
                         break;
                     }
                     default:
-                        LOGE(TAG, "Weird algorithm: " + al + " for " + pak.packageName);
+                        LogUtils.logE(TAG, "Weird algorithm: " + al + " for " + pak.packageName);
                         break;
                 }
             } catch (NoSuchAlgorithmException | CertificateException e) {

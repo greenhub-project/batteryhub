@@ -22,12 +22,14 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.os.Debug;
 
+import com.hmatalonga.greenhub.util.LogUtils;
+
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.List;
 import java.util.Locale;
 
-import static com.hmatalonga.greenhub.util.LogUtils.LOGI;
+import static com.hmatalonga.greenhub.util.LogUtils.logI;
 import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
 
 /**
@@ -93,10 +95,12 @@ public class Memory {
         // 1) ActivityManager.MemoryInfo
         manager.getMemoryInfo(memoryInfo);
 
+        String message =
+                String.format(Locale.US, "%d availMem, %b lowMemory, %d threshold, %d total",
+                        memoryInfo.availMem, memoryInfo.lowMemory,
+                        memoryInfo.threshold, memoryInfo.totalMem);
 
-        LOGI(TAG, String.format(Locale.US, "%d availMem, %b lowMemory, %d threshold, %d total",
-                memoryInfo.availMem, memoryInfo.lowMemory,
-                memoryInfo.threshold, memoryInfo.totalMem));
+        LogUtils.logI(TAG, message);
 
         // 2) Debug.MemoryInfo
         Debug.MemoryInfo[] memoryInfosArray = manager.getProcessMemoryInfo(pIds);

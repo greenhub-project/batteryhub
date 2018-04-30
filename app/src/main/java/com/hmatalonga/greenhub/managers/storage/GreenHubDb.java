@@ -136,19 +136,22 @@ public class GreenHubDb {
                 .where(BatteryUsage.class)
                 .equalTo("triggeredBy", Intent.ACTION_BATTERY_CHANGED)
                 .between("timestamp", from, to)
-                .findAllSorted("timestamp");
+                .sort("timestamp")
+                .findAll();
     }
 
     public RealmResults<Message> allMessages() {
         return mRealm
                 .where(Message.class)
-                .findAllSorted("id", Sort.DESCENDING);
+                .sort("id", Sort.DESCENDING)
+                .findAll();
     }
 
     public RealmResults<BatteryUsage> getUsages() {
         return mRealm
                 .where(BatteryUsage.class)
-                .findAllSorted("timestamp", Sort.DESCENDING);
+                .sort("timestamp", Sort.DESCENDING)
+                .findAll();
     }
 
     public void markMessageAsRead(int id) {

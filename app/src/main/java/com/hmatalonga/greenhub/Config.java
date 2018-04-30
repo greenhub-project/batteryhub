@@ -71,21 +71,31 @@ public final class Config {
 
     public static final String BATTERY_STATS_SOURCE_DEFAULT =
             "/sys/class/power_supply/battery/uevent";
-    public static final String BATTERY_CHARGE_FULL = "POWER_SUPPLY_CHARGE_FULL";  // Battery Full Capacity in uAh
+    // Battery Full Capacity in uAh
+    public static final String BATTERY_CHARGE_FULL = "POWER_SUPPLY_CHARGE_FULL";
     public static final String BATTERY_CHARGE_FULL_DESIGN = "POWER_SUPPLY_CHARGE_FULL_DESIGN";
-    public static final String BATTERY_ENERGY_FULL = "POWER_SUPPLY_ENERGY_FULL";  // Battery Full Capacity in uWh
+    // Battery Full Capacity in uWh
+    public static final String BATTERY_ENERGY_FULL = "POWER_SUPPLY_ENERGY_FULL";
     public static final String BATTERY_ENERGY_FULL_DESIGN = "POWER_SUPPLY_CHARGE_FULL_DESIGN";
-    public static final String BATTERY_VOLTAGE_NOW = "POWER_SUPPLY_VOLTAGE_NOW";  // The circuit voltage at the moment
-    public static final String BATTERY_CURRENT_NOW = "POWER_SUPPLY_CURRENT_NOW";  // The Current at the moment in uA
-    public static final String BATTERY_ENERGY_NOW = "POWER_SUPPLY_ENERGY_NOW";   // The device remaining capacity in uAh
-    public static final String BATTERY_CAPACITY = "POWER_SUPPLY_CAPACITY";     // The battery capacity percentage (1-100)
+    // The circuit voltage at the moment
+    public static final String BATTERY_VOLTAGE_NOW = "POWER_SUPPLY_VOLTAGE_NOW";
+    // The Current at the moment in uA
+    public static final String BATTERY_CURRENT_NOW = "POWER_SUPPLY_CURRENT_NOW";
+    // The device remaining capacity in uAh
+    public static final String BATTERY_ENERGY_NOW = "POWER_SUPPLY_ENERGY_NOW";
+    // The battery capacity percentage (1-100)
+    public static final String BATTERY_CAPACITY = "POWER_SUPPLY_CAPACITY";
 
     public static final int BATTERY_CAPACITY_SAMPLES_SIZE = 10;
 
-    public static final int DEFAULT_USB_CHARGE_RATE = 500;  // assume that, in one hours, it charges 500 mA
-    public static final int DEFAULT_AC_CHARGE_RATE = 1500;  // assume that, in one hours, it charges 1500 mA
-    public static final int DEFAULT_WIRELESS_CHARGE_RATE = 500;  // assume that, in one hours, it charges 500 mA
-    public static final int DEFAULT_DISCHARGE_RATE = 200;  // assume a continuous discharge of 200 mA per hour
+    // assume that, in one hours, it charges 500 mA
+    public static final int DEFAULT_USB_CHARGE_RATE = 500;
+    // assume that, in one hours, it charges 1500 mA
+    public static final int DEFAULT_AC_CHARGE_RATE = 1500;
+    // assume that, in one hours, it charges 500 mA
+    public static final int DEFAULT_WIRELESS_CHARGE_RATE = 500;
+    // assume a continuous discharge of 200 mA per hour
+    public static final int DEFAULT_DISCHARGE_RATE = 200;
 
     public static final String DATA_HISTORY_DEFAULT = "4";
 

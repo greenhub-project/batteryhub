@@ -21,11 +21,6 @@ import android.os.Handler;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-
-import org.greenrobot.eventbus.EventBus;
-
-import java.util.Iterator;
-
 import com.hmatalonga.greenhub.BuildConfig;
 import com.hmatalonga.greenhub.Config;
 import com.hmatalonga.greenhub.R;
@@ -39,11 +34,15 @@ import com.hmatalonga.greenhub.models.data.ProcessInfo;
 import com.hmatalonga.greenhub.models.data.Sample;
 import com.hmatalonga.greenhub.models.data.Upload;
 import com.hmatalonga.greenhub.network.services.GreenHubAPIService;
-import com.hmatalonga.greenhub.tasks.DeleteOldSamplesTask;
 import com.hmatalonga.greenhub.tasks.DeleteSampleTask;
-import com.hmatalonga.greenhub.tasks.RegisterDeviceTask;
+import com.hmatalonga.greenhub.util.LogUtils;
 import com.hmatalonga.greenhub.util.NetworkWatcher;
 import com.hmatalonga.greenhub.util.SettingsUtils;
+
+import org.greenrobot.eventbus.EventBus;
+
+import java.util.Iterator;
+
 import io.realm.Realm;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -51,12 +50,12 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-import static com.hmatalonga.greenhub.util.LogUtils.LOGI;
+import static com.hmatalonga.greenhub.util.LogUtils.logI;
 import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
 
 /**
  * Send collected data to the server and receives responses.
- *
+ * <p>
  * Created by hugo on 25-03-2016.
  */
 public class CommunicationManager {
@@ -87,8 +86,8 @@ public class CommunicationManager {
             url = Config.SERVER_URL_DEVELOPMENT;
         }
 
-        LOGI(TAG, "new CommunicationManager background:" + background);
-        LOGI(TAG, "Server url => " + url);
+        LogUtils.logI(TAG, "new CommunicationManager background:" + background);
+        LogUtils.logI(TAG, "Server url => " + url);
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(url)
@@ -118,7 +117,7 @@ public class CommunicationManager {
         mCollection = database.allSamplesIds();
         database.close();
 
-        LOGI(TAG, count + " samples to upload...");
+        LogUtils.logI(TAG, count + " samples to upload...");
 
         if (!mCollection.hasNext()) {
             EventBus.getDefault().post(
@@ -141,14 +140,14 @@ public class CommunicationManager {
     private void uploadSample(final int id) {
         isUploading = true;
 
-        LOGI(TAG, "Uploading sample => " + id);
+        LogUtils.logI(TAG, "Uploading sample => " + id);
 
         Realm realm = Realm.getDefaultInstance();
         final Sample sample = realm.where(Sample.class).equalTo("id", id).findFirst();
         final Upload upload = sample == null ? null : new Upload(bundleSample(sample));
         realm.close();
 
-        LOGI(TAG, "Sample found => " + String.valueOf(sample != null));
+        LogUtils.logI(TAG, "Sample found => " + String.valueOf(sample != null));
 
         if (sample == null && mCollection.hasNext()) {
             uploadSample(mCollection.next());
@@ -166,7 +165,9 @@ public class CommunicationManager {
             public void onResponse(Call<Integer> call, Response<Integer> response) {
                 if (response == null) {
                     EventBus.getDefault().post(
-                            new StatusEvent(mContext.getString(R.string.event_server_response_failed))
+                            new StatusEvent(
+                                    mContext.getString(R.string.event_server_response_failed)
+                            )
                     );
                     return;
                 }
@@ -186,9 +187,9 @@ public class CommunicationManager {
                 isUploading = false;
                 isQueued = true;
 
-                LOGI(TAG, "HTTP call onFailure uploadAttempts:" + uploadAttempts);
+                LogUtils.logI(TAG, "HTTP call onFailure uploadAttempts:" + uploadAttempts);
 
-                // Clean up database
+                // Clean up mDatabase
                 // new DeleteOldSamplesTask().execute();
 
                 refreshStatus();
@@ -198,7 +199,9 @@ public class CommunicationManager {
 
     private void handleResponse(int response, int id) {
         if (response == RESPONSE_OKAY) {
-            LOGI(TAG, "Sample => " + id + " uploaded successfully! Deleting uploaded sample...");
+            String message =
+                    "Sample => " + id + " uploaded successfully! Deleting uploaded sample...";
+            LogUtils.logI(TAG, message);
             // delete uploaded sample and upload next one
             new DeleteSampleTask().execute(id);
 
@@ -210,28 +213,24 @@ public class CommunicationManager {
                 isUploading = false;
                 isQueued = false;
 
-                LOGI(TAG, "All samples were uploaded!");
+                LogUtils.logI(TAG, "All samples were uploaded!");
 
                 refreshStatus();
             } else {
                 uploadSample(mCollection.next());
             }
-        } else if (response == RESPONSE_ERROR){
+        } else if (response == RESPONSE_ERROR) {
             EventBus.getDefault().post(
                     new StatusEvent(mContext.getString(R.string.event_error_uploading_sample))
             );
             uploadAttempts++;
             isUploading = false;
 
-            LOGI(TAG, "Sample: " + id + " HTTP response error uploadAttempts:" + uploadAttempts);
+            String message =
+                    "Sample: " + id + " HTTP response error uploadAttempts:" + uploadAttempts;
+            LogUtils.logI(TAG, message);
 
-            if (uploadAttempts >= Config.UPLOAD_MAX_TRIES) {
-                // In case of server error, device was not found so try to register again...
-                new RegisterDeviceTask().execute(mContext);
-                uploadAttempts = 0;
-            }
-
-            // Clean up database
+            // Clean up mDatabase
             // First try-force upload or ask user through notification?
             // new DeleteOldSamplesTask().execute();
 
@@ -251,7 +250,7 @@ public class CommunicationManager {
         root.addProperty("uuId", sample.uuId);
         root.addProperty("timestamp", sample.timestamp);
         root.addProperty("version", sample.version);
-        root.addProperty("database", sample.database);
+        root.addProperty("mDatabase", sample.database);
         root.addProperty("batteryState", sample.batteryState);
         root.addProperty("batteryLevel", sample.batteryLevel);
         root.addProperty("memoryWired", sample.memoryWired);
@@ -283,10 +282,22 @@ public class CommunicationManager {
         // NetworkDetails->NetworkStatistics
         if (sample.networkDetails.networkStatistics != null) {
             subChild = new JsonObject();
-            subChild.addProperty("wifiReceived", sample.networkDetails.networkStatistics.wifiReceived);
-            subChild.addProperty("wifiSent", sample.networkDetails.networkStatistics.wifiSent);
-            subChild.addProperty("mobileReceived", sample.networkDetails.networkStatistics.mobileReceived);
-            subChild.addProperty("mobileSent", sample.networkDetails.networkStatistics.mobileSent);
+            subChild.addProperty(
+                    "wifiReceived",
+                    sample.networkDetails.networkStatistics.wifiReceived
+            );
+            subChild.addProperty(
+                    "wifiSent",
+                    sample.networkDetails.networkStatistics.wifiSent
+            );
+            subChild.addProperty(
+                    "mobileReceived",
+                    sample.networkDetails.networkStatistics.mobileReceived
+            );
+            subChild.addProperty(
+                    "mobileSent",
+                    sample.networkDetails.networkStatistics.mobileSent
+            );
             child.add("networkStatistics", subChild);
         }
 
@@ -423,7 +434,9 @@ public class CommunicationManager {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                EventBus.getDefault().post(new StatusEvent(mContext.getString(R.string.event_idle)));
+                EventBus.getDefault().post(
+                        new StatusEvent(mContext.getString(R.string.event_idle))
+                );
             }
         }, Config.REFRESH_STATUS_ERROR);
     }

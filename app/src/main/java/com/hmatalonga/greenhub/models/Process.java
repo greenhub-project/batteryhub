@@ -42,7 +42,8 @@ public class Process {
     private static WeakReference<List<RunningAppProcessInfo>> runningAppInfo = null;
 
     /**
-     * Populate running process info into the runningAppInfo WeakReference list, and return its value.
+     * Populate running process info into the runningAppInfo WeakReference list
+     * and return its value.
      *
      * @param context the Context
      * @return the value of the runningAppInfo WeakReference list after setting it.
@@ -69,11 +70,14 @@ public class Process {
      * Helper to set application to the uninstalled state in the GreenHub sample.
      *
      * @param pName the package that was uninstalled.
-     * @param pref The preference that stored the uninstallation directive. This preference will be deleted to ensure uninstallations are not sent multiple times.
+     * @param pref The preference that stored the uninstallation directive.
+     *             This preference will be deleted to
+     *             ensure uninstallations are not sent multiple times.
      * @param e the Editor (passed and not created here for efficiency)
      * @return a new ProcessInfo entry describing the uninstalled item.
      */
-    public static ProcessInfo uninstalledItem(String pName, String pref, SharedPreferences.Editor e) {
+    public static ProcessInfo uninstalledItem(String pName, String pref,
+                                              SharedPreferences.Editor e) {
         ProcessInfo item = new ProcessInfo();
         item.name = pName;
         item.appSignatures.add(new AppSignature("uninstalled"));
@@ -89,7 +93,9 @@ public class Process {
      * Helper to set application to the disabled state in the GreenHub sample.
      *
      * @param pName the package that was disabled.
-     * @param pref The preference that stored the disabled directive. This preference will be deleted to ensure disabled apps are not sent multiple times.
+     * @param pref The preference that stored the disabled directive.
+     *             This preference will be deleted to ensure
+     *             disabled apps are not sent multiple times.
      * @param e the Editor (passed and not created here for efficiency)
      * @return a new ProcessInfo entry describing the uninstalled item.
      */

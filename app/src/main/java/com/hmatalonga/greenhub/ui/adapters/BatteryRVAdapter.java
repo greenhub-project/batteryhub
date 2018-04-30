@@ -31,7 +31,7 @@ import com.hmatalonga.greenhub.models.ui.BatteryCard;
 
 /**
  * RecyclerView Adapter Class
- *
+ * <p>
  * Created by hugo on 05-04-2016.
  */
 public class BatteryRVAdapter extends RecyclerView.Adapter<BatteryRVAdapter.DashboardViewHolder> {
@@ -56,7 +56,7 @@ public class BatteryRVAdapter extends RecyclerView.Adapter<BatteryRVAdapter.Dash
 
     private ArrayList<BatteryCard> mBatteryCards;
 
-    public BatteryRVAdapter(ArrayList<BatteryCard> batteryCards){
+    public BatteryRVAdapter(ArrayList<BatteryCard> batteryCards) {
         this.mBatteryCards = batteryCards;
     }
 
@@ -88,12 +88,11 @@ public class BatteryRVAdapter extends RecyclerView.Adapter<BatteryRVAdapter.Dash
         return mBatteryCards.size();
     }
 
-    public void swap(ArrayList<BatteryCard> list){
+    public void swap(ArrayList<BatteryCard> list) {
         if (mBatteryCards != null) {
             mBatteryCards.clear();
             mBatteryCards.addAll(list);
-        }
-        else {
+        } else {
             mBatteryCards = list;
         }
         notifyDataSetChanged();

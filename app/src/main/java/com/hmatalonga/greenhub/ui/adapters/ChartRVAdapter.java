@@ -149,12 +149,11 @@ public class ChartRVAdapter extends RecyclerView.Adapter<ChartRVAdapter.Dashboar
         return mChartCards.size();
     }
 
-    public void swap(ArrayList<ChartCard> list){
+    public void swap(ArrayList<ChartCard> list) {
         if (mChartCards != null) {
             mChartCards.clear();
             mChartCards.addAll(list);
-        }
-        else {
+        } else {
             mChartCards = list;
         }
         notifyDataSetChanged();
@@ -183,7 +182,7 @@ public class ChartRVAdapter extends RecyclerView.Adapter<ChartRVAdapter.Dashboar
             }
         };
 
-        IAxisValueFormatter formatterY= new IAxisValueFormatter() {
+        IAxisValueFormatter formatterY = new IAxisValueFormatter() {
             @Override
             public String getFormattedValue(float value, AxisBase axis) {
                 switch (card.type) {

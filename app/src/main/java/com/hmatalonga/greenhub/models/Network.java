@@ -80,10 +80,10 @@ public class Network {
     public static String DATA_ACTIVITY_DORMANT = "dormant";
 
     // Mobile network constants
-	/*
-	 * we cannot find network types:EVDO_B,LTE,EHRPD,HSPAP from TelephonyManager
-	 * now
-	 */
+    /*
+     * we cannot find network types:EVDO_B,LTE,EHRPD,HSPAP from TelephonyManager
+     * now
+     */
     public static String NETWORK_TYPE_UNKNOWN = "unknown";
     public static String NETWORK_TYPE_GPRS = "gprs";
     public static String NETWORK_TYPE_EDGE = "edge";
@@ -241,8 +241,9 @@ public class Network {
     }
 
     /* Get data activity */
-    public static String getDataActivity(Context context) { //
-        TelephonyManager manager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+    public static String getDataActivity(Context context) {
+        TelephonyManager manager =
+                (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
 
         int dataActivity = manager.getDataActivity();
         switch (dataActivity) {

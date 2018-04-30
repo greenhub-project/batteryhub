@@ -19,7 +19,7 @@ public class DeleteOldSamplesTask extends AsyncTask<Void, Void, Void> {
                 @Override
                 public void execute(@NonNull Realm realm) {
                     RealmResults<Sample> results =
-                            realm.where(Sample.class).findAllSorted("timestamp");
+                            realm.where(Sample.class).sort("timestamp").findAll();
                     int size = results.size();
                     for (int i = 0; i < Config.SAMPLES_MAX_STORAGE_NUM && i < size; i++) {
                         Sample sample = results.get(i);

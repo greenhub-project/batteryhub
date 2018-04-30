@@ -48,10 +48,10 @@ public class Gsm {
             return cellInfo;
         }
 
-		/*
-		 * FIXME: Actually check for mobile network status == connected before
-		 * doing this stuff.
-		 */
+        /*
+         * FIXME: Actually check for mobile network status == connected before
+         * doing this stuff.
+         */
 
         if (Phone.getType(context).equals(PHONE_TYPE_CDMA)) {
             CdmaCellLocation cdmaLocation = (CdmaCellLocation) manager.getCellLocation();

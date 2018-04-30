@@ -8,11 +8,10 @@ android:
     - extra-android-support
     - platform-tools
     - tools
-    - build-tools-26.0.2
-    - android-26
+    - build-tools-27.0.3
+    - android-27
     - addon-google_apis-google-24
   licenses:
-      - 'android-sdk-preview-license-52d11cd2'
       - 'android-sdk-license-.+'
       - 'google-gdk-license-.+'
 

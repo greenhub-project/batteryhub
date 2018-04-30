@@ -31,10 +31,10 @@
     <string name="not_available">Não disponível</string>
     <string name="now">Agora</string>
 
-    <!-- Short text welcoming the user to the application -->
+    <!-- Short mText welcoming the user to the application -->
     <string name="welcome_to_greenhub_app">Bemvindo ao BatteryHub!</string>
 
-    <!-- Medium-length welcome text indicating the subsequent text is important legal information -->
+    <!-- Medium-length welcome mText indicating the subsequent mText is important legal information -->
     <string name="welcome_text">Antes de começar, estão aqui algumas informações importantes como usar esta app. Demorará apenas um minuto!</string>
 
     <string name="action_inbox">Mensagens</string>

@@ -20,12 +20,10 @@ import android.app.ActivityManager.RunningAppProcessInfo;
 import android.content.Context;
 import android.util.SparseArray;
 
-import java.text.NumberFormat;
-import java.util.List;
-
 import com.hmatalonga.greenhub.R;
 
-import static com.hmatalonga.greenhub.util.LogUtils.LOGE;
+import java.text.NumberFormat;
+import java.util.List;
 
 /**
  * StringHelper.
@@ -53,7 +51,7 @@ public class StringHelper {
     public static String importanceString(int importance) {
         String s = importanceToString.get(importance);
         if (s == null || s.length() == 0) {
-            LOGE("Importance not found: ", "" + importance);
+            LogUtils.logE("Importance not found: ", "" + importance);
             s = "Unknown";
         }
         return s;
@@ -127,7 +125,8 @@ public class StringHelper {
                                 (char) ('0' + halfByte) : (char) ('a' + (halfByte - 10))
                 );
                 halfByte = b & 0x0F;
-            } while (twoHalfs++ < 1);
+            }
+            while (twoHalfs++ < 1);
         }
         return builder.toString();
     }

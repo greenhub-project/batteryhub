@@ -23,29 +23,23 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
-import org.greenrobot.eventbus.EventBus;
-
 import com.hmatalonga.greenhub.events.RefreshEvent;
 import com.hmatalonga.greenhub.network.CommunicationManager;
 import com.hmatalonga.greenhub.tasks.CheckNewMessagesTask;
 import com.hmatalonga.greenhub.tasks.ServerStatusTask;
 import com.hmatalonga.greenhub.util.SettingsUtils;
 
-import static com.hmatalonga.greenhub.util.LogUtils.LOGI;
-import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
+import org.greenrobot.eventbus.EventBus;
 
 /**
  * ConnectivityReceiver.
  */
 public class ConnectivityReceiver extends BroadcastReceiver {
-
-    private static final String TAG = makeLogTag("ConnectivityReceiver");
-
     /**
      * Used to start update network status.
      *
      * @param context the context
-     * @param intent the intent
+     * @param intent  the intent
      */
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -57,7 +51,9 @@ public class ConnectivityReceiver extends BroadcastReceiver {
         switch (action) {
             case ConnectivityManager.CONNECTIVITY_ACTION:
                 ConnectivityManager connectivityManager =
-                        (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+                        (ConnectivityManager) context.getSystemService(
+                                Context.CONNECTIVITY_SERVICE
+                        );
 
                 if (connectivityManager == null) return;
 
@@ -90,8 +86,7 @@ public class ConnectivityReceiver extends BroadcastReceiver {
 
                 if (activeNetwork.getType() == ConnectivityManager.TYPE_WIFI) {
                     EventBus.getDefault().post(new RefreshEvent("wifi", true));
-                }
-                else if (activeNetwork.getType() == ConnectivityManager.TYPE_MOBILE) {
+                } else if (activeNetwork.getType() == ConnectivityManager.TYPE_MOBILE) {
                     EventBus.getDefault().post(new RefreshEvent("mobile", true));
                 }
                 break;

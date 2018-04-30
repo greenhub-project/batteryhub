@@ -47,22 +47,22 @@ import com.hmatalonga.greenhub.events.RefreshChartEvent;
 import com.hmatalonga.greenhub.events.StatusEvent;
 import com.hmatalonga.greenhub.managers.sampling.DataEstimator;
 import com.hmatalonga.greenhub.managers.storage.GreenHubDb;
-import com.hmatalonga.greenhub.models.Specifications;
-import com.hmatalonga.greenhub.models.data.Device;
 import com.hmatalonga.greenhub.network.CommunicationManager;
 import com.hmatalonga.greenhub.tasks.CheckNewMessagesTask;
 import com.hmatalonga.greenhub.tasks.ServerStatusTask;
 import com.hmatalonga.greenhub.ui.adapters.TabAdapter;
 import com.hmatalonga.greenhub.ui.layouts.MainTabLayout;
+import com.hmatalonga.greenhub.util.LogUtils;
 import com.hmatalonga.greenhub.util.NetworkWatcher;
 import com.hmatalonga.greenhub.util.SettingsUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
-import static com.hmatalonga.greenhub.util.LogUtils.LOGI;
+import static com.hmatalonga.greenhub.util.LogUtils.logI;
 import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
 
-public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClickListener, ActivityCompat.OnRequestPermissionsResultCallback {
+public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClickListener,
+        ActivityCompat.OnRequestPermissionsResultCallback {
 
     private static final String TAG = makeLogTag(MainActivity.class);
 
@@ -70,7 +70,7 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
 
     private ViewPager mViewPager;
 
-    public GreenHubDb database;
+    public GreenHubDb mDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,7 +78,7 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
 
         setContentView(R.layout.activity_main);
 
-        LOGI(TAG, "onCreate() called");
+        LogUtils.logI(TAG, "onCreate() called");
 
         loadComponents();
 
@@ -95,12 +95,12 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
     @Override
     protected void onStart() {
         super.onStart();
-        database.getDefaultInstance();
+        mDatabase.getDefaultInstance();
     }
 
     @Override
     protected void onStop() {
-        database.close();
+        mDatabase.close();
         super.onStop();
     }
 
@@ -160,16 +160,18 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String permissions[],
+                                           @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         switch (requestCode) {
             case Config.PERMISSION_READ_PHONE_STATE: {
                 // If request is cancelled, the result arrays are empty.
-                setupPermission(Manifest.permission.ACCESS_COARSE_LOCATION, Config.PERMISSION_ACCESS_COARSE_LOCATION);
+                setupPermission(Manifest.permission.ACCESS_COARSE_LOCATION,
+                        Config.PERMISSION_ACCESS_COARSE_LOCATION);
                 return;
             }
             case Config.PERMISSION_ACCESS_COARSE_LOCATION: {
-                setupPermission(Manifest.permission.ACCESS_FINE_LOCATION, Config.PERMISSION_ACCESS_FINE_LOCATION);
+                setupPermission(Manifest.permission.ACCESS_FINE_LOCATION,
+                        Config.PERMISSION_ACCESS_FINE_LOCATION);
             }
             // other 'case' lines to check for other
             // permissions this app might request
@@ -183,7 +185,7 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
     private void loadComponents() {
         final Context context = getApplicationContext();
 
-        database = new GreenHubDb();
+        mDatabase = new GreenHubDb();
         mApp = (GreenHubApp) getApplication();
 
         // Check if Service needs to start, in case it is coming from WelcomeActivity
@@ -235,22 +237,30 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
                 }
 
                 // Check if server url is stored in preferences and device is registered
-                if (!SettingsUtils.isServerUrlPresent(context) || !SettingsUtils.isDeviceRegistered(context)) {
+                if (!SettingsUtils.isServerUrlPresent(context) ||
+                        !SettingsUtils.isDeviceRegistered(context)) {
                     // Fetch web server status and update them
                     new ServerStatusTask().execute(context);
-                    EventBus.getDefault().post(new StatusEvent(getString(R.string.event_needs_sync)));
+                    EventBus.getDefault().post(
+                            new StatusEvent(getString(R.string.event_needs_sync))
+                    );
                     refreshStatus();
                     return;
                 }
 
                 // Upload samples
-                CommunicationManager manager = new CommunicationManager(context, false);
+                CommunicationManager manager = new CommunicationManager(
+                        context,
+                        false
+                );
 
                 // Check if is already uploading
                 if (!CommunicationManager.isUploading) {
                     manager.sendSamples();
                 } else {
-                    EventBus.getDefault().post(new StatusEvent(getString(R.string.event_upload_running)));
+                    EventBus.getDefault().post(
+                            new StatusEvent(getString(R.string.event_upload_running))
+                    );
                     refreshStatus();
                 }
             }
@@ -294,7 +304,7 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
         // If device has Android version < 6.0 don't request permissions
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) return;
 
-        /**
+        /*
          * Ask for necessary permissions on run-time
          * Permissions with a protection level above Normal need to be requested
          */
@@ -312,7 +322,8 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
     }
 
     private void setupPermission(String permission, int code) {
-        if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(this, permission) !=
+                PackageManager.PERMISSION_GRANTED) {
             // No explanation needed, we can request the permission.
             ActivityCompat.requestPermissions(this,
                     new String[]{permission},

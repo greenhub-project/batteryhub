@@ -20,10 +20,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+import com.hmatalonga.greenhub.util.LogUtils;
 import com.hmatalonga.greenhub.util.Notifier;
 import com.hmatalonga.greenhub.util.SettingsUtils;
 
-import static com.hmatalonga.greenhub.util.LogUtils.LOGI;
+import static com.hmatalonga.greenhub.util.LogUtils.logI;
 import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
 
 /**
@@ -41,7 +42,7 @@ public class BootReceiver extends BroadcastReceiver {
      */
     @Override
     public void onReceive(Context context, Intent intent) {
-        LOGI(TAG, "BOOT_COMPLETED onReceive()");
+        LogUtils.logI(TAG, "BOOT_COMPLETED onReceive()");
         if (SettingsUtils.isTosAccepted(context) && SettingsUtils.isPowerIndicatorShown(context)) {
             // Display Status bar
             Notifier.startStatusBar(context);

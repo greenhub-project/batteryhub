@@ -27,9 +27,10 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 import com.hmatalonga.greenhub.Config;
+import com.hmatalonga.greenhub.util.LogUtils;
 import com.hmatalonga.greenhub.util.PermissionsUtils;
 
-import static com.hmatalonga.greenhub.util.LogUtils.LOGD;
+import static com.hmatalonga.greenhub.util.LogUtils.logD;
 
 /**
  * SimCard.
@@ -42,21 +43,22 @@ public class SimCard {
      * SIM Operator is responsible for the product that is subscription.
      * It is directly associated with the SIM card and remains the same
      * even when changing between physical networks.
-     *
+     * <p>
      * SIM Operator might or might not own the infrastructure in use.
      * NOTE: Getting multiple operators is highly experimental.
      *
      * @param context Application context
      * @return SIM Operator name
      */
-    public static String getSIMOperator(Context context){
-        TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+    public static String getSIMOperator(Context context) {
+        TelephonyManager telephonyManager =
+                (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
         String operator;
 
         operator = getSIMOperators(context); // Supports multiple sim cards
-        if(operator != null && operator.length() > 0) return operator;
+        if (operator != null && operator.length() > 0) return operator;
         operator = telephonyManager.getSimOperatorName();
-        if(operator != null && operator.length() > 0) return operator;
+        if (operator != null && operator.length() > 0) return operator;
 
         return "unknown";
     }
@@ -76,9 +78,10 @@ public class SimCard {
         }
 
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
-            List<SubscriptionInfo> subscriptions = SubscriptionManager.from(context).getActiveSubscriptionInfoList();
+            List<SubscriptionInfo> subscriptions =
+                    SubscriptionManager.from(context).getActiveSubscriptionInfoList();
             if (subscriptions != null && subscriptions.size() > 0) {
-                for(SubscriptionInfo info : subscriptions){
+                for (SubscriptionInfo info : subscriptions) {
                     int subId = info.getSubscriptionId();
                     String operator = getSimOperatorNameForSubscription(context, subId);
                     if (operator != null && operator.length() > 0) {
@@ -87,7 +90,7 @@ public class SimCard {
                 }
                 // Remove last delimiter
                 if (operators.length() > 1) {
-                    operators = operators.substring(0, operators.length()-1);
+                    operators = operators.substring(0, operators.length() - 1);
                 }
             }
         }
@@ -107,12 +110,16 @@ public class SimCard {
                 context.getSystemService(Context.TELEPHONY_SERVICE);
         try {
             Class<?> telephonyManager = Class.forName(stub.getClass().getName());
-            Method getName = telephonyManager.getMethod("getSimOperatorNameForSubscription", int.class);
+            Method getName =
+                    telephonyManager.getMethod("getSimOperatorNameForSubscription", int.class);
             getName.setAccessible(true);
             return ((String) getName.invoke(context, subId));
         } catch (Exception e) {
-            if(Config.DEBUG && e != null && e.getLocalizedMessage() != null){
-                LOGD(TAG, "Failed getting sim operator with subid: " + e.getLocalizedMessage());
+            if (Config.DEBUG && e != null && e.getLocalizedMessage() != null) {
+                LogUtils.logD(
+                        TAG,
+                        "Failed getting sim operator with subid: " + e.getLocalizedMessage()
+                );
             }
         }
         return null;

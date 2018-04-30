@@ -61,7 +61,7 @@ public class Task {
     }
 
     public void setName(String name) {
-        this.mName= name;
+        this.mName = name;
     }
 
     public double getMemory() {

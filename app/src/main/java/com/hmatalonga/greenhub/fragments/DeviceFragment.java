@@ -154,7 +154,7 @@ public class DeviceFragment extends Fragment {
         mStorageUsed = view.findViewById(R.id.storageUsed);
         mStorageFree = view.findViewById(R.id.storageFree);
 
-        mHandler.post(runnable);
+        mHandler.post(mRunnable);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -248,7 +248,7 @@ public class DeviceFragment extends Fragment {
         textView.setVisibility(value ? View.VISIBLE : View.GONE);
     }
 
-    private Runnable runnable = new Runnable() {
+    private Runnable mRunnable = new Runnable() {
         @Override
         public void run() {
             // 1 total, 2 active

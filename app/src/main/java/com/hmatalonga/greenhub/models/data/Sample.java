@@ -39,7 +39,7 @@ public class Sample extends RealmObject {
     // Mobile app version of sample
     public int version;
 
-    // Mobile database version of sample
+    // Mobile mDatabase version of sample
     public int database;
 
     // State of the battery. ie. charging, discharging, etc.

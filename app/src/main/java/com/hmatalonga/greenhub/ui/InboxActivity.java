@@ -99,7 +99,7 @@ public class InboxActivity extends BaseActivity {
 
         RealmResults<Message> results = database.allMessages();
 
-        for (Message message : results ) {
+        for (Message message : results) {
             mMessages.add(new Message(
                     message.id,
                     message.title,
@@ -126,8 +126,7 @@ public class InboxActivity extends BaseActivity {
         if (mMessages.isEmpty()) {
             mRecyclerView.setVisibility(View.GONE);
             mNoMessagesTextView.setVisibility(View.VISIBLE);
-        }
-        else {
+        } else {
             mRecyclerView.setVisibility(View.VISIBLE);
             mNoMessagesTextView.setVisibility(View.GONE);
         }

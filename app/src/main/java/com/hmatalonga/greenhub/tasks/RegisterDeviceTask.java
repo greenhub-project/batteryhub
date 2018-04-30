@@ -25,9 +25,6 @@ import com.hmatalonga.greenhub.network.handlers.RegisterDeviceHandler;
  * Task to register devices on the web server.
  */
 public class RegisterDeviceTask extends AsyncTask<Context, Void, Void> {
-
-    private static final String TAG = "RegisterDeviceTask";
-
     @Override
     protected Void doInBackground(Context... params) {
         RegisterDeviceHandler handler = new RegisterDeviceHandler(params[0]);

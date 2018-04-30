@@ -91,7 +91,7 @@ public class Application {
             }
         }
 
-        for (RunningServiceInfo service: services) {
+        for (RunningServiceInfo service : services) {
             String name = StringHelper.formatProcessName(service.process);
             if (name.equals(appName)) return true;
         }
@@ -106,22 +106,22 @@ public class Application {
      * @param packageName
      * @return
      */
-    public static String getAppPriority(Context context, String packageName){
+    public static String getAppPriority(Context context, String packageName) {
         List<RunningAppProcessInfo> processInfos = Process.getRunningProcessInfo(context);
         List<RunningServiceInfo> serviceInfos = Service.getRunningServiceInfo(context);
         int highestPriority = Integer.MAX_VALUE;
 
         // Check if there are running services for the package
-        for(RunningServiceInfo si : serviceInfos) {
-            if(si.service.getPackageName().equals(packageName)){
+        for (RunningServiceInfo si : serviceInfos) {
+            if (si.service.getPackageName().equals(packageName)) {
                 highestPriority = RunningAppProcessInfo.IMPORTANCE_SERVICE;
             }
 
         }
         // Check if there are running processes for the package
-        for(RunningAppProcessInfo pi : processInfos){
-            if(Arrays.asList(pi.pkgList).contains(packageName)) {
-                if(pi.importance < highestPriority){
+        for (RunningAppProcessInfo pi : processInfos) {
+            if (Arrays.asList(pi.pkgList).contains(packageName)) {
+                if (pi.importance < highestPriority) {
                     highestPriority = pi.importance;
                 }
             }
