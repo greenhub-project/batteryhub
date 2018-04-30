@@ -33,14 +33,13 @@ import com.github.mikephil.charting.components.IMarker;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
-
-import java.util.ArrayList;
-
 import com.hmatalonga.greenhub.R;
 import com.hmatalonga.greenhub.models.ui.ChartCard;
 import com.hmatalonga.greenhub.ui.views.ChartMarkerView;
 import com.hmatalonga.greenhub.util.DateUtils;
 import com.hmatalonga.greenhub.util.StringHelper;
+
+import java.util.ArrayList;
 
 /**
  * ChartRVAdapter.

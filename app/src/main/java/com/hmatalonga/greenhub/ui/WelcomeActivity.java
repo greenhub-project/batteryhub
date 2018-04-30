@@ -25,16 +25,15 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import com.hmatalonga.greenhub.R;
 import com.hmatalonga.greenhub.fragments.TosFragment;
 import com.hmatalonga.greenhub.fragments.WelcomeFragment;
 import com.hmatalonga.greenhub.util.LogUtils;
 
-import static com.hmatalonga.greenhub.util.LogUtils.logD;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
 
 /**
@@ -45,7 +44,6 @@ public class WelcomeActivity extends AppCompatActivity implements
         WelcomeFragment.WelcomeFragmentContainer {
 
     private static final String TAG = makeLogTag(WelcomeActivity.class);
-    WelcomeActivityContent mContentFragment;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -53,16 +51,16 @@ public class WelcomeActivity extends AppCompatActivity implements
 
         setContentView(R.layout.activity_welcome);
 
-        mContentFragment = getCurrentFragment(this);
+        WelcomeActivityContent currentFragment = getCurrentFragment(this);
 
         // If there's no fragment to use, we're done here.
-        if (mContentFragment == null) {
+        if (currentFragment == null) {
             finish();
         }
 
         // Wire up the fragment
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        fragmentTransaction.add(R.id.welcome_content, (Fragment) mContentFragment);
+        fragmentTransaction.add(R.id.welcome_content, (Fragment) currentFragment);
         fragmentTransaction.commit();
 
         LogUtils.logD(TAG, "Inside Create View.");

@@ -49,23 +49,22 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.hmatalonga.greenhub.Config;
-import com.hmatalonga.greenhub.managers.TaskController;
+import com.hmatalonga.greenhub.R;
 import com.hmatalonga.greenhub.events.OpenTaskDetailsEvent;
 import com.hmatalonga.greenhub.events.TaskRemovedEvent;
+import com.hmatalonga.greenhub.managers.TaskController;
 import com.hmatalonga.greenhub.models.ui.Task;
 import com.hmatalonga.greenhub.ui.adapters.TaskAdapter;
 import com.hmatalonga.greenhub.util.SettingsUtils;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-
-import com.hmatalonga.greenhub.R;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 public class TaskListActivity extends BaseActivity {
 

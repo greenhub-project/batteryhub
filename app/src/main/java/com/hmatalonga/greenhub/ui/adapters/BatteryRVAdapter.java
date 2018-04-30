@@ -24,10 +24,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-
 import com.hmatalonga.greenhub.R;
 import com.hmatalonga.greenhub.models.ui.BatteryCard;
+
+import java.util.ArrayList;
 
 /**
  * RecyclerView Adapter Class

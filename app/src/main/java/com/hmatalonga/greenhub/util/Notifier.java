@@ -34,8 +34,6 @@ import com.hmatalonga.greenhub.models.Battery;
 import com.hmatalonga.greenhub.ui.InboxActivity;
 import com.hmatalonga.greenhub.ui.MainActivity;
 
-import static com.hmatalonga.greenhub.util.LogUtils.logI;
-
 /**
  * Notifier
  */

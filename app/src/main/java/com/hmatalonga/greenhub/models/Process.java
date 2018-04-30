@@ -22,22 +22,18 @@ import android.app.ActivityManager.RunningAppProcessInfo;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import java.lang.ref.WeakReference;
-import java.util.List;
-
 import com.hmatalonga.greenhub.Config;
 import com.hmatalonga.greenhub.models.data.AppSignature;
 import com.hmatalonga.greenhub.models.data.ProcessInfo;
 import com.hmatalonga.greenhub.util.StringHelper;
 
-import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
+import java.lang.ref.WeakReference;
+import java.util.List;
 
 /**
  * Process properties model.
  */
 public class Process {
-
-    private static final String TAG = makeLogTag(Process.class);
 
     private static WeakReference<List<RunningAppProcessInfo>> runningAppInfo = null;
 

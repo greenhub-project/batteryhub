@@ -8,8 +8,6 @@ import android.content.ReceiverCallNotAllowedException;
 import com.hmatalonga.greenhub.util.LogUtils;
 import com.hmatalonga.greenhub.util.Notifier;
 
-import static com.hmatalonga.greenhub.util.LogUtils.logI;
-
 
 public class NotificationReceiver extends BroadcastReceiver {
     private static final String TAG = LogUtils.makeLogTag(NotificationReceiver.class);

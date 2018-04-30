@@ -21,8 +21,6 @@ package com.hmatalonga.greenhub.models;
  */
 public class ServerStatus {
 
-    private static final String TAG = "ServerStatus";
-
     public final String server;
 
     public final int version;

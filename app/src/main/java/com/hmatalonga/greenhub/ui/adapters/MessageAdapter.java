@@ -1,6 +1,5 @@
 package com.hmatalonga.greenhub.ui.adapters;
 
-import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;

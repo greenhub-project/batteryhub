@@ -27,8 +27,6 @@ import android.support.v7.widget.Toolbar;
 
 import com.hmatalonga.greenhub.R;
 
-import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
-
 /**
  * A base activity that handles common functionality in the app.
  */
@@ -89,6 +87,6 @@ public abstract class BaseActivity extends AppCompatActivity implements
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        
+
     }
 }

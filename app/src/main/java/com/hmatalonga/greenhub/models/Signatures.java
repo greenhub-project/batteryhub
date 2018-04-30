@@ -19,6 +19,10 @@ package com.hmatalonga.greenhub.models;
 import android.content.pm.PackageInfo;
 import android.content.pm.Signature;
 
+import com.hmatalonga.greenhub.models.data.AppSignature;
+import com.hmatalonga.greenhub.util.LogUtils;
+import com.hmatalonga.greenhub.util.StringHelper;
+
 import java.io.ByteArrayInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -30,12 +34,6 @@ import java.security.interfaces.DSAPublicKey;
 import java.security.interfaces.RSAPublicKey;
 import java.util.LinkedList;
 import java.util.List;
-
-import com.hmatalonga.greenhub.models.data.AppSignature;
-import com.hmatalonga.greenhub.util.LogUtils;
-import com.hmatalonga.greenhub.util.StringHelper;
-
-import static com.hmatalonga.greenhub.util.LogUtils.logE;
 
 /**
  * Signatures.

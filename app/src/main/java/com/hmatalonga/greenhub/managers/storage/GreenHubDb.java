@@ -18,20 +18,18 @@ package com.hmatalonga.greenhub.managers.storage;
 
 import android.content.Intent;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import com.hmatalonga.greenhub.models.data.BatterySession;
 import com.hmatalonga.greenhub.models.data.BatteryUsage;
 import com.hmatalonga.greenhub.models.data.Message;
 import com.hmatalonga.greenhub.models.data.Sample;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.Sort;
 import io.realm.exceptions.RealmMigrationNeededException;
-
-import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
 
 /**
  * GreenHub database provider.
@@ -39,7 +37,6 @@ import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
  * Created by hugo on 16-04-2016.
  */
 public class GreenHubDb {
-    private static final String TAG = makeLogTag(GreenHubDb.class);
 
     private Realm mRealm;
 

@@ -18,7 +18,6 @@ package com.hmatalonga.greenhub.network.services;
 
 import com.google.gson.JsonObject;
 import com.hmatalonga.greenhub.models.data.Device;
-import com.hmatalonga.greenhub.models.data.Message;
 import com.hmatalonga.greenhub.models.data.Upload;
 
 import java.util.List;

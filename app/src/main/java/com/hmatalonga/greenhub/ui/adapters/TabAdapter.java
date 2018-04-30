@@ -23,10 +23,9 @@ import android.support.v13.app.FragmentStatePagerAdapter;
 import android.util.SparseArray;
 import android.view.ViewGroup;
 
-import com.hmatalonga.greenhub.fragments.AboutFragment;
-import com.hmatalonga.greenhub.fragments.StatisticsFragment;
 import com.hmatalonga.greenhub.fragments.DeviceFragment;
 import com.hmatalonga.greenhub.fragments.HomeFragment;
+import com.hmatalonga.greenhub.fragments.StatisticsFragment;
 
 /**
  * Adapter that provides fragments for tab menus.

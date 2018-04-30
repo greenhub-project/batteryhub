@@ -22,8 +22,6 @@ import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 
-import com.hmatalonga.greenhub.R;
-
 import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
 
 /**
@@ -32,7 +30,6 @@ import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
  * Created by hugo on 24-03-2016.
  */
 public class GreenHubHelper {
-    private static final String TAG = makeLogTag(GreenHubHelper.class);
 
     /**
      * Return a Drawable that contains an app icon for the named app. If not

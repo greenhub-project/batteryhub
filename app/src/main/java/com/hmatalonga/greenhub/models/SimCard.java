@@ -23,12 +23,11 @@ import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
 
+import com.hmatalonga.greenhub.Config;
+import com.hmatalonga.greenhub.util.PermissionsUtils;
+
 import java.lang.reflect.Method;
 import java.util.List;
-
-import com.hmatalonga.greenhub.Config;
-import com.hmatalonga.greenhub.util.LogUtils;
-import com.hmatalonga.greenhub.util.PermissionsUtils;
 
 import static com.hmatalonga.greenhub.util.LogUtils.logD;
 
@@ -116,7 +115,7 @@ public class SimCard {
             return ((String) getName.invoke(context, subId));
         } catch (Exception e) {
             if (Config.DEBUG && e != null && e.getLocalizedMessage() != null) {
-                LogUtils.logD(
+                logD(
                         TAG,
                         "Failed getting sim operator with subid: " + e.getLocalizedMessage()
                 );

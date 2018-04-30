@@ -19,9 +19,6 @@ package com.hmatalonga.greenhub.network.handlers;
 import android.content.Context;
 
 import com.google.gson.Gson;
-
-import org.greenrobot.eventbus.EventBus;
-
 import com.hmatalonga.greenhub.BuildConfig;
 import com.hmatalonga.greenhub.Config;
 import com.hmatalonga.greenhub.R;
@@ -31,8 +28,9 @@ import com.hmatalonga.greenhub.models.data.Device;
 import com.hmatalonga.greenhub.network.services.GreenHubAPIService;
 import com.hmatalonga.greenhub.tasks.CheckNewMessagesTask;
 import com.hmatalonga.greenhub.util.GsonRealmBuilder;
-import com.hmatalonga.greenhub.util.LogUtils;
 import com.hmatalonga.greenhub.util.SettingsUtils;
+
+import org.greenrobot.eventbus.EventBus;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -86,16 +84,16 @@ public class RegisterDeviceHandler {
     }
 
     private void callRegistration(Device device) {
-        LogUtils.logI(TAG, "callRegistration()");
+        logI(TAG, "callRegistration()");
         Call<Integer> call = mService.createDevice(device);
         call.enqueue(new Callback<Integer>() {
             @Override
             public void onResponse(Call<Integer> call, Response<Integer> response) {
                 if (response == null || response.body() == null) {
                     if (response == null) {
-                        LogUtils.logI(TAG, "response is null");
+                        logI(TAG, "response is null");
                     } else {
-                        LogUtils.logI(TAG, "response body is null");
+                        logI(TAG, "response body is null");
                     }
                     SettingsUtils.markDeviceAccepted(mContext, false);
                     EventBus.getDefault().post(
@@ -124,7 +122,7 @@ public class RegisterDeviceHandler {
                 EventBus.getDefault().post(
                         new StatusEvent(mContext.getString(R.string.event_registration_failed))
                 );
-                LogUtils.logI(TAG, t.getMessage());
+                logI(TAG, t.getMessage());
             }
         });
     }

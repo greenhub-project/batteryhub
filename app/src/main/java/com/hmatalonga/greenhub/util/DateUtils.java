@@ -25,8 +25,6 @@ import java.util.Locale;
  */
 public class DateUtils {
 
-    private static final String TAG = "DateUtils";
-
     public static final int INTERVAL_24H = 1;
 
     public static final int INTERVAL_3DAYS = 2;

@@ -24,19 +24,15 @@ import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
 
-import java.lang.reflect.Method;
-import java.util.List;
-
 import com.hmatalonga.greenhub.util.PermissionsUtils;
 
-import static com.hmatalonga.greenhub.util.LogUtils.logW;
+import java.lang.reflect.Method;
+import java.util.List;
 
 /**
  * Phone.
  */
 public class Phone {
-
-    private static final String TAG = "Phone";
 
     // Call state constants
     public static String CALL_STATE_IDLE = "idle";

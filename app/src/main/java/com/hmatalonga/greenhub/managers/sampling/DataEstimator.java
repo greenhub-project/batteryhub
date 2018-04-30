@@ -34,8 +34,6 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.util.Calendar;
 
-import static com.hmatalonga.greenhub.util.LogUtils.logE;
-import static com.hmatalonga.greenhub.util.LogUtils.logI;
 import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
 
 /**

@@ -30,9 +30,6 @@ import android.view.ViewGroup;
 
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.utils.ColorTemplate;
-
-import java.util.ArrayList;
-
 import com.hmatalonga.greenhub.R;
 import com.hmatalonga.greenhub.events.RefreshChartEvent;
 import com.hmatalonga.greenhub.models.data.BatteryUsage;
@@ -44,6 +41,8 @@ import com.hmatalonga.greenhub.util.DateUtils;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
+import java.util.ArrayList;
 
 import io.realm.RealmResults;
 

@@ -30,7 +30,6 @@ import android.widget.Button;
 
 import com.hmatalonga.greenhub.ui.MainActivity;
 import com.hmatalonga.greenhub.ui.WelcomeActivity;
-import com.hmatalonga.greenhub.util.LogUtils;
 
 import static com.hmatalonga.greenhub.util.LogUtils.logD;
 import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
@@ -49,7 +48,7 @@ public abstract class WelcomeFragment extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        LogUtils.logD(TAG, "Attaching to activity");
+        logD(TAG, "Attaching to activity");
         mActivity = activity;
     }
 
@@ -64,7 +63,7 @@ public abstract class WelcomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
-        LogUtils.logD(TAG, "Creating View");
+        logD(TAG, "Creating View");
 
         // If the activity the fragment has been attached to is a WelcomeFragmentContainer
         if (mActivity instanceof WelcomeFragmentContainer) {
@@ -153,7 +152,7 @@ public abstract class WelcomeFragment extends Fragment {
      * A convenience {@link android.view.View.OnClickListener} for the common use case in the
      * WelcomeActivityContent.
      */
-    protected abstract class WelcomeFragmentOnClickListener implements View.OnClickListener {
+    abstract class WelcomeFragmentOnClickListener implements View.OnClickListener {
         /**
          * The action to perform on click, before proceeding to the next activity or exiting the
          * app.
@@ -174,7 +173,7 @@ public abstract class WelcomeFragment extends Fragment {
          * Proceed to the next activity.
          */
         void doNext() {
-            LogUtils.logD(TAG, "Proceeding to next activity");
+            logD(TAG, "Proceeding to next activity");
             Intent intent = new Intent(mActivity, MainActivity.class);
             startActivity(intent);
             mActivity.finish();
@@ -186,7 +185,7 @@ public abstract class WelcomeFragment extends Fragment {
          * We're done here.
          */
         void doFinish() {
-            LogUtils.logD(TAG, "Closing app");
+            logD(TAG, "Closing app");
             mActivity.finish();
         }
     }

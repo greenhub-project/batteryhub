@@ -50,22 +50,18 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 
+import com.hmatalonga.greenhub.Config;
+import com.hmatalonga.greenhub.models.data.ProcessInfo;
+
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.hmatalonga.greenhub.Config;
-import com.hmatalonga.greenhub.models.data.ProcessInfo;
-
-import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
-
 /**
  * Package properties model.
  */
 public class Package {
-
-    private static final String TAG = makeLogTag(Package.class);
 
     private static WeakReference<Map<String, PackageInfo>> packages = null;
 

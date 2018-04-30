@@ -31,12 +31,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-
-import java.util.ArrayList;
-
 import com.hmatalonga.greenhub.Config;
 import com.hmatalonga.greenhub.R;
 import com.hmatalonga.greenhub.events.BatteryLevelEvent;
@@ -51,7 +45,12 @@ import com.hmatalonga.greenhub.ui.MainActivity;
 import com.hmatalonga.greenhub.ui.adapters.BatteryRVAdapter;
 import com.hmatalonga.greenhub.util.LogUtils;
 
-import static com.hmatalonga.greenhub.util.LogUtils.logI;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
+import java.util.ArrayList;
+
 import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
 
 /**
@@ -347,6 +346,8 @@ public class HomeFragment extends Fragment {
                 break;
             case "wireless":
                 mPowerWireless.setImageResource(R.drawable.ic_access_point_white_24dp);
+                break;
+            default:
                 break;
         }
 

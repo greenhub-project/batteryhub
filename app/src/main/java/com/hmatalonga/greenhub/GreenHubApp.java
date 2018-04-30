@@ -65,7 +65,7 @@ public class GreenHubApp extends Application {
             LogUtils.LOGGING_ENABLED = true;
         }
 
-        LogUtils.logI(TAG, "onCreate() called");
+        logI(TAG, "onCreate() called");
 
         // Init crash reports
         Fabric.with(this, new Crashlytics());
@@ -78,14 +78,14 @@ public class GreenHubApp extends Application {
                 .build();
         Realm.setDefaultConfiguration(realmConfiguration);
 
-        LogUtils.logI(TAG, "Estimator new instance");
+        logI(TAG, "Estimator new instance");
         estimator = new DataEstimator();
 
         Context context = getApplicationContext();
 
         if (SettingsUtils.isTosAccepted(context)) {
             // Start GreenHub Service
-            LogUtils.logI(TAG, "startGreenHubService() called");
+            logI(TAG, "startGreenHubService() called");
             startGreenHubService();
 
             // Delete old data history
@@ -124,7 +124,7 @@ public class GreenHubApp extends Application {
                 }
             }.start();
         } else {
-            LogUtils.logI(TAG, "GreenHubService is already running...");
+            logI(TAG, "GreenHubService is already running...");
         }
     }
 
@@ -135,7 +135,7 @@ public class GreenHubApp extends Application {
                 isServiceRunning = false;
             }
         } catch (IllegalArgumentException e) {
-            LogUtils.logE(TAG, "Estimator receiver is not registered!");
+            logE(TAG, "Estimator receiver is not registered!");
             e.printStackTrace();
         }
     }

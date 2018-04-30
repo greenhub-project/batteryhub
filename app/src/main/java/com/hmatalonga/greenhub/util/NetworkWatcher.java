@@ -27,13 +27,9 @@ import android.net.NetworkInfo;
  */
 public class NetworkWatcher {
 
-    private static final String TAG = "NetworkWatcher";
-
     public static final int BACKGROUND_TASKS = 1;
 
     public static final int COMMUNICATION_MANAGER = 2;
-
-    public NetworkWatcher() {}
 
     /**
      * Checks for Internet connection.

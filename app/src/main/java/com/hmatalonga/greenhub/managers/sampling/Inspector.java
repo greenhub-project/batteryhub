@@ -104,7 +104,6 @@ import java.util.Set;
 
 import io.realm.RealmList;
 
-import static com.hmatalonga.greenhub.util.LogUtils.logI;
 import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
 
 /**
@@ -112,7 +111,7 @@ import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
  */
 public final class Inspector {
 
-    static boolean isSampling = false;
+    public static boolean isSampling = false;
 
     private static final String TAG = makeLogTag(Inspector.class);
 
@@ -239,7 +238,7 @@ public final class Inspector {
         String mobileNetworkType = Network.getMobileNetworkType(context);
 
         if (network.equals(Network.NETWORKSTATUS_CONNECTED)) {
-            if (networkType.equals("WIFI")) {
+            if ("WIFI".equals(networkType)) {
                 newSample.networkStatus = networkType;
             } else {
                 newSample.networkStatus = mobileNetworkType;
@@ -354,8 +353,7 @@ public final class Inspector {
                 batteryStatus = "None";
         }
 
-        // FIXED: Not used yet, Sample needs more fields
-        String batteryCharger = "unplugged";
+        String batteryCharger;
         switch (plugged) {
             case BatteryManager.BATTERY_PLUGGED_AC:
                 batteryCharger = "ac";
@@ -365,6 +363,9 @@ public final class Inspector {
                 break;
             case BatteryManager.BATTERY_PLUGGED_WIRELESS:
                 batteryCharger = "wireless";
+                break;
+            default:
+                batteryCharger = "unplugged";
         }
 
 

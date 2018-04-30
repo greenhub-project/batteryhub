@@ -31,7 +31,6 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-import static com.hmatalonga.greenhub.util.LogUtils.logI;
 import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
 
 /**

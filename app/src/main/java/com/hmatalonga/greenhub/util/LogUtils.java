@@ -45,34 +45,14 @@ public class LogUtils {
     }
 
     public static void logD(final String tag, String message) {
-        if (LOGGING_ENABLED) {
-            if (Log.isLoggable(tag, Log.DEBUG)) {
-                Log.d(tag, message);
-            }
+        if (LOGGING_ENABLED && Log.isLoggable(tag, Log.DEBUG)) {
+            Log.d(tag, message);
         }
     }
 
     public static void logD(final String tag, String message, Throwable cause) {
-        if (LOGGING_ENABLED) {
-            if (Log.isLoggable(tag, Log.DEBUG)) {
-                Log.d(tag, message, cause);
-            }
-        }
-    }
-
-    public static void logV(final String tag, String message) {
-        if (LOGGING_ENABLED) {
-            if (Log.isLoggable(tag, Log.VERBOSE)) {
-                Log.v(tag, message);
-            }
-        }
-    }
-
-    public static void logV(final String tag, String message, Throwable cause) {
-        if (LOGGING_ENABLED) {
-            if (Log.isLoggable(tag, Log.VERBOSE)) {
-                Log.v(tag, message, cause);
-            }
+        if (LOGGING_ENABLED && Log.isLoggable(tag, Log.DEBUG)) {
+            Log.d(tag, message, cause);
         }
     }
 

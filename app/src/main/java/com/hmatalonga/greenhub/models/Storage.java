@@ -20,9 +20,9 @@ import android.os.Build;
 import android.os.Environment;
 import android.os.StatFs;
 
-import java.io.File;
-
 import com.hmatalonga.greenhub.models.data.StorageDetails;
+
+import java.io.File;
 
 /**
  * Storage.

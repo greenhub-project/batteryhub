@@ -28,7 +28,6 @@ import com.hmatalonga.greenhub.ui.WelcomeActivity;
 import com.hmatalonga.greenhub.util.LogUtils;
 import com.hmatalonga.greenhub.util.SettingsUtils;
 
-import static com.hmatalonga.greenhub.util.LogUtils.logD;
 import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
 
 /**

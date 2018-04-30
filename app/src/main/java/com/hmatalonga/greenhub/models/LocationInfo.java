@@ -23,12 +23,11 @@ import android.location.LocationManager;
 import android.telephony.CellLocation;
 import android.telephony.TelephonyManager;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import com.hmatalonga.greenhub.Config;
 import com.hmatalonga.greenhub.models.data.LocationProvider;
-import com.hmatalonga.greenhub.util.LogUtils;
+
+import java.util.LinkedList;
+import java.util.List;
 
 import static com.hmatalonga.greenhub.util.LogUtils.logD;
 import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;

@@ -9,7 +9,6 @@ import io.realm.RealmMigration;
 import io.realm.RealmObjectSchema;
 import io.realm.RealmSchema;
 
-import static com.hmatalonga.greenhub.util.LogUtils.logE;
 import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
 
 /**

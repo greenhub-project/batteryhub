@@ -22,8 +22,6 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.os.Debug;
 
-import com.hmatalonga.greenhub.util.LogUtils;
-
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.List;
@@ -100,7 +98,7 @@ public class Memory {
                         memoryInfo.availMem, memoryInfo.lowMemory,
                         memoryInfo.threshold, memoryInfo.totalMem);
 
-        LogUtils.logI(TAG, message);
+        logI(TAG, message);
 
         // 2) Debug.MemoryInfo
         Debug.MemoryInfo[] memoryInfosArray = manager.getProcessMemoryInfo(pIds);

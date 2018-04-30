@@ -58,7 +58,6 @@ import com.hmatalonga.greenhub.util.SettingsUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
-import static com.hmatalonga.greenhub.util.LogUtils.logI;
 import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
 
 public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClickListener,
@@ -167,14 +166,15 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
                 // If request is cancelled, the result arrays are empty.
                 setupPermission(Manifest.permission.ACCESS_COARSE_LOCATION,
                         Config.PERMISSION_ACCESS_COARSE_LOCATION);
-                return;
+                break;
             }
             case Config.PERMISSION_ACCESS_COARSE_LOCATION: {
                 setupPermission(Manifest.permission.ACCESS_FINE_LOCATION,
                         Config.PERMISSION_ACCESS_FINE_LOCATION);
+                break;
             }
-            // other 'case' lines to check for other
-            // permissions this app might request
+            default:
+                break;
         }
     }
 
