@@ -339,10 +339,11 @@ public class Battery {
         double remainingCapacity;
         double chargingSignal;
         int defaultDischargeRate = Config.DEFAULT_DISCHARGE_RATE;
+
         if (!charging) {
             chargingSignal = -1;
             remainingCapacity = getBatteryRemainingCapacity(context);
-            LogUtils.logI("WOW", "[B] RemCap: " + remainingCapacity);
+            logI("WOW", "[B] RemCap: " + remainingCapacity);
         } else {
             chargingSignal = 1;
             switch (charger) {
@@ -382,24 +383,30 @@ public class Battery {
         BatteryUsage previousUsage = null;
 
         for (BatteryUsage currentUsage : lastUsages) {
-            if (previousUsage != null) {
-                int currentCapacity = currentUsage.details.remainingCapacity;
-                int previousCapacity = previousUsage.details.remainingCapacity;
-                double discharge = chargingSignal * (previousCapacity - currentCapacity);
-
-                // prevent division by zero OR a negative charge/discharge:
-                // i.e., only positive differences are considered
-                if (discharge > 0.0) {
-                    // in seconds
-                    long elapsedTime = abs(
-                            (currentUsage.timestamp - previousUsage.timestamp) / 1000
-                    );
-                    dischargeSamples.add(elapsedTime / discharge);
-                }
+            if (previousUsage == null) {
+                previousUsage = currentUsage;
+                continue;
             }
+            int currentCapacity = currentUsage.details.remainingCapacity;
+            int previousCapacity = previousUsage.details.remainingCapacity;
+            double discharge = chargingSignal * (previousCapacity - currentCapacity);
+
+            // prevent division by zero OR a negative charge/discharge:
+            // i.e., only positive differences are considered
+            if (discharge <= 0.0) {
+                previousUsage = currentUsage;
+                continue;
+            }
+            // in seconds
+            long elapsedTime = abs(
+                    (currentUsage.timestamp - previousUsage.timestamp) / 1000
+            );
+            dischargeSamples.add(elapsedTime / discharge);
+
             previousUsage = currentUsage;
         }
         database.close();
+
         if (dischargeSamples.size() == 0) {
             return ((int) ((remainingCapacity * (60 * 60)) / defaultDischargeRate));
         }
@@ -423,7 +430,7 @@ public class Battery {
             reader.close();
         } catch (IOException e) {
             // Device has no current_avg file available
-            LogUtils.logI(TAG, "Device has no current_avg file available");
+            logI(TAG, "Device has no current_avg file available");
         }
         return value;
     }

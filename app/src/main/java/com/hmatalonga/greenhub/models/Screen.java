@@ -25,9 +25,6 @@ import android.provider.Settings;
  * Screen properties model.
  */
 public class Screen {
-
-    private static final String TAG = "Screen";
-
     /**
      * Get Current Screen Brightness Value.
      *

@@ -187,7 +187,7 @@ public class CommunicationManager {
                 isUploading = false;
                 isQueued = true;
 
-                LogUtils.logI(TAG, "HTTP call onFailure uploadAttempts:" + uploadAttempts);
+                logI(TAG, "HTTP call onFailure uploadAttempts:" + uploadAttempts);
 
                 // Clean up mDatabase
                 // new DeleteOldSamplesTask().execute();
@@ -201,7 +201,7 @@ public class CommunicationManager {
         if (response == RESPONSE_OKAY) {
             String message =
                     "Sample => " + id + " uploaded successfully! Deleting uploaded sample...";
-            LogUtils.logI(TAG, message);
+            logI(TAG, message);
             // delete uploaded sample and upload next one
             new DeleteSampleTask().execute(id);
 

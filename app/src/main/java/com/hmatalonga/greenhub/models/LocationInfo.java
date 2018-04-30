@@ -112,7 +112,7 @@ public class LocationInfo {
                 return String.valueOf(latitude) + "," + String.valueOf(longitude);
             } catch (SecurityException e) {
                 if (Config.DEBUG) {
-                    LogUtils.logD("SamplingLibrary", "Failed getting coarse location!");
+                    logD("SamplingLibrary", "Failed getting coarse location!");
                     e.printStackTrace();
                 }
             }
@@ -216,7 +216,7 @@ public class LocationInfo {
             }
         } catch (Exception e) {
             if (Config.DEBUG && e != null && e.getLocalizedMessage() != null) {
-                LogUtils.logD(TAG, "Failed getting network location: " + e.getLocalizedMessage());
+                logD(TAG, "Failed getting network location: " + e.getLocalizedMessage());
             }
         }
         return null;

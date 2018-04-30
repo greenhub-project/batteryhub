@@ -34,9 +34,6 @@ import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
  */
 public abstract class BaseActivity extends AppCompatActivity implements
         SharedPreferences.OnSharedPreferenceChangeListener {
-
-    private static final String TAG = makeLogTag(BaseActivity.class);
-
     // Primary toolbar
     private Toolbar mActionBarToolbar;
 
@@ -92,6 +89,6 @@ public abstract class BaseActivity extends AppCompatActivity implements
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-
+        
     }
 }

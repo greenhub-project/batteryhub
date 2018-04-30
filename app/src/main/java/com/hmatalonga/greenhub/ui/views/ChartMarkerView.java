@@ -33,8 +33,6 @@ import com.hmatalonga.greenhub.util.StringHelper;
  */
 public class ChartMarkerView extends MarkerView {
 
-    private static final String TAG = "ChartMarkerView";
-
     private TextView mContent;
     private MPPointF mOffset;
     private int mType;

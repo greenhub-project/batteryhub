@@ -335,14 +335,19 @@ public class HomeFragment extends Fragment {
                 break;
         }
 
-        if (batteryCharger.equals("unplugged")) {
-            mPowerDischarging.setImageResource(R.drawable.ic_battery_50_white_24dp);
-        } else if (batteryCharger.equals("ac")) {
-            mPowerAc.setImageResource(R.drawable.ic_power_plug_white_24dp);
-        } else if (batteryCharger.equals("usb")) {
-            mPowerUsb.setImageResource(R.drawable.ic_usb_white_24dp);
-        } else if (batteryCharger.equals("wireless")) {
-            mPowerWireless.setImageResource(R.drawable.ic_access_point_white_24dp);
+        switch (batteryCharger) {
+            case "unplugged":
+                mPowerDischarging.setImageResource(R.drawable.ic_battery_50_white_24dp);
+                break;
+            case "ac":
+                mPowerAc.setImageResource(R.drawable.ic_power_plug_white_24dp);
+                break;
+            case "usb":
+                mPowerUsb.setImageResource(R.drawable.ic_usb_white_24dp);
+                break;
+            case "wireless":
+                mPowerWireless.setImageResource(R.drawable.ic_access_point_white_24dp);
+                break;
         }
 
         mActivePower = batteryCharger;

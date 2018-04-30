@@ -26,9 +26,6 @@ import com.hmatalonga.greenhub.R;
  * Bluetooth.
  */
 public class Bluetooth {
-
-    private static final String TAG = "Bluetooth";
-
     /**
      * Checks if bluetooth is enabled on the device
      *

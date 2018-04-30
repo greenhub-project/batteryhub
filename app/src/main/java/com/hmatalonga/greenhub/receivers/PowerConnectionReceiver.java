@@ -23,8 +23,6 @@ import android.content.IntentFilter;
 import android.os.BatteryManager;
 import android.os.Build;
 
-import org.greenrobot.eventbus.EventBus;
-
 import com.hmatalonga.greenhub.events.BatteryTimeEvent;
 import com.hmatalonga.greenhub.events.PowerSourceEvent;
 import com.hmatalonga.greenhub.managers.sampling.Inspector;
@@ -33,10 +31,10 @@ import com.hmatalonga.greenhub.models.Battery;
 import com.hmatalonga.greenhub.util.LogUtils;
 import com.hmatalonga.greenhub.util.Notifier;
 
+import org.greenrobot.eventbus.EventBus;
+
 import io.realm.exceptions.RealmMigrationNeededException;
 
-import static com.hmatalonga.greenhub.util.LogUtils.logE;
-import static com.hmatalonga.greenhub.util.LogUtils.logI;
 import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
 
 public class PowerConnectionReceiver extends BroadcastReceiver {

@@ -170,10 +170,10 @@ public class DataEstimatorService extends IntentService {
          */
         if (!batteryLevelChanged || Inspector.isSampling) {
             if (!batteryLevelChanged) {
-                LogUtils.logI(TAG, "No battery percentage change. BatteryLevel=" +
+                logI(TAG, "No battery percentage change. BatteryLevel=" +
                         Inspector.getCurrentBatteryLevel());
             } else if (Inspector.isSampling) {
-                LogUtils.logI(TAG, "Inspector is already sampling...");
+                logI(TAG, "Inspector is already sampling...");
             }
         } else {
             String message =

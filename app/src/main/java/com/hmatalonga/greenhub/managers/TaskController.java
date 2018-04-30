@@ -128,10 +128,11 @@ public class TaskController {
     private List<Task> getRunningTasksNougat() {
         final List<Task> tasks = new ArrayList<>();
 
-        AppOpsManager appOps = (AppOpsManager) mContext
-                .getSystemService(Context.APP_OPS_SERVICE);
-        int mode = appOps.checkOpNoThrow("android:get_usage_stats",
-                android.os.Process.myUid(), mContext.getPackageName());
+        AppOpsManager appOps = (AppOpsManager) mContext.getSystemService(Context.APP_OPS_SERVICE);
+        int mode = appOps.checkOpNoThrow(
+                "android:get_usage_stats",
+                Process.myUid(), mContext.getPackageName()
+        );
         boolean granted = mode == AppOpsManager.MODE_ALLOWED;
 
         if (!granted) return tasks;
@@ -140,7 +141,7 @@ public class TaskController {
 
         for (UsageStats stats : list) {
             String packageName = stats.getPackageName();
-            /** Exclude the app itself from the list */
+            /* Exclude the app itself from the list */
             if (packageName.equals(BuildConfig.APPLICATION_ID)) continue;
 
             PackageInfo packageInfo = getPackageInfo(packageName, 0);

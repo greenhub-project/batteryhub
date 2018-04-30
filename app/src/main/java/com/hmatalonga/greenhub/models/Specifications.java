@@ -21,17 +21,16 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.preference.PreferenceManager;
 
+import com.hmatalonga.greenhub.Config;
+import com.hmatalonga.greenhub.models.data.Feature;
+import com.hmatalonga.greenhub.util.LogUtils;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 import java.util.UUID;
 
-import com.hmatalonga.greenhub.Config;
-import com.hmatalonga.greenhub.models.data.Feature;
-import com.hmatalonga.greenhub.util.LogUtils;
-
-import static com.hmatalonga.greenhub.util.LogUtils.logD;
 import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
 
 /**

@@ -17,6 +17,7 @@
 package com.hmatalonga.greenhub.ui.adapters;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -91,12 +92,13 @@ public class ChartRVAdapter extends RecyclerView.Adapter<ChartRVAdapter.Dashboar
     }
 
     @Override
-    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
     }
 
     @Override
-    public ChartRVAdapter.DashboardViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ChartRVAdapter.DashboardViewHolder onCreateViewHolder(@NonNull ViewGroup parent,
+                                                                 int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(
                 R.layout.chart_card_view,
                 parent,
@@ -106,7 +108,7 @@ public class ChartRVAdapter extends RecyclerView.Adapter<ChartRVAdapter.Dashboar
     }
 
     @Override
-    public void onBindViewHolder(DashboardViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull DashboardViewHolder holder, int position) {
         ChartCard card = mChartCards.get(position);
         setup(holder, card);
         holder.chart.setData(loadData(card));

@@ -34,9 +34,6 @@ import java.util.List;
  * Wifi properties model.
  */
 public class Wifi {
-
-    private static final String TAG = "Wifi";
-
     // Wifi State constants
     private static final String WIFI_STATE_DISABLING = "disabling";
     private static final String WIFI_STATE_DISABLED = "disabled";
