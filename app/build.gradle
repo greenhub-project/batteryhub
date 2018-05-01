@@ -100,7 +100,7 @@ dependencies {
     // Android Processes library
     implementation 'com.jaredrummler:android-processes:1.0.9'
     // crashlytics
-    implementation('com.crashlytics.sdk.android:crashlytics:2.7.1@aar') {
+    implementation('com.crashlytics.sdk.android:crashlytics:2.9.2@aar') {
         transitive = true
     }
 }
