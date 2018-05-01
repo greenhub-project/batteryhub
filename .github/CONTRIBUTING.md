@@ -25,6 +25,14 @@ We will do our best to keep the [`master` branch](https://github.com/greenhub-pr
     
   Where `name` is a short description of the fix/feature of the respective branch.
 
+## Development Setup
+
+You will need [Java SE Development Kit 8](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html) and [Android SDK](https://developer.android.com/studio/#downloads). Alternatively you can use Docker (refer to [these instructions](/README.md#docker)) if you don't want to install the Android SDK on your machine.
+
+### Committing Changes
+
+Commit messages should follow the [commit message convention](COMMIT_CONVENTION.md).
+
 ## Semantic Versioning
 
 BatteryHub follows [semantic versioning](http://semver.org/). We release patch versions for bugfixes, minor versions for new features, and major versions for any breaking changes. When we make breaking changes.
