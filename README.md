@@ -108,7 +108,8 @@ For more details, please check our [documentation](https://docs.greenhubproject.
 ## Issues
 
 If you think you have found a bug or have a feature request, refer to the [issues page](https://github.com/greenhub-project/batteryhub/issues), proper labels are provided.
-Before opening a new issue, be sure to search existing ones to avoid duplicates. Please try to include steps to reproduce the problem.
+
+Before opening a new issue, be sure to search existing ones to avoid duplicates. Please try to include steps to reproduce the problem and copy the print stack tree output from the logs if necessary.
 
 ### Known issues
 
@@ -117,7 +118,7 @@ Before opening a new issue, be sure to search existing ones to avoid duplicates.
 
 ## Contributing
 
-Please read through our [contributing guidelines](.github/CONTRIBUTING.md). Included are directions for opening issues, coding standards and development process.
+Please read through our [contributing guidelines](.github/CONTRIBUTING.md) before making a pull request. Included are directions for coding standards and development process.
 
 ## Changelog
 

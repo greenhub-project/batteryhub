@@ -9,7 +9,7 @@ The project is under **development**. We’re still working out the kinks to mak
 
 The GreenHub project has adopted a Code of Conduct that we expect project participants to adhere to. Please read [the full text](CODE_OF_CONDUCT.md) so that you can understand what actions will and will not be tolerated.
 
-## Branch Organization
+## Pull Request Guidelines
 
 We will do our best to keep the [`master` branch](https://github.com/greenhub-project/batteryhub/tree/master) in good shape, with tests passing at all times. It represents the latest version released in the Google Play Store.
 
@@ -32,16 +32,6 @@ BatteryHub follows [semantic versioning](http://semver.org/). We release patch v
 We release new patch versions every few weeks, minor versions every few months, and major versions are unplanned.
 
 You can read about the changes in the [releases page](https://github.com/greenhub-project/batteryhub/releases).
-
-## Bugs
-
-### Where to Find Known Issues
-
-We are using [GitHub Issues](https://github.com/greenhub-project/batteryhub/issues) for our public bugs. We keep a close eye on this and try to make it clear when we have an internal fix in progress. Before filing a new task, try to make sure your problem doesn't already exist.
-
-### Reporting New Issues
-
-The best way to get your bug fixed is to provide a description with the steps to reproduce the problem and copy the print stack tree output from the logs. You can fill a new issue [here](https://github.com/greenhub-project/batteryhub/issues/new).
 
 ## How to Get in Touch
 
