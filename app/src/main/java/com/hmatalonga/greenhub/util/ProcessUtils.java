@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.hmatalonga.greenhub.util.LogUtils.LOGE;
 import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
 
 /**
@@ -52,9 +53,9 @@ public class ProcessUtils {
 
 
         } catch (IOException e) {
-            Log.e(TAG, "Could not get ps command output");
+            LOGE(TAG, "Could not get ps command output");
         } catch (InterruptedException e) {
-            Log.e(TAG, "Could not get ps command output");
+            LOGE(TAG, "Could not get ps command output");
         }
 
         return "";
