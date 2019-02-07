@@ -2,7 +2,7 @@
 <img src="https://raw.githubusercontent.com/greenhub-project/greenhub-assets/master/github_header.png" title="GreenHub BatteryHub">
 </p>
 <p align="center">
-<a href="https://travis-ci.org/greenhub-project/batteryhub"><img src="https://img.shields.io/travis/greenhub-project/batteryhub/master.svg" alt="Build Status"></a>
+<a href="https://travis-ci.org/greenhub-project/batteryhub"><img src="https://travis-ci.org/greenhub-project/batteryhub.svg?branch=master" alt="Build Status"></a>
 <a class="badge-align" href="https://www.codacy.com/app/hmatalonga/batteryhub"><img src="https://api.codacy.com/project/badge/Grade/c87e12f6973248e3bf66f2d34185bdf8"/></a>
 <a href="https://github.com/greenhub-project/batteryhub/releases/latest"><img src="https://img.shields.io/github/release/greenhub-project/batteryhub.svg" alt="Release"></a>
 <a href="https://opensource.org/licenses/Apache-2.0"><img src="https://img.shields.io/badge/License-Apache%202.0-green.svg" alt="License"></a>

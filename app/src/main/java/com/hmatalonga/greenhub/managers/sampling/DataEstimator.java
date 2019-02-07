@@ -17,12 +17,12 @@
 package com.hmatalonga.greenhub.managers.sampling;
 
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ReceiverCallNotAllowedException;
 import android.os.BatteryManager;
-import android.support.v4.content.WakefulBroadcastReceiver;
 
 import com.hmatalonga.greenhub.R;
 import com.hmatalonga.greenhub.events.BatteryLevelEvent;
@@ -34,6 +34,8 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.util.Calendar;
 
+import static com.hmatalonga.greenhub.util.LogUtils.logE;
+import static com.hmatalonga.greenhub.util.LogUtils.logI;
 import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
 
 /**
@@ -41,7 +43,7 @@ import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
  * <p>
  * Created by hugo on 09-04-2016.
  */
-public class DataEstimator extends WakefulBroadcastReceiver {
+public class DataEstimator extends BroadcastReceiver {
 
     private static final String TAG = makeLogTag(DataEstimator.class);
 
@@ -61,24 +63,24 @@ public class DataEstimator extends WakefulBroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         //region null conditionals validations
         if (context == null) {
-            LogUtils.logE(TAG, "Error, context is null");
+            logE(TAG, "Error, context is null");
             return;
         }
 
         if (intent == null) {
-            LogUtils.logE(TAG, "Received intent is null");
+            logE(TAG, "Received intent is null");
             return;
         }
 
         String action = intent.getAction();
 
         if (action == null) {
-            LogUtils.logE(TAG, "Intent has no action");
+            logE(TAG, "Intent has no action");
             return;
         }
         //endregion
 
-        LogUtils.logI(TAG, "ENTRY onReceive => " + action);
+        logI(TAG, "ENTRY onReceive => " + action);
 
         if (!action.equals(Intent.ACTION_BATTERY_CHANGED)) return;
 
@@ -138,7 +140,7 @@ public class DataEstimator extends WakefulBroadcastReceiver {
         }
 
         if (SettingsUtils.isPowerIndicatorShown(context)) {
-            LogUtils.logI(TAG, "Updating notification mStatus bar");
+            logI(TAG, "Updating notification mStatus bar");
             Notifier.updateStatusBar(context);
         }
 
@@ -154,7 +156,7 @@ public class DataEstimator extends WakefulBroadcastReceiver {
 
             EventBus.getDefault().post(new BatteryLevelEvent(mLevel));
 
-            startWakefulService(context, service);
+            (context, service);
         }
     }
 
@@ -189,7 +191,7 @@ public class DataEstimator extends WakefulBroadcastReceiver {
                         ) / 1000);
             }
         } catch (ReceiverCallNotAllowedException e) {
-            LogUtils.logE(TAG, "ReceiverCallNotAllowedException from Notification Receiver?");
+            logE(TAG, "ReceiverCallNotAllowedException from Notification Receiver?");
             e.printStackTrace();
         }
     }

@@ -113,7 +113,7 @@ public class DataEstimatorService extends IntentService {
         wakeLock.release();
 
         if (intent != null) {
-            DataEstimator.completeWakefulIntent(intent);
+            DataEstimator.(intent);
         }
     }
 

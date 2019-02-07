@@ -101,7 +101,7 @@ public class GreenHubApp extends Application {
 
     public void startGreenHubService() {
         if (!isServiceRunning) {
-            LogUtils.logI(TAG, "GreenHubService starting...");
+            logI(TAG, "GreenHubService starting...");
 
             final Context context = getApplicationContext();
             isServiceRunning = true;
