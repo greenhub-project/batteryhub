@@ -53,6 +53,7 @@ import com.hmatalonga.greenhub.R;
 import com.hmatalonga.greenhub.events.OpenTaskDetailsEvent;
 import com.hmatalonga.greenhub.events.TaskRemovedEvent;
 import com.hmatalonga.greenhub.managers.TaskController;
+import com.hmatalonga.greenhub.models.Memory;
 import com.hmatalonga.greenhub.models.ui.Task;
 import com.hmatalonga.greenhub.ui.adapters.TaskAdapter;
 import com.hmatalonga.greenhub.util.SettingsUtils;
@@ -565,10 +566,10 @@ public class TaskListActivity extends BaseActivity {
         text = "Apps " + mTaskList.size();
         textView.setText(text);
         textView = findViewById(R.id.usage);
-        double memory = getAvailableMemory();
+        double memory = Memory.getAvailableMemoryMB(getApplicationContext());
         if (memory > 1000) {
             text = getString(R.string.task_free_ram) + " " +
-                    (Math.round(memory / 1024.0 * 100.0) / 100.0) + " GB";
+                    (Math.round(memory / 1000.0)) + " GB";
         } else {
             text = getString(R.string.task_free_ram) + " " + memory + " MB";
         }
@@ -580,15 +581,6 @@ public class TaskListActivity extends BaseActivity {
         textView.setText(getString(R.string.header_status_loading));
         textView = findViewById(R.id.usage);
         textView.setText("");
-    }
-
-    private double getAvailableMemory() {
-        ActivityManager.MemoryInfo info = new ActivityManager.MemoryInfo();
-        ActivityManager activityManager = (ActivityManager)
-                getApplicationContext().getSystemService(Context.ACTIVITY_SERVICE);
-        activityManager.getMemoryInfo(info);
-
-        return Math.round(info.availMem / 1048576.0 * 100.0) / 100.0;
     }
 
     private double getTotalUsage(List<Task> list) {
