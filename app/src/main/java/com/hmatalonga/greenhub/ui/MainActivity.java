@@ -179,7 +179,7 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
     }
 
     public DataEstimator getEstimator() {
-        return mApp.estimator;
+        return mApp.getEstimator();
     }
 
     private void loadComponents() {
