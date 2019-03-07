@@ -55,12 +55,12 @@ public class BatteryService extends Service {
     @Override
     public void onDestroy() {
         isServiceRunning = false;
-        try{
+        try {
             unregisterReceiver(estimator);
         } catch (IllegalArgumentException e) {
             logE(TAG, "Estimator receiver is not registered!");
             e.printStackTrace();
-    }
+        }
         estimator = null;
     }
 
