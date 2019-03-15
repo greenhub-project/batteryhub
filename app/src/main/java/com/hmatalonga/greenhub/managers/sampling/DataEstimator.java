@@ -280,7 +280,6 @@ public class DataEstimator extends BroadcastReceiver {
 
             Intent service = new Intent(mContext, DataEstimatorService.class);
             service.putExtra("OriginalAction", mAction);
-            service.putExtra("jobID", "" + jobID);
             service.fillIn(mIntent, 0);
 
             startService(service);

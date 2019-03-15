@@ -106,7 +106,6 @@ public class DataEstimatorService extends IntentService {
      */
     private void takeSampleIfBatteryLevelChanged(final Context context, Intent intent) {
         String action = intent.getAction();
-        String jobID = intent.getStringExtra("jobID");
         if (action == null) return;
 
         // Make sure our new sample doesn't have a zero value as its current battery level
