@@ -21,6 +21,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,6 +47,8 @@ import com.hmatalonga.greenhub.ui.TaskListActivity;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
+import static com.hmatalonga.greenhub.util.LogUtils.logI;
 
 /**
  * Device Fragment.
@@ -251,18 +254,21 @@ public class DeviceFragment extends Fragment {
     private Runnable mRunnable = new Runnable() {
         @Override
         public void run() {
-            // 1 total, 2 active
-            int[] memory = Memory.readMemoryInfo();
+            // 0 total, 1 free, 2 used
+            long[] memory = Memory.getMemoryInfo(mContext);
+            int totalMemory = (int) (memory[0] / 1000000);
+            int freeMemory = (int) (memory[1] / 1000000);
+            int usedMemory = (int) (memory[2] / 1000000);
             StorageDetails storageDetails = Storage.getStorageDetails();
             String value;
 
-            mMemoryBar.setMax(memory[1]);
-            mMemoryBar.setProgress(memory[1] - memory[2]);
+            mMemoryBar.setMax(totalMemory);
+            mMemoryBar.setProgress(usedMemory);
 
-            value = (memory[1] - memory[2]) / 1024 + " MB";
+            value = usedMemory + " MB";
             mMemoryUsed.setText(value);
 
-            value = memory[2] / 1024 + " MB";
+            value = freeMemory + " MB";
             mMemoryFree.setText(value);
 
             mStorageBar.setMax(storageDetails.total);
