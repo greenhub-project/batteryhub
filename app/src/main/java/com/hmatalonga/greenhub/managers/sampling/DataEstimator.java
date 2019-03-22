@@ -17,7 +17,12 @@
 package com.hmatalonga.greenhub.managers.sampling;
 
 
+import android.app.job.JobInfo;
+import android.app.job.JobParameters;
+import android.app.job.JobScheduler;
+import android.app.job.JobService;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -26,7 +31,6 @@ import android.os.BatteryManager;
 
 import com.hmatalonga.greenhub.R;
 import com.hmatalonga.greenhub.events.BatteryLevelEvent;
-import com.hmatalonga.greenhub.util.LogUtils;
 import com.hmatalonga.greenhub.util.Notifier;
 import com.hmatalonga.greenhub.util.SettingsUtils;
 
@@ -47,8 +51,12 @@ public class DataEstimator extends BroadcastReceiver {
 
     private static final String TAG = makeLogTag(DataEstimator.class);
 
-    private long mLastNotify;
+    private static int mJobId = 0;
+    private static Context mContext;
+    private static Intent mIntent;
+    private static String mAction;
 
+    private long mLastNotify;
     private int mHealth;
     private int mLevel;
     private int mPlugged;
@@ -61,6 +69,7 @@ public class DataEstimator extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        mContext = context;
         //region null conditionals validations
         if (context == null) {
             logE(TAG, "Error, context is null");
@@ -72,17 +81,18 @@ public class DataEstimator extends BroadcastReceiver {
             return;
         }
 
-        String action = intent.getAction();
+        mIntent = intent;
+        mAction = intent.getAction();
 
-        if (action == null) {
+        if (mAction == null) {
             logE(TAG, "Intent has no action");
             return;
         }
         //endregion
 
-        logI(TAG, "ENTRY onReceive => " + action);
+        logI(TAG, "ENTRY onReceive => " + mAction);
 
-        if (!action.equals(Intent.ACTION_BATTERY_CHANGED)) return;
+        if (!mAction.equals(Intent.ACTION_BATTERY_CHANGED)) return;
 
         // Fetch Intent extras related to the battery state
         try {
@@ -150,14 +160,23 @@ public class DataEstimator extends BroadcastReceiver {
         if (mLevel > 0) {
             Inspector.setCurrentBatteryLevel(mLevel, mScale);
 
-            Intent service = new Intent(context, DataEstimatorService.class);
-            service.putExtra("OriginalAction", action);
-            service.fillIn(intent, 0);
-
             EventBus.getDefault().post(new BatteryLevelEvent(mLevel));
 
-            (context, service);
+            scheduleJob(context);
         }
+
+    }
+
+    private static void scheduleJob(Context context) {
+        ComponentName serviceComponent = new ComponentName(context, EstimatorJob.class);
+        JobInfo.Builder builder = new JobInfo.Builder(mJobId++, serviceComponent);
+        builder.setMinimumLatency(1); // wait at least
+        builder.setOverrideDeadline(10); // maximum delay
+        builder.setRequiresCharging(false);
+        builder.setRequiresDeviceIdle(false);
+
+        JobScheduler jobScheduler = context.getSystemService(JobScheduler.class);
+        jobScheduler.schedule(builder.build());
     }
 
     public static Intent getBatteryChangedIntent(final Context context) {
@@ -246,6 +265,33 @@ public class DataEstimator extends BroadcastReceiver {
         }
 
         return status;
+    }
+
+    public static class EstimatorJob extends JobService {
+        public static final String TAG = "EstimatorJob";
+
+        public EstimatorJob() {
+
+        }
+
+        @Override
+        public boolean onStartJob(JobParameters params) {
+            final int jobID = params.getJobId();
+
+            Intent service = new Intent(mContext, DataEstimatorService.class);
+            service.putExtra("OriginalAction", mAction);
+            service.fillIn(mIntent, 0);
+
+            startService(service);
+            jobFinished(params, false);
+
+            return true;
+        }
+
+        @Override
+        public boolean onStopJob(JobParameters params) {
+            return false;
+        }
     }
 
     public long getmLastNotify() {
