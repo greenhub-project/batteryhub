@@ -20,7 +20,6 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.app.Activity;
 import android.app.ActivityManager;
-import android.content.Context;
 import android.os.Debug;
 
 import java.io.IOException;

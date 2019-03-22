@@ -256,9 +256,9 @@ public class DeviceFragment extends Fragment {
         public void run() {
             // 0 total, 1 free, 2 used
             long[] memory = Memory.getMemoryInfo(mContext);
-            int totalMemory = (int)(memory[0]/1000000);
-            int freeMemory = (int)(memory[1]/1000000);
-            int usedMemory = (int)(memory[2]/1000000);
+            int totalMemory = (int) (memory[0] / 1000000);
+            int freeMemory = (int) (memory[1] / 1000000);
+            int usedMemory = (int) (memory[2] / 1000000);
             StorageDetails storageDetails = Storage.getStorageDetails();
             String value;
 
