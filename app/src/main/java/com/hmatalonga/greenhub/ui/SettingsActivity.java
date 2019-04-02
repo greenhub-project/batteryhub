@@ -118,6 +118,7 @@ public class SettingsActivity extends BaseActivity {
                 case SettingsUtils.PREF_UPLOAD_RATE:
                     bindPreferenceSummaryToValue(preference);
                     break;
+                /*
                 case SettingsUtils.PREF_POWER_INDICATOR:
                     if (SettingsUtils.isPowerIndicatorShown(context)) {
                         Notifier.startStatusBar(context);
@@ -132,6 +133,7 @@ public class SettingsActivity extends BaseActivity {
                                     String.valueOf(SettingsUtils.isPowerIndicatorShown(context))
                             ));
                     break;
+                */
                 case SettingsUtils.PREF_TEMPERATURE_WARNING:
                     bindPreferenceSummaryToValue(preference);
                     break;
