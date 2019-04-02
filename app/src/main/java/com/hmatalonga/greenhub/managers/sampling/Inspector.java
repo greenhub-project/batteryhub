@@ -74,6 +74,7 @@ import com.hmatalonga.greenhub.models.Package;
 import com.hmatalonga.greenhub.models.Phone;
 import com.hmatalonga.greenhub.models.Process;
 import com.hmatalonga.greenhub.models.Screen;
+import com.hmatalonga.greenhub.models.Sensors;
 import com.hmatalonga.greenhub.models.SettingsInfo;
 import com.hmatalonga.greenhub.models.SimCard;
 import com.hmatalonga.greenhub.models.Specifications;
@@ -192,6 +193,7 @@ public final class Inspector {
 
         newSample.processInfos = new RealmList<>();
         newSample.locationProviders = new RealmList<>();
+        newSample.sensorDetailsList = new RealmList<>();
         newSample.features = new RealmList<>();
 
 
@@ -229,6 +231,9 @@ public final class Inspector {
             // Auto
             newSample.screenBrightness = -1;
         }
+
+        // SensorDetails list
+        newSample.sensorDetailsList.addAll(Sensors.getSensorDetailsList(context));
 
         // Location providers
         newSample.locationProviders.addAll(LocationInfo.getEnabledLocationProviders(context));
