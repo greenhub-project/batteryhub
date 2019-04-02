@@ -19,7 +19,7 @@ package com.hmatalonga.greenhub.models.data;
 import io.realm.RealmObject;
 
 /**
- * Battery Details data definition.
+ * Sensor Details data definition.
  */
 public class SensorDetails extends RealmObject {
 
