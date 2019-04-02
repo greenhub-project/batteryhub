@@ -368,7 +368,7 @@ public class CommunicationManager {
                 child.addProperty("isWakeUpSensor", el.isWakeUpSensor);
                 child.addProperty("maxDelay", el.maxDelay);
                 child.addProperty("maximumRange", el.maximumRange);
-                child.addProperty("maximumRange", el.maximumRange);
+                child.addProperty("minDelay", el.minDelay);
                 child.addProperty("name", el.name);
                 child.addProperty("power", el.power);
                 child.addProperty("reportingMode", el.reportingMode);
