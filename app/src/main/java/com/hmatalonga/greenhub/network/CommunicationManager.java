@@ -32,6 +32,7 @@ import com.hmatalonga.greenhub.models.data.Feature;
 import com.hmatalonga.greenhub.models.data.LocationProvider;
 import com.hmatalonga.greenhub.models.data.ProcessInfo;
 import com.hmatalonga.greenhub.models.data.Sample;
+import com.hmatalonga.greenhub.models.data.SensorDetails;
 import com.hmatalonga.greenhub.models.data.Upload;
 import com.hmatalonga.greenhub.network.services.GreenHubAPIService;
 import com.hmatalonga.greenhub.tasks.DeleteSampleTask;
@@ -351,6 +352,35 @@ public class CommunicationManager {
         root.add("storageDetails", child);
 
         root.addProperty("countryCode", sample.countryCode);
+
+        // SensorDetails list
+        if (sample.sensorDetailsList != null && !sample.sensorDetailsList.isEmpty()) {
+            list = new JsonArray();
+            for (SensorDetails el : sample.sensorDetailsList) {
+                child = new JsonObject();
+                child.addProperty("codeType", el.codeType);
+                child.addProperty("fifoMaxEventCount", el.fifoMaxEventCount);
+                child.addProperty("fifoReservedEventCount", el.fifoReservedEventCount);
+                child.addProperty("highestDirectReportRateLevel", el.highestDirectReportRateLevel);
+                child.addProperty("id", el.id);
+                child.addProperty("isAdditionalInfoSupported", el.isAdditionalInfoSupported);
+                child.addProperty("isDynamicSensor", el.isDynamicSensor);
+                child.addProperty("isWakeUpSensor", el.isWakeUpSensor);
+                child.addProperty("maxDelay", el.maxDelay);
+                child.addProperty("maximumRange", el.maximumRange);
+                child.addProperty("maximumRange", el.maximumRange);
+                child.addProperty("name", el.name);
+                child.addProperty("power", el.power);
+                child.addProperty("reportingMode", el.reportingMode);
+                child.addProperty("resolution", el.resolution);
+                child.addProperty("stringType", el.stringType);
+                child.addProperty("vendor", el.vendor);
+                child.addProperty("version", el.version);
+
+                list.add(child);
+            }
+            root.add("sensorDetailsList", list);
+        }
 
         // LocationProviders
         if (sample.locationProviders != null && !sample.locationProviders.isEmpty()) {
