@@ -17,9 +17,9 @@
 package com.hmatalonga.greenhub.models;
 
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.app.Activity;
 import android.app.ActivityManager;
-import android.content.Context;
 import android.os.Debug;
 
 import java.io.IOException;
@@ -147,4 +147,19 @@ public class Memory {
 
         return new int[] {free, total, active, inactive};
     }
+
+    public static long[] getMemoryInfo(Context context) {
+        ActivityManager.MemoryInfo info = new ActivityManager.MemoryInfo();
+        ActivityManager activityManager = (ActivityManager)
+                context.getSystemService(Context.ACTIVITY_SERVICE);
+        activityManager.getMemoryInfo(info);
+
+        return new long[] {info.totalMem, info.availMem, (info.totalMem - info.availMem)};
+    }
+
+    public static double getAvailableMemoryMB(Context context) {
+        long[] memoryInfo = getMemoryInfo(context);
+        return Math.round(memoryInfo[1] / 1000000);
+    }
+
 }
