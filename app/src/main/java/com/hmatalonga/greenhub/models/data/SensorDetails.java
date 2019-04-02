@@ -23,20 +23,20 @@ import io.realm.RealmObject;
  */
 public class SensorDetails extends RealmObject {
 
-    public int	fifoMaxEventCount;
+    public int fifoMaxEventCount;
 
-    public int	fifoReservedEventCount;
+    public int fifoReservedEventCount;
 
     //Get the highest supported direct report mode rate level of the sensor.
-    public int	highestDirectReportRateLevel;
+    public int highestDirectReportRateLevel;
 
-    public int	id;
+    public int id;
     //This value is defined only for continuous and on-change sensors.
-    public int	maxDelay;
+    public int maxDelay;
 
     public float maximumRange;
 
-    public int	minDelay;
+    public int minDelay;
 
     public String name;
 
@@ -47,20 +47,20 @@ public class SensorDetails extends RealmObject {
 
     public float resolution;
 
-    public String	stringType;
+    public String stringType;
 
-    public int	codeType;
+    public int codeType;
 
     public String vendor;
 
-    public int	version;
+    public int version;
 
     //Returns true if the sensor supports sensor additional information API
-    public boolean	isAdditionalInfoSupported;
+    public boolean isAdditionalInfoSupported;
 
     //Returns true if the sensor is a dynamic sensor.
-    public boolean	isDynamicSensor;
+    public boolean isDynamicSensor;
 
     //https://developer.android.com/reference/android/hardware/Sensor.html#isWakeUpSensor()
-    public boolean	isWakeUpSensor;
+    public boolean isWakeUpSensor;
 }
