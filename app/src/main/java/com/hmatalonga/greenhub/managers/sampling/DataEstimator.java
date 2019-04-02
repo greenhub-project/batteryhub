@@ -156,7 +156,7 @@ public class DataEstimator extends BroadcastReceiver {
 
             EventBus.getDefault().post(new BatteryLevelEvent(mLevel));
 
-            (context, service);
+            //TODO startWakefulService(context, service);
         }
     }
 
