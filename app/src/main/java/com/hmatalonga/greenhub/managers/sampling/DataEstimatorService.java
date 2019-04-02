@@ -90,7 +90,6 @@ public class DataEstimatorService extends IntentService {
             takeSampleIfBatteryLevelChanged(context, intent);
         }
 
-        wakeLock.release();
     }
 
     /**
