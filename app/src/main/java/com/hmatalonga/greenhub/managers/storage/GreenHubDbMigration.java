@@ -59,6 +59,32 @@ public class GreenHubDbMigration implements RealmMigration {
                 if (objectSchema != null) {
                     objectSchema.addField("remainingCapacity", int.class);
                 }
+                oldVersion++;
+            }
+
+            if (oldVersion == 4) {
+                objectSchema = schema.get("SensorDetails");
+                if (objectSchema != null) {
+                    objectSchema.addField("fifoMaxEventCount", int.class);
+                    objectSchema.addField("fifoReservedEventCount", int.class);
+                    objectSchema.addField("highestDirectReportRateLevel", int.class);
+                    objectSchema.addField("id", int.class);
+                    objectSchema.addField("isAdditionalInfoSupported", boolean.class);
+                    objectSchema.addField("isDynamicSensor", boolean.class);
+                    objectSchema.addField("isWakeUpSensor", boolean.class);
+                    objectSchema.addField("maxDelay", int.class);
+                    objectSchema.addField("maximumRange", float.class);
+                    objectSchema.addField("minDelay", int.class);
+                    objectSchema.addField("name", String.class);
+                    objectSchema.addField("power", float.class);
+                    objectSchema.addField("reportingMode", int.class);
+                    objectSchema.addField("resolution", float.class);
+                    objectSchema.addField("stringType", String.class);
+                    objectSchema.addField("codeType", int.class);
+                    objectSchema.addField("vendor", String.class);
+                    objectSchema.addField("version", int.class);
+                }
+                oldVersion++;
             }
         } catch (NullPointerException e) {
             LogUtils.logE(TAG, "Schema is null!");
