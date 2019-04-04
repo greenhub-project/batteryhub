@@ -16,9 +16,11 @@
 
 package com.hmatalonga.greenhub.models;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
+import android.os.Build;
 
 import com.hmatalonga.greenhub.models.data.SensorDetails;
 
@@ -32,6 +34,7 @@ import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
  */
 public class Sensors {
     private static final String TAG = makeLogTag(Sensors.class);
+    private static final int SDK_VERSION = Build.VERSION.SDK_INT;
 
     /**
      * Obtains the current Fifo Max Event Count.
@@ -51,10 +54,7 @@ public class Sensors {
             details.codeType = sensor.getType();
             details.fifoMaxEventCount = sensor.getFifoMaxEventCount();
             details.fifoReservedEventCount = sensor.getFifoReservedEventCount();
-            details.highestDirectReportRateLevel = sensor.getHighestDirectReportRateLevel();
-            details.id = sensor.getId();
-            details.isAdditionalInfoSupported = sensor.isAdditionalInfoSupported();
-            details.isDynamicSensor = sensor.isDynamicSensor();
+            getAttributesNewVersion(sensor, details);
             details.isWakeUpSensor = sensor.isWakeUpSensor();
             details.maxDelay = sensor.getMaxDelay();
             details.maximumRange = sensor.getMaximumRange();
@@ -68,5 +68,17 @@ public class Sensors {
             details.version = sensor.getVersion();
         }
         return list;
+    }
+
+    @TargetApi(23)
+    private static void getAttributesNewVersion(Sensor sensor, SensorDetails details) {
+        if (SDK_VERSION > 23) {
+            details.id = sensor.getId();
+            details.isAdditionalInfoSupported = sensor.isAdditionalInfoSupported();
+            details.isDynamicSensor = sensor.isDynamicSensor();
+        }
+        if (SDK_VERSION > 25) {
+            details.highestDirectReportRateLevel = sensor.getHighestDirectReportRateLevel();
+        }
     }
 }
