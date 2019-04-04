@@ -63,33 +63,29 @@ public class GreenHubDbMigration implements RealmMigration {
             }
 
             if (oldVersion == 4) {
+                schema.create("SensorDetails")
+                        .addField("fifoMaxEventCount", int.class)
+                        .addField("fifoReservedEventCount", int.class)
+                        .addField("highestDirectReportRateLevel", int.class)
+                        .addField("id", int.class)
+                        .addField("isAdditionalInfoSupported", boolean.class)
+                        .addField("isDynamicSensor", boolean.class)
+                        .addField("isWakeUpSensor", boolean.class)
+                        .addField("maxDelay", int.class)
+                        .addField("maximumRange", float.class)
+                        .addField("minDelay", int.class)
+                        .addField("name", String.class)
+                        .addField("power", float.class)
+                        .addField("reportingMode", int.class)
+                        .addField("resolution", float.class)
+                        .addField("stringType", String.class)
+                        .addField("codeType", int.class)
+                        .addField("vendor", String.class)
+                        .addField("version", int.class);
                 objectSchema = schema.get("SensorDetails");
-                if (objectSchema != null) {
-                    schema.get("Sample")
-                            .addRealmListField("sensorDetailsList", objectSchema);
-                    oldVersion++;
-                }
-                /*objectSchema = schema.get("SensorDetails");
-                if (objectSchema != null) {
-                    objectSchema.addField("fifoMaxEventCount", int.class);
-                    objectSchema.addField("fifoReservedEventCount", int.class);
-                    objectSchema.addField("highestDirectReportRateLevel", int.class);
-                    objectSchema.addField("id", int.class);
-                    objectSchema.addField("isAdditionalInfoSupported", boolean.class);
-                    objectSchema.addField("isDynamicSensor", boolean.class);
-                    objectSchema.addField("isWakeUpSensor", boolean.class);
-                    objectSchema.addField("maxDelay", int.class);
-                    objectSchema.addField("maximumRange", float.class);
-                    objectSchema.addField("minDelay", int.class);
-                    objectSchema.addField("name", String.class);
-                    objectSchema.addField("power", float.class);
-                    objectSchema.addField("reportingMode", int.class);
-                    objectSchema.addField("resolution", float.class);
-                    objectSchema.addField("stringType", String.class);
-                    objectSchema.addField("codeType", int.class);
-                    objectSchema.addField("vendor", String.class);
-                    objectSchema.addField("version", int.class);
-                }*/
+                schema.get("Sample")
+                        .addRealmListField("sensorDetailsList", objectSchema);
+                oldVersion++;
             }
         } catch (NullPointerException e) {
             LogUtils.logE(TAG, "Schema is null!");
