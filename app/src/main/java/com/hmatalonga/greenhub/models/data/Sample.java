@@ -110,4 +110,7 @@ public class Sample extends RealmObject {
 
     // Extra features for extensibility
     public RealmList<Feature> features;
+
+    // Sensor list struct, with sensor power, type, isWakeUp, etc.
+    public RealmList<SensorDetails> sensorDetailsList;
 }
