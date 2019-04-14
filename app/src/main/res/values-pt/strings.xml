@@ -267,4 +267,9 @@
         recolhe certas informações relativas à forma como se usa. A política de privacidade do GreenHub explica como o GreenHub trata as suas informações e protege
         a sua privacidade quando é usada a aplicação. Ao usar a aplicação, está a concordar com a política de privacidade do GreenHub.
     </string>
+    <string name="sensors_card_name">Nome</string>
+    <string name="sensors_card_power">Força</string>
+    <string name="sensors_card_title">Sensores</string>
+    <string name="sensors_card_type">Tipo</string>
+    <string name="sensors_card_iswakeup">Desperta</string>
 </resources>

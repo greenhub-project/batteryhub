@@ -59,7 +59,7 @@ public class RegisterDeviceHandler {
         String url = SettingsUtils.fetchServerUrl(context);
 
         if (BuildConfig.DEBUG) {
-            url = Config.SERVER_URL_DEVELOPMENT;
+            //url = Config.SERVER_URL_DEVELOPMENT;
         }
 
         Retrofit retrofit = new Retrofit.Builder()

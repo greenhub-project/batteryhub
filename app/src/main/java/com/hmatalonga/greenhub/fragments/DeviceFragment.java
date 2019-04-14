@@ -21,13 +21,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ExpandableListAdapter;
+import android.widget.ExpandableListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.answers.ContentViewEvent;
@@ -38,15 +43,24 @@ import com.hmatalonga.greenhub.models.Bluetooth;
 import com.hmatalonga.greenhub.models.Memory;
 import com.hmatalonga.greenhub.models.Network;
 import com.hmatalonga.greenhub.models.Phone;
+import com.hmatalonga.greenhub.models.Sensors;
 import com.hmatalonga.greenhub.models.Specifications;
 import com.hmatalonga.greenhub.models.Storage;
 import com.hmatalonga.greenhub.models.Wifi;
+import com.hmatalonga.greenhub.models.data.SensorDetails;
 import com.hmatalonga.greenhub.models.data.StorageDetails;
 import com.hmatalonga.greenhub.ui.TaskListActivity;
+import com.hmatalonga.greenhub.ui.adapters.CustomExpandableListAdapter;
+import com.hmatalonga.greenhub.ui.adapters.ExpandableListDataPump;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static com.hmatalonga.greenhub.util.LogUtils.logI;
 
@@ -71,6 +85,14 @@ public class DeviceFragment extends Fragment {
     private TextView mStorageUsed;
 
     private TextView mStorageFree;
+
+    private ExpandableListView expandableListView;
+
+    private ExpandableListAdapter expandableListAdapter;
+
+    private List<String> expandableListTitle;
+
+    private Map<String, List<String>> expandableListDetail;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -135,6 +157,9 @@ public class DeviceFragment extends Fragment {
         updateWifiData(view, Wifi.isEnabled(mContext));
         updateBluetoothData(view, Bluetooth.isEnabled());
         updateMobileData(view, Network.isMobileDataEnabled(mContext));
+
+        // Sensors
+        updateSensorsData(view, mContext);
 
         // Memory
         mMemoryBar = view.findViewById(R.id.memoryBar);
@@ -215,6 +240,107 @@ public class DeviceFragment extends Fragment {
             textView.setText(Wifi.getInfo(mContext).getSSID());
         }
         textView.setVisibility(value ? View.VISIBLE : View.GONE);
+    }
+
+    private void updateSensorsData(final View view, final Context context) {
+        expandableListDetail = ExpandableListDataPump.getData(context, this);
+
+        System.out.println("SENSORS SIZE = " + expandableListDetail.size());
+        expandableListView = view.findViewById(R.id.expandableListView);
+        expandableListTitle = new ArrayList<>(expandableListDetail.keySet());
+        expandableListAdapter = new CustomExpandableListAdapter(context, expandableListTitle, expandableListDetail);
+        expandableListView.setAdapter(expandableListAdapter);
+        expandableListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+
+            @Override
+            public void onGroupExpand(int groupPosition) {
+                Toast.makeText(context,
+                        expandableListTitle.get(groupPosition) + " Sensor Details.",
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
+        /*expandableListView.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
+
+            @Override
+            public void onGroupCollapse(int groupPosition) {
+                Toast.makeText(context,
+                        expandableListTitle.get(groupPosition) + " List Collapsed.",
+                        Toast.LENGTH_SHORT).show();
+
+            }
+        });*/
+
+        expandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+            @Override
+            public boolean onChildClick(ExpandableListView parent, View v,
+                                        int groupPosition, int childPosition, long id) {
+                Toast.makeText(
+                        context,
+                        expandableListTitle.get(groupPosition)
+                                + " -> "
+                                + expandableListDetail.get(
+                                expandableListTitle.get(groupPosition)).get(
+                                childPosition), Toast.LENGTH_SHORT
+                ).show();
+                return false;
+            }
+        });
+        expandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+
+            @Override
+            public boolean onGroupClick(ExpandableListView parent, View v,
+                                        int groupPosition, long id) {
+                setListViewHeight(parent, groupPosition);
+                return false;
+            }
+        });
+
+        expandableListView.setVisibility(View.VISIBLE);
+        setListViewHeight(expandableListView, -1);
+    }
+
+    private void setListViewHeight(ExpandableListView listView,
+                                   int group) {
+        ExpandableListAdapter listAdapter = (ExpandableListAdapter) listView.getExpandableListAdapter();
+        int totalHeight = 0;
+        int desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.getWidth(),
+                View.MeasureSpec.EXACTLY);
+        //First method called
+        if (group == -1) {
+            //Get the first group item
+            View groupItem = listAdapter.getGroupView(0, false, null, listView);
+            groupItem.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
+            //Get a height sample of a group item to multiply by group size
+            totalHeight += (groupItem.getMeasuredHeight()/listAdapter.getChildrenCount(0)) * listAdapter.getGroupCount();
+        } else {
+            for (int i = 0; i < listAdapter.getGroupCount(); i++) {
+                View groupItem = listAdapter.getGroupView(i, false, null, listView);
+                groupItem.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
+
+                totalHeight += groupItem.getMeasuredHeight();
+
+                if (((listView.isGroupExpanded(i)) && (i != group))
+                        || ((!listView.isGroupExpanded(i)) && (i == group))) {
+                    for (int j = 0; j < listAdapter.getChildrenCount(i); j++) {
+                        View listItem = listAdapter.getChildView(i, j, false, null,
+                                listView);
+                        listItem.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
+
+                        totalHeight += listItem.getMeasuredHeight();
+
+                    }
+                }
+            }
+        }
+
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        int height = totalHeight
+                + (listView.getDividerHeight() * (listAdapter.getGroupCount() - 1));
+        if (height < 10)
+            height = 200;
+        params.height = height;
+        listView.setLayoutParams(params);
+        listView.requestLayout();
     }
 
     private void updateBluetoothData(final View view, boolean value) {

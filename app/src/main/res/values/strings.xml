@@ -105,6 +105,12 @@
     <string name="network_card_mobile_data">Mobile data</string>
     <string name="network_card_network_type">Network type</string>
 
+    <string name="sensors_card_title">Sensors</string>
+    <string name="sensors_card_name">Name</string>
+    <string name="sensors_card_power">Power</string>
+    <string name="sensors_card_type">Type</string>
+    <string name="sensors_card_iswakeup">Wake up</string>
+
     <string name="memory_card_title">Memory</string>
     <string name="memory_card_used">Used</string>
     <string name="memory_card_available">Available</string>
