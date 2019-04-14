@@ -272,4 +272,5 @@
     <string name="sensors_card_title">Sensores</string>
     <string name="sensors_card_type">Tipo</string>
     <string name="sensors_card_iswakeup">Desperta</string>
+    <string name="sensors_card_details">Detalhes</string>
 </resources>

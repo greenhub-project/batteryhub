@@ -49,9 +49,11 @@ import com.hmatalonga.greenhub.models.Storage;
 import com.hmatalonga.greenhub.models.Wifi;
 import com.hmatalonga.greenhub.models.data.SensorDetails;
 import com.hmatalonga.greenhub.models.data.StorageDetails;
+import com.hmatalonga.greenhub.network.CommunicationManager;
 import com.hmatalonga.greenhub.ui.TaskListActivity;
 import com.hmatalonga.greenhub.ui.adapters.CustomExpandableListAdapter;
 import com.hmatalonga.greenhub.ui.adapters.ExpandableListDataPump;
+import com.hmatalonga.greenhub.util.LogUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -63,11 +65,13 @@ import java.util.List;
 import java.util.Map;
 
 import static com.hmatalonga.greenhub.util.LogUtils.logI;
+import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
 
 /**
  * Device Fragment.
  */
 public class DeviceFragment extends Fragment {
+    private static final String TAG = makeLogTag(DeviceFragment.class);
     private Context mContext = null;
 
     private View mParentView = null;
@@ -245,7 +249,8 @@ public class DeviceFragment extends Fragment {
     private void updateSensorsData(final View view, final Context context) {
         expandableListDetail = ExpandableListDataPump.getData(context, this);
 
-        System.out.println("SENSORS SIZE = " + expandableListDetail.size());
+        LogUtils.logI(TAG, "SENSORS SIZE = " + expandableListDetail.size());
+
         expandableListView = view.findViewById(R.id.expandableListView);
         expandableListTitle = new ArrayList<>(expandableListDetail.keySet());
         expandableListAdapter = new CustomExpandableListAdapter(context, expandableListTitle, expandableListDetail);
@@ -255,21 +260,12 @@ public class DeviceFragment extends Fragment {
             @Override
             public void onGroupExpand(int groupPosition) {
                 Toast.makeText(context,
-                        expandableListTitle.get(groupPosition) + " Sensor Details.",
+                        expandableListTitle.get(groupPosition) + " " +
+                                getString(R.string.sensors_card_details) +
+                                ".",
                         Toast.LENGTH_SHORT).show();
             }
         });
-        /*expandableListView.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
-
-            @Override
-            public void onGroupCollapse(int groupPosition) {
-                Toast.makeText(context,
-                        expandableListTitle.get(groupPosition) + " List Collapsed.",
-                        Toast.LENGTH_SHORT).show();
-
-            }
-        });*/
-
         expandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v,
@@ -290,6 +286,11 @@ public class DeviceFragment extends Fragment {
             @Override
             public boolean onGroupClick(ExpandableListView parent, View v,
                                         int groupPosition, long id) {
+                HashMap<String, List<String>> listTemp = ExpandableListDataPump.getData(context, getFragment());
+                ExpandableListAdapter listAdapter = parent.getExpandableListAdapter();
+                String group = (String) listAdapter.getGroup(groupPosition);
+                List<String> list = listTemp.get(group);
+                expandableListDetail.put(group, list);
                 setListViewHeight(parent, groupPosition);
                 return false;
             }
@@ -299,9 +300,12 @@ public class DeviceFragment extends Fragment {
         setListViewHeight(expandableListView, -1);
     }
 
+    private Fragment getFragment(){
+        return this;
+    }
     private void setListViewHeight(ExpandableListView listView,
                                    int group) {
-        ExpandableListAdapter listAdapter = (ExpandableListAdapter) listView.getExpandableListAdapter();
+        ExpandableListAdapter listAdapter = listView.getExpandableListAdapter();
         int totalHeight = 0;
         int desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.getWidth(),
                 View.MeasureSpec.EXACTLY);
