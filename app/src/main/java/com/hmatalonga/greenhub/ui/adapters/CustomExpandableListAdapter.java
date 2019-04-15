@@ -15,13 +15,13 @@ import com.hmatalonga.greenhub.R;
 
 public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
 
-    private LayoutInflater layoutInflater;
+    private LayoutInflater mLayoutInflater;
     private List<String> mExpandableListTitle;
     private Map<String, List<String>> mExpandableListDetail;
 
     public CustomExpandableListAdapter(Context context, List<String> expandableListTitle,
                                        Map<String, List<String>> expandableListDetail) {
-        layoutInflater = (LayoutInflater) context
+        this.mLayoutInflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.mExpandableListTitle = expandableListTitle;
         this.mExpandableListDetail = expandableListDetail;
@@ -43,7 +43,7 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
                              boolean isLastChild, View convertView, ViewGroup parent) {
         final String expandedListText = (String) getChild(listPosition, expandedListPosition);
         if (convertView == null) {
-            convertView = layoutInflater.inflate(R.layout.sensors_list_item, null);
+            convertView = mLayoutInflater.inflate(R.layout.sensors_list_item, null);
         }
         TextView expandedListTextView = (TextView) convertView
                 .findViewById(R.id.expandedListItem);
@@ -77,7 +77,7 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
                              View convertView, ViewGroup parent) {
         String listTitle = (String) getGroup(listPosition);
         if (convertView == null) {
-            convertView = layoutInflater.inflate(R.layout.sensors_list_group, null);
+            convertView = mLayoutInflater.inflate(R.layout.sensors_list_group, null);
         }
         TextView listTitleTextView = (TextView) convertView
                 .findViewById(R.id.listTitle);
