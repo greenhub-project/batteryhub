@@ -90,13 +90,13 @@ public class DeviceFragment extends Fragment {
 
     private TextView mStorageFree;
 
-    private ExpandableListView expandableListView;
+    private ExpandableListView mExpandableListView;
 
-    private ExpandableListAdapter expandableListAdapter;
+    private ExpandableListAdapter mExpandableListAdapter;
 
-    private List<String> expandableListTitle;
+    private List<String> mExpandableListTitle;
 
-    private Map<String, List<String>> expandableListDetail;
+    private Map<String, List<String>> mExpandableListDetail;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -247,41 +247,41 @@ public class DeviceFragment extends Fragment {
     }
 
     private void updateSensorsData(final View view, final Context context) {
-        expandableListDetail = ExpandableListDataPump.getData(context, this);
+        mExpandableListDetail = ExpandableListDataPump.getData(context, this);
 
-        LogUtils.logI(TAG, "SENSORS SIZE = " + expandableListDetail.size());
+        LogUtils.logI(TAG, "SENSORS SIZE = " + mExpandableListDetail.size());
 
-        expandableListView = view.findViewById(R.id.expandableListView);
-        expandableListTitle = new ArrayList<>(expandableListDetail.keySet());
-        expandableListAdapter = new CustomExpandableListAdapter(context, expandableListTitle, expandableListDetail);
-        expandableListView.setAdapter(expandableListAdapter);
-        expandableListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+        mExpandableListView = view.findViewById(R.id.expandableListView);
+        mExpandableListTitle = new ArrayList<>(mExpandableListDetail.keySet());
+        mExpandableListAdapter = new CustomExpandableListAdapter(context, mExpandableListTitle, mExpandableListDetail);
+        mExpandableListView.setAdapter(mExpandableListAdapter);
+        mExpandableListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
 
             @Override
             public void onGroupExpand(int groupPosition) {
                 Toast.makeText(context,
-                        expandableListTitle.get(groupPosition) + " " +
+                        mExpandableListTitle.get(groupPosition) + " " +
                                 getString(R.string.sensors_card_details) +
                                 ".",
                         Toast.LENGTH_SHORT).show();
             }
         });
-        expandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+        mExpandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v,
                                         int groupPosition, int childPosition, long id) {
                 Toast.makeText(
                         context,
-                        expandableListTitle.get(groupPosition)
+                        mExpandableListTitle.get(groupPosition)
                                 + " -> "
-                                + expandableListDetail.get(
-                                expandableListTitle.get(groupPosition)).get(
+                                + mExpandableListDetail.get(
+                                mExpandableListTitle.get(groupPosition)).get(
                                 childPosition), Toast.LENGTH_SHORT
                 ).show();
                 return false;
             }
         });
-        expandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+        mExpandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
 
             @Override
             public boolean onGroupClick(ExpandableListView parent, View v,
@@ -290,14 +290,14 @@ public class DeviceFragment extends Fragment {
                 ExpandableListAdapter listAdapter = parent.getExpandableListAdapter();
                 String group = (String) listAdapter.getGroup(groupPosition);
                 List<String> list = listTemp.get(group);
-                expandableListDetail.put(group, list);
+                mExpandableListDetail.put(group, list);
                 setListViewHeight(parent, groupPosition);
                 return false;
             }
         });
 
-        expandableListView.setVisibility(View.VISIBLE);
-        setListViewHeight(expandableListView, -1);
+        mExpandableListView.setVisibility(View.VISIBLE);
+        setListViewHeight(mExpandableListView, -1);
     }
 
     private Fragment getFragment(){

@@ -16,20 +16,20 @@ import com.hmatalonga.greenhub.R;
 public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
 
     private LayoutInflater layoutInflater;
-    private List<String> expandableListTitle;
-    private Map<String, List<String>> expandableListDetail;
+    private List<String> mExpandableListTitle;
+    private Map<String, List<String>> mExpandableListDetail;
 
     public CustomExpandableListAdapter(Context context, List<String> expandableListTitle,
                                        Map<String, List<String>> expandableListDetail) {
         layoutInflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        this.expandableListTitle = expandableListTitle;
-        this.expandableListDetail = expandableListDetail;
+        this.mExpandableListTitle = expandableListTitle;
+        this.mExpandableListDetail = expandableListDetail;
     }
 
     @Override
     public Object getChild(int listPosition, int expandedListPosition) {
-        return this.expandableListDetail.get(this.expandableListTitle.get(listPosition))
+        return this.mExpandableListDetail.get(this.mExpandableListTitle.get(listPosition))
                 .get(expandedListPosition);
     }
 
@@ -53,18 +53,18 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
 
     @Override
     public int getChildrenCount(int listPosition) {
-        return this.expandableListDetail.get(this.expandableListTitle.get(listPosition))
+        return this.mExpandableListDetail.get(this.mExpandableListTitle.get(listPosition))
                 .size();
     }
 
     @Override
     public Object getGroup(int listPosition) {
-        return this.expandableListTitle.get(listPosition);
+        return this.mExpandableListTitle.get(listPosition);
     }
 
     @Override
     public int getGroupCount() {
-        return this.expandableListTitle.size();
+        return this.mExpandableListTitle.size();
     }
 
     @Override
