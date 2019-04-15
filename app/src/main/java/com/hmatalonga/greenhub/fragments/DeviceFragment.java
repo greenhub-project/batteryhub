@@ -21,9 +21,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,13 +40,10 @@ import com.hmatalonga.greenhub.models.Bluetooth;
 import com.hmatalonga.greenhub.models.Memory;
 import com.hmatalonga.greenhub.models.Network;
 import com.hmatalonga.greenhub.models.Phone;
-import com.hmatalonga.greenhub.models.Sensors;
 import com.hmatalonga.greenhub.models.Specifications;
 import com.hmatalonga.greenhub.models.Storage;
 import com.hmatalonga.greenhub.models.Wifi;
-import com.hmatalonga.greenhub.models.data.SensorDetails;
 import com.hmatalonga.greenhub.models.data.StorageDetails;
-import com.hmatalonga.greenhub.network.CommunicationManager;
 import com.hmatalonga.greenhub.ui.TaskListActivity;
 import com.hmatalonga.greenhub.ui.adapters.CustomExpandableListAdapter;
 import com.hmatalonga.greenhub.ui.adapters.ExpandableListDataPump;
@@ -64,7 +58,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.hmatalonga.greenhub.util.LogUtils.logI;
 import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
 
 /**
@@ -253,40 +246,44 @@ public class DeviceFragment extends Fragment {
 
         mExpandableListView = view.findViewById(R.id.expandableListView);
         mExpandableListTitle = new ArrayList<>(mExpandableListDetail.keySet());
-        mExpandableListAdapter = new CustomExpandableListAdapter(context, mExpandableListTitle, mExpandableListDetail);
+        mExpandableListAdapter = new CustomExpandableListAdapter(context,
+                mExpandableListTitle, mExpandableListDetail);
         mExpandableListView.setAdapter(mExpandableListAdapter);
-        mExpandableListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+        mExpandableListView.setOnGroupExpandListener(
+                new ExpandableListView.OnGroupExpandListener() {
 
-            @Override
-            public void onGroupExpand(int groupPosition) {
-                Toast.makeText(context,
-                        mExpandableListTitle.get(groupPosition) + " " +
-                                getString(R.string.sensors_card_details) +
-                                ".",
-                        Toast.LENGTH_SHORT).show();
-            }
-        });
-        mExpandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
-            @Override
-            public boolean onChildClick(ExpandableListView parent, View v,
-                                        int groupPosition, int childPosition, long id) {
-                Toast.makeText(
-                        context,
-                        mExpandableListTitle.get(groupPosition)
-                                + " -> "
-                                + mExpandableListDetail.get(
-                                mExpandableListTitle.get(groupPosition)).get(
-                                childPosition), Toast.LENGTH_SHORT
-                ).show();
-                return false;
-            }
-        });
+                    @Override
+                    public void onGroupExpand(int groupPosition) {
+                        Toast.makeText(context,
+                                mExpandableListTitle.get(groupPosition) + " " +
+                                        getString(R.string.sensors_card_details) +
+                                        ".",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+        mExpandableListView.setOnChildClickListener(
+                new ExpandableListView.OnChildClickListener() {
+                    @Override
+                    public boolean onChildClick(ExpandableListView parent, View v,
+                                                int groupPosition, int childPosition, long id) {
+                        Toast.makeText(
+                                context,
+                                mExpandableListTitle.get(groupPosition)
+                                        + " -> "
+                                        + mExpandableListDetail.get(
+                                        mExpandableListTitle.get(groupPosition)).get(
+                                        childPosition), Toast.LENGTH_SHORT
+                        ).show();
+                        return false;
+                    }
+                });
         mExpandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
 
             @Override
             public boolean onGroupClick(ExpandableListView parent, View v,
                                         int groupPosition, long id) {
-                HashMap<String, List<String>> listTemp = ExpandableListDataPump.getData(context, getFragment());
+                HashMap<String, List<String>> listTemp = ExpandableListDataPump.
+                        getData(context, getFragment());
                 ExpandableListAdapter listAdapter = parent.getExpandableListAdapter();
                 String group = (String) listAdapter.getGroup(groupPosition);
                 List<String> list = listTemp.get(group);
@@ -300,9 +297,10 @@ public class DeviceFragment extends Fragment {
         setListViewHeight(mExpandableListView, -1);
     }
 
-    private Fragment getFragment(){
+    private Fragment getFragment() {
         return this;
     }
+
     private void setListViewHeight(ExpandableListView listView,
                                    int group) {
         ExpandableListAdapter listAdapter = listView.getExpandableListAdapter();
@@ -312,13 +310,16 @@ public class DeviceFragment extends Fragment {
         //First method called
         if (group == -1) {
             //Get the first group item
-            View groupItem = listAdapter.getGroupView(0, false, null, listView);
+            View groupItem = listAdapter.getGroupView(0, false,
+                    null, listView);
             groupItem.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
             //Get a height sample of a group item to multiply by group size
-            totalHeight += (groupItem.getMeasuredHeight()/listAdapter.getChildrenCount(0)) * listAdapter.getGroupCount();
+            totalHeight += (groupItem.getMeasuredHeight() / listAdapter.
+                    getChildrenCount(0)) * listAdapter.getGroupCount();
         } else {
             for (int i = 0; i < listAdapter.getGroupCount(); i++) {
-                View groupItem = listAdapter.getGroupView(i, false, null, listView);
+                View groupItem = listAdapter.getGroupView(i, false,
+                        null, listView);
                 groupItem.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
 
                 totalHeight += groupItem.getMeasuredHeight();
@@ -326,8 +327,8 @@ public class DeviceFragment extends Fragment {
                 if (((listView.isGroupExpanded(i)) && (i != group))
                         || ((!listView.isGroupExpanded(i)) && (i == group))) {
                     for (int j = 0; j < listAdapter.getChildrenCount(i); j++) {
-                        View listItem = listAdapter.getChildView(i, j, false, null,
-                                listView);
+                        View listItem = listAdapter.getChildView(i, j, false,
+                                null, listView);
                         listItem.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
 
                         totalHeight += listItem.getMeasuredHeight();
