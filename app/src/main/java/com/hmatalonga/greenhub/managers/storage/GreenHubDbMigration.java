@@ -81,7 +81,11 @@ public class GreenHubDbMigration implements RealmMigration {
                         .addField("stringType", String.class)
                         .addField("codeType", int.class)
                         .addField("vendor", String.class)
-                        .addField("version", int.class);
+                        .addField("version", int.class)
+                        .addField("frequencyOfUse", int.class)
+                        .addField("iniTimestamp", long.class)
+                        .addField("endTimestamp", long.class);
+
                 objectSchema = schema.get("SensorDetails");
                 schema.get("Sample")
                         .addRealmListField("sensorDetailsList", objectSchema);

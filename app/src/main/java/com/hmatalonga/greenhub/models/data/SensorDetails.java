@@ -63,4 +63,10 @@ public class SensorDetails extends RealmObject {
 
     //https://developer.android.com/reference/android/hardware/Sensor.html#isWakeUpSensor()
     public boolean isWakeUpSensor;
+
+    public int frequencyOfUse = 0;
+
+    public long iniTimestamp = 0;
+
+    public long endTimestamp = 0;
 }

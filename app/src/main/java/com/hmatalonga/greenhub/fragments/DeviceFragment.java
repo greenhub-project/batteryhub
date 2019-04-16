@@ -19,6 +19,9 @@ package com.hmatalonga.greenhub.fragments;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
@@ -40,6 +43,7 @@ import com.hmatalonga.greenhub.models.Bluetooth;
 import com.hmatalonga.greenhub.models.Memory;
 import com.hmatalonga.greenhub.models.Network;
 import com.hmatalonga.greenhub.models.Phone;
+import com.hmatalonga.greenhub.models.Sensors;
 import com.hmatalonga.greenhub.models.Specifications;
 import com.hmatalonga.greenhub.models.Storage;
 import com.hmatalonga.greenhub.models.Wifi;
@@ -63,7 +67,7 @@ import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
 /**
  * Device Fragment.
  */
-public class DeviceFragment extends Fragment {
+public class DeviceFragment extends Fragment  implements SensorEventListener {
     private static final String TAG = makeLogTag(DeviceFragment.class);
     private Context mContext = null;
 
@@ -238,6 +242,17 @@ public class DeviceFragment extends Fragment {
         }
         textView.setVisibility(value ? View.VISIBLE : View.GONE);
     }
+
+    @Override
+    public final void onSensorChanged(SensorEvent event) {
+        Sensors.onSensorChanged(event);
+    }
+
+    @Override
+    public final void onAccuracyChanged(Sensor sensor, int accuracy) {
+        // Do something here if sensor accuracy changes.
+    }
+
 
     private void updateSensorsData(final View view, final Context context) {
         mExpandableListDetail = ExpandableListDataPump.getData(context, this);

@@ -8,13 +8,14 @@ import com.hmatalonga.greenhub.models.Sensors;
 import com.hmatalonga.greenhub.models.data.SensorDetails;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
 public class ExpandableListDataPump {
     public static HashMap<String, List<String>> getData(
             final Context context, final Fragment fragment) {
-        List<SensorDetails> list = Sensors.getSensorDetailsList(context);
+        Collection<SensorDetails> list = Sensors.getSensorDetailsList(context);
         HashMap<String, List<String>> expandableListDetail = new HashMap<String, List<String>>();
 
         for (SensorDetails sensor : list) {
