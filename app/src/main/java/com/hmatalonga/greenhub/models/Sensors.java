@@ -39,6 +39,7 @@ public class Sensors {
     private static final String TAG = makeLogTag(Sensors.class);
     private static final int SDK_VERSION = Build.VERSION.SDK_INT;
     private static Map<String, SensorDetails> sensorsMap = new HashMap<>();;
+    private static SensorManager manager;
 
     /**
      * Obtains the current Fifo Max Event Count.
@@ -47,17 +48,23 @@ public class Sensors {
      * @return Returns the battery voltage
      */
     public static Collection<SensorDetails> getSensorDetailsList(final Context context) {
-        if (!sensorsMap.isEmpty()) {
-            return sensorsMap.values();
+        verifySensorsChanged(context);
+        return sensorsMap.values();
+    }
+
+    private static void verifySensorsChanged(final Context context) {
+        if (manager == null) {
+            manager = (SensorManager)
+                    context.getSystemService(Context.SENSOR_SERVICE);
         }
-        SensorManager manager = (SensorManager)
-                context.getSystemService(Context.SENSOR_SERVICE);
         assert manager != null;
         List<Sensor> values = manager.getSensorList(Sensor.TYPE_ALL);
-        for (Sensor sensor: values) {
-            extractSensorDetails(sensor);
+        if (values.size() != sensorsMap.size()) {
+            sensorsMap.clear();
+            for (Sensor sensor: values) {
+                extractSensorDetails(sensor);
+            }
         }
-        return sensorsMap.values();
     }
 
     private static SensorDetails extractSensorDetails(Sensor sensor) {

@@ -269,8 +269,9 @@
     </string>
     <string name="sensors_card_name">Nome</string>
     <string name="sensors_card_power">Força</string>
-    <string name="sensors_card_title">Sensores</string>
+    <string name="sensors_card_title">Sensores Ativos</string>
     <string name="sensors_card_type">Tipo</string>
     <string name="sensors_card_iswakeup">Desperta</string>
     <string name="sensors_card_details">Detalhes</string>
+    <string name="sensors_card_inuse">Em uso</string>
 </resources>

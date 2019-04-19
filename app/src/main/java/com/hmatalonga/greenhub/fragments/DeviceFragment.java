@@ -19,9 +19,11 @@ package com.hmatalonga.greenhub.fragments;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
+import android.database.DataSetObserver;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
@@ -67,7 +69,7 @@ import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
 /**
  * Device Fragment.
  */
-public class DeviceFragment extends Fragment  implements SensorEventListener {
+public class DeviceFragment extends Fragment {
     private static final String TAG = makeLogTag(DeviceFragment.class);
     private Context mContext = null;
 
@@ -89,7 +91,7 @@ public class DeviceFragment extends Fragment  implements SensorEventListener {
 
     private ExpandableListView mExpandableListView;
 
-    private ExpandableListAdapter mExpandableListAdapter;
+    private CustomExpandableListAdapter mExpandableListAdapter;
 
     private List<String> mExpandableListTitle;
 
@@ -105,7 +107,6 @@ public class DeviceFragment extends Fragment  implements SensorEventListener {
         mHandler = new Handler();
 
         loadComponents(view);
-
         return view;
     }
 
@@ -243,23 +244,13 @@ public class DeviceFragment extends Fragment  implements SensorEventListener {
         textView.setVisibility(value ? View.VISIBLE : View.GONE);
     }
 
-    @Override
-    public final void onSensorChanged(SensorEvent event) {
-        Sensors.onSensorChanged(event);
-    }
-
-    @Override
-    public final void onAccuracyChanged(Sensor sensor, int accuracy) {
-        // Do something here if sensor accuracy changes.
-    }
-
-
     private void updateSensorsData(final View view, final Context context) {
-        mExpandableListDetail = ExpandableListDataPump.getData(context, this);
+        mExpandableListDetail = ExpandableListDataPump.getData(context);
 
         LogUtils.logI(TAG, "SENSORS SIZE = " + mExpandableListDetail.size());
 
         mExpandableListView = view.findViewById(R.id.expandableListView);
+
         mExpandableListTitle = new ArrayList<>(mExpandableListDetail.keySet());
         mExpandableListAdapter = new CustomExpandableListAdapter(context,
                 mExpandableListTitle, mExpandableListDetail);
@@ -298,12 +289,13 @@ public class DeviceFragment extends Fragment  implements SensorEventListener {
             public boolean onGroupClick(ExpandableListView parent, View v,
                                         int groupPosition, long id) {
                 HashMap<String, List<String>> listTemp = ExpandableListDataPump.
-                        getData(context, getFragment());
+                        getData(context);
                 ExpandableListAdapter listAdapter = parent.getExpandableListAdapter();
                 String group = (String) listAdapter.getGroup(groupPosition);
                 List<String> list = listTemp.get(group);
                 mExpandableListDetail.put(group, list);
                 setListViewHeight(parent, groupPosition);
+                mExpandableListAdapter.notifyDataSetChanged();
                 return false;
             }
         });
@@ -324,13 +316,7 @@ public class DeviceFragment extends Fragment  implements SensorEventListener {
                 View.MeasureSpec.EXACTLY);
         //First method called
         if (group == -1) {
-            //Get the first group item
-            View groupItem = listAdapter.getGroupView(0, false,
-                    null, listView);
-            groupItem.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
-            //Get a height sample of a group item to multiply by group size
-            totalHeight += (groupItem.getMeasuredHeight() / listAdapter.
-                    getChildrenCount(0)) * listAdapter.getGroupCount();
+            totalHeight = 105 * listAdapter.getGroupCount();
         } else {
             for (int i = 0; i < listAdapter.getGroupCount(); i++) {
                 View groupItem = listAdapter.getGroupView(i, false,
@@ -356,7 +342,7 @@ public class DeviceFragment extends Fragment  implements SensorEventListener {
         ViewGroup.LayoutParams params = listView.getLayoutParams();
         int height = totalHeight
                 + (listView.getDividerHeight() * (listAdapter.getGroupCount() - 1));
-        if (height < 10)
+        if (height < 70)
             height = 200;
         params.height = height;
         listView.setLayoutParams(params);
