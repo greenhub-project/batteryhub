@@ -41,7 +41,8 @@
         <!-- SENSORS -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:paddingBottom="10dp">
 
             <ExpandableListView
                 android:id="@+id/expandableListView"
@@ -50,6 +51,7 @@
                 android:indicatorLeft="?android:attr/expandableListPreferredItemIndicatorLeft"
                 android:divider="@android:color/darker_gray"
                 android:dividerHeight="0.5dp"
+
                 />
 
         </LinearLayout>

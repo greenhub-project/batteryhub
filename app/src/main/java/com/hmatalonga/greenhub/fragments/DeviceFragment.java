@@ -320,7 +320,7 @@ public class DeviceFragment extends Fragment {
 
             totalHeight = groupItem.getMeasuredHeight()/
                     (listAdapter.getChildrenCount(0) + 1)
-                    * (listAdapter.getGroupCount() - 1);
+                    * (listAdapter.getGroupCount()-1);
         } else {
             for (int i = 0; i < listAdapter.getGroupCount(); i++) {
                 View groupItem = listAdapter.getGroupView(i, false,
@@ -345,7 +345,7 @@ public class DeviceFragment extends Fragment {
 
         ViewGroup.LayoutParams params = listView.getLayoutParams();
         int height = totalHeight
-                + (listView.getDividerHeight() * (listAdapter.getGroupCount() - 1));
+                + (listView.getDividerHeight() * listAdapter.getGroupCount() * 2);
         if (height < 70)
             height = 220;
         params.height = height;
