@@ -29,8 +29,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.ArrayList;
-import java.util.List;
 
 import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
 
@@ -108,34 +106,6 @@ public class Sensors {
 
     public static void clearSensorsMap() {
         sensorsMap = new HashMap<>();
-    }
-  
-    public static List<SensorDetails> getSensorDetailsList(final Context context) {
-        List<SensorDetails> list = new ArrayList<>();
-        SensorManager manager = (SensorManager)
-                context.getSystemService(Context.SENSOR_SERVICE);
-        assert manager != null;
-        List<Sensor> values = manager.getSensorList(Sensor.TYPE_ALL);
-        for (Sensor sensor: values) {
-            SensorDetails details = new SensorDetails();
-            list.add(details);
-            details.codeType = sensor.getType();
-            details.fifoMaxEventCount = sensor.getFifoMaxEventCount();
-            details.fifoReservedEventCount = sensor.getFifoReservedEventCount();
-            getAttributesNewVersion(sensor, details);
-            details.isWakeUpSensor = sensor.isWakeUpSensor();
-            details.maxDelay = sensor.getMaxDelay();
-            details.maximumRange = sensor.getMaximumRange();
-            details.minDelay = sensor.getMinDelay();
-            details.name = sensor.getName();
-            details.power = sensor.getPower();
-            details.reportingMode = sensor.getReportingMode();
-            details.resolution = sensor.getResolution();
-            details.stringType = sensor.getStringType();
-            details.vendor = sensor.getVendor();
-            details.version = sensor.getVersion();
-        }
-        return list;
     }
 
     @TargetApi(23)
