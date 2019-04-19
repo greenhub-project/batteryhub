@@ -45,11 +45,12 @@
 
             <ExpandableListView
                 android:id="@+id/expandableListView"
-                android:layout_height="wrap_content"
+                android:layout_height="200dp"
                 android:layout_width="match_parent"
                 android:indicatorLeft="?android:attr/expandableListPreferredItemIndicatorLeft"
                 android:divider="@android:color/darker_gray"
                 android:dividerHeight="0.5dp"
+                android:scrollbars="none"
                 />
 
         </LinearLayout>

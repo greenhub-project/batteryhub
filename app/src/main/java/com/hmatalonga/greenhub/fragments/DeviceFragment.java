@@ -160,9 +160,6 @@ public class DeviceFragment extends Fragment {
         updateBluetoothData(view, Bluetooth.isEnabled());
         updateMobileData(view, Network.isMobileDataEnabled(mContext));
 
-        // Sensors
-        updateSensorsData(view, mContext);
-
         // Memory
         mMemoryBar = view.findViewById(R.id.memoryBar);
         mMemoryUsed = view.findViewById(R.id.memoryUsed);
@@ -184,6 +181,8 @@ public class DeviceFragment extends Fragment {
         mStorageUsed = view.findViewById(R.id.storageUsed);
         mStorageFree = view.findViewById(R.id.storageFree);
 
+        // Sensors
+        updateSensorsData(view, mContext);
         mHandler.post(mRunnable);
     }
 
@@ -300,7 +299,6 @@ public class DeviceFragment extends Fragment {
             }
         });
 
-        mExpandableListView.setVisibility(View.VISIBLE);
         setListViewHeight(mExpandableListView, -1);
     }
 
@@ -316,7 +314,13 @@ public class DeviceFragment extends Fragment {
                 View.MeasureSpec.EXACTLY);
         //First method called
         if (group == -1) {
-            totalHeight = 105 * listAdapter.getGroupCount();
+            View groupItem = listAdapter.getGroupView(0, false,
+                    null, listView);
+            groupItem.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
+
+            totalHeight = groupItem.getMeasuredHeight()/
+                    (listAdapter.getChildrenCount(0) + 1)
+                    * (listAdapter.getGroupCount() - 1);
         } else {
             for (int i = 0; i < listAdapter.getGroupCount(); i++) {
                 View groupItem = listAdapter.getGroupView(i, false,
@@ -343,7 +347,7 @@ public class DeviceFragment extends Fragment {
         int height = totalHeight
                 + (listView.getDividerHeight() * (listAdapter.getGroupCount() - 1));
         if (height < 70)
-            height = 200;
+            height = 220;
         params.height = height;
         listView.setLayoutParams(params);
         listView.requestLayout();
