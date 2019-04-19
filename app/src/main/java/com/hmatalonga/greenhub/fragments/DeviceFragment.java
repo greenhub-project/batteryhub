@@ -318,9 +318,9 @@ public class DeviceFragment extends Fragment {
                     null, listView);
             groupItem.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
 
-            totalHeight = groupItem.getMeasuredHeight()/
+            totalHeight = groupItem.getMeasuredHeight() /
                     (listAdapter.getChildrenCount(0) + 1)
-                    * (listAdapter.getGroupCount()-1);
+                    * (listAdapter.getGroupCount() - 1);
         } else {
             for (int i = 0; i < listAdapter.getGroupCount(); i++) {
                 View groupItem = listAdapter.getGroupView(i, false,

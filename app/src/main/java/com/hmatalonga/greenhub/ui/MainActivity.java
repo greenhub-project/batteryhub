@@ -80,9 +80,9 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
 
     public GreenHubDb mDatabase;
 
-    private SensorManager sensorManager;
+    private SensorManager mSensorManager;
 
-    private List<Sensor> sensorList;
+    private List<Sensor> mSensorList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,22 +102,22 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
                 mViewPager.setCurrentItem(tab);
             }
         }
-        sensorManager = (SensorManager) getBaseContext().getSystemService(Context.SENSOR_SERVICE);
-        sensorList = sensorManager.getSensorList(Sensor.TYPE_ALL);
+        mSensorManager = (SensorManager) getBaseContext().getSystemService(Context.SENSOR_SERVICE);
+        mSensorList = mSensorManager.getSensorList(Sensor.TYPE_ALL);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         mDatabase.getDefaultInstance();
-        for (Sensor sensor: sensorList) {
-            sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
+        for (Sensor sensor: mSensorList) {
+            mSensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
         }
     }
 
     @Override
     protected void onStop() {
-        sensorManager.unregisterListener(this);
+        mSensorManager.unregisterListener(this);
         mDatabase.close();
         super.onStop();
     }
