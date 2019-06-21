@@ -111,6 +111,7 @@
     <string name="sensors_card_type">Type</string>
     <string name="sensors_card_iswakeup">Wake up</string>
     <string name="sensors_card_inuse">In use</string>
+    <string name="sensors_card_usefrequency">Use frequency</string>
     <string name="sensors_card_details">Details</string>
 
     <string name="memory_card_title">Memory</string>
