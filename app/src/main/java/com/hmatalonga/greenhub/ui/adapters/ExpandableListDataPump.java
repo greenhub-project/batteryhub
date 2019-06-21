@@ -29,6 +29,8 @@ public class ExpandableListDataPump {
             details.add(context.getString(R.string.sensors_card_inuse) + ": "
                     + (sensor.frequencyOfUse != 0 ?
                     context.getString(R.string.yes) : context.getString(R.string.no)));
+            details.add(context.getString(R.string.sensors_card_usefrequency) + ": "
+                    + (sensor.frequencyOfUse));
             expandableListDetail.put(
                     ((sensor.name != null) ?
                             sensor.name.toUpperCase() :
