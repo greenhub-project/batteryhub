@@ -40,6 +40,7 @@ public class SensorDetails extends RealmObject {
 
     public String name;
 
+    //the power in mA used by this sensor while in use
     public float power;
 
     //Each sensor has exactly one reporting mode associated with it.
@@ -63,4 +64,13 @@ public class SensorDetails extends RealmObject {
 
     //https://developer.android.com/reference/android/hardware/Sensor.html#isWakeUpSensor()
     public boolean isWakeUpSensor;
+
+    //Number of sensor events in a given time interval
+    public int frequencyOfUse = 0;
+
+    //start sample usage Count
+    public long iniTimestamp = 0;
+
+    //end of sample usage count
+    public long endTimestamp = 0;
 }

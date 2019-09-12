@@ -18,7 +18,6 @@ if (canBuildRelease) {
 
 android {
     compileSdkVersion project.compileSdkVersion.toInteger()
-    buildToolsVersion project.buildToolsVersion
     signingConfigs {
         debug {
             // Explicit debug key for Travis CI automation
