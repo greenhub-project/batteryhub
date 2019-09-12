@@ -19,15 +19,22 @@ package com.hmatalonga.greenhub.fragments;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
+import android.database.DataSetObserver;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ExpandableListAdapter;
+import android.widget.ExpandableListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.answers.ContentViewEvent;
@@ -38,22 +45,32 @@ import com.hmatalonga.greenhub.models.Bluetooth;
 import com.hmatalonga.greenhub.models.Memory;
 import com.hmatalonga.greenhub.models.Network;
 import com.hmatalonga.greenhub.models.Phone;
+import com.hmatalonga.greenhub.models.Sensors;
 import com.hmatalonga.greenhub.models.Specifications;
 import com.hmatalonga.greenhub.models.Storage;
 import com.hmatalonga.greenhub.models.Wifi;
 import com.hmatalonga.greenhub.models.data.StorageDetails;
 import com.hmatalonga.greenhub.ui.TaskListActivity;
+import com.hmatalonga.greenhub.ui.adapters.CustomExpandableListAdapter;
+import com.hmatalonga.greenhub.ui.adapters.ExpandableListDataPump;
+import com.hmatalonga.greenhub.util.LogUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import static com.hmatalonga.greenhub.util.LogUtils.logI;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
 
 /**
  * Device Fragment.
  */
 public class DeviceFragment extends Fragment {
+    private static final String TAG = makeLogTag(DeviceFragment.class);
     private Context mContext = null;
 
     private View mParentView = null;
@@ -72,6 +89,14 @@ public class DeviceFragment extends Fragment {
 
     private TextView mStorageFree;
 
+    private ExpandableListView mExpandableListView;
+
+    private CustomExpandableListAdapter mExpandableListAdapter;
+
+    private List<String> mExpandableListTitle;
+
+    private Map<String, List<String>> mExpandableListDetail;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -82,7 +107,6 @@ public class DeviceFragment extends Fragment {
         mHandler = new Handler();
 
         loadComponents(view);
-
         return view;
     }
 
@@ -157,6 +181,8 @@ public class DeviceFragment extends Fragment {
         mStorageUsed = view.findViewById(R.id.storageUsed);
         mStorageFree = view.findViewById(R.id.storageFree);
 
+        // Sensors
+        updateSensorsData(view, mContext);
         mHandler.post(mRunnable);
     }
 
@@ -215,6 +241,116 @@ public class DeviceFragment extends Fragment {
             textView.setText(Wifi.getInfo(mContext).getSSID());
         }
         textView.setVisibility(value ? View.VISIBLE : View.GONE);
+    }
+
+    private void updateSensorsData(final View view, final Context context) {
+        mExpandableListDetail = ExpandableListDataPump.getData(context);
+
+        LogUtils.logI(TAG, "SENSORS SIZE = " + mExpandableListDetail.size());
+
+        mExpandableListView = view.findViewById(R.id.expandableListView);
+
+        mExpandableListTitle = new ArrayList<>(mExpandableListDetail.keySet());
+        mExpandableListAdapter = new CustomExpandableListAdapter(context,
+                mExpandableListTitle, mExpandableListDetail);
+        mExpandableListView.setAdapter(mExpandableListAdapter);
+        mExpandableListView.setOnGroupExpandListener(
+                new ExpandableListView.OnGroupExpandListener() {
+
+                    @Override
+                    public void onGroupExpand(int groupPosition) {
+                        Toast.makeText(context,
+                                mExpandableListTitle.get(groupPosition) + " " +
+                                        getString(R.string.sensors_card_details) +
+                                        ".",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+        mExpandableListView.setOnChildClickListener(
+                new ExpandableListView.OnChildClickListener() {
+                    @Override
+                    public boolean onChildClick(ExpandableListView parent, View v,
+                                                int groupPosition, int childPosition, long id) {
+                        Toast.makeText(
+                                context,
+                                mExpandableListTitle.get(groupPosition)
+                                        + " -> "
+                                        + mExpandableListDetail.get(
+                                        mExpandableListTitle.get(groupPosition)).get(
+                                        childPosition), Toast.LENGTH_SHORT
+                        ).show();
+                        return false;
+                    }
+                });
+        mExpandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+
+            @Override
+            public boolean onGroupClick(ExpandableListView parent, View v,
+                                        int groupPosition, long id) {
+                HashMap<String, List<String>> listTemp = ExpandableListDataPump.
+                        getData(context);
+                ExpandableListAdapter listAdapter = parent.getExpandableListAdapter();
+                String group = (String) listAdapter.getGroup(groupPosition);
+                List<String> list = listTemp.get(group);
+                mExpandableListDetail.put(group, list);
+                setListViewHeight(parent, groupPosition);
+                mExpandableListAdapter.notifyDataSetChanged();
+                return false;
+            }
+        });
+
+        setListViewHeight(mExpandableListView, -1);
+    }
+
+    private Fragment getFragment() {
+        return this;
+    }
+
+    private void setListViewHeight(ExpandableListView listView,
+                                   int group) {
+        ExpandableListAdapter listAdapter = listView.getExpandableListAdapter();
+        int totalHeight = 0;
+        int desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.getWidth(),
+                View.MeasureSpec.EXACTLY);
+        //First method called
+        if (group == -1) {
+            View groupItem = listAdapter.getGroupView(0, false,
+                    null, listView);
+            groupItem.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
+
+            totalHeight = groupItem.getMeasuredHeight() /
+                    (listAdapter.getChildrenCount(0) + 1)
+                    * (listAdapter.getGroupCount() - 1);
+        } else {
+            for (int i = 0; i < listAdapter.getGroupCount(); i++) {
+                View groupItem = listAdapter.getGroupView(i, false,
+                        null, listView);
+                groupItem.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
+
+                totalHeight += groupItem.getMeasuredHeight();
+
+                if (((listView.isGroupExpanded(i)) && (i != group))
+                        || ((!listView.isGroupExpanded(i)) && (i == group))) {
+                    for (int j = 0; j < listAdapter.getChildrenCount(i); j++) {
+                        View listItem = listAdapter.getChildView(i, j, false,
+                                null, listView);
+                        listItem.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
+
+                        totalHeight += listItem.getMeasuredHeight();
+
+                    }
+                }
+            }
+        }
+
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        int height = totalHeight
+                + (listView.getDividerHeight() * listAdapter.getGroupCount() * 2);
+        if (height < 70)
+            height = 220;
+        params.height = height;
+        listView.setLayoutParams(params);
+        listView.requestLayout();
     }
 
     private void updateBluetoothData(final View view, boolean value) {

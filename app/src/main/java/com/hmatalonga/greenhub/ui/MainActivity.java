@@ -22,6 +22,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -47,9 +51,11 @@ import com.hmatalonga.greenhub.events.RefreshChartEvent;
 import com.hmatalonga.greenhub.events.StatusEvent;
 import com.hmatalonga.greenhub.managers.sampling.DataEstimator;
 import com.hmatalonga.greenhub.managers.storage.GreenHubDb;
+import com.hmatalonga.greenhub.models.Sensors;
 import com.hmatalonga.greenhub.network.CommunicationManager;
 import com.hmatalonga.greenhub.tasks.CheckNewMessagesTask;
 import com.hmatalonga.greenhub.tasks.ServerStatusTask;
+import com.hmatalonga.greenhub.ui.adapters.ExpandableListDataPump;
 import com.hmatalonga.greenhub.ui.adapters.TabAdapter;
 import com.hmatalonga.greenhub.ui.layouts.MainTabLayout;
 import com.hmatalonga.greenhub.util.LogUtils;
@@ -58,10 +64,13 @@ import com.hmatalonga.greenhub.util.SettingsUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.HashMap;
+import java.util.List;
+
 import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
 
 public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClickListener,
-        ActivityCompat.OnRequestPermissionsResultCallback {
+        ActivityCompat.OnRequestPermissionsResultCallback, SensorEventListener {
 
     private static final String TAG = makeLogTag(MainActivity.class);
 
@@ -70,6 +79,10 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
     private ViewPager mViewPager;
 
     public GreenHubDb mDatabase;
+
+    private SensorManager mSensorManager;
+
+    private List<Sensor> mSensorList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,20 +102,35 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
                 mViewPager.setCurrentItem(tab);
             }
         }
+        mSensorManager = (SensorManager) getBaseContext().getSystemService(Context.SENSOR_SERVICE);
+        mSensorList = mSensorManager.getSensorList(Sensor.TYPE_ALL);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         mDatabase.getDefaultInstance();
+        for (Sensor sensor: mSensorList) {
+            mSensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
+        }
     }
 
     @Override
     protected void onStop() {
+        mSensorManager.unregisterListener(this);
         mDatabase.close();
         super.onStop();
     }
 
+    @Override
+    public final void onSensorChanged(SensorEvent event) {
+        Sensors.onSensorChanged(event);
+    }
+
+    @Override
+    public final void onAccuracyChanged(Sensor sensor, int accuracy) {
+        // Do something here if sensor accuracy changes.
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);

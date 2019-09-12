@@ -87,6 +87,17 @@ public class GreenHubDbMigration implements RealmMigration {
                         .addRealmListField("sensorDetailsList", objectSchema);
                 oldVersion++;
             }
+
+            if (oldVersion == 5) {
+                objectSchema = schema.get("SensorDetails");
+                if (objectSchema != null) {
+                    objectSchema
+                            .addField("frequencyOfUse", int.class)
+                            .addField("iniTimestamp", long.class)
+                            .addField("endTimestamp", long.class);
+                }
+                oldVersion++;
+            }
         } catch (NullPointerException e) {
             LogUtils.logE(TAG, "Schema is null!");
             e.printStackTrace();

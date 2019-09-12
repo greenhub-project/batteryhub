@@ -376,6 +376,9 @@ public class CommunicationManager {
                 child.addProperty("stringType", el.stringType);
                 child.addProperty("vendor", el.vendor);
                 child.addProperty("version", el.version);
+                child.addProperty("frequencyOfUse", el.frequencyOfUse);
+                child.addProperty("iniTimestamp", el.iniTimestamp);
+                child.addProperty("endTimestamp", el.endTimestamp);
 
                 list.add(child);
             }

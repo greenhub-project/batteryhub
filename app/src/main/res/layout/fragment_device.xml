@@ -2,7 +2,7 @@
 <ScrollView
     android:id="@+id/scrollview"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_height="wrap_content"
     xmlns:android="http://schemas.android.com/apk/res/android"
     >
 
@@ -41,6 +41,14 @@
             android:layout_height="wrap_content">
 
             <include layout="@layout/storage_card_view"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <include layout="@layout/sensors_card_view"/>
 
         </LinearLayout>
 
