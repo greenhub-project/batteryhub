@@ -89,14 +89,14 @@ dependencies {
     implementation "com.android.support:cardview-v7:${androidSupportLibVersion}"
     implementation "com.android.support:recyclerview-v7:${androidSupportLibVersion}"
     // JSON utility library.
-    implementation 'com.google.code.gson:gson:2.8.0'
+    implementation 'com.google.code.gson:gson:2.8.5'
     // Retrofit library for networking operations
     implementation 'com.squareup.retrofit2:retrofit:2.1.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.1.0'
     // greenrobot for event communications
     implementation 'org.greenrobot:eventbus:3.0.0'
     // MPAndroidChart library for drawing charts
-    implementation 'com.github.PhilJay:MPAndroidChart:v3.0.1'
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
     // Android Processes library
     implementation 'com.jaredrummler:android-processes:1.0.9'
     // crashlytics
