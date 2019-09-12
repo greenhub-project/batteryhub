@@ -33,6 +33,7 @@ import com.github.mikephil.charting.components.IMarker;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.hmatalonga.greenhub.R;
 import com.hmatalonga.greenhub.models.ui.ChartCard;
 import com.hmatalonga.greenhub.ui.views.ChartMarkerView;
@@ -176,14 +177,14 @@ public class ChartRVAdapter extends RecyclerView.Adapter<ChartRVAdapter.Dashboar
     }
 
     private void setup(DashboardViewHolder holder, final ChartCard card) {
-        IAxisValueFormatter formatterX = new IAxisValueFormatter() {
+        ValueFormatter formatterX = new ValueFormatter() {
             @Override
             public String getFormattedValue(float value, AxisBase axis) {
                 return DateUtils.convertMilliSecondsToFormattedDate((long) value);
             }
         };
 
-        IAxisValueFormatter formatterY = new IAxisValueFormatter() {
+        ValueFormatter formatterY = new ValueFormatter() {
             @Override
             public String getFormattedValue(float value, AxisBase axis) {
                 switch (card.type) {
@@ -224,6 +225,6 @@ public class ChartRVAdapter extends RecyclerView.Adapter<ChartRVAdapter.Dashboar
 
         holder.chart.setMarker(marker);
 
-        holder.chart.animateY(600, Easing.EasingOption.Linear);
+        holder.chart.animateY(600, Easing.EaseInOutElastic);
     }
 }

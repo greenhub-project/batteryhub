@@ -54,6 +54,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PermissionInfo;
 import android.os.BatteryManager;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
@@ -583,7 +584,12 @@ public final class Inspector {
         // Reset list for each sample
         Process.clear();
 
-        List<ProcessInfo> list = Application.getRunningAppInfo(context);
+        boolean isNewerApi = Build.VERSION.SDK_INT >= Build.VERSION_CODES.N;
+
+        List<ProcessInfo> list = isNewerApi
+                ? Application.getRunningAppInfo(context)
+                : Application.getRunningAppInfoLegacy(context);
+
         List<ProcessInfo> result = new ArrayList<>();
 
         PackageManager pm = context.getPackageManager();

@@ -54,15 +54,16 @@ public final class Config {
 
     public static final String SERVER_STATUS_URL = "https://greenhubproject.org/";
     public static final String SERVER_URL_DEFAULT = "none";
-    public static final String SERVER_URL_DEVELOPMENT = "http://192.168.1.55:8080";
+    public static final String SERVER_URL_DEVELOPMENT = "http://192.168.1.95:8080";
 
-    public static final int DATABASE_VERSION = 4;
+    public static final int DATABASE_VERSION = 5;
 
     public static final String IMPORTANCE_NOT_RUNNING = "Not Running";
     public static final String IMPORTANCE_UNINSTALLED = "uninstalled";
     public static final String IMPORTANCE_DISABLED = "disabled";
     public static final String IMPORTANCE_INSTALLED = "installed";
     public static final String IMPORTANCE_REPLACED = "replaced";
+    public static final int IMPORTANCE_APP = 9999;
 
     public static final String BATTERY_SOURCE_DEFAULT =
             "/sys/class/power_supply/battery/current_now";

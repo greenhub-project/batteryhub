@@ -20,6 +20,7 @@ import android.app.ActivityManager.RunningAppProcessInfo;
 import android.content.Context;
 import android.util.SparseArray;
 
+import com.hmatalonga.greenhub.Config;
 import com.hmatalonga.greenhub.R;
 
 import java.text.NumberFormat;
@@ -35,11 +36,15 @@ public class StringHelper {
 
     static {
         importanceToString = new SparseArray<>();
+        // for API >=  26, both IMPORTANCE_EMPTY and IMPORTANCE_BACKGROUND
+        // will mean the same thing, and the constant name is IMPORTANCE_CACHED
+        importanceToString.put(RunningAppProcessInfo.IMPORTANCE_CACHED, "Not running");
         importanceToString.put(RunningAppProcessInfo.IMPORTANCE_EMPTY, "Not running");
         importanceToString.put(RunningAppProcessInfo.IMPORTANCE_BACKGROUND, "Background process");
         importanceToString.put(RunningAppProcessInfo.IMPORTANCE_SERVICE, "Service");
         importanceToString.put(RunningAppProcessInfo.IMPORTANCE_VISIBLE, "Visible task");
         importanceToString.put(RunningAppProcessInfo.IMPORTANCE_FOREGROUND, "Foreground app");
+        importanceToString.put(Config.IMPORTANCE_APP , "App");
     }
 
     /**
@@ -55,6 +60,26 @@ public class StringHelper {
             s = "Unknown";
         }
         return s;
+    }
+
+    public static String importanceStringLegacy(String description) {
+        String importance;
+        switch (description) {
+            case "system" :
+                importance = importanceString(RunningAppProcessInfo.IMPORTANCE_BACKGROUND);
+                break;
+            case "user" :
+                importance = importanceString(Config.IMPORTANCE_APP);
+                break;
+            case "user-service" :
+                importance = importanceString(RunningAppProcessInfo.IMPORTANCE_SERVICE);
+                break;
+            default :
+                importance = "Unknown";
+                break;
+        }
+
+        return importance;
     }
 
     public static String translatedPriority(final Context context, String importanceString) {
