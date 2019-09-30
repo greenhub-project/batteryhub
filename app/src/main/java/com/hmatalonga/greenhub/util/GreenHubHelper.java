@@ -22,8 +22,6 @@ import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 
-import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
-
 /**
  * App Helper class.
  *

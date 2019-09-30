@@ -31,6 +31,8 @@ import android.os.BatteryManager;
 
 import com.hmatalonga.greenhub.R;
 import com.hmatalonga.greenhub.events.BatteryLevelEvent;
+import com.hmatalonga.greenhub.models.Battery;
+import com.hmatalonga.greenhub.util.LogUtils;
 import com.hmatalonga.greenhub.util.Notifier;
 import com.hmatalonga.greenhub.util.SettingsUtils;
 
@@ -80,6 +82,8 @@ public class DataEstimator extends BroadcastReceiver {
             logE(TAG, "Received intent is null");
             return;
         }
+
+        LogUtils.logI(TAG, "Now: " + Battery.getBatteryCurrentNow(context));
 
         mIntent = intent;
         mAction = intent.getAction();

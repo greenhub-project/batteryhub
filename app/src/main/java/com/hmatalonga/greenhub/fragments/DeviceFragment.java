@@ -254,34 +254,6 @@ public class DeviceFragment extends Fragment {
         mExpandableListAdapter = new CustomExpandableListAdapter(context,
                 mExpandableListTitle, mExpandableListDetail);
         mExpandableListView.setAdapter(mExpandableListAdapter);
-        mExpandableListView.setOnGroupExpandListener(
-                new ExpandableListView.OnGroupExpandListener() {
-
-                    @Override
-                    public void onGroupExpand(int groupPosition) {
-                        Toast.makeText(context,
-                                mExpandableListTitle.get(groupPosition) + " " +
-                                        getString(R.string.sensors_card_details) +
-                                        ".",
-                                Toast.LENGTH_SHORT).show();
-                    }
-                });
-        mExpandableListView.setOnChildClickListener(
-                new ExpandableListView.OnChildClickListener() {
-                    @Override
-                    public boolean onChildClick(ExpandableListView parent, View v,
-                                                int groupPosition, int childPosition, long id) {
-                        Toast.makeText(
-                                context,
-                                mExpandableListTitle.get(groupPosition)
-                                        + " -> "
-                                        + mExpandableListDetail.get(
-                                        mExpandableListTitle.get(groupPosition)).get(
-                                        childPosition), Toast.LENGTH_SHORT
-                        ).show();
-                        return false;
-                    }
-                });
         mExpandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
 
             @Override

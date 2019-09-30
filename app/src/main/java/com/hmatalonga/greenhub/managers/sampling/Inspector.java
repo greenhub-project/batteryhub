@@ -402,10 +402,10 @@ public final class Inspector {
 
         // Battery other values with API level limitations
         batteryDetails.remainingCapacity = Battery.getBatteryRemainingCapacity(context);
-        batteryDetails.capacity = Battery.getActualBatteryCapacity(context);
+        batteryDetails.capacity = Battery.getBatteryDesignCapacity(context);
         batteryDetails.chargeCounter = Battery.getBatteryChargeCounter(context);
         batteryDetails.currentAverage = Battery.getBatteryCurrentAverage(context);
-        batteryDetails.currentNow = Battery.getBatteryCurrentNow(context);
+        batteryDetails.currentNow = (int) Battery.getBatteryCurrentNow(context);
         batteryDetails.energyCounter = Battery.getBatteryEnergyCounter(context);
 
         boolean isCharging = "Charging".equals(batteryStatus);
@@ -558,10 +558,10 @@ public final class Inspector {
         details.technology = batteryTechnology;
 
         // Battery other values with API level limitations
-        details.capacity = Battery.getActualBatteryCapacity(context);
+        details.capacity = Battery.getBatteryDesignCapacity(context);
         details.chargeCounter = Battery.getBatteryChargeCounter(context);
         details.currentAverage = Battery.getBatteryCurrentAverage(context);
-        details.currentNow = Battery.getBatteryCurrentNow(context);
+        details.currentNow = (int) Battery.getBatteryCurrentNow(context);
         details.energyCounter = Battery.getBatteryEnergyCounter(context);
         details.remainingCapacity = Battery.getBatteryRemainingCapacity(context);
 
@@ -594,7 +594,7 @@ public final class Inspector {
 
         PackageManager pm = context.getPackageManager();
         // Collected in the same loop to save computation.
-        int[] procMem = new int[list.size()];
+        // int[] procMem = new int[list.size()];
 
         Set<String> procs = new HashSet<>();
 
@@ -603,77 +603,80 @@ public final class Inspector {
         Map<String, ProcessInfo> processInfoMap =
                 (included) ? Package.getInstalledPackages(context, false) : null;
 
-        for (ProcessInfo pi : list) {
-            String pName = pi.name;
-            if (processInfoMap != null && processInfoMap.containsKey(pName)) {
-                processInfoMap.remove(pName);
-            }
 
-            procs.add(pName);
-
-            ProcessInfo item = new ProcessInfo();
-            item.appPermissions = new RealmList<>();
-            item.appSignatures = new RealmList<>();
-
-            PackageInfo packageInfo = Package.getPackageInfo(context, pName);
-
-            if (packageInfo != null) {
-                item.versionName = packageInfo.versionName;
-                item.versionCode = packageInfo.versionCode;
-                ApplicationInfo info = packageInfo.applicationInfo;
-
-                // Human readable label (if any)
-                String label = pm.getApplicationLabel(info).toString();
-                if (label.length() > 0) {
-                    item.applicationLabel = label;
+        if (list != null) {
+            for (ProcessInfo pi : list) {
+                String pName = pi.name;
+                if (processInfoMap != null) {
+                    processInfoMap.remove(pName);
                 }
-                int flags = packageInfo.applicationInfo.flags;
-                // Check if it is a system app
-                boolean isSystemApp = (flags & ApplicationInfo.FLAG_SYSTEM) > 0;
-                isSystemApp = isSystemApp || (flags & ApplicationInfo.FLAG_UPDATED_SYSTEM_APP) > 0;
-                item.isSystemApp = isSystemApp;
 
-                // Get app permissions
-                if (packageInfo.permissions != null) {
-                    for (PermissionInfo permission : packageInfo.permissions) {
-                        item.appPermissions.add(new AppPermission(permission.name));
+                procs.add(pName);
+
+                ProcessInfo item = new ProcessInfo();
+                item.appPermissions = new RealmList<>();
+                item.appSignatures = new RealmList<>();
+
+                PackageInfo packageInfo = Package.getPackageInfo(context, pName);
+
+                if (packageInfo != null) {
+                    item.versionName = packageInfo.versionName;
+                    item.versionCode = packageInfo.versionCode;
+                    ApplicationInfo info = packageInfo.applicationInfo;
+
+                    // Human readable label (if any)
+                    String label = pm.getApplicationLabel(info).toString();
+                    if (label.length() > 0) {
+                        item.applicationLabel = label;
+                    }
+                    int flags = packageInfo.applicationInfo.flags;
+                    // Check if it is a system app
+                    boolean isSystemApp = (flags & ApplicationInfo.FLAG_SYSTEM) > 0;
+                    isSystemApp = isSystemApp || (flags & ApplicationInfo.FLAG_UPDATED_SYSTEM_APP) > 0;
+                    item.isSystemApp = isSystemApp;
+
+                    // Get app permissions
+                    if (packageInfo.permissions != null) {
+                        for (PermissionInfo permission : packageInfo.permissions) {
+                            item.appPermissions.add(new AppPermission(permission.name));
+                        }
+                    }
+
+                    /*
+                     * boolean sigSent = p.getBoolean(SIG_SENT_256 + pname, false);
+                     * if (collectSignatures && !sigSent && pak.signatures != null
+                     * && pak.signatures.length > 0) { List<String> sigList =
+                     * getSignatures(pak); boolean sigSentOld =
+                     * p.getBoolean(SIG_SENT + pname, false); if (sigSentOld)
+                     * p.edit().remove(SIG_SENT + pname);
+                     * p.edit().putBoolean(SIG_SENT_256 + pname, true).commit();
+                     * item.setAppSignatures(sigList); }
+                     */
+                }
+                item.importance = pi.importance;
+                item.processId = pi.processId;
+                item.name = pi.name;
+
+                String installationSource = null;
+                if (!pi.isSystemApp) {
+                    try {
+                        installationSource = pm.getInstallerPackageName(pName);
+                    } catch (IllegalArgumentException iae) {
+                        Log.e(TAG, "Could not get installer for " + pName);
                     }
                 }
-
-                /*
-                 * boolean sigSent = p.getBoolean(SIG_SENT_256 + pname, false);
-                 * if (collectSignatures && !sigSent && pak.signatures != null
-                 * && pak.signatures.length > 0) { List<String> sigList =
-                 * getSignatures(pak); boolean sigSentOld =
-                 * p.getBoolean(SIG_SENT + pname, false); if (sigSentOld)
-                 * p.edit().remove(SIG_SENT + pname);
-                 * p.edit().putBoolean(SIG_SENT_256 + pname, true).commit();
-                 * item.setAppSignatures(sigList); }
-                 */
-            }
-            item.importance = pi.importance;
-            item.processId = pi.processId;
-            item.name = pi.name;
-
-            String installationSource = null;
-            if (!pi.isSystemApp) {
-                try {
-                    installationSource = pm.getInstallerPackageName(pName);
-                } catch (IllegalArgumentException iae) {
-                    Log.e(TAG, "Could not get installer for " + pName);
+                if (installationSource == null) {
+                    installationSource = "null";
                 }
-            }
-            if (installationSource == null) {
-                installationSource = "null";
-            }
-            item.installationPkg = installationSource;
+                item.installationPkg = installationSource;
 
-            // TODO: More fields will need to be added here, but ProcessInfo needs to change.
-            // procMem[list.indexOf(pi)] = pi.getPId();
-            // uid lru
+                // TODO: More fields will need to be added here, but ProcessInfo needs to change.
+                // procMem[list.indexOf(pi)] = pi.getPId();
+                // uid lru
 
-            // add to result
-            result.add(item);
+                // add to result
+                result.add(item);
+            }
         }
 
         // Send installed packages if we were to do so.

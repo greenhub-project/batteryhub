@@ -89,10 +89,10 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
         EventBus.getDefault().post(
                 new BatteryTimeEvent(batteryRemainingHours, batteryRemainingMinutes, isCharging)
         );
-        Notifier.remainingBatteryTimeAlert(
-                context,
-                batteryRemainingHours + "h " + batteryRemainingMinutes + "m", isCharging
-        );
+//        Notifier.remainingBatteryTimeAlert(
+//                context,
+//                batteryRemainingHours + "h " + batteryRemainingMinutes + "m", isCharging
+//        );
 
         try {
             // Save a new Battery Session to the mDatabase

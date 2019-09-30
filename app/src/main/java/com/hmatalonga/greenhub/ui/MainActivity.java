@@ -51,11 +51,11 @@ import com.hmatalonga.greenhub.events.RefreshChartEvent;
 import com.hmatalonga.greenhub.events.StatusEvent;
 import com.hmatalonga.greenhub.managers.sampling.DataEstimator;
 import com.hmatalonga.greenhub.managers.storage.GreenHubDb;
+import com.hmatalonga.greenhub.models.Battery;
 import com.hmatalonga.greenhub.models.Sensors;
 import com.hmatalonga.greenhub.network.CommunicationManager;
 import com.hmatalonga.greenhub.tasks.CheckNewMessagesTask;
 import com.hmatalonga.greenhub.tasks.ServerStatusTask;
-import com.hmatalonga.greenhub.ui.adapters.ExpandableListDataPump;
 import com.hmatalonga.greenhub.ui.adapters.TabAdapter;
 import com.hmatalonga.greenhub.ui.layouts.MainTabLayout;
 import com.hmatalonga.greenhub.util.LogUtils;
@@ -64,7 +64,6 @@ import com.hmatalonga.greenhub.util.SettingsUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.util.HashMap;
 import java.util.List;
 
 import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
@@ -252,6 +251,10 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
             @Override
             public void onClick(View view) {
                 Context context = getApplicationContext();
+
+                LogUtils.logI(TAG, String.valueOf(Battery.getBatteryAveragePower(context)));
+                LogUtils.logI(TAG, String.valueOf(Battery.getBatteryChargeCounter(context)));
+                LogUtils.logI(TAG, String.valueOf(Battery.getBatteryEnergyCounter(context)));
 
                 // Check Internet connectivity
                 if (!NetworkWatcher.hasInternet(context, NetworkWatcher.COMMUNICATION_MANAGER)) {

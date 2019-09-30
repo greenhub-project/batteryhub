@@ -94,9 +94,9 @@ public class HomeFragment extends Fragment {
 
     private Handler mHandler;
 
-    private int mMin;
+    private double mMin;
 
-    private int mMax;
+    private double mMax;
 
     private String mActivePower;
 
@@ -223,7 +223,7 @@ public class HomeFragment extends Fragment {
 
                 // Temperature
                 float temperature = estimator.getTemperature();
-                value = String.valueOf(temperature + " ºC");
+                value = temperature + " ºC";
                 if (temperature > 45) {
                     color = Color.RED;
                 } else if (temperature <= 45 && temperature > 35) {
@@ -239,7 +239,7 @@ public class HomeFragment extends Fragment {
                 );
 
                 // Voltage
-                value = String.valueOf(estimator.getVoltage() + " V");
+                value = estimator.getVoltage() + " V";
                 mBatteryCards.add(
                         new BatteryCard(
                                 R.drawable.ic_flash_black_18dp,
@@ -368,7 +368,7 @@ public class HomeFragment extends Fragment {
     private Runnable mRunnable = new Runnable() {
         @Override
         public void run() {
-            int now = Battery.getBatteryCurrentNow(mContext);
+            double now = Battery.getBatteryCurrentNow(mContext);
             double level = Inspector.getCurrentBatteryLevel();
             String value;
 

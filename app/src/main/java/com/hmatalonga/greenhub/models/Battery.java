@@ -52,7 +52,7 @@ public class Battery {
     /**
      * Obtains the current battery voltage value.
      *
-     * @param context Application's context
+     * @param context Application context
      * @return Returns the battery voltage
      */
     public static double getBatteryVoltage(final Context context) {
@@ -61,71 +61,52 @@ public class Battery {
                 new IntentFilter(Intent.ACTION_BATTERY_CHANGED)
         );
 
-        if (receiver == null) return -1;
+        if (receiver == null) return 0;
 
         double voltage = receiver.getIntExtra(BatteryManager.EXTRA_VOLTAGE, 0);
 
-        return (voltage == 0) ? 0 : voltage / 1000;
+        return (voltage == 0) ? voltage : voltage / 1000;
     }
 
     /**
      * Get the battery capacity at the moment (in %, from 0-100)
      *
-     * @param context Application's context
+     * @param context Application context
      * @return Battery capacity (in %, from 0-100)
      */
     public static int getBatteryCapacity(final Context context) {
-        int value;
-        if (Build.VERSION.SDK_INT >= 21) {
-            BatteryManager manager = (BatteryManager)
-                    context.getSystemService(Context.BATTERY_SERVICE);
+        int value = 0;
+
+        BatteryManager manager = (BatteryManager)
+                context.getSystemService(Context.BATTERY_SERVICE);
+        if (manager != null) {
             value = manager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
-        } else {
-            value = getBatteryPropertyLegacy(Config.BATTERY_CAPACITY);
         }
 
         if (value != 0 && value != Integer.MIN_VALUE) {
             return value;
         }
 
-        try {
-            // Please note: Uses reflection, API not available on all devices
-            Class<?> powerProfile = Class.forName("com.android.internal.os.PowerProfile");
-            Object mPowerProfile = powerProfile.getConstructor(Context.class).newInstance(context);
-            Method getAveragePower = powerProfile.getMethod("getAveragePower", String.class);
-            getAveragePower.setAccessible(true);
-            String capacity = getAveragePower.invoke(
-                    mPowerProfile, "battery.capacity"
-            ).toString();
-            return ((int) Double.parseDouble(capacity));
-        } catch (Throwable th) {
-            th.printStackTrace();
-        }
-
-        return -1;
+        return 0;
     }
 
-    public static int getActualBatteryCapacity(final Context context) {
-        Object mPowerProfile = null;
-        double batteryCapacity;
-
+    public static int getBatteryDesignCapacity(final Context context) {
+        Object mPowerProfile;
+        double batteryCapacity = 0;
         final String POWER_PROFILE_CLASS = "com.android.internal.os.PowerProfile";
 
         try {
             mPowerProfile = Class.forName(POWER_PROFILE_CLASS)
-                    .getConstructor(Context.class).newInstance(context);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+                    .getConstructor(Context.class)
+                    .newInstance(context);
 
-        try {
-            batteryCapacity = (Double) Class.forName(POWER_PROFILE_CLASS)
-                    .getMethod("getAveragePower", java.lang.String.class)
-                    .invoke(mPowerProfile, "battery.capacity");
-            LogUtils.logI(TAG, batteryCapacity + " mah");
+            batteryCapacity = (double) Class
+                    .forName(POWER_PROFILE_CLASS)
+                    .getMethod("getBatteryCapacity")
+                    .invoke(mPowerProfile);
+
         } catch (Exception e) {
             e.printStackTrace();
-            return 0;
         }
 
         return (int) batteryCapacity;
@@ -136,93 +117,87 @@ public class Battery {
      * Since Power (W) = (Current (A) * Voltage (V)) <=> Power (Wh) = (Current (Ah) * Voltage (Vh)).
      * Therefore, Current (mA) = Power (mW) / Voltage (mV)
      *
-     * @param context Application's context
-     * @return battery full capacity (in mAh)
+     * @param context Application context
+     * @return Battery full capacity (in mAh)
      */
     public static int getBatteryChargeCounter(final Context context) {
-        int value = -1;
-        if (Build.VERSION.SDK_INT >= 21) {
-            BatteryManager manager = (BatteryManager)
-                    context.getSystemService(Context.BATTERY_SERVICE);
-            value = manager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CHARGE_COUNTER) / 1000;
+        int value = 0;
+
+        BatteryManager manager = (BatteryManager) context.getSystemService(Context.BATTERY_SERVICE);
+        if (manager != null) {
+            value = manager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CHARGE_COUNTER);
         }
 
-        if (Build.VERSION.SDK_INT < 21 || value <= 0) {
-            value = getBatteryPropertyLegacy(Config.BATTERY_CHARGE_FULL) / 1000;  // in mAh
-        }
+        return value;
 
-        if (value != 0 && value != Integer.MIN_VALUE) {
-            return value;
-        } else {
-            // in uAh
-            int chargeFullDesign =
-                    getBatteryPropertyLegacy(Config.BATTERY_ENERGY_FULL_DESIGN) / 1000000;
-            int chargeFull = chargeFullDesign != 0 ?
-                    chargeFullDesign :
-                    getBatteryPropertyLegacy(Config.BATTERY_ENERGY_FULL) / 1000000;
-
-            // in mAh
-            return (chargeFull != 0) ? chargeFull : -1;
-        }
+//        if (value <= 0) {
+//            value = getBatteryPropertyLegacy(Config.BATTERY_CHARGE_FULL);
+//        }
+//
+//        if (value != 0 && value != Integer.MIN_VALUE) {
+//            return value;
+//        } else {
+//            // in uAh
+//            int chargeFullDesign =
+//                    getBatteryPropertyLegacy(Config.BATTERY_ENERGY_FULL_DESIGN) / 1000000;
+//            int chargeFull = chargeFullDesign != 0 ?
+//                    chargeFullDesign :
+//                    getBatteryPropertyLegacy(Config.BATTERY_ENERGY_FULL) / 1000000;
+//
+//            // in mAh
+//            return (chargeFull != 0) ? chargeFull : -1;
+//        }
     }
 
     public static int getBatteryCurrentAverage(final Context context) {
-        int value = -1;
+        int value = 0;
 
-        if (Build.VERSION.SDK_INT >= 21) {
-            BatteryManager manager = (BatteryManager)
-                    context.getSystemService(Context.BATTERY_SERVICE);
+        BatteryManager manager = (BatteryManager)
+                context.getSystemService(Context.BATTERY_SERVICE);
+        if (manager != null) {
             value = manager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_AVERAGE);
         }
 
-        return (value != 0 && value != Integer.MIN_VALUE) ? value : -1;
+        return (value != 0 && value != Integer.MIN_VALUE) ? value : 0;
     }
 
     /**
      * Get the Battery current at the moment (in mA)
      *
-     * @param context
+     * @param context Application context
      * @return battery current now (in mA)
      */
-    public static int getBatteryCurrentNow(final Context context) {
-        int value;
+    public static double getBatteryCurrentNow(final Context context) {
+        int value = 0;
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            BatteryManager manager = (BatteryManager)
-                    context.getSystemService(Context.BATTERY_SERVICE);
+        BatteryManager manager = (BatteryManager) context.getSystemService(Context.BATTERY_SERVICE);
+        if (manager != null) {
             value = manager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW);
-        } else {
-            value = getBatteryCurrentNowLegacy();
-            if (value == 0) {
-                int currentAverage = getBatteryCurrentAverage(context);
-                value = (currentAverage != -1 && currentAverage != Integer.MIN_VALUE) ?
-                        currentAverage : getBatteryPropertyLegacy(Config.BATTERY_CURRENT_NOW);
-            }
         }
 
-        return (value != 0 && value != Integer.MIN_VALUE) ? value / 1000 : -1;
+        return (value != 0 && value != Integer.MIN_VALUE) ? value : 0;
     }
 
     /**
      * Get the battery energy counter capacity (in mWh)
      *
-     * @param context
+     * @param context Application context
      * @return battery energy counter (in mWh)
      */
     public static long getBatteryEnergyCounter(final Context context) {
         long value = 0;
 
-        if (Build.VERSION.SDK_INT >= 21) {
-            BatteryManager manager = (BatteryManager)
-                    context.getSystemService(Context.BATTERY_SERVICE);
+        BatteryManager manager = (BatteryManager)
+                context.getSystemService(Context.BATTERY_SERVICE);
+        if (manager != null) {
             value = manager.getLongProperty(BatteryManager.BATTERY_PROPERTY_ENERGY_COUNTER);
         }
 
-        if (Build.VERSION.SDK_INT < 21 || value == Long.MIN_VALUE) {
-            value = getBatteryPropertyLegacy(Config.BATTERY_ENERGY_NOW);
-        }
+//        if (Build.VERSION.SDK_INT < 21 || value == Long.MIN_VALUE) {
+//            value = getBatteryPropertyLegacy(Config.BATTERY_ENERGY_NOW);
+//        }
 
-        return (value != 0) ? value / 1000 : -1;  // in mWh
+        return value;  // in mWh
     }
 
     /**
@@ -243,9 +218,8 @@ public class Battery {
 
         voltage = receiver.getIntExtra(BatteryManager.EXTRA_VOLTAGE, 0);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            BatteryManager manager = (BatteryManager)
-                    context.getSystemService(Context.BATTERY_SERVICE);
+        BatteryManager manager = (BatteryManager) context.getSystemService(Context.BATTERY_SERVICE);
+        if (manager != null) {
             current = manager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_AVERAGE);
         }
 
@@ -287,7 +261,7 @@ public class Battery {
 
         long chargeCounter = getBatteryChargeCounter(context);
         if (chargeCounter <= -1) {
-            chargeCounter = abs(getActualBatteryCapacity(context));  // in mAh
+            chargeCounter = abs(getBatteryDesignCapacity(context));  // in mAh
         }
 
         if (capacity > 0 && chargeCounter > 0) {
@@ -316,7 +290,7 @@ public class Battery {
     public static double getRemainingBatteryTimeEstimate(final Context context) {
         double remainingCapacity = getBatteryRemainingCapacity(context);
         //in mA
-        int currentNow = getBatteryCurrentNow(context) != -1 ?
+        double currentNow = getBatteryCurrentNow(context) != -1 ?
                 abs(getBatteryCurrentNow(context)) : 0;
 
         if (remainingCapacity > 0 && currentNow > 0) {
@@ -361,7 +335,7 @@ public class Battery {
             }
 
             int fullCapacity = getBatteryChargeCounter(context) != -1 ?
-                    getBatteryChargeCounter(context) : getActualBatteryCapacity(context);
+                    getBatteryChargeCounter(context) : getBatteryDesignCapacity(context);
             remainingCapacity = fullCapacity - getBatteryRemainingCapacity(context);
         }
 
@@ -496,6 +470,6 @@ public class Battery {
                 getBatteryPropertyLegacy(Config.BATTERY_ENERGY_NOW));
 
         // Reflections
-        LogUtils.logI("Actual Battery Capacity", "v: " + getActualBatteryCapacity(context));
+        LogUtils.logI("Actual Battery Capacity", "v: " + getBatteryDesignCapacity(context));
     }
 }

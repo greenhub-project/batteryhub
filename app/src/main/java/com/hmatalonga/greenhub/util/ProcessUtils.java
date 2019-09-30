@@ -1,12 +1,11 @@
 package com.hmatalonga.greenhub.util;
 
-import android.util.Log;
-
 import com.hmatalonga.greenhub.managers.sampling.Inspector;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -23,7 +22,7 @@ public class ProcessUtils {
 
     public static List<String> getCommandOutputAsList(String command) {
         String[] lines = getCommandOutput(command).split(System.getProperty("line.separator"));
-        return Arrays.asList(lines);
+        return new ArrayList<>(Arrays.asList(lines));
     }
 
     public static String getCommandOutput(String command) {

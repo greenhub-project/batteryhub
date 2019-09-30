@@ -42,9 +42,9 @@ public class BootReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         LogUtils.logI(TAG, "BOOT_COMPLETED onReceive()");
-        if (SettingsUtils.isTosAccepted(context) && SettingsUtils.isPowerIndicatorShown(context)) {
-            // Display Status bar
-            Notifier.startStatusBar(context);
-        }
+//        if (SettingsUtils.isTosAccepted(context) && SettingsUtils.isPowerIndicatorShown(context)) {
+//            // Display Status bar
+//            Notifier.startStatusBar(context);
+//        }
     }
 }

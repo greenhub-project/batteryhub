@@ -54,7 +54,7 @@ public class Notifier {
         DataEstimator estimator = new DataEstimator();
         estimator.getCurrentStatus(context);
 
-        int now = Battery.getBatteryCurrentNow(context);
+        double now = Battery.getBatteryCurrentNow(context);
         int level = estimator.getLevel();
         String title = context.getString(R.string.now) + ": " + now + " mA";
         String text = context.getString(R.string.notif_batteryhub_running);
@@ -108,7 +108,7 @@ public class Notifier {
             return;
         }
 
-        int now = Battery.getBatteryCurrentNow(context);
+        double now = Battery.getBatteryCurrentNow(context);
         int level = (int) (Inspector.getCurrentBatteryLevel() * 100);
         String title = context.getString(R.string.now) + ": " + now + " mA";
         String text = context.getString(R.string.notif_batteryhub_running);
