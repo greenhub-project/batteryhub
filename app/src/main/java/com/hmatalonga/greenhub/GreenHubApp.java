@@ -103,8 +103,12 @@ public class GreenHubApp extends Application {
             new Thread() {
 
                 public void run() {
-                    Intent service = new Intent(context, BatteryService.class);
-                    context.startService(service);
+                    try {
+                        Intent service = new Intent(context, BatteryService.class);
+                        context.startService(service);
+                    } catch (IllegalStateException e) {
+                        e.printStackTrace();
+                    }
 
                 }
             }.start();
