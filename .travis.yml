@@ -1,19 +1,12 @@
 language: android
 
+dist: trusty
+
 android:
   components:
-    - extra-google-m2repository
-    - extra-google-google_play_services
-    - extra-android-m2repository
-    - extra-android-support
-    - platform-tools
-    - tools
-    - build-tools-27.0.3
-    - android-27
-    - addon-google_apis-google-24
-  licenses:
-      - 'android-sdk-license-.+'
-      - 'google-gdk-license-.+'
+    - build-tools-29.0.2
+    - android-29
+    - extra
 
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
