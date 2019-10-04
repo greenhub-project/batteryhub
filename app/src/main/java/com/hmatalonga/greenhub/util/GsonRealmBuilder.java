@@ -28,8 +28,6 @@ import io.realm.RealmObject;
  */
 public class GsonRealmBuilder {
 
-    private static final String TAG = "GsonRealmBuilder";
-
     private GsonRealmBuilder() {}
 
     private static GsonBuilder getBuilder() {

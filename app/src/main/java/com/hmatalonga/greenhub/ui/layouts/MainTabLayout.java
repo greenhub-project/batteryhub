@@ -24,8 +24,6 @@ import android.util.AttributeSet;
 
 import com.hmatalonga.greenhub.R;
 
-import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
-
 /**
  * Tab Layout for Main Activity.
  */

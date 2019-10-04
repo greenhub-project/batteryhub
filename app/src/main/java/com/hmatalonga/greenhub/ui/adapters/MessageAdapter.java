@@ -1,6 +1,5 @@
 package com.hmatalonga.greenhub.ui.adapters;
 
-import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -28,15 +27,15 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.Dashboar
 
         DashboardViewHolder(View itemView) {
             super(itemView);
-            title = (TextView) itemView.findViewById(R.id.message_title);
-            body = (TextView) itemView.findViewById(R.id.message_body);
-            date = (TextView) itemView.findViewById(R.id.message_date);
+            title = itemView.findViewById(R.id.message_title);
+            body = itemView.findViewById(R.id.message_body);
+            date = itemView.findViewById(R.id.message_date);
         }
     }
 
     private ArrayList<Message> mMessages;
 
-    public MessageAdapter(ArrayList<Message> items){
+    public MessageAdapter(ArrayList<Message> items) {
         this.mMessages = items;
     }
 
@@ -78,12 +77,11 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.Dashboar
         return mMessages.size();
     }
 
-    public void swap(ArrayList<Message> list){
+    public void swap(ArrayList<Message> list) {
         if (mMessages != null) {
             mMessages.clear();
             mMessages.addAll(list);
-        }
-        else {
+        } else {
             mMessages = list;
         }
         notifyDataSetChanged();

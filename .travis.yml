@@ -1,20 +1,12 @@
 language: android
 
+dist: trusty
+
 android:
   components:
-    - extra-google-m2repository
-    - extra-google-google_play_services
-    - extra-android-m2repository
-    - extra-android-support
-    - platform-tools
-    - tools
-    - build-tools-26.0.2
-    - android-26
-    - addon-google_apis-google-24
-  licenses:
-      - 'android-sdk-preview-license-52d11cd2'
-      - 'android-sdk-license-.+'
-      - 'google-gdk-license-.+'
+    - build-tools-29.0.2
+    - android-29
+    - extra
 
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
@@ -26,6 +18,7 @@ cache:
 
 before_install:
   - chmod +x gradlew
+  - yes | sdkmanager "platforms;android-28"
 
 script:
-  - ./gradlew clean check assembleDebug
+  - ./gradlew clean assembleDebug

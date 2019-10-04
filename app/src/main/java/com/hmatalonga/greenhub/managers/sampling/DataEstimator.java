@@ -17,15 +17,22 @@
 package com.hmatalonga.greenhub.managers.sampling;
 
 
+import android.app.job.JobInfo;
+import android.app.job.JobParameters;
+import android.app.job.JobScheduler;
+import android.app.job.JobService;
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ReceiverCallNotAllowedException;
 import android.os.BatteryManager;
-import android.support.v4.content.WakefulBroadcastReceiver;
 
 import com.hmatalonga.greenhub.R;
 import com.hmatalonga.greenhub.events.BatteryLevelEvent;
+import com.hmatalonga.greenhub.models.Battery;
+import com.hmatalonga.greenhub.util.LogUtils;
 import com.hmatalonga.greenhub.util.Notifier;
 import com.hmatalonga.greenhub.util.SettingsUtils;
 
@@ -33,129 +40,145 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.util.Calendar;
 
-import static com.hmatalonga.greenhub.util.LogUtils.LOGE;
-import static com.hmatalonga.greenhub.util.LogUtils.LOGI;
+import static com.hmatalonga.greenhub.util.LogUtils.logE;
+import static com.hmatalonga.greenhub.util.LogUtils.logI;
 import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
 
 /**
  * Provides current Device data readings.
- *
+ * <p>
  * Created by hugo on 09-04-2016.
  */
-public class DataEstimator extends WakefulBroadcastReceiver {
+public class DataEstimator extends BroadcastReceiver {
 
     private static final String TAG = makeLogTag(DataEstimator.class);
 
-    private long lastNotify;
+    private static int mJobId = 0;
+    private static Context mContext;
+    private static Intent mIntent;
+    private static String mAction;
 
+    private long mLastNotify;
     private int mHealth;
-    private int level;
-    private int plugged;
-    private boolean present;
-    private int scale;
-    private int status;
-    private String technology;
-    private float temperature;
-    private float voltage;
+    private int mLevel;
+    private int mPlugged;
+    private boolean mPresent;
+    private int mScale;
+    private int mStatus;
+    private String mTechnology;
+    private float mTemperature;
+    private float mVoltage;
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        mContext = context;
+        //region null conditionals validations
         if (context == null) {
-            LOGE(TAG, "Error, context is null");
+            logE(TAG, "Error, context is null");
             return;
         }
 
         if (intent == null) {
-            LOGE(TAG, "Data Estimator error, received intent is null");
+            logE(TAG, "Received intent is null");
             return;
         }
 
-        LOGI(TAG, "onReceive action => " + intent.getAction());
+        mIntent = intent;
+        mAction = intent.getAction();
 
-        if (intent.getAction().equals(Intent.ACTION_BATTERY_CHANGED)) {
-            try {
-                level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
-                scale = intent.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
-                mHealth = intent.getIntExtra(BatteryManager.EXTRA_HEALTH, 0);
-                plugged = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, 0);
-                present = intent.getExtras().getBoolean(BatteryManager.EXTRA_PRESENT);
-                status = intent.getIntExtra(BatteryManager.EXTRA_STATUS, 0);
-                technology = intent.getExtras().getString(BatteryManager.EXTRA_TECHNOLOGY);
-                temperature = ((float) intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, 0)) / 10;
-                voltage = ((float) intent.getIntExtra(BatteryManager.EXTRA_VOLTAGE, 0)) / 1000;
-            }
-            catch (RuntimeException e) {
-                e.printStackTrace();
-            }
+        if (mAction == null) {
+            logE(TAG, "Intent has no action");
+            return;
+        }
+        //endregion
 
-            // We don't send battery level alerts here because we need to check if the level changed
-            // So we verify that inside the DataEstimator Service
+        logI(TAG, "ENTRY onReceive => " + mAction);
 
-            if (temperature > SettingsUtils.fetchTemperatureWarning(context)) {
-                if (SettingsUtils.isBatteryAlertsOn(context) &&
-                        SettingsUtils.isTemperatureAlertsOn(context)) {
+        if (!mAction.equals(Intent.ACTION_BATTERY_CHANGED)) return;
 
-                    // Check temperature limit rate
-                    Calendar lastAlert = Calendar.getInstance();
-                    long lastSavedTime = SettingsUtils.fetchLastTemperatureAlertDate(context);
+        // Fetch Intent extras related to the battery state
+        try {
+            mLevel = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
+            mScale = intent.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
+            mHealth = intent.getIntExtra(BatteryManager.EXTRA_HEALTH, 0);
+            mPlugged = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, 0);
+            mPresent = intent.getExtras().getBoolean(BatteryManager.EXTRA_PRESENT);
+            mStatus = intent.getIntExtra(BatteryManager.EXTRA_STATUS, 0);
+            mTechnology = intent.getExtras().getString(BatteryManager.EXTRA_TECHNOLOGY);
+            mTemperature = ((float) intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, 0)) / 10;
+            mVoltage = ((float) intent.getIntExtra(BatteryManager.EXTRA_VOLTAGE, 0)) / 1000;
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+        }
 
-                    // Set last alert time with saved preferences
-                    if (lastSavedTime != 0) {
-                        lastAlert.setTimeInMillis(lastSavedTime);
-                    }
-                    int minutes = SettingsUtils.fetchTemperatureAlertsRate(context);
+        /* We don't send battery mLevel alerts here because we need to check if the mLevel changed
+           So we verify that inside the DataEstimator Service */
 
-                    lastAlert.add(Calendar.MINUTE, minutes);
+        if (mTemperature > SettingsUtils.fetchTemperatureWarning(context)) {
+            if (SettingsUtils.isBatteryAlertsOn(context) &&
+                    SettingsUtils.isTemperatureAlertsOn(context)) {
 
-                    // If last saved time isn't default and now is after limit rate then notify
-                    if (lastSavedTime == 0 || Calendar.getInstance().after(lastAlert)) {
-                        // Notify for temperature alerts...
-                        if (temperature > SettingsUtils.fetchTemperatureHigh(context)) {
-                            Notifier.batteryHighTemperature(context);
-                            SettingsUtils.saveLastTemperatureAlertDate(
-                                    context,
-                                    System.currentTimeMillis()
-                            );
-                        } else if (temperature <= SettingsUtils.fetchTemperatureHigh(context) &&
-                                temperature > SettingsUtils.fetchTemperatureWarning(context)) {
-                            Notifier.batteryWarningTemperature(context);
-                            SettingsUtils.saveLastTemperatureAlertDate(
-                                    context,
-                                    System.currentTimeMillis()
-                            );
-                        }
+                // Check mTemperature limit rate
+                Calendar lastAlert = Calendar.getInstance();
+                long lastSavedTime = SettingsUtils.fetchLastTemperatureAlertDate(context);
+
+                // Set last alert time with saved preferences
+                if (lastSavedTime != 0) {
+                    lastAlert.setTimeInMillis(lastSavedTime);
+                }
+                int minutes = SettingsUtils.fetchTemperatureAlertsRate(context);
+
+                lastAlert.add(Calendar.MINUTE, minutes);
+
+                // If last saved time isn't default and now is after limit rate then notify
+                if (lastSavedTime == 0 || Calendar.getInstance().after(lastAlert)) {
+                    // Notify for mTemperature alerts...
+                    if (mTemperature > SettingsUtils.fetchTemperatureHigh(context)) {
+                        Notifier.batteryHighTemperature(context);
+                        SettingsUtils.saveLastTemperatureAlertDate(
+                                context,
+                                System.currentTimeMillis()
+                        );
+                    } else if (mTemperature <= SettingsUtils.fetchTemperatureHigh(context) &&
+                            mTemperature > SettingsUtils.fetchTemperatureWarning(context)) {
+                        Notifier.batteryWarningTemperature(context);
+                        SettingsUtils.saveLastTemperatureAlertDate(
+                                context,
+                                System.currentTimeMillis()
+                        );
                     }
                 }
             }
         }
 
-        // On some phones, scale is always 0.
-        if (scale == 0) scale = 100;
-
-        if (level > 0) {
-            Inspector.setCurrentBatteryLevel(level, scale);
-
-            // Location updates disabled for now
-            // requestLocationUpdates();
-
-            // Update last known location...
-            // if (lastKnownLocation == null) {
-            //    lastKnownLocation = LocationInfo.getLastKnownLocation(context);
-            // }
-
-            Intent service = new Intent(context, DataEstimatorService.class);
-            service.putExtra("OriginalAction", intent.getAction());
-            service.fillIn(intent, 0);
-
-            if (SettingsUtils.isPowerIndicatorShown(context)) {
-                LOGI(TAG, "Updating notification status bar");
-                Notifier.updateStatusBar(context);
-            }
-
-            EventBus.getDefault().post(new BatteryLevelEvent(level));
-
-            startWakefulService(context, service);
+        if (SettingsUtils.isPowerIndicatorShown(context)) {
+            logI(TAG, "Updating notification mStatus bar");
+            Notifier.updateStatusBar(context);
         }
+
+        // On some phones, mScale is always 0.
+        if (mScale == 0) mScale = 100;
+
+        if (mLevel > 0) {
+            Inspector.setCurrentBatteryLevel(mLevel, mScale);
+
+            EventBus.getDefault().post(new BatteryLevelEvent(mLevel));
+
+            scheduleJob(context);
+        }
+
+    }
+
+    private static void scheduleJob(Context context) {
+        ComponentName serviceComponent = new ComponentName(context, EstimatorJob.class);
+        JobInfo.Builder builder = new JobInfo.Builder(mJobId++, serviceComponent);
+        builder.setMinimumLatency(1); // wait at least
+        builder.setOverrideDeadline(10); // maximum delay
+        builder.setRequiresCharging(false);
+        builder.setRequiresDeviceIdle(false);
+
+        JobScheduler jobScheduler = context.getSystemService(JobScheduler.class);
+        jobScheduler.schedule(builder.build());
     }
 
     public static Intent getBatteryChangedIntent(final Context context) {
@@ -172,18 +195,24 @@ public class DataEstimator extends WakefulBroadcastReceiver {
             Intent batteryStatus = context.registerReceiver(null, ifilter);
 
             if (batteryStatus != null) {
-                level = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
-                scale = batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
+                mLevel = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
+                mScale = batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
                 mHealth = batteryStatus.getIntExtra(BatteryManager.EXTRA_HEALTH, 0);
-                plugged = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, 0);
-                present = batteryStatus.getExtras().getBoolean(BatteryManager.EXTRA_PRESENT);
-                status = batteryStatus.getIntExtra(BatteryManager.EXTRA_STATUS, 0);
-                technology = batteryStatus.getExtras().getString(BatteryManager.EXTRA_TECHNOLOGY);
-                temperature = (float) (batteryStatus.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, 0) / 10);
-                voltage = (float) (batteryStatus.getIntExtra(BatteryManager.EXTRA_VOLTAGE, 0) / 1000);
+                mPlugged = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, 0);
+                mPresent = batteryStatus.getExtras().getBoolean(BatteryManager.EXTRA_PRESENT);
+                mStatus = batteryStatus.getIntExtra(BatteryManager.EXTRA_STATUS, 0);
+                mTechnology = batteryStatus.getExtras().getString(BatteryManager.EXTRA_TECHNOLOGY);
+                mTemperature =
+                        (float) (batteryStatus.getIntExtra(
+                                BatteryManager.EXTRA_TEMPERATURE, 0
+                        ) / 10);
+                mVoltage =
+                        (float) (batteryStatus.getIntExtra(
+                            BatteryManager.EXTRA_VOLTAGE, 0
+                        ) / 1000);
             }
         } catch (ReceiverCallNotAllowedException e) {
-            LOGE(TAG, "ReceiverCallNotAllowedException from Notification Receiver?");
+            logE(TAG, "ReceiverCallNotAllowedException from Notification Receiver?");
             e.printStackTrace();
         }
     }
@@ -214,7 +243,7 @@ public class DataEstimator extends WakefulBroadcastReceiver {
         return status;
     }
 
-    public String getHealthStatus(Context context) {
+    public String getHealthStatus(final Context context) {
         String status = "";
         switch (mHealth) {
             case BatteryManager.BATTERY_HEALTH_UNKNOWN:
@@ -240,12 +269,39 @@ public class DataEstimator extends WakefulBroadcastReceiver {
         return status;
     }
 
-    public long getLastNotify() {
-        return lastNotify;
+    public static class EstimatorJob extends JobService {
+        public static final String TAG = "EstimatorJob";
+
+        public EstimatorJob() {
+
+        }
+
+        @Override
+        public boolean onStartJob(JobParameters params) {
+            final int jobID = params.getJobId();
+
+            Intent service = new Intent(mContext, DataEstimatorService.class);
+            service.putExtra("OriginalAction", mAction);
+            service.fillIn(mIntent, 0);
+
+            startService(service);
+            jobFinished(params, false);
+
+            return true;
+        }
+
+        @Override
+        public boolean onStopJob(JobParameters params) {
+            return false;
+        }
     }
 
-    public void setLastNotify(long now) {
-        this.lastNotify = now;
+    public long getmLastNotify() {
+        return mLastNotify;
+    }
+
+    public void setmLastNotify(long now) {
+        this.mLastNotify = now;
     }
 
     public int getHealth() {
@@ -253,34 +309,34 @@ public class DataEstimator extends WakefulBroadcastReceiver {
     }
 
     public int getLevel() {
-        return level;
+        return mLevel;
     }
 
     public int getPlugged() {
-        return plugged;
+        return mPlugged;
     }
 
     public boolean isPresent() {
-        return present;
+        return mPresent;
     }
 
     public int getScale() {
-        return scale;
+        return mScale;
     }
 
     public int getStatus() {
-        return status;
+        return mStatus;
     }
 
     public String getTechnology() {
-        return technology;
+        return mTechnology;
     }
 
     public float getTemperature() {
-        return temperature;
+        return mTemperature;
     }
 
     public float getVoltage() {
-        return voltage;
+        return mVoltage;
     }
 }

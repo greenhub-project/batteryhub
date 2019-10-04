@@ -38,7 +38,7 @@ import com.hmatalonga.greenhub.tasks.DeleteUsagesTask;
 import com.hmatalonga.greenhub.util.Notifier;
 import com.hmatalonga.greenhub.util.SettingsUtils;
 
-import static com.hmatalonga.greenhub.util.LogUtils.LOGI;
+import static com.hmatalonga.greenhub.util.LogUtils.logI;
 import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
 
 public class SettingsActivity extends BaseActivity {
@@ -49,7 +49,7 @@ public class SettingsActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
+        Toolbar toolbar = findViewById(R.id.toolbar_actionbar);
         if (toolbar != null) {
             setSupportActionBar(toolbar);
         }
@@ -59,7 +59,8 @@ public class SettingsActivity extends BaseActivity {
         }
     }
 
-    public static class SettingsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
+    public static class SettingsFragment extends PreferenceFragment implements
+            SharedPreferences.OnSharedPreferenceChangeListener {
         public SettingsFragment() {}
 
         @Override
@@ -67,7 +68,6 @@ public class SettingsActivity extends BaseActivity {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.preferences);
 
-            final Context context = getActivity().getApplicationContext();
             final String versionName = BuildConfig.DEBUG ?
                     BuildConfig.VERSION_NAME + " (Debug)" :
                     BuildConfig.VERSION_NAME;
@@ -86,8 +86,8 @@ public class SettingsActivity extends BaseActivity {
 
         @Override
         public void onDestroy() {
-            super.onDestroy();
             SettingsUtils.unregisterOnSharedPreferenceChangeListener(getActivity(), this);
+            super.onDestroy();
         }
 
         @Override
@@ -99,7 +99,7 @@ public class SettingsActivity extends BaseActivity {
             switch (key) {
                 case SettingsUtils.PREF_SAMPLING_SCREEN:
                     // Restart GreenHub Service with new settings
-                    LOGI(TAG, "Restarting GreenHub Service because of preference changes");
+                    logI(TAG, "Restarting GreenHub Service because of preference changes");
                     app.stopGreenHubService();
                     app.startGreenHubService();
                     Answers.getInstance().logCustom(new CustomEvent("Preference Change")
@@ -118,6 +118,7 @@ public class SettingsActivity extends BaseActivity {
                 case SettingsUtils.PREF_UPLOAD_RATE:
                     bindPreferenceSummaryToValue(preference);
                     break;
+                /*
                 case SettingsUtils.PREF_POWER_INDICATOR:
                     if (SettingsUtils.isPowerIndicatorShown(context)) {
                         Notifier.startStatusBar(context);
@@ -132,6 +133,7 @@ public class SettingsActivity extends BaseActivity {
                                     String.valueOf(SettingsUtils.isPowerIndicatorShown(context))
                             ));
                     break;
+                */
                 case SettingsUtils.PREF_TEMPERATURE_WARNING:
                     bindPreferenceSummaryToValue(preference);
                     break;
@@ -143,6 +145,9 @@ public class SettingsActivity extends BaseActivity {
                     break;
                 case SettingsUtils.PREF_NOTIFICATIONS_PRIORITY:
                     bindPreferenceSummaryToValue(preference);
+                    break;
+                case SettingsUtils.PREF_REMAINING_TIME:
+
                     break;
             }
         }

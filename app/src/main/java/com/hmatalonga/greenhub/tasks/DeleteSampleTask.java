@@ -17,17 +17,16 @@
 package com.hmatalonga.greenhub.tasks;
 
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 
 import com.hmatalonga.greenhub.models.data.Sample;
+
 import io.realm.Realm;
 
 /**
  * DeleteSampleTask.
  */
 public class DeleteSampleTask extends AsyncTask<Integer, Void, Void> {
-
-    private static final String TAG = "DeleteSampleTask";
-
     @Override
     protected Void doInBackground(Integer... params) {
         // Open the Realm
@@ -36,7 +35,7 @@ public class DeleteSampleTask extends AsyncTask<Integer, Void, Void> {
             final int id = params[0];
             realm.executeTransaction(new Realm.Transaction() {
                 @Override
-                public void execute(Realm realm) {
+                public void execute(@NonNull Realm realm) {
                     Sample sample = realm.where(Sample.class).equalTo("id", id).findFirst();
                     if (sample != null) sample.deleteFromRealm();
                 }

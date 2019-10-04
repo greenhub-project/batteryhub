@@ -1,24 +1,23 @@
 apply plugin: 'checkstyle'
 
-task checkstyleMain (type: Checkstyle) {
-    ignoreFailures = false
-    showViolations = false
-    source 'src/main'
+dependencies {
+    checkstyle 'com.puppycrawl.tools:checkstyle:7.8.2'
+}
+
+def checkstyleConfigDir = "$project.rootDir/config"
+
+check.dependsOn 'checkstyle'
+
+task checkstyle(type: Checkstyle, group: 'Verification') {
+    description = "Check code style to follow AOSP Java Code Style."
+    configFile file("$checkstyleConfigDir/checkstyle-config.xml")
+    source 'src'
     include '**/*.java'
-    exclude '**/gen/**'
-    classpath = files()
-    configFile = file("${project.rootDir}/config/checkstyle/checkstyle.xml")
-}
 
-task checkstyle(dependsOn:['checkstyleMain']){
-    description 'Runs Checkstyle inspection against Android sourcesets.'
-    group = 'Code Quality'
-}
-
-tasks.withType(Checkstyle) {
     reports {
-        xml.enabled false
-        html.enabled true
-        html.stylesheet resources.text.fromFile('config/xsl/checkstyle-html.xsl')
+        xml.enabled = false
+        html.enabled = true
     }
+
+    classpath = files()
 }

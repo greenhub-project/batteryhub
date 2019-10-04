@@ -26,10 +26,10 @@
     <string name="not_available">Not available</string>
     <string name="now">Now</string>
 
-    <!-- Short text welcoming the user to the application -->
+    <!-- Short mText welcoming the user to the application -->
     <string name="welcome_to_greenhub_app">Welcome to the BatteryHub app!</string>
 
-    <!-- Medium-length welcome text indicating the subsequent text is important legal information -->
+    <!-- Medium-length welcome mText indicating the subsequent mText is important legal information -->
     <string name="welcome_text">Before we begin, here is some important legal information regarding your use of this app. This will only take a minute!</string>
 
     <string name="action_inbox">Inbox</string>
@@ -104,6 +104,15 @@
     <string name="network_card_bluetooth_address">Bluetooth address</string>
     <string name="network_card_mobile_data">Mobile data</string>
     <string name="network_card_network_type">Network type</string>
+
+    <string name="sensors_card_title">Sensors</string>
+    <string name="sensors_card_name">Name</string>
+    <string name="sensors_card_power">Power</string>
+    <string name="sensors_card_type">Type</string>
+    <string name="sensors_card_iswakeup">Wake up</string>
+    <string name="sensors_card_inuse">In use</string>
+    <string name="sensors_card_usefrequency">Use frequency</string>
+    <string name="sensors_card_details">Details</string>
 
     <string name="memory_card_title">Memory</string>
     <string name="memory_card_used">Used</string>

@@ -31,15 +31,10 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-
-import java.util.ArrayList;
-
 import com.hmatalonga.greenhub.Config;
 import com.hmatalonga.greenhub.R;
 import com.hmatalonga.greenhub.events.BatteryLevelEvent;
+import com.hmatalonga.greenhub.events.BatteryTimeEvent;
 import com.hmatalonga.greenhub.events.PowerSourceEvent;
 import com.hmatalonga.greenhub.events.StatusEvent;
 import com.hmatalonga.greenhub.managers.sampling.DataEstimator;
@@ -48,6 +43,14 @@ import com.hmatalonga.greenhub.models.Battery;
 import com.hmatalonga.greenhub.models.ui.BatteryCard;
 import com.hmatalonga.greenhub.ui.MainActivity;
 import com.hmatalonga.greenhub.ui.adapters.BatteryRVAdapter;
+import com.hmatalonga.greenhub.util.LogUtils;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
+import java.util.ArrayList;
+import java.util.Locale;
 
 import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
 
@@ -92,9 +95,9 @@ public class HomeFragment extends Fragment {
 
     private Handler mHandler;
 
-    private int mMin;
+    private double mMin;
 
-    private int mMax;
+    private double mMax;
 
     private String mActivePower;
 
@@ -110,7 +113,7 @@ public class HomeFragment extends Fragment {
         mContext = view.getContext();
         mActivity = (MainActivity) getActivity();
 
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.rv);
+        mRecyclerView = view.findViewById(R.id.rv);
         mAdapter = null;
 
         LinearLayoutManager layout = new LinearLayoutManager(mContext) {
@@ -123,24 +126,24 @@ public class HomeFragment extends Fragment {
         mRecyclerView.setLayoutManager(layout);
         mRecyclerView.setHasFixedSize(true);
 
-        mBatteryPercentage = (TextView) view.findViewById(R.id.batteryCurrentValue);
-        mBatteryCircleBar = (ProgressBar) view.findViewById(R.id.batteryProgressbar);
-        mStatus = (TextView) view.findViewById(R.id.status);
+        mBatteryPercentage = view.findViewById(R.id.batteryCurrentValue);
+        mBatteryCircleBar = view.findViewById(R.id.batteryProgressbar);
+        mStatus = view.findViewById(R.id.status);
 
-        mBatteryCurrentNow = (TextView) view.findViewById(R.id.batteryCurrentNow);
-        mBatteryCurrentMin = (TextView) view.findViewById(R.id.batteryCurrentMin);
-        mBatteryCurrentMax = (TextView) view.findViewById(R.id.batteryCurrentMax);
+        mBatteryCurrentNow = view.findViewById(R.id.batteryCurrentNow);
+        mBatteryCurrentMin = view.findViewById(R.id.batteryCurrentMin);
+        mBatteryCurrentMax = view.findViewById(R.id.batteryCurrentMax);
 
-        mPowerDischarging = (ImageView) view.findViewById(R.id.imgPowerDischarging);
-        mPowerAc = (ImageView) view.findViewById(R.id.imgPowerAc);
-        mPowerUsb = (ImageView) view.findViewById(R.id.imgPowerUsb);
-        mPowerWireless = (ImageView) view.findViewById(R.id.imgPowerWireless);
+        mPowerDischarging = view.findViewById(R.id.imgPowerDischarging);
+        mPowerAc = view.findViewById(R.id.imgPowerAc);
+        mPowerUsb = view.findViewById(R.id.imgPowerUsb);
+        mPowerWireless = view.findViewById(R.id.imgPowerWireless);
         mActivePower = "";
 
         mMin = Integer.MAX_VALUE;
         mMax = 0;
         mHandler = new Handler();
-        mHandler.postDelayed(runnable, Config.REFRESH_CURRENT_INTERVAL);
+        mHandler.postDelayed(mRunnable, Config.REFRESH_CURRENT_INTERVAL);
 
         return view;
     }
@@ -180,6 +183,21 @@ public class HomeFragment extends Fragment {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
+    public void updateBatteryRemainingTime(BatteryTimeEvent event) {
+        // TODO: change the UI with the value from this event
+        // For now, it's just logging
+        String logText;
+        if (event.charging) {
+            logText = "" + event.remainingHours + " h " +
+                    event.remainingMinutes + " m until complete charge";
+        } else {
+            logText = "Remaining Time: " + event.remainingHours + " h " +
+                    event.remainingMinutes + " m";
+        }
+        LogUtils.logI("BATTERY_LOG", logText);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void updateStatus(StatusEvent event) {
         mStatus.setText(event.status);
     }
@@ -206,7 +224,7 @@ public class HomeFragment extends Fragment {
 
                 // Temperature
                 float temperature = estimator.getTemperature();
-                value = String.valueOf(temperature + " ºC");
+                value = temperature + " ºC";
                 if (temperature > 45) {
                     color = Color.RED;
                 } else if (temperature <= 45 && temperature > 35) {
@@ -222,7 +240,7 @@ public class HomeFragment extends Fragment {
                 );
 
                 // Voltage
-                value = String.valueOf(estimator.getVoltage() + " V");
+                value = estimator.getVoltage() + " V";
                 mBatteryCards.add(
                         new BatteryCard(
                                 R.drawable.ic_flash_black_18dp,
@@ -267,7 +285,7 @@ public class HomeFragment extends Fragment {
         setAdapter();
     }
 
-    private void setAdapter(){
+    private void setAdapter() {
         try {
             mLocalThread.join();
             if (mAdapter == null) {
@@ -277,8 +295,7 @@ public class HomeFragment extends Fragment {
                 mAdapter.swap(mBatteryCards);
             }
             mRecyclerView.invalidate();
-        }
-        catch (InterruptedException e) {
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
@@ -318,14 +335,21 @@ public class HomeFragment extends Fragment {
                 break;
         }
 
-        if (batteryCharger.equals("unplugged")) {
-            mPowerDischarging.setImageResource(R.drawable.ic_battery_50_white_24dp);
-        } else if (batteryCharger.equals("ac")) {
-            mPowerAc.setImageResource(R.drawable.ic_power_plug_white_24dp);
-        } else if (batteryCharger.equals("usb")) {
-            mPowerUsb.setImageResource(R.drawable.ic_usb_white_24dp);
-        } else if (batteryCharger.equals("wireless")) {
-            mPowerWireless.setImageResource(R.drawable.ic_access_point_white_24dp);
+        switch (batteryCharger) {
+            case "unplugged":
+                mPowerDischarging.setImageResource(R.drawable.ic_battery_50_white_24dp);
+                break;
+            case "ac":
+                mPowerAc.setImageResource(R.drawable.ic_power_plug_white_24dp);
+                break;
+            case "usb":
+                mPowerUsb.setImageResource(R.drawable.ic_usb_white_24dp);
+                break;
+            case "wireless":
+                mPowerWireless.setImageResource(R.drawable.ic_access_point_white_24dp);
+                break;
+            default:
+                break;
         }
 
         mActivePower = batteryCharger;
@@ -342,20 +366,21 @@ public class HomeFragment extends Fragment {
         mBatteryCurrentNow.setText(value);
     }
 
-    private Runnable runnable = new Runnable() {
+    private Runnable mRunnable = new Runnable() {
         @Override
         public void run() {
-            int now = Battery.getBatteryCurrentNow(mContext);
+            double now = Battery.getBatteryCurrentNowInAmperes(mContext);
             double level = Inspector.getCurrentBatteryLevel();
             String value;
 
-            // If is charging and full battery stop runnable
+            // If is charging and full battery stop mRunnable
             if (!mActivePower.equals("unplugged") && level == 1.0) {
                 value = "min: --";
                 mBatteryCurrentMin.setText(value);
                 value = "max: --";
                 mBatteryCurrentMax.setText(value);
-                value = mContext.getString(R.string.battery_full);
+                // value = mContext.getString(R.string.battery_full);
+                value = String.format(Locale.getDefault(), "%.3f", now) + " A";
                 mBatteryCurrentNow.setText(value);
                 mHandler.postDelayed(this, Config.REFRESH_CURRENT_INTERVAL);
                 return;
@@ -363,17 +388,17 @@ public class HomeFragment extends Fragment {
 
             if (Math.abs(now) < Math.abs(mMin)) {
                 mMin = now;
-                value = "min: " + mMin + " mA";
+                value = "min: " + String.format(Locale.getDefault(), "%.3f", mMin) + " A";
                 mBatteryCurrentMin.setText(value);
             }
 
             if (Math.abs(now) > Math.abs(mMax)) {
                 mMax = now;
-                value = "max: " + mMax + " mA";
+                value = "max: " + String.format(Locale.getDefault(), "%.3f", mMax) + " A";
                 mBatteryCurrentMax.setText(value);
             }
 
-            value = now + " mA";
+            value = String.format(Locale.getDefault(), "%.3f", now) + " A";
             mBatteryCurrentNow.setText(value);
             mHandler.postDelayed(this, Config.REFRESH_CURRENT_INTERVAL);
         }

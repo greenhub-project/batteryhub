@@ -23,7 +23,6 @@ import com.github.mikephil.charting.components.MarkerView;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.utils.MPPointF;
-
 import com.hmatalonga.greenhub.R;
 import com.hmatalonga.greenhub.ui.adapters.ChartRVAdapter;
 import com.hmatalonga.greenhub.util.StringHelper;
@@ -32,8 +31,6 @@ import com.hmatalonga.greenhub.util.StringHelper;
  * ChartMarkerView.
  */
 public class ChartMarkerView extends MarkerView {
-
-    private static final String TAG = "ChartMarkerView";
 
     private TextView mContent;
     private MPPointF mOffset;
@@ -48,7 +45,7 @@ public class ChartMarkerView extends MarkerView {
     public ChartMarkerView(Context context, int layoutResource) {
         super(context, layoutResource);
 
-        mContent = (TextView) findViewById(R.id.tvContent);
+        mContent = findViewById(R.id.tvContent);
     }
 
     /**
@@ -61,7 +58,7 @@ public class ChartMarkerView extends MarkerView {
         super(context, layoutResource);
 
         mType = type;
-        mContent = (TextView) findViewById(R.id.tvContent);
+        mContent = findViewById(R.id.tvContent);
     }
 
 
@@ -91,9 +88,9 @@ public class ChartMarkerView extends MarkerView {
 
     @Override
     public MPPointF getOffset() {
-        if(mOffset == null) {
+        if (mOffset == null) {
             // center the marker horizontally and vertically
-            mOffset = new MPPointF(-(getWidth() / 2), -getHeight());
+            mOffset = new MPPointF(-(getWidth() >> 1), -getHeight());
         }
 
         return mOffset;

@@ -23,13 +23,13 @@ import android.location.LocationManager;
 import android.telephony.CellLocation;
 import android.telephony.TelephonyManager;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import com.hmatalonga.greenhub.Config;
 import com.hmatalonga.greenhub.models.data.LocationProvider;
 
-import static com.hmatalonga.greenhub.util.LogUtils.LOGD;
+import java.util.LinkedList;
+import java.util.List;
+
+import static com.hmatalonga.greenhub.util.LogUtils.logD;
 import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
 
 /**
@@ -111,7 +111,7 @@ public class LocationInfo {
                 return String.valueOf(latitude) + "," + String.valueOf(longitude);
             } catch (SecurityException e) {
                 if (Config.DEBUG) {
-                    LOGD("SamplingLibrary", "Failed getting coarse location!");
+                    logD("SamplingLibrary", "Failed getting coarse location!");
                     e.printStackTrace();
                 }
             }
@@ -154,7 +154,8 @@ public class LocationInfo {
     /* Check the maximum number of satellites can be used in the satellite list */
     @Deprecated
     public static int getMaxNumSatellite(Context context) {
-        LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        LocationManager locationManager =
+                (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 
         // TODO: GpsStatus is deprecated!
         // return locationManager.getGpsStatus(null).getMaxSatellites();
@@ -173,24 +174,26 @@ public class LocationInfo {
      * Returns a two letter ISO3166-1 alpha-2 standard country code
      * https://en.wikipedia.org/wiki/ISO_3166-1
      * GetCellLocation returns longitude and latitude
+     *
      * @param context Application context
      * @return Two letter country code
      */
     public static String getCountryCode(Context context) {
-        TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+        TelephonyManager telephonyManager =
+                (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
         String cc;
-        if(telephonyManager.getPhoneType() != TelephonyManager.PHONE_TYPE_CDMA){
+        if (telephonyManager.getPhoneType() != TelephonyManager.PHONE_TYPE_CDMA) {
             /// Network location is most accurate
             cc = telephonyManager.getNetworkCountryIso();
-            if(cc != null && cc.length() == 2) return cc;
+            if (cc != null && cc.length() == 2) return cc;
             cc = getCountryCodeFromProperty(context, "gsm.operator.numeric");
-            if(cc != null && cc.length() == 2) return cc;
+            if (cc != null && cc.length() == 2) return cc;
             cc = telephonyManager.getSimCountryIso();
-            if(cc != null && cc.length() == 2) return cc;
+            if (cc != null && cc.length() == 2) return cc;
         } else {
             // Telephony manager is unreliable with CDMA
             cc = getCountryCodeFromProperty(context, "ro.cdma.home.operator.numeric");
-            if(cc != null && cc.length() == 2) return cc;
+            if (cc != null && cc.length() == 2) return cc;
         }
         return "Unknown";
     }
@@ -198,20 +201,21 @@ public class LocationInfo {
     /**
      * Retrieves a two-letter country code using an undocumented system properties call.
      * WARNING: Uses reflection, data might not always be available.
-     * @param context Application context
+     *
+     * @param context  Application context
      * @param property Property name
      * @return Two-letter country code
      */
     private static String getCountryCodeFromProperty(Context context, String property) {
         try {
             String operator = Specifications.getSystemProperty(context, property);
-            if(operator != null && operator.length() >= 5){
-                int mcc = Integer.parseInt(operator.substring(0,3));
+            if (operator != null && operator.length() >= 5) {
+                int mcc = Integer.parseInt(operator.substring(0, 3));
                 return Phone.getCountryCodeForMcc(context, mcc);
             }
-        } catch(Exception e){
-            if(Config.DEBUG && e != null && e.getLocalizedMessage() != null){
-                LOGD(TAG, "Failed getting network location: " + e.getLocalizedMessage());
+        } catch (Exception e) {
+            if (Config.DEBUG && e != null && e.getLocalizedMessage() != null) {
+                logD(TAG, "Failed getting network location: " + e.getLocalizedMessage());
             }
         }
         return null;

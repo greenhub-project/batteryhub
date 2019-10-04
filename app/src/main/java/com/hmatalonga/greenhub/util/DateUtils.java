@@ -25,8 +25,6 @@ import java.util.Locale;
  */
 public class DateUtils {
 
-    private static final String TAG = "DateUtils";
-
     public static final int INTERVAL_24H = 1;
 
     public static final int INTERVAL_3DAYS = 2;
@@ -39,9 +37,10 @@ public class DateUtils {
 
     private static final String DATE_FORMAT = "dd-MM HH:mm";
 
-    private static SimpleDateFormat sSimpleDateFormat = new SimpleDateFormat(DATE_FORMAT, Locale.UK);
+    private static SimpleDateFormat sSimpleDateFormat =
+            new SimpleDateFormat(DATE_FORMAT, Locale.getDefault());
 
-    public static String convertMilliSecondsToFormattedDate(Long milliSeconds){
+    public static String convertMilliSecondsToFormattedDate(long milliSeconds) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(milliSeconds);
 

@@ -49,23 +49,23 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.hmatalonga.greenhub.Config;
-import com.hmatalonga.greenhub.managers.TaskController;
+import com.hmatalonga.greenhub.R;
 import com.hmatalonga.greenhub.events.OpenTaskDetailsEvent;
 import com.hmatalonga.greenhub.events.TaskRemovedEvent;
+import com.hmatalonga.greenhub.managers.TaskController;
+import com.hmatalonga.greenhub.models.Memory;
 import com.hmatalonga.greenhub.models.ui.Task;
 import com.hmatalonga.greenhub.ui.adapters.TaskAdapter;
 import com.hmatalonga.greenhub.util.SettingsUtils;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-
-import com.hmatalonga.greenhub.R;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 public class TaskListActivity extends BaseActivity {
 
@@ -105,7 +105,7 @@ public class TaskListActivity extends BaseActivity {
 
         setContentView(R.layout.activity_task_list);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
+        Toolbar toolbar = findViewById(R.id.toolbar_actionbar);
         if (toolbar != null) {
             setSupportActionBar(toolbar);
         }
@@ -182,15 +182,15 @@ public class TaskListActivity extends BaseActivity {
     }
 
     private void loadComponents() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
+        Toolbar toolbar = findViewById(R.id.toolbar_actionbar);
         setSupportActionBar(toolbar);
 
-        mLoader = (ProgressBar) findViewById(R.id.loader);
+        mLoader = findViewById(R.id.loader);
         mLastKilledApp = null;
         mSortOrderName = 1;
         mSortOrderMemory = 1;
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -292,7 +292,7 @@ public class TaskListActivity extends BaseActivity {
     }
 
     private void setupRecyclerView() {
-        mRecyclerView = (RecyclerView) findViewById(R.id.rv);
+        mRecyclerView = findViewById(R.id.rv);
 
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
@@ -309,7 +309,7 @@ public class TaskListActivity extends BaseActivity {
     }
 
     private void setupRefreshLayout() {
-        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_layout);
+        mSwipeRefreshLayout = findViewById(R.id.swipe_layout);
         //noinspection ResourceAsColor
         if (Build.VERSION.SDK_INT >= 23) {
             mSwipeRefreshLayout.setColorSchemeColors(
@@ -332,12 +332,15 @@ public class TaskListActivity extends BaseActivity {
     }
 
     /**
-     * This is the standard support library way of implementing "swipe to delete" feature. You can do custom drawing in onChildDraw method
-     * but whatever you draw will disappear once the swipe is over, and while the items are animating to their new position the recycler view
-     * background will be visible. That is rarely an desired effect.
+     * This is the standard support library way of implementing "swipe to delete" feature.
+     * You can do custom drawing in onChildDraw method but whatever you draw will
+     * disappear once the swipe is over, and while the items are animating to their
+     * new position the recycler view background will be visible.
+     * That is rarely an desired effect.
      */
     private void setUpItemTouchHelper() {
-        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+        ItemTouchHelper.SimpleCallback simpleItemTouchCallback =
+                new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
 
             // we want to cache these and not allocate anything repeatedly in the onChildDraw method
             Drawable background;
@@ -358,14 +361,15 @@ public class TaskListActivity extends BaseActivity {
 
             // not important, we don't want drag & drop
             @Override
-            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder,
+                                  RecyclerView.ViewHolder target) {
                 return false;
             }
 
             @Override
             public int getSwipeDirs(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
                 int position = viewHolder.getAdapterPosition();
-                TaskAdapter testAdapter = (TaskAdapter)recyclerView.getAdapter();
+                TaskAdapter testAdapter = (TaskAdapter) recyclerView.getAdapter();
                 if (testAdapter.isUndoOn() && testAdapter.isPendingRemoval(position)) {
                     return 0;
                 }
@@ -375,7 +379,7 @@ public class TaskListActivity extends BaseActivity {
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
                 int swipedPosition = viewHolder.getAdapterPosition();
-                TaskAdapter adapter = (TaskAdapter)mRecyclerView.getAdapter();
+                TaskAdapter adapter = (TaskAdapter) mRecyclerView.getAdapter();
                 boolean undoOn = adapter.isUndoOn();
                 if (undoOn) {
                     adapter.pendingRemoval(swipedPosition);
@@ -385,12 +389,14 @@ public class TaskListActivity extends BaseActivity {
             }
 
             @Override
-            public void onChildDraw(Canvas canvas, RecyclerView recyclerView, RecyclerView.ViewHolder
-                    viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+            public void onChildDraw(Canvas canvas, RecyclerView recyclerView,
+                                    RecyclerView.ViewHolder viewHolder, float dX, float dY,
+                                    int actionState, boolean isCurrentlyActive) {
 
                 View itemView = viewHolder.itemView;
 
-                // not sure why, but this method get's called for viewholder that are already swiped away
+                // not sure why, but this method get's called
+                // for viewholder that are already swiped away
                 if (viewHolder.getAdapterPosition() == -1) {
                     // not interested in those
                     return;
@@ -401,7 +407,12 @@ public class TaskListActivity extends BaseActivity {
                 }
 
                 // draw background
-                background.setBounds(itemView.getRight() + (int) dX, itemView.getTop(), itemView.getRight(), itemView.getBottom());
+                background.setBounds(
+                        itemView.getRight() + (int) dX,
+                        itemView.getTop(),
+                        itemView.getRight(),
+                        itemView.getBottom()
+                );
                 background.draw(canvas);
 
                 // draw x mark
@@ -411,13 +422,14 @@ public class TaskListActivity extends BaseActivity {
 
                 int xMarkLeft = itemView.getRight() - xMarkMargin - intrinsicWidth;
                 int xMarkRight = itemView.getRight() - xMarkMargin;
-                int xMarkTop = itemView.getTop() + (itemHeight - intrinsicHeight)/2;
+                int xMarkTop = itemView.getTop() + (itemHeight - intrinsicHeight) / 2;
                 int xMarkBottom = xMarkTop + intrinsicHeight;
                 xMark.setBounds(xMarkLeft, xMarkTop, xMarkRight, xMarkBottom);
 
                 xMark.draw(canvas);
 
-                super.onChildDraw(canvas, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+                super.onChildDraw(canvas, recyclerView, viewHolder,
+                        dX, dY, actionState, isCurrentlyActive);
             }
 
         };
@@ -426,7 +438,8 @@ public class TaskListActivity extends BaseActivity {
     }
 
     /**
-     * We're gonna setup another ItemDecorator that will draw the red background in the empty space while the items are animating to thier new positions
+     * We're gonna setup another ItemDecorator that will draw the red background
+     * in the empty space while the items are animating to thier new positions
      * after an item is removed.
      */
     private void setUpAnimationDecoratorHelper() {
@@ -451,14 +464,17 @@ public class TaskListActivity extends BaseActivity {
                 // only if animation is in progress
                 if (parent.getItemAnimator().isRunning()) {
 
-                    // some items might be animating down and some items might be animating up to close the gap left by the removed item
+                    // some items might be animating down and some items might be
+                    // animating up to close the gap left by the removed item
                     // this is not exclusive, both movement can be happening at the same time
-                    // to reproduce this leave just enough items so the first one and the last one would be just a little off screen
+                    // to reproduce this leave just enough items so the first one
+                    // and the last one would be just a little off screen
                     // then remove one from the middle
 
                     // find first child with translationY > 0
                     // and last one with translationY < 0
-                    // we're after a rect that is not covered in recycler-view views at this point in time
+                    // we're after a rect that is not covered in recycler-view views
+                    // at this point in time
                     View lastViewComingDown = null;
                     View firstViewComingUp = null;
 
@@ -487,16 +503,20 @@ public class TaskListActivity extends BaseActivity {
 
                     if (lastViewComingDown != null && firstViewComingUp != null) {
                         // views are coming down AND going up to fill the void
-                        top = lastViewComingDown.getBottom() + (int) lastViewComingDown.getTranslationY();
-                        bottom = firstViewComingUp.getTop() + (int) firstViewComingUp.getTranslationY();
+                        top = lastViewComingDown.getBottom() +
+                                (int) lastViewComingDown.getTranslationY();
+                        bottom = firstViewComingUp.getTop() +
+                                (int) firstViewComingUp.getTranslationY();
                     } else if (lastViewComingDown != null) {
                         // views are going down to fill the void
-                        top = lastViewComingDown.getBottom() + (int) lastViewComingDown.getTranslationY();
+                        top = lastViewComingDown.getBottom() +
+                                (int) lastViewComingDown.getTranslationY();
                         bottom = lastViewComingDown.getBottom();
                     } else if (firstViewComingUp != null) {
                         // views are coming up to fill the void
                         top = firstViewComingUp.getTop();
-                        bottom = firstViewComingUp.getTop() + (int) firstViewComingUp.getTranslationY();
+                        bottom = firstViewComingUp.getTop() +
+                                (int) firstViewComingUp.getTranslationY();
                     }
 
                     background.setBounds(left, top, right, bottom);
@@ -542,34 +562,25 @@ public class TaskListActivity extends BaseActivity {
 
     private void updateHeaderInfo() {
         String text;
-        TextView textView = (TextView) findViewById(R.id.count);
+        TextView textView = findViewById(R.id.count);
         text = "Apps " + mTaskList.size();
         textView.setText(text);
-        textView = (TextView) findViewById(R.id.usage);
-        double memory = getAvailableMemory();
+        textView = findViewById(R.id.usage);
+        double memory = Memory.getAvailableMemoryMB(getApplicationContext());
         if (memory > 1000) {
             text = getString(R.string.task_free_ram) + " " +
-                    (Math.round(memory / 1024.0 * 100.0) / 100.0) + " GB";
+                    (Math.round(memory / 1000.0)) + " GB";
         } else {
-            text = getString(R.string.task_free_ram) + " " + + memory + " MB";
+            text = getString(R.string.task_free_ram) + " " + memory + " MB";
         }
         textView.setText(text);
     }
 
     private void setHeaderToRefresh() {
-        TextView textView = (TextView) findViewById(R.id.count);
+        TextView textView = findViewById(R.id.count);
         textView.setText(getString(R.string.header_status_loading));
-        textView = (TextView) findViewById(R.id.usage);
+        textView = findViewById(R.id.usage);
         textView.setText("");
-    }
-
-    private double getAvailableMemory() {
-        ActivityManager.MemoryInfo info = new ActivityManager.MemoryInfo();
-        ActivityManager activityManager = (ActivityManager)
-                getApplicationContext().getSystemService(Context.ACTIVITY_SERVICE);
-        activityManager.getMemoryInfo(info);
-
-        return Math.round(info.availMem / 1048576.0 * 100.0) / 100.0;
     }
 
     private double getTotalUsage(List<Task> list) {

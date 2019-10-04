@@ -21,11 +21,10 @@ import android.app.Application;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.SystemClock;
-import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
+import com.hmatalonga.greenhub.managers.sampling.BatteryService;
 import com.hmatalonga.greenhub.managers.sampling.DataEstimator;
 import com.hmatalonga.greenhub.managers.storage.GreenHubDbMigration;
 import com.hmatalonga.greenhub.receivers.NotificationReceiver;
@@ -35,14 +34,10 @@ import com.hmatalonga.greenhub.util.LogUtils;
 import com.hmatalonga.greenhub.util.SettingsUtils;
 
 import io.fabric.sdk.android.Fabric;
-import io.realm.DynamicRealm;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
-import io.realm.RealmMigration;
-import io.realm.RealmSchema;
 
-import static com.hmatalonga.greenhub.util.LogUtils.LOGE;
-import static com.hmatalonga.greenhub.util.LogUtils.LOGI;
+import static com.hmatalonga.greenhub.util.LogUtils.logI;
 import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
 
 /**
@@ -51,10 +46,6 @@ import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
 public class GreenHubApp extends Application {
 
     private static final String TAG = makeLogTag(GreenHubApp.class);
-
-    public static boolean isServiceRunning = false;
-
-    public DataEstimator estimator;
 
     private AlarmManager mAlarmManager;
 
@@ -69,7 +60,7 @@ public class GreenHubApp extends Application {
             LogUtils.LOGGING_ENABLED = true;
         }
 
-        LOGI(TAG, "onCreate() called");
+        logI(TAG, "onCreate() called");
 
         // Init crash reports
         Fabric.with(this, new Crashlytics());
@@ -82,14 +73,14 @@ public class GreenHubApp extends Application {
                 .build();
         Realm.setDefaultConfiguration(realmConfiguration);
 
-        LOGI(TAG, "Estimator new instance");
-        estimator = new DataEstimator();
+        logI(TAG, "Estimator new instance");
+
 
         Context context = getApplicationContext();
 
         if (SettingsUtils.isTosAccepted(context)) {
             // Start GreenHub Service
-            LOGI(TAG, "startGreenHubService() called");
+            logI(TAG, "startGreenHubService() called");
             startGreenHubService();
 
             // Delete old data history
@@ -104,49 +95,45 @@ public class GreenHubApp extends Application {
     }
 
     public void startGreenHubService() {
-        if (!isServiceRunning) {
-            LOGI(TAG, "GreenHubService starting...");
+        if (!BatteryService.isServiceRunning) {
+            logI(TAG, "GreenHubService starting...");
 
             final Context context = getApplicationContext();
-            isServiceRunning = true;
 
             new Thread() {
-                private IntentFilter intentFilter;
 
                 public void run() {
-                    intentFilter = new IntentFilter();
-                    intentFilter.addAction(Intent.ACTION_BATTERY_CHANGED);
-
-                    registerReceiver(estimator, intentFilter);
-
-                    if (SettingsUtils.isSamplingScreenOn(context)) {
-                        intentFilter.addAction(Intent.ACTION_SCREEN_ON);
-                        registerReceiver(estimator, intentFilter);
-                        intentFilter.addAction(Intent.ACTION_SCREEN_OFF);
-                        registerReceiver(estimator, intentFilter);
+                    try {
+                        Intent service = new Intent(context, BatteryService.class);
+                        context.startService(service);
+                    } catch (IllegalStateException e) {
+                        e.printStackTrace();
                     }
+
                 }
             }.start();
         } else {
-            LOGI(TAG, "GreenHubService is already running...");
+            logI(TAG, "GreenHubService is already running...");
         }
     }
 
     public void stopGreenHubService() {
-        try {
-            if (estimator != null) {
-                unregisterReceiver(estimator);
-                isServiceRunning = false;
-            }
-        } catch (IllegalArgumentException e) {
-            LOGE(TAG, "Estimator receiver is not registered!");
-            e.printStackTrace();
-        }
+        Intent service = new Intent(getApplicationContext(), BatteryService.class);
+        stopService(service);
+    }
+
+    public DataEstimator getEstimator() {
+        return BatteryService.estimator;
     }
 
     public void startStatusBarUpdater() {
         Intent notificationIntent = new Intent(this, NotificationReceiver.class);
-        mNotificationIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        mNotificationIntent = PendingIntent.getBroadcast(
+                this,
+                0,
+                notificationIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT
+        );
         if (mAlarmManager == null) {
             mAlarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         }

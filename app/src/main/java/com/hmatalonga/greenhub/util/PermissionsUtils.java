@@ -27,8 +27,6 @@ import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
  */
 public class PermissionsUtils {
 
-    private static final String TAG = makeLogTag(PermissionsUtils.class);
-
     public static boolean checkPermission(final Context context, String permission) {
         return ContextCompat.checkSelfPermission(context, permission)
                 == PackageManager.PERMISSION_GRANTED;

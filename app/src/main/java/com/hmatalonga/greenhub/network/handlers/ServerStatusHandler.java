@@ -22,14 +22,15 @@ import com.hmatalonga.greenhub.Config;
 import com.hmatalonga.greenhub.models.ServerStatus;
 import com.hmatalonga.greenhub.network.services.GreenHubStatusService;
 import com.hmatalonga.greenhub.tasks.RegisterDeviceTask;
+import com.hmatalonga.greenhub.util.LogUtils;
 import com.hmatalonga.greenhub.util.SettingsUtils;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-import static com.hmatalonga.greenhub.util.LogUtils.LOGI;
 import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
 
 /**
@@ -49,18 +50,18 @@ public class ServerStatusHandler {
     }
 
     public void callGetStatus(final Context context) {
-        LOGI(TAG, "callGetStatus()");
+        LogUtils.logI(TAG, "callGetStatus()");
 
         Call<ServerStatus> call = mService.getStatus();
         call.enqueue(new Callback<ServerStatus>() {
             @Override
             public void onResponse(Call<ServerStatus> call, Response<ServerStatus> response) {
                 if (response != null && response.body() != null) {
-                    LOGI(TAG, "Server Status: { server: " + response.body().server +
+                    LogUtils.logI(TAG, "Server Status: { server: " + response.body().server +
                             ", version: " + response.body().version + " }");
 
                     // Server url has changed so it is necessary to register device again
-                    if (! SettingsUtils.fetchServerUrl(context).equals(response.body().server)) {
+                    if (!SettingsUtils.fetchServerUrl(context).equals(response.body().server)) {
                         SettingsUtils.markDeviceAccepted(context, false);
                     }
 
@@ -70,7 +71,7 @@ public class ServerStatusHandler {
                     SettingsUtils.saveAppVersion(context, response.body().version);
 
                     // Register device on the web server
-                    if (! SettingsUtils.isDeviceRegistered(context)) {
+                    if (!SettingsUtils.isDeviceRegistered(context)) {
                         new RegisterDeviceTask().execute(context);
                     }
                 }

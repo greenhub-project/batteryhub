@@ -131,6 +131,11 @@ public class SettingsUtils {
      */
     public static final String PREF_USE_OLD_MEASUREMENT = "pref_old_measurement";
 
+    /**
+     * Boolean indicating whether to display remaining time notification or not.
+     */
+    public static final String PREF_REMAINING_TIME = "pref_remaining_time";
+
     // endregion
 
     /**
@@ -200,7 +205,8 @@ public class SettingsUtils {
 
     public static boolean isServerUrlPresent(final Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        return !sp.getString(PREF_SERVER_URL, Config.SERVER_URL_DEFAULT).equals(Config.SERVER_URL_DEFAULT);
+        return !sp.getString(PREF_SERVER_URL, Config.SERVER_URL_DEFAULT)
+                .equals(Config.SERVER_URL_DEFAULT);
     }
 
     public static void markInstalledPackagesIncluded(final Context context, boolean newValue) {
@@ -447,18 +453,29 @@ public class SettingsUtils {
         return sp.getInt(PREF_APP_VERSION, BuildConfig.VERSION_CODE);
     }
 
+    /**
+     * Return true if remaining time alert is to display, false if it isn't.
+     *
+     * @param context Context to be used to lookup the {@link android.content.SharedPreferences}.
+     */
+    public static boolean isRemainingTimeAlertOn(final Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getBoolean(PREF_USE_OLD_MEASUREMENT, false);
+    }
+
     // region Listeners
 
     /**
-     * Helper method to register a settings_prefs listener. This method does not automatically handle
-     * {@code unregisterOnSharedPreferenceChangeListener() un-registering} the listener at the end
-     * of the {@code context} lifecycle.
+     * Helper method to register a settings_prefs listener. This method does not
+     * automatically handle {@code unregisterOnSharedPreferenceChangeListener() un-registering}
+     * the listener at the end of the {@code context} lifecycle.
      *
      * @param context  Context to be used to lookup the {@link android.content.SharedPreferences}.
      * @param listener Listener to register.
      */
-    public static void registerOnSharedPreferenceChangeListener(final Context context,
-                                                                SharedPreferences.OnSharedPreferenceChangeListener listener) {
+    public static void registerOnSharedPreferenceChangeListener(
+            final Context context,
+            SharedPreferences.OnSharedPreferenceChangeListener listener) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         sp.registerOnSharedPreferenceChangeListener(listener);
     }
@@ -470,8 +487,9 @@ public class SettingsUtils {
      * @param context  Context to be used to lookup the {@link android.content.SharedPreferences}.
      * @param listener Listener to un-register.
      */
-    public static void unregisterOnSharedPreferenceChangeListener(final Context context,
-                                                                  SharedPreferences.OnSharedPreferenceChangeListener listener) {
+    public static void unregisterOnSharedPreferenceChangeListener(
+            final Context context,
+            SharedPreferences.OnSharedPreferenceChangeListener listener) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         sp.unregisterOnSharedPreferenceChangeListener(listener);
     }

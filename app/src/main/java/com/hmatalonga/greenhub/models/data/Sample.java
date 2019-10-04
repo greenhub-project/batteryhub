@@ -39,7 +39,7 @@ public class Sample extends RealmObject {
     // Mobile app version of sample
     public int version;
 
-    // Mobile database version of sample
+    // Mobile mDatabase version of sample
     public int database;
 
     // State of the battery. ie. charging, discharging, etc.
@@ -110,4 +110,7 @@ public class Sample extends RealmObject {
 
     // Extra features for extensibility
     public RealmList<Feature> features;
+
+    // Sensor list struct, with sensor power, type, isWakeUp, etc.
+    public RealmList<SensorDetails> sensorDetailsList;
 }

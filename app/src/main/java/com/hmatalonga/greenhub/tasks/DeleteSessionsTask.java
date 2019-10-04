@@ -20,6 +20,7 @@ import android.os.AsyncTask;
 
 import com.hmatalonga.greenhub.models.data.BatterySession;
 import com.hmatalonga.greenhub.util.DateUtils;
+
 import io.realm.Realm;
 import io.realm.RealmResults;
 

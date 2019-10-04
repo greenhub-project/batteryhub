@@ -31,10 +31,10 @@
     <string name="not_available">Não disponível</string>
     <string name="now">Agora</string>
 
-    <!-- Short text welcoming the user to the application -->
+    <!-- Short mText welcoming the user to the application -->
     <string name="welcome_to_greenhub_app">Bemvindo ao BatteryHub!</string>
 
-    <!-- Medium-length welcome text indicating the subsequent text is important legal information -->
+    <!-- Medium-length welcome mText indicating the subsequent mText is important legal information -->
     <string name="welcome_text">Antes de começar, estão aqui algumas informações importantes como usar esta app. Demorará apenas um minuto!</string>
 
     <string name="action_inbox">Mensagens</string>
@@ -91,6 +91,9 @@
     <string name="device_summary_memory_label">Uso de memória</string>
     <string name="device_summary_network_label">Rede</string>
 
+    <string name="card_no_value">#####</string>
+    <string name="card_no_value_short">##</string>
+    <string name="card_no_value_dash">--</string>
     <string name="card_view_more">Ver mais</string>
 
     <string name="device_card_title">Dispositivo</string>
@@ -98,9 +101,11 @@
     <string name="device_card_model">Modelo</string>
 
     <string name="network_card_title">Rede</string>
+    <string name="network_card_wifi">Wifi</string>
     <string name="network_card_ip">Endereço IP</string>
     <string name="network_card_mac">Endereço MAC</string>
     <string name="network_card_ssid">SSID de Rede</string>
+    <string name="network_card_bluetooth">Bluetooth</string>
     <string name="network_card_bluetooth_address">Endereço bluetooth</string>
     <string name="network_card_mobile_data">Dados móveis</string>
     <string name="network_card_network_type">Tipo de rede</string>
@@ -151,6 +156,20 @@
     <string name="task_killed">Terminadas</string>
     <string name="task_cleared">Limpos</string>
     <string name="task_free_ram">Memória livre</string>
+
+    <!-- Process List -->
+    <string name="expected">Expected improvement:</string>
+    <string name="killappname">Kill App Name</string>
+    <string name="appname">App Name</string>
+    <string name="priority">Priority:</string>
+    <string name="priorityDefault">Not running</string>
+    <string name="prioritynotrunning">Not running</string>
+    <string name="priorityforeground">Foreground App</string>
+    <string name="prioritybackground">Background App</string>
+    <string name="priorityservice">Service</string>
+    <string name="priorityperceptible">Perceptible App</string>
+    <string name="priorityvisible">Visible App</string>
+    <string name="prioritysuggestion">Suggestion</string>
 
     <!-- Strings related to ProcessList -->
     <string name="action_sort_name">Ordenar por nome</string>
@@ -248,4 +267,12 @@
         recolhe certas informações relativas à forma como se usa. A política de privacidade do GreenHub explica como o GreenHub trata as suas informações e protege
         a sua privacidade quando é usada a aplicação. Ao usar a aplicação, está a concordar com a política de privacidade do GreenHub.
     </string>
+    <string name="sensors_card_name">Nome</string>
+    <string name="sensors_card_power">Força</string>
+    <string name="sensors_card_title">Sensores</string>
+    <string name="sensors_card_type">Tipo</string>
+    <string name="sensors_card_iswakeup">Desperta</string>
+    <string name="sensors_card_details">Detalhes</string>
+    <string name="sensors_card_inuse">Em uso</string>
+    <string name="sensors_card_usefrequency">Frequência de uso</string>
 </resources>

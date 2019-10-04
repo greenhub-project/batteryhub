@@ -19,14 +19,22 @@ package com.hmatalonga.greenhub.fragments;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
+import android.database.DataSetObserver;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ExpandableListAdapter;
+import android.widget.ExpandableListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.answers.ContentViewEvent;
@@ -37,20 +45,32 @@ import com.hmatalonga.greenhub.models.Bluetooth;
 import com.hmatalonga.greenhub.models.Memory;
 import com.hmatalonga.greenhub.models.Network;
 import com.hmatalonga.greenhub.models.Phone;
+import com.hmatalonga.greenhub.models.Sensors;
 import com.hmatalonga.greenhub.models.Specifications;
 import com.hmatalonga.greenhub.models.Storage;
 import com.hmatalonga.greenhub.models.Wifi;
 import com.hmatalonga.greenhub.models.data.StorageDetails;
 import com.hmatalonga.greenhub.ui.TaskListActivity;
+import com.hmatalonga.greenhub.ui.adapters.CustomExpandableListAdapter;
+import com.hmatalonga.greenhub.ui.adapters.ExpandableListDataPump;
+import com.hmatalonga.greenhub.util.LogUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
+
 /**
  * Device Fragment.
  */
 public class DeviceFragment extends Fragment {
+    private static final String TAG = makeLogTag(DeviceFragment.class);
     private Context mContext = null;
 
     private View mParentView = null;
@@ -69,6 +89,14 @@ public class DeviceFragment extends Fragment {
 
     private TextView mStorageFree;
 
+    private ExpandableListView mExpandableListView;
+
+    private CustomExpandableListAdapter mExpandableListAdapter;
+
+    private List<String> mExpandableListTitle;
+
+    private Map<String, List<String>> mExpandableListDetail;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -79,7 +107,6 @@ public class DeviceFragment extends Fragment {
         mHandler = new Handler();
 
         loadComponents(view);
-
         return view;
     }
 
@@ -117,14 +144,14 @@ public class DeviceFragment extends Fragment {
         model.append(Specifications.getModel());
 
         // Device
-        textView = (TextView) view.findViewById(R.id.androidVersion);
+        textView = view.findViewById(R.id.androidVersion);
         textView.setText(Specifications.getOsVersion());
-        textView = (TextView) view.findViewById(R.id.androidModel);
+        textView = view.findViewById(R.id.androidModel);
         textView.setText(model);
-        textView = (TextView) view.findViewById(R.id.androidImei);
+        textView = view.findViewById(R.id.androidImei);
         value = Phone.getDeviceId(mContext);
         textView.setText(value == null ? getString(R.string.not_available) : value);
-        textView = (TextView) view.findViewById(R.id.androidRoot);
+        textView = view.findViewById(R.id.androidRoot);
         textView.setText(Specifications.isRooted() ?
                 getString(R.string.yes) : getString(R.string.no));
 
@@ -134,10 +161,10 @@ public class DeviceFragment extends Fragment {
         updateMobileData(view, Network.isMobileDataEnabled(mContext));
 
         // Memory
-        mMemoryBar = (ProgressBar) view.findViewById(R.id.memoryBar);
-        mMemoryUsed = (TextView) view.findViewById(R.id.memoryUsed);
-        mMemoryFree = (TextView) view.findViewById(R.id.memoryFree);
-        Button btViewMore = (Button) view.findViewById(R.id.buttonViewMore);
+        mMemoryBar = view.findViewById(R.id.memoryBar);
+        mMemoryUsed = view.findViewById(R.id.memoryUsed);
+        mMemoryFree = view.findViewById(R.id.memoryFree);
+        Button btViewMore = view.findViewById(R.id.buttonViewMore);
         btViewMore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -150,11 +177,13 @@ public class DeviceFragment extends Fragment {
         });
 
         // Storage
-        mStorageBar = (ProgressBar) view.findViewById(R.id.storageBar);
-        mStorageUsed = (TextView) view.findViewById(R.id.storageUsed);
-        mStorageFree = (TextView) view.findViewById(R.id.storageFree);
+        mStorageBar = view.findViewById(R.id.storageBar);
+        mStorageUsed = view.findViewById(R.id.storageUsed);
+        mStorageFree = view.findViewById(R.id.storageFree);
 
-        mHandler.post(runnable);
+        // Sensors
+        updateSensorsData(view, mContext);
+        mHandler.post(mRunnable);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -179,90 +208,175 @@ public class DeviceFragment extends Fragment {
     private void updateWifiData(final View view, boolean value) {
         TextView textView;
 
-        textView = (TextView) view.findViewById(R.id.wifi);
+        textView = view.findViewById(R.id.wifi);
         textView.setText(value ? getString(R.string.yes) : getString(R.string.no));
 
         // Display/Hide Additional Wifi fields
-        textView = (TextView) view.findViewById(R.id.ipAddressLabel);
+        textView = view.findViewById(R.id.ipAddressLabel);
         textView.setVisibility(value ? View.VISIBLE : View.GONE);
 
         // IP Address
-        textView = (TextView) view.findViewById(R.id.ipAddress);
+        textView = view.findViewById(R.id.ipAddress);
         if (value) {
             textView.setText(Wifi.getIpAddress(mContext));
         }
         textView.setVisibility(value ? View.VISIBLE : View.GONE);
 
-        textView = (TextView) view.findViewById(R.id.macAddressLabel);
+        textView = view.findViewById(R.id.macAddressLabel);
         textView.setVisibility(value ? View.VISIBLE : View.GONE);
 
         // MAC Address
-        textView = (TextView) view.findViewById(R.id.macAddress);
+        textView = view.findViewById(R.id.macAddress);
         if (value) {
             textView.setText(Wifi.getMacAddress(mContext));
         }
         textView.setVisibility(value ? View.VISIBLE : View.GONE);
 
-        textView = (TextView) view.findViewById(R.id.ssidLabel);
+        textView = view.findViewById(R.id.ssidLabel);
         textView.setVisibility(value ? View.VISIBLE : View.GONE);
 
         // SSID Network
-        textView = (TextView) view.findViewById(R.id.ssid);
+        textView = view.findViewById(R.id.ssid);
         if (value) {
             textView.setText(Wifi.getInfo(mContext).getSSID());
         }
         textView.setVisibility(value ? View.VISIBLE : View.GONE);
     }
 
+    private void updateSensorsData(final View view, final Context context) {
+        mExpandableListDetail = ExpandableListDataPump.getData(context);
+
+        LogUtils.logI(TAG, "SENSORS SIZE = " + mExpandableListDetail.size());
+
+        mExpandableListView = view.findViewById(R.id.expandableListView);
+
+        mExpandableListTitle = new ArrayList<>(mExpandableListDetail.keySet());
+        mExpandableListAdapter = new CustomExpandableListAdapter(context,
+                mExpandableListTitle, mExpandableListDetail);
+        mExpandableListView.setAdapter(mExpandableListAdapter);
+        mExpandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+
+            @Override
+            public boolean onGroupClick(ExpandableListView parent, View v,
+                                        int groupPosition, long id) {
+                HashMap<String, List<String>> listTemp = ExpandableListDataPump.
+                        getData(context);
+                ExpandableListAdapter listAdapter = parent.getExpandableListAdapter();
+                String group = (String) listAdapter.getGroup(groupPosition);
+                List<String> list = listTemp.get(group);
+                mExpandableListDetail.put(group, list);
+                setListViewHeight(parent, groupPosition);
+                mExpandableListAdapter.notifyDataSetChanged();
+                return false;
+            }
+        });
+
+        setListViewHeight(mExpandableListView, -1);
+    }
+
+    private Fragment getFragment() {
+        return this;
+    }
+
+    private void setListViewHeight(ExpandableListView listView,
+                                   int group) {
+        ExpandableListAdapter listAdapter = listView.getExpandableListAdapter();
+        int totalHeight = 0;
+        int desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.getWidth(),
+                View.MeasureSpec.EXACTLY);
+        //First method called
+        if (group == -1) {
+            View groupItem = listAdapter.getGroupView(0, false,
+                    null, listView);
+            groupItem.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
+
+            totalHeight = groupItem.getMeasuredHeight() /
+                    (listAdapter.getChildrenCount(0) + 1)
+                    * (listAdapter.getGroupCount() - 1);
+        } else {
+            for (int i = 0; i < listAdapter.getGroupCount(); i++) {
+                View groupItem = listAdapter.getGroupView(i, false,
+                        null, listView);
+                groupItem.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
+
+                totalHeight += groupItem.getMeasuredHeight();
+
+                if (((listView.isGroupExpanded(i)) && (i != group))
+                        || ((!listView.isGroupExpanded(i)) && (i == group))) {
+                    for (int j = 0; j < listAdapter.getChildrenCount(i); j++) {
+                        View listItem = listAdapter.getChildView(i, j, false,
+                                null, listView);
+                        listItem.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
+
+                        totalHeight += listItem.getMeasuredHeight();
+
+                    }
+                }
+            }
+        }
+
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        int height = totalHeight
+                + (listView.getDividerHeight() * listAdapter.getGroupCount() * 2);
+        if (height < 70)
+            height = 220;
+        params.height = height;
+        listView.setLayoutParams(params);
+        listView.requestLayout();
+    }
+
     private void updateBluetoothData(final View view, boolean value) {
         TextView textView;
 
-        textView = (TextView) view.findViewById(R.id.bluetooth);
+        textView = view.findViewById(R.id.bluetooth);
         textView.setText(value ? getString(R.string.yes) : getString(R.string.no));
 
         // Bluetooth Address
-        textView = (TextView) view.findViewById(R.id.bluetoothAddress);
+        textView = view.findViewById(R.id.bluetoothAddress);
         if (value) {
-            textView.setText(Bluetooth.getAddress());
+            textView.setText(Bluetooth.getAddress(view.getContext()));
         }
         textView.setVisibility(value ? View.VISIBLE : View.GONE);
 
-        textView = (TextView) view.findViewById(R.id.bluetoothAddressLabel);
+        textView = view.findViewById(R.id.bluetoothAddressLabel);
         textView.setVisibility(value ? View.VISIBLE : View.GONE);
     }
 
     private void updateMobileData(final View view, boolean value) {
         TextView textView;
 
-        textView = (TextView) view.findViewById(R.id.mobileData);
+        textView = view.findViewById(R.id.mobileData);
         textView.setText(value ? getString(R.string.yes) : getString(R.string.no));
 
         // Bluetooth Address
-        textView = (TextView) view.findViewById(R.id.networkType);
+        textView = view.findViewById(R.id.networkType);
         if (value) {
             textView.setText(Network.getMobileNetworkType(mContext));
         }
         textView.setVisibility(value ? View.VISIBLE : View.GONE);
 
-        textView = (TextView) view.findViewById(R.id.networkTypeLabel);
+        textView = view.findViewById(R.id.networkTypeLabel);
         textView.setVisibility(value ? View.VISIBLE : View.GONE);
     }
 
-    private Runnable runnable = new Runnable() {
+    private Runnable mRunnable = new Runnable() {
         @Override
         public void run() {
-            // 1 total, 2 active
-            int[] memory = Memory.readMemoryInfo();
+            // 0 total, 1 free, 2 used
+            long[] memory = Memory.getMemoryInfo(mContext);
+            int totalMemory = (int) (memory[0] / 1000000);
+            int freeMemory = (int) (memory[1] / 1000000);
+            int usedMemory = (int) (memory[2] / 1000000);
             StorageDetails storageDetails = Storage.getStorageDetails();
             String value;
 
-            mMemoryBar.setMax(memory[1]);
-            mMemoryBar.setProgress(memory[1] - memory[2]);
+            mMemoryBar.setMax(totalMemory);
+            mMemoryBar.setProgress(usedMemory);
 
-            value = (memory[1] - memory[2]) / 1024 + " MB";
+            value = usedMemory + " MB";
             mMemoryUsed.setText(value);
 
-            value = memory[2] / 1024 + " MB";
+            value = freeMemory + " MB";
             mMemoryFree.setText(value);
 
             mStorageBar.setMax(storageDetails.total);

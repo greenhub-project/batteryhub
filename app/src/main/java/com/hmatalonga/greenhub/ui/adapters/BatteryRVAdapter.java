@@ -24,14 +24,14 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-
 import com.hmatalonga.greenhub.R;
 import com.hmatalonga.greenhub.models.ui.BatteryCard;
 
+import java.util.ArrayList;
+
 /**
  * RecyclerView Adapter Class
- *
+ * <p>
  * Created by hugo on 05-04-2016.
  */
 public class BatteryRVAdapter extends RecyclerView.Adapter<BatteryRVAdapter.DashboardViewHolder> {
@@ -46,17 +46,17 @@ public class BatteryRVAdapter extends RecyclerView.Adapter<BatteryRVAdapter.Dash
 
         DashboardViewHolder(View itemView) {
             super(itemView);
-            cv = (CardView) itemView.findViewById(R.id.cv);
-            icon = (ImageView) itemView.findViewById(R.id.icon);
-            label = (TextView) itemView.findViewById(R.id.label);
-            value = (TextView) itemView.findViewById(R.id.value);
+            cv = itemView.findViewById(R.id.cv);
+            icon = itemView.findViewById(R.id.icon);
+            label = itemView.findViewById(R.id.label);
+            value = itemView.findViewById(R.id.value);
             indicator = itemView.findViewById(R.id.indicator);
         }
     }
 
     private ArrayList<BatteryCard> mBatteryCards;
 
-    public BatteryRVAdapter(ArrayList<BatteryCard> batteryCards){
+    public BatteryRVAdapter(ArrayList<BatteryCard> batteryCards) {
         this.mBatteryCards = batteryCards;
     }
 
@@ -88,12 +88,11 @@ public class BatteryRVAdapter extends RecyclerView.Adapter<BatteryRVAdapter.Dash
         return mBatteryCards.size();
     }
 
-    public void swap(ArrayList<BatteryCard> list){
+    public void swap(ArrayList<BatteryCard> list) {
         if (mBatteryCards != null) {
             mBatteryCards.clear();
             mBatteryCards.addAll(list);
-        }
-        else {
+        } else {
             mBatteryCards = list;
         }
         notifyDataSetChanged();

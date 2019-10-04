@@ -35,11 +35,10 @@ public class FontManager {
 
     public static Typeface getTypeface(Context context, String name) {
         Typeface tf = fontCache.get(name);
-        if(tf == null) {
+        if (tf == null) {
             try {
                 tf = Typeface.createFromAsset(context.getAssets(), name);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 return null;
             }
             fontCache.put(name, tf);

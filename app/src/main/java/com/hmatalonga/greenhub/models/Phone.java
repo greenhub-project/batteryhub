@@ -24,19 +24,15 @@ import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
 
-import java.lang.reflect.Method;
-import java.util.List;
-
 import com.hmatalonga.greenhub.util.PermissionsUtils;
 
-import static com.hmatalonga.greenhub.util.LogUtils.LOGW;
+import java.lang.reflect.Method;
+import java.util.List;
 
 /**
  * Phone.
  */
 public class Phone {
-
-    private static final String TAG = "Phone";
 
     // Call state constants
     public static String CALL_STATE_IDLE = "idle";
@@ -51,7 +47,8 @@ public class Phone {
 
     /* Get call status */
     public static String getCallState(Context context) {
-        TelephonyManager telManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+        TelephonyManager telManager =
+                (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
 
         int callState = telManager.getCallState();
         switch (callState) {
@@ -77,7 +74,8 @@ public class Phone {
 
     /* Get Phone Type */
     public static String getType(Context context) {
-        TelephonyManager telManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+        TelephonyManager telManager =
+                (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
 
         int phoneType = telManager.getPhoneType();
         switch (phoneType) {
@@ -144,11 +142,11 @@ public class Phone {
                         cursor.moveToNext();
                     }
                 } else {
-                    LOGW("CallDurFromBoot", "No calls listed");
+                    logW("CallDurFromBoot", "No calls listed");
                 }
                 cursor.close();
             } else {
-                LOGW("CallDurFromBoot", "Cursor is null");
+                logW("CallDurFromBoot", "Cursor is null");
             }
         } catch (SecurityException e) {
             e.printStackTrace();
@@ -225,7 +223,8 @@ public class Phone {
                     }
                     if (callType == 3) {
                         curMonth.totalMissedCallNum++;
-                        callInDur.put("totalMissedCallNum", String.valueOf(curMonth.totalMissedCallNum));
+                        callInDur.put("totalMissedCallNum",
+                            String.valueOf(curMonth.totalMissedCallNum));
                     }
                 }
             }
@@ -273,7 +272,8 @@ public class Phone {
      * @return 2-3 digit network code
      */
     public static String getMnc(final Context context) {
-        TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+        TelephonyManager telephonyManager =
+                (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
         String networkOperator = telephonyManager.getNetworkOperator();
         if (networkOperator != null && networkOperator.length() >= 5) {
             return networkOperator.substring(3);
@@ -298,7 +298,8 @@ public class Phone {
      * @return Network operator name, aka. carrier
      */
     public static String getNetworkOperator(Context context) {
-        TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+        TelephonyManager telephonyManager =
+                (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
         String operator;
 
         operator = getNetworkOperators(context);
@@ -306,7 +307,10 @@ public class Phone {
         operator = telephonyManager.getNetworkOperatorName();
         if (operator != null && operator.length() != 0) return operator;
         // CDMA support
-        operator = Specifications.getStringFromSystemProperty(context, "ro.cdma.home.operator.alpha");
+        operator = Specifications.getStringFromSystemProperty(
+                context,
+                "ro.cdma.home.operator.alpha"
+        );
         if (operator != null && operator.length() != 0) return operator;
 
         return "unknown";
@@ -329,7 +333,8 @@ public class Phone {
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
             SubscriptionManager subscriptionManager = SubscriptionManager.from(context);
             if (subscriptionManager != null) {
-                List<SubscriptionInfo> subscriptions = subscriptionManager.getActiveSubscriptionInfoList();
+                List<SubscriptionInfo> subscriptions =
+                        subscriptionManager.getActiveSubscriptionInfoList();
                 if (subscriptions != null) {
                     for (SubscriptionInfo info : subscriptions) {
                         CharSequence carrierName = info.getCarrierName();

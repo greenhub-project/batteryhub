@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'realm-android'
 apply plugin: 'io.fabric'
 
-// apply from: 'checkstyle.gradle'
+apply from: 'checkstyle.gradle'
 
 // Check if can build a release config
 def canBuildRelease = rootProject.file('keystore.properties').exists()
@@ -18,7 +18,6 @@ if (canBuildRelease) {
 
 android {
     compileSdkVersion project.compileSdkVersion.toInteger()
-    buildToolsVersion project.buildToolsVersion
     signingConfigs {
         debug {
             // Explicit debug key for Travis CI automation
@@ -59,6 +58,7 @@ android {
                 proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
                 signingConfig signingConfigs.release
                 zipAlignEnabled true
+                shrinkResources true
             }
         }
     }
@@ -89,18 +89,18 @@ dependencies {
     implementation "com.android.support:cardview-v7:${androidSupportLibVersion}"
     implementation "com.android.support:recyclerview-v7:${androidSupportLibVersion}"
     // JSON utility library.
-    implementation 'com.google.code.gson:gson:2.8.0'
+    implementation 'com.google.code.gson:gson:2.8.5'
     // Retrofit library for networking operations
     implementation 'com.squareup.retrofit2:retrofit:2.1.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.1.0'
     // greenrobot for event communications
     implementation 'org.greenrobot:eventbus:3.0.0'
     // MPAndroidChart library for drawing charts
-    implementation 'com.github.PhilJay:MPAndroidChart:v3.0.1'
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
     // Android Processes library
     implementation 'com.jaredrummler:android-processes:1.0.9'
     // crashlytics
-    implementation('com.crashlytics.sdk.android:crashlytics:2.7.1@aar') {
+    implementation('com.crashlytics.sdk.android:crashlytics:2.9.2@aar') {
         transitive = true
     }
 }

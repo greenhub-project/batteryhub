@@ -25,25 +25,25 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
 
+import com.hmatalonga.greenhub.R;
+import com.hmatalonga.greenhub.fragments.TosFragment;
+import com.hmatalonga.greenhub.fragments.WelcomeFragment;
+import com.hmatalonga.greenhub.util.LogUtils;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.hmatalonga.greenhub.R;
-import com.hmatalonga.greenhub.fragments.TosFragment;
-import com.hmatalonga.greenhub.fragments.WelcomeFragment;
-
-import static com.hmatalonga.greenhub.util.LogUtils.LOGD;
 import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
 
 /**
  * Terms of Service activity activated via
  * {@link com.hmatalonga.greenhub.ui.BaseActivity} functionality.
  */
-public class WelcomeActivity extends AppCompatActivity implements WelcomeFragment.WelcomeFragmentContainer {
+public class WelcomeActivity extends AppCompatActivity implements
+        WelcomeFragment.WelcomeFragmentContainer {
 
     private static final String TAG = makeLogTag(WelcomeActivity.class);
-    WelcomeActivityContent mContentFragment;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -51,19 +51,19 @@ public class WelcomeActivity extends AppCompatActivity implements WelcomeFragmen
 
         setContentView(R.layout.activity_welcome);
 
-        mContentFragment = getCurrentFragment(this);
+        WelcomeActivityContent currentFragment = getCurrentFragment(this);
 
         // If there's no fragment to use, we're done here.
-        if (mContentFragment == null) {
+        if (currentFragment == null) {
             finish();
         }
 
         // Wire up the fragment
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        fragmentTransaction.add(R.id.welcome_content, (Fragment) mContentFragment);
+        fragmentTransaction.add(R.id.welcome_content, (Fragment) currentFragment);
         fragmentTransaction.commit();
 
-        LOGD(TAG, "Inside Create View.");
+        LogUtils.logD(TAG, "Inside Create View.");
     }
 
     /**
@@ -126,7 +126,7 @@ public class WelcomeActivity extends AppCompatActivity implements WelcomeFragmen
         try {
             getPositiveButton().setEnabled(enabled);
         } catch (NullPointerException e) {
-            LOGD(TAG, "Positive welcome button doesn't exist to set enabled.");
+            LogUtils.logD(TAG, "Positive welcome button doesn't exist to set enabled.");
         }
     }
 
@@ -140,7 +140,7 @@ public class WelcomeActivity extends AppCompatActivity implements WelcomeFragmen
         try {
             getNegativeButton().setEnabled(enabled);
         } catch (NullPointerException e) {
-            LOGD(TAG, "Negative welcome button doesn't exist to set enabled.");
+            LogUtils.logD(TAG, "Negative welcome button doesn't exist to set enabled.");
         }
     }
 

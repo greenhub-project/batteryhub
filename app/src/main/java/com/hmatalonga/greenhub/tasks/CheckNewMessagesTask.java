@@ -49,7 +49,8 @@ public class CheckNewMessagesTask extends AsyncTask<Context, Void, Void> {
         );
         call.enqueue(new Callback<List<JsonObject>>() {
             @Override
-            public void onResponse(Call<List<JsonObject>> call, Response<List<JsonObject>> response) {
+            public void onResponse(Call<List<JsonObject>> call,
+                                   Response<List<JsonObject>> response) {
                 if (response == null) {
                     EventBus.getDefault().post(
                             new StatusEvent(

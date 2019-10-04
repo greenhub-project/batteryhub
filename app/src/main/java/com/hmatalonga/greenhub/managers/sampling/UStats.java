@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class UStats {
     @TargetApi(21)
-    public static List<UsageStats> getUsageStatsList(final Context context){
+    public static List<UsageStats> getUsageStatsList(final Context context) {
         UsageStatsManager usm = getUsageStatsManager(context);
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.MONTH, -1);
@@ -24,7 +24,7 @@ public class UStats {
     }
 
     @SuppressWarnings("ResourceType")
-    private static UsageStatsManager getUsageStatsManager(final Context context){
+    private static UsageStatsManager getUsageStatsManager(final Context context) {
         return (UsageStatsManager) context.getSystemService("usagestats");
     }
 }

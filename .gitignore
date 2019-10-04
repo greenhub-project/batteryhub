@@ -94,6 +94,8 @@ gradlelog.txt
 app/src/release/google-services.json
 app/src/debug/google-services.json
 app/pepk.jar
+app/release/
+
 
 # Upload private keys
 app/upload_certificate.pem

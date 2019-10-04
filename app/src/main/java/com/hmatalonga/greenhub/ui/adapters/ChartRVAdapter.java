@@ -17,6 +17,7 @@
 package com.hmatalonga.greenhub.ui.adapters;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -32,14 +33,14 @@ import com.github.mikephil.charting.components.IMarker;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
-
-import java.util.ArrayList;
-
+import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.hmatalonga.greenhub.R;
 import com.hmatalonga.greenhub.models.ui.ChartCard;
 import com.hmatalonga.greenhub.ui.views.ChartMarkerView;
 import com.hmatalonga.greenhub.util.DateUtils;
 import com.hmatalonga.greenhub.util.StringHelper;
+
+import java.util.ArrayList;
 
 /**
  * ChartRVAdapter.
@@ -69,14 +70,14 @@ public class ChartRVAdapter extends RecyclerView.Adapter<ChartRVAdapter.Dashboar
 
         DashboardViewHolder(View itemView) {
             super(itemView);
-            cv = (CardView) itemView.findViewById(R.id.cv);
-            label = (TextView) itemView.findViewById(R.id.label);
-            interval = (TextView) itemView.findViewById(R.id.interval);
-            chart = (LineChart) itemView.findViewById(R.id.chart);
-            extras = (RelativeLayout) itemView.findViewById(R.id.extra_details);
-            min = (TextView) itemView.findViewById(R.id.minValue);
-            avg = (TextView) itemView.findViewById(R.id.avgValue);
-            max = (TextView) itemView.findViewById(R.id.maxValue);
+            cv = itemView.findViewById(R.id.cv);
+            label = itemView.findViewById(R.id.label);
+            interval = itemView.findViewById(R.id.interval);
+            chart = itemView.findViewById(R.id.chart);
+            extras = itemView.findViewById(R.id.extra_details);
+            min = itemView.findViewById(R.id.minValue);
+            avg = itemView.findViewById(R.id.avgValue);
+            max = itemView.findViewById(R.id.maxValue);
         }
     }
 
@@ -91,12 +92,13 @@ public class ChartRVAdapter extends RecyclerView.Adapter<ChartRVAdapter.Dashboar
     }
 
     @Override
-    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
     }
 
     @Override
-    public ChartRVAdapter.DashboardViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ChartRVAdapter.DashboardViewHolder onCreateViewHolder(@NonNull ViewGroup parent,
+                                                                 int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(
                 R.layout.chart_card_view,
                 parent,
@@ -106,7 +108,7 @@ public class ChartRVAdapter extends RecyclerView.Adapter<ChartRVAdapter.Dashboar
     }
 
     @Override
-    public void onBindViewHolder(DashboardViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull DashboardViewHolder holder, int position) {
         ChartCard card = mChartCards.get(position);
         setup(holder, card);
         holder.chart.setData(loadData(card));
@@ -149,12 +151,11 @@ public class ChartRVAdapter extends RecyclerView.Adapter<ChartRVAdapter.Dashboar
         return mChartCards.size();
     }
 
-    public void swap(ArrayList<ChartCard> list){
+    public void swap(ArrayList<ChartCard> list) {
         if (mChartCards != null) {
             mChartCards.clear();
             mChartCards.addAll(list);
-        }
-        else {
+        } else {
             mChartCards = list;
         }
         notifyDataSetChanged();
@@ -176,16 +177,23 @@ public class ChartRVAdapter extends RecyclerView.Adapter<ChartRVAdapter.Dashboar
     }
 
     private void setup(DashboardViewHolder holder, final ChartCard card) {
-        IAxisValueFormatter formatterX = new IAxisValueFormatter() {
+
+        holder.chart.getXAxis().setValueFormatter(new ValueFormatter() {
             @Override
-            public String getFormattedValue(float value, AxisBase axis) {
+            public String getFormattedValue(float value) {
                 return DateUtils.convertMilliSecondsToFormattedDate((long) value);
             }
-        };
+        });
 
-        IAxisValueFormatter formatterY= new IAxisValueFormatter() {
+        if (card.type == BATTERY_LEVEL) {
+            holder.chart.getAxisLeft().setAxisMaximum(1f);
+        }
+
+        holder.chart.setExtraBottomOffset(5f);
+        holder.chart.getAxisLeft().setDrawGridLines(false);
+        holder.chart.getAxisLeft().setValueFormatter(new ValueFormatter() {
             @Override
-            public String getFormattedValue(float value, AxisBase axis) {
+            public String getFormattedValue(float value) {
                 switch (card.type) {
                     case BATTERY_LEVEL:
                         return StringHelper.formatPercentageNumber(value);
@@ -197,17 +205,7 @@ public class ChartRVAdapter extends RecyclerView.Adapter<ChartRVAdapter.Dashboar
                         return String.valueOf(value);
                 }
             }
-        };
-
-        holder.chart.getXAxis().setValueFormatter(formatterX);
-
-        if (card.type == BATTERY_LEVEL) {
-            holder.chart.getAxisLeft().setAxisMaximum(1f);
-        }
-
-        holder.chart.setExtraBottomOffset(5f);
-        holder.chart.getAxisLeft().setDrawGridLines(false);
-        holder.chart.getAxisLeft().setValueFormatter(formatterY);
+        });
         holder.chart.getAxisRight().setDrawGridLines(false);
         holder.chart.getAxisRight().setDrawLabels(false);
         holder.chart.getXAxis().setDrawGridLines(false);
@@ -224,6 +222,6 @@ public class ChartRVAdapter extends RecyclerView.Adapter<ChartRVAdapter.Dashboar
 
         holder.chart.setMarker(marker);
 
-        holder.chart.animateY(600, Easing.EasingOption.Linear);
+        holder.chart.animateY(600, Easing.EaseInOutElastic);
     }
 }

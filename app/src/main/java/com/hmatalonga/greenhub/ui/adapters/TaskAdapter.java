@@ -17,9 +17,9 @@ import android.widget.TextView;
 
 import com.hmatalonga.greenhub.Config;
 import com.hmatalonga.greenhub.R;
-import com.hmatalonga.greenhub.managers.TaskController;
 import com.hmatalonga.greenhub.events.OpenTaskDetailsEvent;
 import com.hmatalonga.greenhub.events.TaskRemovedEvent;
+import com.hmatalonga.greenhub.managers.TaskController;
 import com.hmatalonga.greenhub.models.ui.Task;
 
 import org.greenrobot.eventbus.EventBus;
@@ -35,20 +35,20 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
 
     public static final String TAG = "TaskAdapter";
 
-    private List<Task> items;
+    private List<Task> mItems;
 
-    private List<Task> itemsPendingRemoval;
+    private List<Task> mItemsPendingRemoval;
 
     // is undo on, you can turn it on from the toolbar menu
-    private boolean undoOn;
+    private boolean mUndoOn;
 
     // hanlder for running delayed runnables
-    private Handler handler;
+    private Handler mHandler;
 
-    // map of items to pending runnables, so we can cancel a removal
-    private HashMap<Task, Runnable> pendingRunnables = new HashMap<>();
+    // map of mItems to pending runnables, so we can cancel a removal
+    private HashMap<Task, Runnable> mPendingRunnables = new HashMap<>();
 
-    private TaskController taskController;
+    private TaskController mTaskController;
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
@@ -66,26 +66,26 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
 
         ViewHolder(View view) {
             super(view);
-            name = (TextView) view.findViewById(R.id.taskName);
-            memory = (TextView) view.findViewById(R.id.taskMemory);
-            details = (RelativeLayout) view.findViewById(R.id.taskDetailsContainer);
-            autoStart = (TextView) view.findViewById(R.id.taskAutoStart);
-            backgroundService = (TextView) view.findViewById(R.id.taskBackgroundService);
-            appPackage = (TextView) view.findViewById(R.id.taskPackage);
-            appVersion = (TextView) view.findViewById(R.id.taskAppVersion);
-            icon = (ImageView) view.findViewById(R.id.taskIcon);
-            more = (ImageView) view.findViewById(R.id.taskShowDetails);
-            undoButton = (Button) view.findViewById(R.id.undo_button);
-            checkBox = (CheckBox) view.findViewById(R.id.checkBox);
+            name = view.findViewById(R.id.taskName);
+            memory = view.findViewById(R.id.taskMemory);
+            details = view.findViewById(R.id.taskDetailsContainer);
+            autoStart = view.findViewById(R.id.taskAutoStart);
+            backgroundService = view.findViewById(R.id.taskBackgroundService);
+            appPackage = view.findViewById(R.id.taskPackage);
+            appVersion = view.findViewById(R.id.taskAppVersion);
+            icon = view.findViewById(R.id.taskIcon);
+            more = view.findViewById(R.id.taskShowDetails);
+            undoButton = view.findViewById(R.id.undo_button);
+            checkBox = view.findViewById(R.id.checkBox);
         }
     }
 
     public TaskAdapter(@NonNull final Context context, List<Task> tasks) {
-        items = tasks;
-        taskController = new TaskController(context);
-        itemsPendingRemoval = new ArrayList<>();
-        undoOn = true;
-        handler =  new Handler();
+        mItems = tasks;
+        mTaskController = new TaskController(context);
+        mItemsPendingRemoval = new ArrayList<>();
+        mUndoOn = true;
+        mHandler = new Handler();
     }
 
     @Override
@@ -101,10 +101,10 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        final Task item = items.get(position);
+        final Task item = mItems.get(position);
         String text;
 
-        if (itemsPendingRemoval.contains(item)) {
+        if (mItemsPendingRemoval.contains(item)) {
             /** Undo state of item */
             holder.itemView.setBackgroundColor(Color.DKGRAY);
             holder.itemView.setOnClickListener(null);
@@ -128,12 +128,14 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
                 @Override
                 public void onClick(View v) {
                     // user wants to undo the removal, let's cancel the pending task
-                    Runnable pendingRemovalRunnable = pendingRunnables.get(item);
-                    pendingRunnables.remove(item);
-                    if (pendingRemovalRunnable != null) handler.removeCallbacks(pendingRemovalRunnable);
-                    itemsPendingRemoval.remove(item);
+                    Runnable pendingRemovalRunnable = mPendingRunnables.get(item);
+                    mPendingRunnables.remove(item);
+                    if (pendingRemovalRunnable != null) {
+                        mHandler.removeCallbacks(pendingRemovalRunnable);
+                    }
+                    mItemsPendingRemoval.remove(item);
                     // this will rebind the row in "normal" state
-                    notifyItemChanged(items.indexOf(item));
+                    notifyItemChanged(mItems.indexOf(item));
                 }
             });
         } else {
@@ -167,7 +169,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
             }
             holder.memory.setText(text);
             holder.icon.setImageDrawable(
-                    taskController.iconForApp(item.getPackageInfo())
+                    mTaskController.iconForApp(item.getPackageInfo())
             );
             if (item.isAutoStart()) {
                 holder.autoStart.setVisibility(View.VISIBLE);
@@ -191,12 +193,14 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
             holder.checkBox.setVisibility(View.VISIBLE);
             holder.checkBox.setChecked(item.isChecked());
 
-            holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                    item.setIsChecked(b);
-                }
-            });
+            holder.checkBox.setOnCheckedChangeListener(
+                    new CompoundButton.OnCheckedChangeListener() {
+                        @Override
+                        public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                            item.setIsChecked(b);
+                        }
+                    }
+            );
 
             holder.undoButton.setVisibility(View.GONE);
             holder.undoButton.setOnClickListener(null);
@@ -206,45 +210,45 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        return items.size();
+        return mItems.size();
     }
 
     public void setUndoOn(boolean undoOn) {
-        this.undoOn = undoOn;
+        this.mUndoOn = undoOn;
     }
 
     public boolean isUndoOn() {
-        return undoOn;
+        return mUndoOn;
     }
 
     public void pendingRemoval(int position) {
-        final Task item = items.get(position);
-        if (!itemsPendingRemoval.contains(item)) {
-            itemsPendingRemoval.add(item);
+        final Task item = mItems.get(position);
+        if (!mItemsPendingRemoval.contains(item)) {
+            mItemsPendingRemoval.add(item);
             // this will redraw row in "undo" state
             notifyItemChanged(position);
             // let's create, store and post a runnable to remove the item
             Runnable pendingRemovalRunnable = new Runnable() {
                 @Override
                 public void run() {
-                    remove(items.indexOf(item));
+                    remove(mItems.indexOf(item));
                 }
             };
-            handler.postDelayed(pendingRemovalRunnable, Config.PENDING_REMOVAL_TIMEOUT);
-            pendingRunnables.put(item, pendingRemovalRunnable);
+            mHandler.postDelayed(pendingRemovalRunnable, Config.PENDING_REMOVAL_TIMEOUT);
+            mPendingRunnables.put(item, pendingRemovalRunnable);
         }
     }
 
     public void remove(int position) {
-        Task item = items.get(position);
-        if (itemsPendingRemoval.contains(item)) {
-            itemsPendingRemoval.remove(item);
+        Task item = mItems.get(position);
+        if (mItemsPendingRemoval.contains(item)) {
+            mItemsPendingRemoval.remove(item);
         }
-        if (items.contains(item)) {
-            items.remove(position);
+        if (mItems.contains(item)) {
+            mItems.remove(position);
             notifyItemRemoved(position);
             /** Kill process here */
-            taskController.killApp(item);
+            mTaskController.killApp(item);
             EventBus.getDefault().post(new TaskRemovedEvent(position, item));
         }
     }
@@ -252,26 +256,26 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
     public boolean isPendingRemoval(int position) {
         Task item;
         try {
-            item = items.get(position);
+            item = mItems.get(position);
         } catch (ArrayIndexOutOfBoundsException e) {
             item = null;
         }
-        return itemsPendingRemoval.contains(item);
+        return mItemsPendingRemoval.contains(item);
     }
 
-    public void swap(List<Task> list){
+    public void swap(List<Task> list) {
         clear();
-        if (items != null) {
-            items.addAll(list);
+        if (mItems != null) {
+            mItems.addAll(list);
         } else {
-            items = list;
+            mItems = list;
         }
         notifyDataSetChanged();
     }
 
     private void clear() {
-        if (items != null) items.clear();
-        if (itemsPendingRemoval != null) itemsPendingRemoval.clear();
-        pendingRunnables.clear();
+        if (mItems != null) mItems.clear();
+        if (mItemsPendingRemoval != null) mItemsPendingRemoval.clear();
+        mPendingRunnables.clear();
     }
 }

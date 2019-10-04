@@ -8,15 +8,13 @@ import android.content.ReceiverCallNotAllowedException;
 import com.hmatalonga.greenhub.util.LogUtils;
 import com.hmatalonga.greenhub.util.Notifier;
 
-import static com.hmatalonga.greenhub.util.LogUtils.LOGI;
-
 
 public class NotificationReceiver extends BroadcastReceiver {
     private static final String TAG = LogUtils.makeLogTag(NotificationReceiver.class);
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        LOGI(TAG, "onReceive called!");
+        LogUtils.logI(TAG, "onReceive called!");
         try {
             Notifier.updateStatusBar(context);
         } catch (ReceiverCallNotAllowedException e) {
