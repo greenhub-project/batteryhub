@@ -83,8 +83,6 @@ public class DataEstimator extends BroadcastReceiver {
             return;
         }
 
-        LogUtils.logI(TAG, "Now: " + Battery.getBatteryCurrentNow(context));
-
         mIntent = intent;
         mAction = intent.getAction();
 

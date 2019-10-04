@@ -177,16 +177,23 @@ public class ChartRVAdapter extends RecyclerView.Adapter<ChartRVAdapter.Dashboar
     }
 
     private void setup(DashboardViewHolder holder, final ChartCard card) {
-        ValueFormatter formatterX = new ValueFormatter() {
+
+        holder.chart.getXAxis().setValueFormatter(new ValueFormatter() {
             @Override
-            public String getFormattedValue(float value, AxisBase axis) {
+            public String getFormattedValue(float value) {
                 return DateUtils.convertMilliSecondsToFormattedDate((long) value);
             }
-        };
+        });
 
-        ValueFormatter formatterY = new ValueFormatter() {
+        if (card.type == BATTERY_LEVEL) {
+            holder.chart.getAxisLeft().setAxisMaximum(1f);
+        }
+
+        holder.chart.setExtraBottomOffset(5f);
+        holder.chart.getAxisLeft().setDrawGridLines(false);
+        holder.chart.getAxisLeft().setValueFormatter(new ValueFormatter() {
             @Override
-            public String getFormattedValue(float value, AxisBase axis) {
+            public String getFormattedValue(float value) {
                 switch (card.type) {
                     case BATTERY_LEVEL:
                         return StringHelper.formatPercentageNumber(value);
@@ -198,17 +205,7 @@ public class ChartRVAdapter extends RecyclerView.Adapter<ChartRVAdapter.Dashboar
                         return String.valueOf(value);
                 }
             }
-        };
-
-        holder.chart.getXAxis().setValueFormatter(formatterX);
-
-        if (card.type == BATTERY_LEVEL) {
-            holder.chart.getAxisLeft().setAxisMaximum(1f);
-        }
-
-        holder.chart.setExtraBottomOffset(5f);
-        holder.chart.getAxisLeft().setDrawGridLines(false);
-        holder.chart.getAxisLeft().setValueFormatter(formatterY);
+        });
         holder.chart.getAxisRight().setDrawGridLines(false);
         holder.chart.getAxisRight().setDrawLabels(false);
         holder.chart.getXAxis().setDrawGridLines(false);

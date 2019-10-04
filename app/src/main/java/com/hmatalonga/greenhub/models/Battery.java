@@ -167,7 +167,7 @@ public class Battery {
      * @param context Application context
      * @return battery current now (in mA)
      */
-    public static double getBatteryCurrentNow(final Context context) {
+    public static int getBatteryCurrentNow(final Context context) {
         int value = 0;
 
         BatteryManager manager = (BatteryManager) context.getSystemService(Context.BATTERY_SERVICE);
@@ -176,6 +176,25 @@ public class Battery {
         }
 
         return (value != 0 && value != Integer.MIN_VALUE) ? value : 0;
+    }
+
+    /**
+     * Get the Battery current at the moment (in mA)
+     *
+     * @param context Application context
+     * @return battery current now (in mA)
+     */
+    public static double getBatteryCurrentNowInAmperes(final Context context) {
+        int value = 0;
+
+        BatteryManager manager = (BatteryManager) context.getSystemService(Context.BATTERY_SERVICE);
+        if (manager != null) {
+            value = manager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW);
+        }
+
+        value = (value != 0 && value != Integer.MIN_VALUE) ? value : 0;
+
+        return (double) value / 1000000;
     }
 
     /**

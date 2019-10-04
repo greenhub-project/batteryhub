@@ -90,7 +90,7 @@ public class ChartMarkerView extends MarkerView {
     public MPPointF getOffset() {
         if (mOffset == null) {
             // center the marker horizontally and vertically
-            mOffset = new MPPointF(-(getWidth() / 2), -getHeight());
+            mOffset = new MPPointF(-(getWidth() >> 1), -getHeight());
         }
 
         return mOffset;

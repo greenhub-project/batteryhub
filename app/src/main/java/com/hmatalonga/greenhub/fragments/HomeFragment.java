@@ -50,6 +50,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
 
@@ -368,7 +369,7 @@ public class HomeFragment extends Fragment {
     private Runnable mRunnable = new Runnable() {
         @Override
         public void run() {
-            double now = Battery.getBatteryCurrentNow(mContext);
+            double now = Battery.getBatteryCurrentNowInAmperes(mContext);
             double level = Inspector.getCurrentBatteryLevel();
             String value;
 
@@ -378,7 +379,8 @@ public class HomeFragment extends Fragment {
                 mBatteryCurrentMin.setText(value);
                 value = "max: --";
                 mBatteryCurrentMax.setText(value);
-                value = mContext.getString(R.string.battery_full);
+                // value = mContext.getString(R.string.battery_full);
+                value = String.format(Locale.getDefault(), "%.3f", now) + " A";
                 mBatteryCurrentNow.setText(value);
                 mHandler.postDelayed(this, Config.REFRESH_CURRENT_INTERVAL);
                 return;
@@ -386,17 +388,17 @@ public class HomeFragment extends Fragment {
 
             if (Math.abs(now) < Math.abs(mMin)) {
                 mMin = now;
-                value = "min: " + mMin + " mA";
+                value = "min: " + String.format(Locale.getDefault(), "%.3f", mMin) + " A";
                 mBatteryCurrentMin.setText(value);
             }
 
             if (Math.abs(now) > Math.abs(mMax)) {
                 mMax = now;
-                value = "max: " + mMax + " mA";
+                value = "max: " + String.format(Locale.getDefault(), "%.3f", mMax) + " A";
                 mBatteryCurrentMax.setText(value);
             }
 
-            value = now + " mA";
+            value = String.format(Locale.getDefault(), "%.3f", now) + " A";
             mBatteryCurrentNow.setText(value);
             mHandler.postDelayed(this, Config.REFRESH_CURRENT_INTERVAL);
         }

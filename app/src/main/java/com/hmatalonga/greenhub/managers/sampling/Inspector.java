@@ -405,7 +405,7 @@ public final class Inspector {
         batteryDetails.capacity = Battery.getBatteryDesignCapacity(context);
         batteryDetails.chargeCounter = Battery.getBatteryChargeCounter(context);
         batteryDetails.currentAverage = Battery.getBatteryCurrentAverage(context);
-        batteryDetails.currentNow = (int) Battery.getBatteryCurrentNow(context);
+        batteryDetails.currentNow = Battery.getBatteryCurrentNow(context);
         batteryDetails.energyCounter = Battery.getBatteryEnergyCounter(context);
 
         boolean isCharging = "Charging".equals(batteryStatus);
@@ -417,11 +417,11 @@ public final class Inspector {
         EventBus.getDefault().post(
                 new BatteryTimeEvent(batteryRemainingHours, batteryRemainingMinutes, isCharging)
         );
-        Notifier.remainingBatteryTimeAlert(
-                context,
-                batteryRemainingHours + "h " + batteryRemainingMinutes + "m",
-                isCharging
-        );
+//        Notifier.remainingBatteryTimeAlert(
+//                context,
+//                batteryRemainingHours + "h " + batteryRemainingMinutes + "m",
+//                isCharging
+//        );
 
         newSample.batteryDetails = batteryDetails;
         newSample.batteryLevel = sCurrentBatteryLevel;

@@ -148,7 +148,7 @@ public class CommunicationManager {
         final Upload upload = sample == null ? null : new Upload(bundleSample(sample));
         realm.close();
 
-        LogUtils.logI(TAG, "Sample found => " + String.valueOf(sample != null));
+        LogUtils.logI(TAG, "Sample found => " + (sample != null));
 
         if (sample == null && mCollection.hasNext()) {
             uploadSample(mCollection.next());
@@ -251,7 +251,7 @@ public class CommunicationManager {
         root.addProperty("uuId", sample.uuId);
         root.addProperty("timestamp", sample.timestamp);
         root.addProperty("version", sample.version);
-        root.addProperty("mDatabase", sample.database);
+        root.addProperty("database", sample.database);
         root.addProperty("batteryState", sample.batteryState);
         root.addProperty("batteryLevel", sample.batteryLevel);
         root.addProperty("memoryWired", sample.memoryWired);
