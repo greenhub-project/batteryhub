@@ -92,7 +92,6 @@ import com.hmatalonga.greenhub.models.data.ProcessInfo;
 import com.hmatalonga.greenhub.models.data.Sample;
 import com.hmatalonga.greenhub.models.data.Settings;
 import com.hmatalonga.greenhub.util.LogUtils;
-import com.hmatalonga.greenhub.util.Notifier;
 import com.hmatalonga.greenhub.util.SettingsUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -211,7 +210,7 @@ public final class Inspector {
         newSample.database = Config.DATABASE_VERSION;
 
         // Record first data point for CPU usage
-        long[] idleAndCpu1 = Cpu.readUsagePoint();
+        long[] idleAndCpu1 = Cpu.readUsagePoint(context);
 
         // If the sampler is running because of the SCREEN_ON or SCREEN_OFF
         // event/action,
@@ -437,7 +436,7 @@ public final class Inspector {
         }
 
         // Record second data point for cpu/idle time
-        long[] idleAndCpu2 = Cpu.readUsagePoint();
+        long[] idleAndCpu2 = Cpu.readUsagePoint(context);
 
         // CPU status
         long uptime = Cpu.getUptime();

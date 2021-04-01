@@ -34,19 +34,19 @@ public class SensorDetails extends RealmObject {
     //This value is defined only for continuous and on-change sensors.
     public int maxDelay;
 
-    public float maximumRange;
+    public double maximumRange;
 
     public int minDelay;
 
     public String name;
 
     //the power in mA used by this sensor while in use
-    public float power;
+    public double power;
 
     //Each sensor has exactly one reporting mode associated with it.
     public int reportingMode;
 
-    public float resolution;
+    public double resolution;
 
     public String stringType;
 

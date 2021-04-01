@@ -19,9 +19,13 @@ package com.hmatalonga.greenhub;
 import android.app.AlarmManager;
 import android.app.Application;
 import android.app.PendingIntent;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.SystemClock;
+import android.support.annotation.RequiresApi;
 
 import com.crashlytics.android.Crashlytics;
 import com.hmatalonga.greenhub.managers.sampling.BatteryService;
@@ -103,9 +107,14 @@ public class GreenHubApp extends Application {
             new Thread() {
 
                 public void run() {
+                    Intent service = new Intent(context, BatteryService.class);
                     try {
-                        Intent service = new Intent(context, BatteryService.class);
-                        context.startService(service);
+
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            context.startForegroundService(service);
+                        } else {
+                            context.startService(service);
+                        }
                     } catch (IllegalStateException e) {
                         e.printStackTrace();
                     }
