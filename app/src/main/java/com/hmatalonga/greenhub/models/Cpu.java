@@ -16,7 +16,10 @@
 
 package com.hmatalonga.greenhub.models;
 
+import android.content.Context;
+import android.os.HardwarePropertiesManager;
 import android.os.SystemClock;
+import android.util.Log;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -55,22 +58,32 @@ public class Cpu {
      * splitting.:)
      */
 
-    public static synchronized long[] readUsagePoint() {
+    public static synchronized long[] readUsagePoint(Context context) {
         long idle = 0;
         long cpu = 0;
 
         try {
-            RandomAccessFile reader = new RandomAccessFile("/proc/stat", "r");
+            HardwarePropertiesManager propertiesManager = null;
+            RandomAccessFile reader = null;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                reader = new RandomAccessFile("/proc/self/stat", "r");
+            } else {
+                reader = new RandomAccessFile("/proc/stat", "r");
+            }
 
             String load = reader.readLine();
             String[] tokens = load.split(" ");
             for (int i = 2; i <= 8; i++) {
-                // 5 index has idle value
-                if (i == 5) {
-                    idle = Long.parseLong(tokens[i]);
-                    continue;
+                try {
+                    // 5 index has idle value
+                    if (i == 5) {
+                        idle = Long.parseLong(tokens[i]);
+                        continue;
+                    }
+                    cpu += Long.parseLong(tokens[i]);
+                } catch (NumberFormatException ex) {
+                    Log.i(TAG, "Parser: " + ex.getMessage() + " - " + tokens[i]);
                 }
-                cpu += Long.parseLong(tokens[i]);
             }
             reader.close();
         } catch (IOException e) {

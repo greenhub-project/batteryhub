@@ -108,7 +108,6 @@ public class Sensors {
         sensorsMap = new HashMap<>();
     }
 
-    @TargetApi(23)
     private static void getAttributesNewVersion(Sensor sensor, SensorDetails details) {
         if (SDK_VERSION > 23) {
             details.id = sensor.getId();

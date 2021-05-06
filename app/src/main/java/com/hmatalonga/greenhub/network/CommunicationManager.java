@@ -19,6 +19,7 @@ package com.hmatalonga.greenhub.network;
 import android.content.Context;
 import android.os.Handler;
 
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.hmatalonga.greenhub.BuildConfig;
@@ -43,6 +44,7 @@ import com.hmatalonga.greenhub.util.SettingsUtils;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.Iterator;
+import java.util.Optional;
 
 import io.realm.Realm;
 import retrofit2.Call;
@@ -320,7 +322,19 @@ public class CommunicationManager {
 
         // CpuStatus
         child = new JsonObject();
-        child.addProperty("cpuUsage", sample.cpuStatus.cpuUsage);
+        String s = sample.cpuStatus.cpuUsage + "";
+        Double cpuUsage = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            cpuUsage = Optional.ofNullable(s).filter(v -> !"NaN".equalsIgnoreCase(v))
+                    .map(v -> sample.cpuStatus.cpuUsage).orElse(0.0);
+        } else {
+            try {
+                cpuUsage = new Double(s);
+            } catch (Exception e) {
+                LogUtils.logE(TAG, "cpuUsage error", e);
+            }
+        }
+        child.addProperty("cpuUsage", cpuUsage);
         child.addProperty("upTime", sample.cpuStatus.upTime);
         child.addProperty("sleepTime", sample.cpuStatus.sleepTime);
         root.add("cpuStatus", child);

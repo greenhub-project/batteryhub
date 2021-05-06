@@ -54,7 +54,7 @@ public final class Config {
 
     public static final String SERVER_STATUS_URL = "https://greenhubproject.org/";
     public static final String SERVER_URL_DEFAULT = "none";
-    public static final String SERVER_URL_DEVELOPMENT = "http://192.168.1.95:8080";
+    public static final String SERVER_URL_DEVELOPMENT = "http://192.168.1.251:8000/";
 
     public static final int DATABASE_VERSION = 5;
 
