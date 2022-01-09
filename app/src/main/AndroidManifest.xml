@@ -19,6 +19,7 @@
     package="com.hmatalonga.greenhub">
 
     <!-- Required to start service on boot -->
+    <uses-permission android:name="android.permission.READ_PRIVILEGED_PHONE_STATE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <!-- For sending Samples and crash reports. -->
     <uses-permission android:name="android.permission.INTERNET" />
