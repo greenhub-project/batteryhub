@@ -16,6 +16,8 @@
 
 package com.hmatalonga.greenhub.models;
 
+import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -23,7 +25,9 @@ import android.os.Build;
 import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 
+import com.hmatalonga.greenhub.managers.storage.GreenHubDbMigration;
 import com.hmatalonga.greenhub.util.PermissionsUtils;
 
 import java.lang.reflect.Method;
@@ -33,6 +37,8 @@ import java.util.List;
  * Phone.
  */
 public class Phone {
+
+    private static final String TAG = makeLogTag(Phone.class);
 
     // Call state constants
     public static String CALL_STATE_IDLE = "idle";
@@ -63,11 +69,18 @@ public class Phone {
 
     @SuppressLint("HardwareIds")
     public static String getDeviceId(final Context context) {
-        if (PermissionsUtils.checkPermission(context, Manifest.permission.READ_PHONE_STATE)) {
-            TelephonyManager manager =
-                    (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-
-            return (manager == null) ? null : manager.getDeviceId();
+        try {
+            if (PermissionsUtils.checkPermission(context, Manifest.permission.READ_PHONE_STATE)) {
+                TelephonyManager manager =
+                        (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    return (manager == null) ? null : manager.getImei();
+                } else {
+                    return (manager == null) ? null : manager.getDeviceId();
+                }
+            }
+        } catch(SecurityException e){
+            Log.v(TAG, "Cannot obtain device id. Security Exception occurred.");
         }
         return null;
     }
