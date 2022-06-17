@@ -21,7 +21,7 @@ import io.realm.RealmObject;
 /**
  * Sensor Details data definition.
  */
-public class SensorDetails extends RealmObject {
+public class SensorDetails extends RealmObject implements Cloneable {
 
     public int fifoMaxEventCount;
 
@@ -73,4 +73,30 @@ public class SensorDetails extends RealmObject {
 
     //end of sample usage count
     public long endTimestamp = 0;
+
+    public SensorDetails clone() {
+        SensorDetails sensor = new SensorDetails();
+        sensor.codeType = codeType;
+        sensor.endTimestamp = endTimestamp;
+        sensor.fifoMaxEventCount = fifoMaxEventCount;
+        sensor.fifoReservedEventCount = fifoReservedEventCount;
+        sensor.frequencyOfUse = frequencyOfUse;
+        sensor.highestDirectReportRateLevel = highestDirectReportRateLevel;
+        sensor.id = id;
+        sensor.iniTimestamp = iniTimestamp;
+        sensor.isAdditionalInfoSupported = isAdditionalInfoSupported;
+        sensor.isDynamicSensor = isDynamicSensor;
+        sensor.isWakeUpSensor = isWakeUpSensor;
+        sensor.maxDelay = maxDelay;
+        sensor.maximumRange = maximumRange;
+        sensor.minDelay = minDelay;
+        sensor.name = name;
+        sensor.power = power;
+        sensor.reportingMode = reportingMode;
+        sensor.resolution = resolution;
+        sensor.stringType = stringType;
+        sensor.vendor = vendor;
+        sensor.version = version;
+        return sensor;
+    }
 }

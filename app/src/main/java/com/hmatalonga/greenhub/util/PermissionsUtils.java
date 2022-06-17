@@ -18,9 +18,9 @@ package com.hmatalonga.greenhub.util;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.support.v4.content.ContextCompat;
 
-import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
+import androidx.core.content.ContextCompat;
+
 
 /**
  * PermissionsUtils.

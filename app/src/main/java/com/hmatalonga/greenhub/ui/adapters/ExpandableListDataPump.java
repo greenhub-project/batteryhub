@@ -2,6 +2,7 @@ package com.hmatalonga.greenhub.ui.adapters;
 
 import android.app.Fragment;
 import android.content.Context;
+import android.hardware.Sensor;
 
 import com.hmatalonga.greenhub.R;
 import com.hmatalonga.greenhub.models.Sensors;
@@ -30,7 +31,8 @@ public class ExpandableListDataPump {
                     + (sensor.frequencyOfUse != 0 ?
                     context.getString(R.string.yes) : context.getString(R.string.no)));
             details.add(context.getString(R.string.sensors_card_usefrequency) + ": "
-                    + (sensor.frequencyOfUse));
+                    + (sensor.frequencyOfUse) +
+                    (sensor.frequencyOfUse > 0 ? String.format(" (%s s)", " " + ((sensor.endTimestamp - sensor.iniTimestamp) / 1000000000)) : ""));
             expandableListDetail.put(
                     ((sensor.name != null) ?
                             sensor.name.toUpperCase() :

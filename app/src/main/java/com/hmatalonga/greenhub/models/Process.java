@@ -29,6 +29,7 @@ import com.hmatalonga.greenhub.util.StringHelper;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Process properties model.
@@ -53,6 +54,12 @@ public class Process {
                 (ActivityManager) context.getSystemService(Activity.ACTIVITY_SERVICE);
         List<RunningAppProcessInfo> runningAppProcesses = manager.getRunningAppProcesses();
 
+        final ActivityManager activityManager = (ActivityManager)
+                context.getSystemService(Context.ACTIVITY_SERVICE);
+        final List<ActivityManager.RunningTaskInfo> recentTasks = Objects.requireNonNull(activityManager).getRunningTasks(Integer.MAX_VALUE);
+        for (int i = 0; i < recentTasks.size(); i++) {
+            System.out.println("Application executed: " + recentTasks.get(i).baseActivity.toShortString() + "\n\n ID: " + recentTasks.get(i).id + "");
+        }
         for (RunningAppProcessInfo info : runningAppProcesses) {
             if (info == null || info.processName == null) continue;
             info.processName = StringHelper.formatProcessName(info.processName);

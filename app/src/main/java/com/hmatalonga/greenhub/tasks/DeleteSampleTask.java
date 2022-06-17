@@ -17,7 +17,8 @@
 package com.hmatalonga.greenhub.tasks;
 
 import android.os.AsyncTask;
-import android.support.annotation.NonNull;
+
+import androidx.annotation.NonNull;
 
 import com.hmatalonga.greenhub.models.data.Sample;
 

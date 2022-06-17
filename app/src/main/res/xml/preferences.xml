@@ -17,24 +17,36 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory
-        android:title="@string/pref_header_sampling"
-        android:key="sampling_header">
+        android:key="sampling_header"
+        android:title="@string/pref_header_sampling">
 
         <SwitchPreference
             android:defaultValue="false"
             android:key="pref_sampling_screen"
-            android:title="@string/pref_title_sampling_screen"
-            android:summary="@string/pref_description_sampling_screen"/>
+            android:summary="@string/pref_description_sampling_screen"
+            android:title="@string/pref_title_sampling_screen" />
 
         <ListPreference
-            android:key="pref_data_history"
-            android:title="@string/pref_title_data_history"
+            android:defaultValue="4"
             android:entries="@array/history_titles"
             android:entryValues="@array/history_values"
-            android:defaultValue="4"/>
+            android:key="pref_data_history"
+            android:title="@string/pref_title_data_history" />
 
     </PreferenceCategory>
+    <PreferenceCategory
+        android:key="sampling_header"
+        android:title="@string/pref_header_sensors">
 
+        <ListPreference
+            android:defaultValue="3"
+            android:entries="@array/rate_suitable_titles"
+            android:entryValues="@array/rate_suitable_values"
+            android:key="pref_rate_suitable_events"
+            android:summary="@string/pref_description_sensors_delay"
+            android:title="@string/pref_title_sensors_delay" />
+
+    </PreferenceCategory>
     <PreferenceCategory
         android:title="@string/pref_header_upload"
         android:key="upload_header">
@@ -139,7 +151,8 @@
         <SwitchPreference
             android:defaultValue="true"
             android:key="pref_system_apps"
-            android:title="@string/pref_title_system_apps"/>
+            android:title="@string/pref_title_system_apps"
+            android:visibility="invisible" />
 
     </PreferenceCategory>
 
@@ -161,5 +174,4 @@
         </Preference>
 
     </PreferenceCategory>
-
 </PreferenceScreen>

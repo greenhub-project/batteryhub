@@ -20,6 +20,7 @@
     package="com.hmatalonga.greenhub">
 
     <!-- Required to start service on boot -->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <!-- For sending Samples and crash reports. -->
     <uses-permission android:name="android.permission.INTERNET" />
@@ -40,11 +41,14 @@
     <!-- Required for gps and location providers -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
+    <permission android:name="android.permission.DEVICE_POWER" />
+
 
     <!-- Required to get running apps -->
     <!--<uses-permission android:name="android.permission.READ_CALL_LOG" />-->
@@ -64,14 +68,11 @@
         android:screenOrientation="portrait"
         android:supportsRtl="true"
         android:theme="@style/Theme.GreenHub"
-        android:usesCleartextTraffic="true">
+        android:usesCleartextTraffic="true"
+        tools:replace="android:appComponentFactory"
+        android:appComponentFactory="android.support.v4.app.CoreComponentFactory">
 
         <meta-data android:name="AA_DB_NAME" android:value="GreenHub.db" />
-
-        <meta-data
-            android:name="io.fabric.ApiKey"
-            android:value="6baa9b9338456a3fa0f937613e68af0ff37412c8"
-            />
 
         <activity
             android:name=".ui.SplashActivity"

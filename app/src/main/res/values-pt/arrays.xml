@@ -15,6 +15,18 @@
   ~ limitations under the License.
   -->
 <resources>
+    <string-array name="rate_suitable_titles">
+        <item>"FASTEST"</item>
+        <item>"GAME"</item>
+        <item>"NORMAL"</item>
+        <item>"UI"</item>
+    </string-array>
+    <string-array name="rate_suitable_values">
+        <item>0</item>
+        <item>1</item>
+        <item>3</item>
+        <item>2</item>
+    </string-array>
     <string-array name="history_titles">
         <item>"Últimos 5 dias"</item>
         <item>"Últimos 10 dias"</item>

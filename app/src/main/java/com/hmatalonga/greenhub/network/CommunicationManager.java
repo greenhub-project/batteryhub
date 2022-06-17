@@ -396,7 +396,7 @@ public class CommunicationManager {
 
                 list.add(child);
             }
-            root.add("sensorDetailsList", list);
+                root.add("sensorDetailsList", list);
         }
 
         // LocationProviders

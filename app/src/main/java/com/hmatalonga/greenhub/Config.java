@@ -52,9 +52,9 @@ package com.hmatalonga.greenhub;
 public final class Config {
     public static final boolean DEBUG = true;
 
-    public static final String SERVER_STATUS_URL = "http://192.168.1.251:8000/";
+    public static final String SERVER_STATUS_URL = "http://192.168.31.90:8000/";
     public static final String SERVER_URL_DEFAULT = "none";
-    public static final String SERVER_URL_DEVELOPMENT = "http://192.168.1.251:8000/";
+    public static final String SERVER_URL_DEVELOPMENT = "http://192.168.31.90:8000/";
 
     public static final int DATABASE_VERSION = 5;
 

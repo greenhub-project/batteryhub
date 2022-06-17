@@ -45,6 +45,7 @@
 
 package com.hmatalonga.greenhub.managers.sampling;
 
+import android.app.ActivityManager;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
@@ -66,6 +67,8 @@ import com.hmatalonga.greenhub.util.SettingsUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.List;
+
 import static com.hmatalonga.greenhub.util.LogUtils.logI;
 import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
 
@@ -84,7 +87,7 @@ public class DataEstimatorService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        Context context = getApplicationContext();
+        Context context = getBaseContext();
 
         if (intent != null) {
             takeSampleIfBatteryLevelChanged(context, intent);
@@ -220,6 +223,9 @@ public class DataEstimatorService extends IntentService {
 
         // Check if automatic upload are off do DB clean up here...
 
+        ActivityManager actvityManager = (ActivityManager)
+                this.getApplicationContext().getSystemService(ACTIVITY_SERVICE);
+        List<ActivityManager.RunningAppProcessInfo> procInfos = actvityManager.getRunningAppProcesses();
         // Finally close mDatabase access
         database.close();
     }

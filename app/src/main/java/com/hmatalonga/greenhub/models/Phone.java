@@ -44,6 +44,7 @@ public class Phone {
     public static String PHONE_TYPE_GSM = "gsm";
     public static String PHONE_TYPE_SIP = "sip";
     public static String PHONE_TYPE_NONE = "none";
+    private static final int SDK_VERSION = Build.VERSION.SDK_INT;
 
     /* Get call status */
     public static String getCallState(Context context) {
@@ -67,7 +68,9 @@ public class Phone {
             TelephonyManager manager =
                     (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
 
-            return (manager == null) ? null : manager.getDeviceId();
+            if (SDK_VERSION > 28) {
+                return (manager.getPhoneType() == TelephonyManager.PHONE_TYPE_CDMA) ? manager.getManufacturerCode() : manager.getDeviceSoftwareVersion();
+            }
         }
         return null;
     }

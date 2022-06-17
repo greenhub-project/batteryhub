@@ -275,4 +275,7 @@
     <string name="sensors_card_details">Detalhes</string>
     <string name="sensors_card_inuse">Em uso</string>
     <string name="sensors_card_usefrequency">Frequência de uso</string>
+    <string name="pref_header_sensors">Sensors</string>
+    <string name="pref_description_sensors_delay">The rate suitable to get the events sensors</string>
+    <string name="pref_title_sensors_delay">Rate Sensors Delay</string>
 </resources>

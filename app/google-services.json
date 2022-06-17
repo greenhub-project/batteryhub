@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "806088268042",
+    "project_id": "batteryhub-test",
+    "storage_bucket": "batteryhub-test.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:806088268042:android:f22c63b3357aa701a5c2f3",
+        "android_client_info": {
+          "package_name": "com.hmatalonga.greenhub.debug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "806088268042-ttt1mbqgrrjj5dn9af87m38866udm2s2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB4L8h2jBKaNneEUnObBs8IMTxUqbMvyrc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "806088268042-ttt1mbqgrrjj5dn9af87m38866udm2s2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

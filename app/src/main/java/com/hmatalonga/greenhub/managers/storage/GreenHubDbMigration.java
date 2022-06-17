@@ -1,6 +1,6 @@
 package com.hmatalonga.greenhub.managers.storage;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.hmatalonga.greenhub.util.LogUtils;
 
@@ -81,7 +81,10 @@ public class GreenHubDbMigration implements RealmMigration {
                         .addField("stringType", String.class)
                         .addField("codeType", int.class)
                         .addField("vendor", String.class)
-                        .addField("version", int.class);
+                        .addField("version", int.class)
+                        .addField("frequencyOfUse", int.class)
+                        .addField("iniTimestamp", long.class)
+                        .addField("endTimestamp", long.class);
                 objectSchema = schema.get("SensorDetails");
                 schema.get("Sample")
                         .addRealmListField("sensorDetailsList", objectSchema);
@@ -91,12 +94,8 @@ public class GreenHubDbMigration implements RealmMigration {
             if (oldVersion == 5) {
                 objectSchema = schema.get("SensorDetails");
                 if (objectSchema != null) {
-                    objectSchema
-                            .addField("frequencyOfUse", int.class)
-                            .addField("iniTimestamp", long.class)
-                            .addField("endTimestamp", long.class);
+                    oldVersion++;
                 }
-                oldVersion++;
             }
         } catch (NullPointerException e) {
             LogUtils.logE(TAG, "Schema is null!");

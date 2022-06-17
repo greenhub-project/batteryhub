@@ -25,10 +25,12 @@ import android.os.Build;
 
 import com.hmatalonga.greenhub.models.data.SensorDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
 
@@ -47,9 +49,15 @@ public class Sensors {
      * @param context Application's context
      * @return Returns the battery voltage
      */
-    public static Collection<SensorDetails> getSensorDetailsList(final Context context) {
+    public static List<SensorDetails> getSensorDetailsList(final Context context) {
         verifySensorsChanged(context);
-        return sensorsMap.values();
+        List<SensorDetails> list = new ArrayList<>();
+        for (SensorDetails sensor: sensorsMap.values()) {
+            SensorDetails copy = sensor.clone();
+            list.add(copy);
+            copy.endTimestamp = System.nanoTime();
+        }
+        return list;
     }
 
     private static void verifySensorsChanged(final Context context) {
@@ -59,24 +67,20 @@ public class Sensors {
         }
         assert manager != null;
         List<Sensor> values = manager.getSensorList(Sensor.TYPE_ALL);
-        if (values.size() != sensorsMap.size()) {
-            sensorsMap.clear();
-            for (Sensor sensor: values) {
-                extractSensorDetails(sensor);
-            }
+        for (Sensor sensor: values) {
+            extractSensorDetails(sensor);
         }
     }
 
     private static SensorDetails extractSensorDetails(Sensor sensor) {
-        SensorDetails details = null;
-        if ((details = sensorsMap.get(sensor.getName())) == null) {
+        SensorDetails details = sensorsMap.get(sensor.getName());
+        if (details == null) {
             details = new SensorDetails();
             sensorsMap.put(sensor.getName(), details);
         }
         details.codeType = sensor.getType();
         details.fifoMaxEventCount = sensor.getFifoMaxEventCount();
         details.fifoReservedEventCount = sensor.getFifoReservedEventCount();
-        getAttributesNewVersion(sensor, details);
         details.isWakeUpSensor = sensor.isWakeUpSensor();
         details.maxDelay = sensor.getMaxDelay();
         details.maximumRange = sensor.getMaximumRange();
@@ -88,6 +92,7 @@ public class Sensors {
         details.stringType = sensor.getStringType();
         details.vendor = sensor.getVendor();
         details.version = sensor.getVersion();
+        getAttributesNewVersion(sensor, details);
         return details;
     }
 
@@ -98,14 +103,15 @@ public class Sensors {
     public static void onSensorChanged(SensorEvent event) {
         SensorDetails details = extractSensorDetails(event.sensor);
         details.frequencyOfUse++;
-        if (details.iniTimestamp == 0) {
-            details.iniTimestamp = event.timestamp;
-        }
-        details.endTimestamp = event.timestamp;
     }
 
-    public static void clearSensorsMap() {
-        sensorsMap = new HashMap<>();
+    public static void resetSensorsMap(final Context context) {
+        verifySensorsChanged(context);
+        for (SensorDetails sensor: sensorsMap.values()) {
+            sensor.frequencyOfUse = 0;
+            sensor.iniTimestamp = System.nanoTime();
+            sensor.endTimestamp = sensor.iniTimestamp + 1;
+        }
     }
 
     private static void getAttributesNewVersion(Sensor sensor, SensorDetails details) {

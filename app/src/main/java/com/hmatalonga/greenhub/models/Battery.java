@@ -44,6 +44,11 @@ import static java.lang.Math.abs;
 import static java.lang.Math.max;
 
 /**
+ * BATTERY_PROPERTY_CHARGE_COUNTER   Remaining battery capacity in microampere-hours
+ * BATTERY_PROPERTY_CURRENT_NOW      Instantaneous battery current in microamperes
+ * BATTERY_PROPERTY_CURRENT_AVERAGE  Average battery current in microamperes
+ * BATTERY_PROPERTY_CAPACITY         Remaining battery capacity as an integer percentage
+ * BATTERY_PROPERTY_ENERGY_COUNTER   Remaining energy in nanowatt-hours
  * Battery.R
  */
 public class Battery {

@@ -16,6 +16,7 @@
 
 package com.hmatalonga.greenhub;
 
+import android.app.ActivityManager;
 import android.app.AlarmManager;
 import android.app.Application;
 import android.app.PendingIntent;
@@ -23,21 +24,23 @@ import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
 import android.content.Context;
 import android.content.Intent;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.SystemClock;
-import android.support.annotation.RequiresApi;
-
-import com.crashlytics.android.Crashlytics;
 import com.hmatalonga.greenhub.managers.sampling.BatteryService;
 import com.hmatalonga.greenhub.managers.sampling.DataEstimator;
 import com.hmatalonga.greenhub.managers.storage.GreenHubDbMigration;
+import com.hmatalonga.greenhub.models.Sensors;
 import com.hmatalonga.greenhub.receivers.NotificationReceiver;
 import com.hmatalonga.greenhub.tasks.DeleteSessionsTask;
 import com.hmatalonga.greenhub.tasks.DeleteUsagesTask;
 import com.hmatalonga.greenhub.util.LogUtils;
 import com.hmatalonga.greenhub.util.SettingsUtils;
 
-import io.fabric.sdk.android.Fabric;
+import java.util.List;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 
@@ -47,13 +50,17 @@ import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
 /**
  * GreenHubApp Application class.
  */
-public class GreenHubApp extends Application {
+public class GreenHubApp extends Application implements SensorEventListener {
 
     private static final String TAG = makeLogTag(GreenHubApp.class);
 
     private AlarmManager mAlarmManager;
 
     private PendingIntent mNotificationIntent;
+
+    private SensorManager mSensorManager;
+
+    private List<Sensor> mSensorList;
 
     @Override
     public void onCreate() {
@@ -67,7 +74,7 @@ public class GreenHubApp extends Application {
         logI(TAG, "onCreate() called");
 
         // Init crash reports
-        Fabric.with(this, new Crashlytics());
+        //FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true);
 
         // Database init
         Realm.init(this);
@@ -96,6 +103,32 @@ public class GreenHubApp extends Application {
                 startStatusBarUpdater();
             }
         }
+
+        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        mSensorList = mSensorManager.getSensorList(Sensor.TYPE_ALL);
+
+        startSensorListeners(SensorManager.SENSOR_DELAY_NORMAL);
+    }
+    public void startSensorListeners(int sensorDelay) {
+        for (Sensor sensor: mSensorList) {
+            mSensorManager.registerListener(this, sensor, sensorDelay);
+        }
+        //Reset sensors information
+        Sensors.resetSensorsMap(getBaseContext());
+    }
+
+    private void stopSensorListeners() {
+        mSensorManager.unregisterListener(this);
+    }
+
+    @Override
+    public final void onSensorChanged(SensorEvent event) {
+        Sensors.onSensorChanged(event);
+    }
+
+    @Override
+    public final void onAccuracyChanged(Sensor sensor, int accuracy) {
+        // Do something here if sensor accuracy changes.
     }
 
     public void startGreenHubService() {

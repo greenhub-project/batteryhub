@@ -18,33 +18,39 @@ package com.hmatalonga.greenhub.ui;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+
+import com.crashlytics.android.answers.Answers;
+import com.crashlytics.android.answers.CustomEvent;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 
-import com.crashlytics.android.answers.Answers;
-import com.crashlytics.android.answers.CustomEvent;
 import com.hmatalonga.greenhub.BuildConfig;
 import com.hmatalonga.greenhub.GreenHubApp;
 import com.hmatalonga.greenhub.R;
+import com.hmatalonga.greenhub.models.Sensors;
 import com.hmatalonga.greenhub.tasks.DeleteSessionsTask;
 import com.hmatalonga.greenhub.tasks.DeleteUsagesTask;
 import com.hmatalonga.greenhub.util.Notifier;
 import com.hmatalonga.greenhub.util.SettingsUtils;
 
+import java.util.List;
+
 import static com.hmatalonga.greenhub.util.LogUtils.logI;
 import static com.hmatalonga.greenhub.util.LogUtils.makeLogTag;
+import static java.security.AccessController.getContext;
 
 public class SettingsActivity extends BaseActivity {
 
     private static final String TAG = makeLogTag(SettingsActivity.class);
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,6 +72,7 @@ public class SettingsActivity extends BaseActivity {
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
+
             addPreferencesFromResource(R.xml.preferences);
 
             final String versionName = BuildConfig.DEBUG ?
@@ -75,6 +82,7 @@ public class SettingsActivity extends BaseActivity {
             findPreference(SettingsUtils.PREF_APP_VERSION).setSummary(versionName);
 
             bindPreferenceSummaryToValue(findPreference(SettingsUtils.PREF_DATA_HISTORY));
+            bindPreferenceSummaryToValue(findPreference(SettingsUtils.PREF_RATE_SUITABLE_EVENTS));
             bindPreferenceSummaryToValue(findPreference(SettingsUtils.PREF_UPLOAD_RATE));
             bindPreferenceSummaryToValue(findPreference(SettingsUtils.PREF_TEMPERATURE_RATE));
             bindPreferenceSummaryToValue(findPreference(SettingsUtils.PREF_TEMPERATURE_WARNING));
@@ -102,11 +110,11 @@ public class SettingsActivity extends BaseActivity {
                     logI(TAG, "Restarting GreenHub Service because of preference changes");
                     app.stopGreenHubService();
                     app.startGreenHubService();
-                    Answers.getInstance().logCustom(new CustomEvent("Preference Change")
+                    /*Answers.getInstance().logCustom(new CustomEvent("Preference Change")
                             .putCustomAttribute(
                                     "Sampling on Screen",
                                     String.valueOf(SettingsUtils.isSamplingScreenOn(context))
-                            ));
+                            ));*/
                     break;
                 case SettingsUtils.PREF_DATA_HISTORY:
                     bindPreferenceSummaryToValue(preference);
@@ -114,6 +122,19 @@ public class SettingsActivity extends BaseActivity {
                     final int interval = SettingsUtils.fetchDataHistoryInterval(context);
                     new DeleteUsagesTask().execute(interval);
                     new DeleteSessionsTask().execute(interval);
+                    break;
+                case SettingsUtils.PREF_RATE_SUITABLE_EVENTS:
+                    bindPreferenceSummaryToValue(preference);
+                    String stringValue = PreferenceManager
+                            .getDefaultSharedPreferences(preference.getContext())
+                            .getString(preference.getKey(), "");
+                    ListPreference listPreference = (ListPreference) preference;
+                    int index = listPreference.findIndexOfValue(stringValue);
+
+                    // Set the summary to reflect the new value.
+                    app.startSensorListeners(index >= 0
+                            ? Integer.valueOf(listPreference.getEntryValues()[index].toString())
+                            : 3);
                     break;
                 case SettingsUtils.PREF_UPLOAD_RATE:
                     bindPreferenceSummaryToValue(preference);

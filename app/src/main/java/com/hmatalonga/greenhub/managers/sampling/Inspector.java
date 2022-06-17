@@ -234,7 +234,7 @@ public final class Inspector {
 
         // SensorDetails list
         newSample.sensorDetailsList.addAll(Sensors.getSensorDetailsList(context));
-        Sensors.clearSensorsMap();
+        Sensors.resetSensorsMap(context);
 
         // Location providers
         newSample.locationProviders.addAll(LocationInfo.getEnabledLocationProviders(context));

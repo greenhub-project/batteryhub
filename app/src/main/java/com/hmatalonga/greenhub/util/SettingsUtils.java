@@ -54,8 +54,11 @@ public class SettingsUtils {
     /**
      * Boolean indicating whether to save data on screen on/off broadcasts.
      */
-
     public static final String PREF_SAMPLING_SCREEN = "pref_sampling_screen";
+    /**
+     * The rate suitable to get sensor events.
+     */
+    public static final String PREF_RATE_SUITABLE_EVENTS = "pref_rate_suitable_events";
     /**
      * Integer indicating which data history days range to keep.
      */
